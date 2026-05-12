@@ -1,34 +1,41 @@
 import { Hono } from 'hono'
-import { serveStatic } from '@hono/node-server/serve-static'
-import { serve } from '@hono/node-server'
-import { join, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { portalRoutes } from './routes/portal'
 import { receptionRoutes } from './routes/reception'
 import { kioskRoutes } from './routes/kiosk'
 
 const app = new Hono()
 
-// Resolve absolute path to src/public/ regardless of CWD.
-// import.meta.dirname may be undefined in some tsx CJS modes, so fall back
-// to fileURLToPath(import.meta.url) which is always available.
-const __dirname = (import.meta.dirname as string | undefined)
-  ?? dirname(fileURLToPath(import.meta.url))
-const staticRoot = join(__dirname, 'public')
-
-app.use('/public/*', serveStatic({
-  root: staticRoot,
-  rewriteRequestPath: (path) => path.replace(/^\/public/, ''),
-}))
-
 app.route('/', portalRoutes)
 app.route('/reception', receptionRoutes)
 app.route('/kiosk', kioskRoutes)
 
-const port = Number(process.env.PORT) || 3000
-console.log(`Glido running on http://localhost:${port}`)
-console.log(`Static root: ${staticRoot}`)
+// ── Local development only ──────────────────────────────────────────────────
+// On Vercel, process.env.VERCEL is set to "1". When running locally with
+// `npm run dev`, it is absent. We only start the TCP server + static-file
+// middleware in dev mode so that the exported `app` (used by Vercel's Hono
+// framework handler via app.fetch) is clean and stateless.
+if (!process.env.VERCEL) {
+  // Dynamic import keeps @hono/node-server out of the module graph on Vercel.
+  ;(async () => {
+    const { serveStatic } = await import('@hono/node-server/serve-static')
+    const { serve }       = await import('@hono/node-server')
+    const { join, dirname } = await import('node:path')
+    const { fileURLToPath }  = await import('node:url')
 
-serve({ fetch: app.fetch, port })
+    const __dirname = (import.meta.dirname as string | undefined)
+      ?? dirname(fileURLToPath(import.meta.url))
+    const staticRoot = join(__dirname, 'public')
 
+    app.use('/public/*', serveStatic({
+      root: staticRoot,
+      rewriteRequestPath: (p) => p.replace(/^\/public/, ''),
+    }))
+
+    const port = Number(process.env.PORT) || 3000
+    console.log(`Glido running on http://localhost:${port}`)
+    serve({ fetch: app.fetch, port })
+  })()
+}
+
+// Vercel's Hono framework handler calls `app.fetch(request)` on this export.
 export default app

@@ -45,9 +45,18 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     body: (body?.length && req.method !== 'GET' && req.method !== 'HEAD') ? body : undefined,
   })
 
-  // Run through Hono and convert the Web API Response back to Node.js
-  const webRes = await app.fetch(webReq)
-  res.statusCode = webRes.status
-  webRes.headers.forEach((v, k) => res.setHeader(k, v))
-  res.end(Buffer.from(await webRes.arrayBuffer()))
+  try {
+    // Run through Hono and convert the Web API Response back to Node.js
+    const webRes = await app.fetch(webReq)
+    res.statusCode = webRes.status
+    webRes.headers.forEach((v, k) => res.setHeader(k, v))
+    res.end(Buffer.from(await webRes.arrayBuffer()))
+  } catch (err: any) {
+    console.error('[glido] handler crash:', err?.stack ?? err)
+    if (!res.headersSent) {
+      res.statusCode = 500
+      res.setHeader('content-type', 'text/plain')
+      res.end(`Internal error: ${err?.message ?? String(err)}`)
+    }
+  }
 }
