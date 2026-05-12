@@ -1,0 +1,3 @@
+# Prevent Vercel from creating index.func from src/app.ts.
+# The app is served entirely via api/bundle.js (esbuild CJS bundle).
+src/app.ts
