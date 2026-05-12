@@ -1,0 +1,51 @@
+/* Kiosk layout — fullscreen tablet, no scroll, large touch targets */
+html, body {
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Prevent double-tap zoom */
+* { touch-action: manipulation; }
+
+/* Large touch targets for kiosk buttons */
+.kiosk-btn {
+  min-height: 72px;
+  min-width: 200px;
+  font-size: 1.25rem;
+  border-radius: 1rem;
+}
+
+.kiosk-input {
+  min-height: 64px;
+  font-size: 1.5rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+/* Screensaver overlay */
+.screensaver {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: linear-gradient(135deg, #1e3a5f 0%, #0f2027 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Pulse animation for "Touch to begin" */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.97); }
+}
+.pulse-slow { animation: pulse-slow 2.5s ease-in-out infinite; }
