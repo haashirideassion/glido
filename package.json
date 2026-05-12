@@ -8,7 +8,7 @@
     "start": "tsx src/app.ts",
     "css": "tailwindcss -i src/public/input.css -o src/public/styles.css --watch",
     "css:build": "tailwindcss -i src/public/input.css -o src/public/styles.css --minify",
-    "vercel-build": "npm run css:build && mkdir -p public/public && cp src/public/alpine-init.js src/public/kiosk.css src/public/styles.css public/public/"
+    "vercel-build": "npm run css:build && esbuild api/index.ts --bundle --platform=node --target=node18 --format=cjs --outfile=api/bundle.js && mkdir -p public/public && cp src/public/alpine-init.js src/public/kiosk.css src/public/styles.css public/public/"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.0",
@@ -21,6 +21,7 @@
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.0",
     "@types/node": "^22.0.0",
+    "esbuild": "^0.28.0",
     "tailwindcss": "^4.1.0",
     "tsx": "^4.19.0",
     "typescript": "^5.8.0"
