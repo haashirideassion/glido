@@ -19,11 +19,9 @@ if (!process.env.VERCEL) {
   ;(async () => {
     const { serveStatic } = await import('@hono/node-server/serve-static')
     const { serve }       = await import('@hono/node-server')
-    const { join, dirname } = await import('node:path')
-    const { fileURLToPath }  = await import('node:url')
+    const { join }        = await import('node:path')
 
-    const __dirname = (import.meta.dirname as string | undefined)
-      ?? dirname(fileURLToPath(import.meta.url))
+    // __dirname is available in CJS; tsx (local dev) also provides it.
     const staticRoot = join(__dirname, 'public')
 
     app.use('/public/*', serveStatic({
