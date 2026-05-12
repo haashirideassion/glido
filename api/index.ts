@@ -18,10 +18,16 @@ app.route('/', portalRoutes)
 app.route('/reception', receptionRoutes)
 app.route('/kiosk', kioskRoutes)
 
+// Take first value only — Vercel's multi-proxy infra sends comma-joined lists,
+// e.g. x-forwarded-proto: "https, https" → must pick "https" not "https, https"
+function firstHeader(val: string | string[] | undefined, fallback: string): string {
+  const raw = Array.isArray(val) ? val[0] : val
+  return (raw ?? fallback).split(',')[0].trim()
+}
+
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
-  // Reconstruct a full URL from Vercel's forwarded headers
-  const proto = (req.headers['x-forwarded-proto'] as string | undefined) ?? 'https'
-  const host  = (req.headers['x-forwarded-host'] as string | undefined) ?? req.headers.host ?? 'localhost'
+  const proto = firstHeader(req.headers['x-forwarded-proto'], 'https')
+  const host  = firstHeader(req.headers['x-forwarded-host'] ?? req.headers.host, 'localhost')
 
   // Buffer the request body (needed for POST/PUT)
   const chunks: Buffer[] = []
