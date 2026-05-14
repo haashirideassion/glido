@@ -7,46 +7,21 @@ import { WalkInForm } from '../components/reception/WalkInForm'
 import { ReportsView } from '../components/reception/ReportsView'
 import { SettingsView } from '../components/reception/SettingsView'
 import { Icon, ICONS } from '../lib/Icon'
-import { mockBookings, findBooking, getTodayBookings, getBookingsByDate, getDashboardStats } from '../data/bookings'
-import type { BookingStatus, ServiceType, WalkIn, WalkInPurpose } from '../data/types'
+import {
+  findBooking,
+  getTodayBookings,
+  getBookingsByDate,
+  getDashboardStats,
+  checkInBooking,
+  completeBooking,
+  getBookings,
+} from '../lib/db/bookings'
+import { getActiveWalkIns, createWalkIn, dismissWalkIn } from '../lib/db/walk-ins'
+import { getTenant, updateTenant } from '../lib/db/tenants'
+import { DEFAULT_TENANT_ID } from '../lib/supabase'
+import type { BookingStatus, ServiceType, WalkInPurpose } from '../data/types'
 
 export const receptionRoutes = new Hono()
-
-// ─── Mock walk-in data ───────────────────────────────────────────────────────
-const mockWalkIns: WalkIn[] = [
-  {
-    id: 'w1',
-    tenantId: 'tenant-abc-cfs',
-    purpose: 'walk_in_pickup',
-    visitorName: 'Danny Sullivan',
-    contactNumber: '+61412999001',
-    arrivedAt: '2026-05-12T07:42:00Z',
-    licenceCaptured: true,
-    dismissed: false,
-  },
-  {
-    id: 'w2',
-    tenantId: 'tenant-abc-cfs',
-    purpose: 'visit_person',
-    visitorName: 'Emma Clarke',
-    contactNumber: '+61423888002',
-    personBeingVisited: 'Operations Manager',
-    reason: 'Delivery audit',
-    arrivedAt: '2026-05-12T09:15:00Z',
-    licenceCaptured: false,
-    dismissed: false,
-  },
-  {
-    id: 'w3',
-    tenantId: 'tenant-abc-cfs',
-    purpose: 'walk_in_dropoff',
-    visitorName: 'Hassan Al-Farsi',
-    contactNumber: '+61434777003',
-    arrivedAt: '2026-05-12T10:30:00Z',
-    licenceCaptured: true,
-    dismissed: false,
-  },
-]
 
 const WALK_IN_PURPOSE_LABEL: Record<WalkInPurpose, string> = {
   walk_in_pickup:  'Walk-in Pick Up',
@@ -55,9 +30,11 @@ const WALK_IN_PURPOSE_LABEL: Record<WalkInPurpose, string> = {
 }
 
 // ─── Dashboard ──────────────────────────────────────────────────────────────
-receptionRoutes.get('/', (c) => {
-  const todayBookings = getTodayBookings()
-  const stats = getDashboardStats()
+receptionRoutes.get('/', async (c) => {
+  const [todayBookings, stats] = await Promise.all([
+    getTodayBookings(),
+    getDashboardStats(),
+  ])
   return c.html(
     <ReceptionLayout title="Dashboard" activeNav="/reception">
       <KpiTiles stats={stats} />
@@ -67,21 +44,22 @@ receptionRoutes.get('/', (c) => {
 })
 
 // ─── All Bookings (filterable) ───────────────────────────────────────────────
-receptionRoutes.get('/bookings', (c) => {
-  const status = c.req.query('status') as BookingStatus | undefined
+receptionRoutes.get('/bookings', async (c) => {
+  const status  = c.req.query('status') as BookingStatus | undefined
   const service = c.req.query('service') as ServiceType | undefined
-  const date = c.req.query('date')
-  const isHtmx = c.req.header('HX-Request') === 'true'
+  const date    = c.req.query('date')
+  const isHtmx  = c.req.header('HX-Request') === 'true'
 
-  let bookings = mockBookings
-  if (status) bookings = bookings.filter((b) => b.status === status)
-  if (service) bookings = bookings.filter((b) => b.serviceType === service)
-  if (date) bookings = bookings.filter((b) => b.slotDate === date)
+  let bookings = date
+    ? await getBookingsByDate(date)
+    : await getBookings()
+
+  if (status)  bookings = bookings.filter(b => b.status === status)
+  if (service) bookings = bookings.filter(b => b.serviceType === service)
 
   if (isHtmx) {
     return c.html(<BookingTable bookings={bookings} title="All Bookings" showFilters />)
   }
-
   return c.html(
     <ReceptionLayout title="All Bookings" activeNav="/reception/bookings">
       <BookingTable bookings={bookings} title="All Bookings" showFilters />
@@ -90,20 +68,18 @@ receptionRoutes.get('/bookings', (c) => {
 })
 
 // ─── Booking detail (slide-over fragment) ───────────────────────────────────
-receptionRoutes.get('/bookings/:id', (c) => {
-  const isHtmx = c.req.header('HX-Request') === 'true'
-  const booking = findBooking(c.req.param('id'))
+receptionRoutes.get('/bookings/:id', async (c) => {
+  const isHtmx  = c.req.header('HX-Request') === 'true'
+  const booking = await findBooking(c.req.param('id'))
   if (!booking) {
     return isHtmx
-      ? c.html(<div class="p-6 text-red-500">Booking not found.</div>)
+      ? c.html(<div style="padding:24px; color:#EF4444;">Booking not found.</div>)
       : c.redirect('/reception/bookings')
   }
-  if (isHtmx) {
-    return c.html(<BookingSlideOver booking={booking} />)
-  }
+  if (isHtmx) return c.html(<BookingSlideOver booking={booking} />)
   return c.html(
     <ReceptionLayout title={booking.referenceNumber} activeNav="/reception/bookings">
-      <div class="max-w-2xl mx-auto bg-white rounded-xl border border-slate-200">
+      <div style="max-width:672px; margin:0 auto; background:#FCFBF8; border-radius:12px; border:1px solid #D6D3D1;">
         <BookingSlideOver booking={booking} />
       </div>
     </ReceptionLayout>
@@ -111,92 +87,106 @@ receptionRoutes.get('/bookings/:id', (c) => {
 })
 
 // ─── Check-in action ────────────────────────────────────────────────────────
-receptionRoutes.post('/bookings/:id/check-in', (c) => {
-  const booking = findBooking(c.req.param('id'))
-  if (!booking) return c.html(<div class="p-4 text-red-500">Not found</div>)
-  booking.status = 'checked_in'
-  booking.checkedInAt = new Date().toISOString()
+receptionRoutes.post('/bookings/:id/check-in', async (c) => {
+  const booking = await checkInBooking(c.req.param('id'))
+  if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
   return c.html(<BookingSlideOver booking={booking} />)
 })
 
 // ─── Complete action ─────────────────────────────────────────────────────────
-receptionRoutes.post('/bookings/:id/complete', (c) => {
-  const booking = findBooking(c.req.param('id'))
-  if (!booking) return c.html(<div class="p-4 text-red-500">Not found</div>)
-  booking.status = 'completed'
-  booking.completedAt = new Date().toISOString()
+receptionRoutes.post('/bookings/:id/complete', async (c) => {
+  const body    = await c.req.parseBody()
+  const notes   = typeof body.completionNotes === 'string' ? body.completionNotes : undefined
+  const booking = await completeBooking(c.req.param('id'), notes)
+  if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
+  return c.html(<BookingSlideOver booking={booking} />)
+})
+
+// ─── Mark EFT Paid ───────────────────────────────────────────────────────────
+receptionRoutes.post('/bookings/:id/mark-eft-paid', async (c) => {
+  const { supabase } = await import('../lib/supabase')
+  const id = c.req.param('id')
+  const db = supabase as any
+  await db
+    .from('bookings')
+    .update({ payment_status: 'paid' })
+    .eq('id', id)
+  const booking = await findBooking(id)
+  if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
   return c.html(<BookingSlideOver booking={booking} />)
 })
 
 // ─── Walk-ins list ───────────────────────────────────────────────────────────
-receptionRoutes.get('/walk-ins', (c) => {
+receptionRoutes.get('/walk-ins', async (c) => {
+  const walkIns = await getActiveWalkIns(DEFAULT_TENANT_ID)
   return c.html(
     <ReceptionLayout title="Walk-Ins" activeNav="/reception/walk-ins">
-      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-          <h2 class="font-semibold text-slate-800">Walk-In Visitors</h2>
-          <span class="text-xs text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full font-medium">
-            {mockWalkIns.filter(w => !w.dismissed).length} active
+      <div style="background:#FCFBF8; border-radius:12px; border:1px solid #D6D3D1; overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #EAE6DE;">
+          <h2 style="font-weight:600; color:#44403C; font-size:14px;">Walk-In Visitors</h2>
+          <span style="font-size:11px; color:#A8A29E; background:#F5F3EC; border:1px solid #D6D3D1; padding:2px 10px; border-radius:9999px; font-weight:500;">
+            {walkIns.length} active
           </span>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
+        <div style="overflow-x:auto;">
+          <table style="width:100%; font-size:12px; border-collapse:collapse;">
             <thead>
-              <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wide border-b border-slate-100">
-                <th class="text-left px-5 py-3 font-semibold">Name</th>
-                <th class="text-left px-4 py-3 font-semibold">Phone</th>
-                <th class="text-left px-4 py-3 font-semibold">Purpose</th>
-                <th class="text-left px-4 py-3 font-semibold">Arrived</th>
-                <th class="text-left px-4 py-3 font-semibold">Licence</th>
-                <th class="px-4 py-3"></th>
+              <tr style="background:#F5F3EC; border-bottom:1px solid #EAE6DE;">
+                <th style="text-align:left; padding:10px 20px; color:#A8A29E; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Name</th>
+                <th style="text-align:left; padding:10px 16px; color:#A8A29E; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Phone</th>
+                <th style="text-align:left; padding:10px 16px; color:#A8A29E; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Purpose</th>
+                <th style="text-align:left; padding:10px 16px; color:#A8A29E; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Arrived</th>
+                <th style="text-align:left; padding:10px 16px; color:#A8A29E; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Licence</th>
+                <th style="padding:10px 16px;"></th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100">
-              {mockWalkIns.map((w) => (
-                <tr key={w.id} class="bg-white hover:bg-slate-50 transition-colors">
-                  <td class="px-5 py-3.5">
-                    <p class="font-semibold text-slate-800">{w.visitorName}</p>
+            <tbody>
+              {walkIns.map((w) => (
+                <tr key={w.id} style="border-bottom:1px solid rgba(214,211,209,0.4);">
+                  <td style="padding:12px 20px;">
+                    <p style="font-weight:600; color:#44403C;">{w.visitorName}</p>
                     {w.personBeingVisited && (
-                      <p class="text-xs text-slate-400">→ {w.personBeingVisited}</p>
+                      <p style="font-size:11px; color:#A8A29E; margin-top:2px;">→ {w.personBeingVisited}</p>
                     )}
                   </td>
-                  <td class="px-4 py-3.5 text-slate-600 text-xs">{w.contactNumber || '—'}</td>
-                  <td class="px-4 py-3.5">
-                    <span class="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                  <td style="padding:12px 16px; color:#78716C; font-size:11px;">{w.contactNumber || '—'}</td>
+                  <td style="padding:12px 16px;">
+                    <span style="display:inline-flex; align-items:center; font-size:11px; font-weight:500; padding:2px 8px; border-radius:9999px; background:#EAE6DE; color:#44403C; border:1px solid #D6D3D1;">
                       {WALK_IN_PURPOSE_LABEL[w.purpose]}
                     </span>
                   </td>
-                  <td class="px-4 py-3.5 text-xs text-slate-600">
+                  <td style="padding:12px 16px; font-size:11px; color:#78716C;">
                     {new Date(w.arrivedAt).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })}
                   </td>
-                  <td class="px-4 py-3.5">
+                  <td style="padding:12px 16px;">
                     {w.licenceCaptured ? (
-                      <span class="inline-flex items-center gap-1 text-xs font-medium text-green-700">
-                        <Icon name={ICONS.check} size={12} class="text-green-600" />
+                      <span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:500; color:#166534;">
+                        <Icon name={ICONS.check} size={12} style="color:#16A34A;" />
                         Captured
                       </span>
                     ) : (
-                      <span class="text-xs text-slate-400">Not captured</span>
+                      <span style="font-size:11px; color:#A8A29E;">Not captured</span>
                     )}
                   </td>
-                  <td class="px-4 py-3.5">
-                    <div class="flex items-center gap-2">
+                  <td style="padding:12px 16px;">
+                    <form method="post" action={`/reception/walk-ins/${w.id}/dismiss`} style="display:inline;">
                       <button
-                        type="button"
-                        class="text-xs text-blue-600 hover:underline font-medium"
-                      >
-                        View
-                      </button>
-                      <button
-                        type="button"
-                        class="text-xs text-slate-400 hover:text-red-500 transition-colors"
+                        type="submit"
+                        style="font-size:11px; color:#A8A29E; background:none; border:none; cursor:pointer;"
                       >
                         Dismiss
                       </button>
-                    </div>
+                    </form>
                   </td>
                 </tr>
               ))}
+              {walkIns.length === 0 && (
+                <tr>
+                  <td colspan={6} style="padding:32px 20px; text-align:center; font-size:12px; color:#A8A29E;">
+                    No active walk-ins
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -205,7 +195,13 @@ receptionRoutes.get('/walk-ins', (c) => {
   )
 })
 
-// ─── Walk-in form (legacy) ────────────────────────────────────────────────────
+// ─── Dismiss walk-in ─────────────────────────────────────────────────────────
+receptionRoutes.post('/walk-ins/:id/dismiss', async (c) => {
+  await dismissWalkIn(c.req.param('id'))
+  return c.redirect('/reception/walk-ins')
+})
+
+// ─── Walk-in registration form ────────────────────────────────────────────────
 receptionRoutes.get('/walk-in', (c) => {
   return c.html(
     <ReceptionLayout title="Walk-in Registration" activeNav="/reception/walk-in">
@@ -216,22 +212,31 @@ receptionRoutes.get('/walk-in', (c) => {
 
 receptionRoutes.post('/walk-in', async (c) => {
   const body = await c.req.parseBody()
-  const rand = String(Math.floor(Math.random() * 90000) + 10000)
-  const ref = `GLD-2026-${rand}`
+
+  const walkIn = await createWalkIn({
+    tenantId:    DEFAULT_TENANT_ID,
+    purpose:     (body.purpose as WalkInPurpose) || 'walk_in_pickup',
+    visitorName: (body.visitorName as string) || 'Unknown',
+    contactNumber:      body.contactNumber as string | undefined,
+    personBeingVisited: body.personBeingVisited as string | undefined,
+    reason:             body.reason as string | undefined,
+    licenceCaptured:    body.licenceCaptured === 'true',
+  })
+
   return c.html(
-    <div class="bg-green-50 border border-green-200 rounded-xl p-5">
-      <div class="flex items-center gap-3 mb-3">
-        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-          <Icon name={ICONS.check} size={20} class="text-green-600" />
+    <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:12px; padding:20px;">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+        <div style="width:40px; height:40px; background:#DCFCE7; border-radius:9999px; display:flex; align-items:center; justify-content:center;">
+          <Icon name={ICONS.check} size={20} style="color:#16A34A;" />
         </div>
         <div>
-          <p class="font-semibold text-green-800">Walk-in Registered</p>
-          <p class="text-sm text-green-600">{body.visitorName as string}</p>
+          <p style="font-weight:600; color:#166534;">Walk-in Registered</p>
+          <p style="font-size:13px; color:#16A34A;">{walkIn.visitorName}</p>
         </div>
       </div>
-      <div class="bg-white rounded-lg px-4 py-3 inline-block">
-        <p class="text-xs text-slate-400 mb-0.5">Reference Number</p>
-        <p class="font-mono font-bold text-lg text-slate-800">{ref}</p>
+      <div style="background:#FCFBF8; border-radius:8px; padding:12px 16px; display:inline-block;">
+        <p style="font-size:11px; color:#A8A29E; margin-bottom:2px;">Walk-in ID</p>
+        <p style="font-family:monospace; font-weight:700; font-size:18px; color:#44403C;">{walkIn.id.slice(0, 8).toUpperCase()}</p>
       </div>
     </div>
   )
@@ -246,12 +251,57 @@ receptionRoutes.get('/reports', (c) => {
   )
 })
 
-// ─── Settings ─────────────────────────────────────────────────────────────────
-receptionRoutes.get('/settings', (c) => {
+// ─── Settings GET ─────────────────────────────────────────────────────────────
+receptionRoutes.get('/settings', async (c) => {
   const tab = c.req.query('tab') || 'General'
+  const tenant = await getTenant(DEFAULT_TENANT_ID)
   return c.html(
     <ReceptionLayout title="Settings" activeNav="/reception/settings">
-      <SettingsView activeTab={tab} />
+      <SettingsView activeTab={tab} tenant={tenant} users={[]} />
     </ReceptionLayout>
   )
+})
+
+// ─── Settings POST ────────────────────────────────────────────────────────────
+receptionRoutes.post('/settings', async (c) => {
+  const body = await c.req.parseBody()
+  const {
+    name, address, contact_email, contact_phone, timezone, currency,
+    slot_duration_min, max_bookings_per_slot, advance_booking_days,
+    slot_hold_duration_min, same_day_cutoff_time,
+    storage_rate_per_cbm, storage_free_days, shrink_wrap_rate_per_pallet,
+    slot_fee_pickup, slot_fee_dropoff,
+    gst_enabled, gst_rate,
+    stripe_public_key, eft_bank_name, eft_bsb, eft_account_number, eft_account_name,
+    require_payment_to_confirm,
+  } = body as Record<string, string>
+
+  await updateTenant(DEFAULT_TENANT_ID, {
+    name,
+    address,
+    contact_email,
+    contact_phone,
+    timezone,
+    currency,
+    slot_duration_min:            Number(slot_duration_min),
+    max_bookings_per_slot:        Number(max_bookings_per_slot),
+    advance_booking_days:         Number(advance_booking_days),
+    slot_hold_duration_min:       Number(slot_hold_duration_min),
+    same_day_cutoff_time,
+    storage_rate_per_cbm:         Number(storage_rate_per_cbm),
+    storage_free_days:            Number(storage_free_days),
+    shrink_wrap_rate_per_pallet:  Number(shrink_wrap_rate_per_pallet),
+    slot_fee_pickup:              Number(slot_fee_pickup),
+    slot_fee_dropoff:             Number(slot_fee_dropoff),
+    gst_enabled:                  gst_enabled === 'on',
+    gst_rate:                     Number(gst_rate) || 10,
+    stripe_public_key:            stripe_public_key || null,
+    eft_bank_name:                eft_bank_name || null,
+    eft_bsb:                      eft_bsb || null,
+    eft_account_number:           eft_account_number || null,
+    eft_account_name:             eft_account_name || null,
+    require_payment_to_confirm:   require_payment_to_confirm === 'on',
+  })
+
+  return c.redirect(`/reception/settings?tab=${encodeURIComponent(body.tab as string || 'General')}&saved=1`)
 })

@@ -1,229 +1,240 @@
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableBody, TableRow, TableCell } from '@/components/ui/table'
+const TABS = ['General', 'Slot Configuration', 'Pricing & Charges', 'Payment', 'Users']
 
-const TABS = [
-  'General',
-  'Slot Configuration',
-  'Services',
-  'Notifications',
-  'Users',
-  'Branding',
-  'Security',
-]
+const labelStyle = 'font-size:12px; font-weight:500; color:#44403C; margin-bottom:4px; display:block;'
+const inputStyle = 'border:1px solid #D6D3D1; border-radius:6px; background:#FCFBF8; color:#44403C; font-size:12px; padding:8px 12px; width:100%; box-sizing:border-box; outline:none;'
+const cardStyle = 'background:#F5F3EC; border:1px solid rgba(231,229,228,0.5); border-radius:12px; padding:20px; box-shadow:rgba(0,0,0,0.05) 0px 1px 2px 0px; margin-bottom:20px;'
+const saveBtn = 'background:#F59E0B; color:#1C1917; border-radius:6px; font-size:12px; font-weight:500; padding:10px 20px; border:none; cursor:pointer; margin-top:16px;'
 
-export const SettingsView = ({ activeTab = 'General' }: { activeTab?: string }) => (
+export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeTab?: string; tenant?: any; users?: any[] }) => (
   <div x-data={`{ tab: '${activeTab}' }`}>
     {/* Tab nav */}
-    <div class="flex gap-1 bg-muted rounded-xl p-1 mb-6 overflow-x-auto">
+    <div style="display:flex; gap:4px; background:#F5F3EC; border-radius:8px; padding:4px; margin-bottom:24px; overflow-x:auto;">
       {TABS.map((t) => (
         <button
           key={t}
           type="button"
           x-on:click={`tab = '${t}'`}
-          x-bind:class={`tab === '${t}' ? 'bg-card shadow text-foreground' : 'text-foreground-muted hover:text-foreground'`}
-          class="px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all"
+          {...{"x-bind:style": `tab === '${t}' ? 'background:#FCFBF8; border:1px solid #D6D3D1; border-radius:6px; color:#44403C; padding:6px 16px; font-size:12px; font-weight:500; white-space:nowrap; cursor:pointer;' : 'background:transparent; border:1px solid transparent; border-radius:6px; color:#A8A29E; padding:6px 16px; font-size:12px; font-weight:500; white-space:nowrap; cursor:pointer;'`}}
         >
           {t}
         </button>
       ))}
     </div>
 
-    {/* General */}
-    <div x-show={`tab === 'General'`} class="max-w-2xl">
-      <Card>
-        <CardHeader>
-          <CardTitle class="font-semibold text-foreground text-base">General Settings</CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-5">
-          {[
-            { label: 'Depot Name', name: 'depotName', value: 'Glido CFS Terminal 1', type: 'text' },
-            { label: 'Depot Address', name: 'address', value: 'Port Qasim, Karachi', type: 'text' },
-            { label: 'Contact Email', name: 'contactEmail', value: 'ops@glido.pk', type: 'email' },
-            { label: 'Contact Phone', name: 'phone', value: '021-3456789', type: 'tel' },
-            { label: 'Operating Hours', name: 'hours', value: '07:00 – 18:00', type: 'text' },
-          ].map((f) => (
-            <div key={f.name}>
-              <label class="block text-sm font-medium text-foreground mb-1.5">{f.label}</label>
-              <Input type={f.type} value={f.value} class="w-full" />
+    {/* ── General ── */}
+    <div x-show={`tab === 'General'`} style="max-width:640px;">
+      <form method="post" action="/reception/settings">
+        <input type="hidden" name="tab" value="General" />
+        <div style={cardStyle}>
+          <p style="font-size:14px; font-weight:600; color:#44403C; margin-bottom:16px;">General Settings</p>
+          <div style="display:flex; flex-direction:column; gap:14px;">
+            <div>
+              <label style={labelStyle}>Name</label>
+              <input type="text" name="name" value={tenant?.name ?? ''} style={inputStyle} />
             </div>
-          ))}
-          <div class="pt-2">
-            <Button>Save Changes</Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-
-    {/* Slot Configuration */}
-    <div x-show={`tab === 'Slot Configuration'`} class="max-w-2xl">
-      <Card>
-        <CardHeader>
-          <CardTitle class="font-semibold text-foreground text-base">Slot Configuration</CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-5">
-          <div class="grid grid-cols-2 gap-4">
-            {[
-              { label: 'Default Slot Duration (min)', name: 'slotDuration', value: '60' },
-              { label: 'Max Capacity per Slot', name: 'capacity', value: '5' },
-              { label: 'Booking Window (days)', name: 'window', value: '7' },
-              { label: 'Hold Duration (min)', name: 'holdDuration', value: '10' },
-              { label: 'First Slot', name: 'firstSlot', value: '07:00' },
-              { label: 'Last Slot', name: 'lastSlot', value: '17:00' },
-            ].map((f) => (
-              <div key={f.name}>
-                <label class="block text-sm font-medium text-foreground mb-1.5">{f.label}</label>
-                <Input type="text" value={f.value} class="w-full" />
-              </div>
-            ))}
-          </div>
-          <div class="pt-2">
-            <Button>Save Changes</Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-
-    {/* Services */}
-    <div x-show={`tab === 'Services'`} class="max-w-2xl">
-      <Card>
-        <CardHeader>
-          <CardTitle class="font-semibold text-foreground text-base">Enabled Services</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div class="space-y-3">
-            {[
-              { label: 'Import — FCL', enabled: true },
-              { label: 'Import — LCL', enabled: true },
-              { label: 'Import — Breakbulk', enabled: true },
-              { label: 'Export — FCL', enabled: true },
-              { label: 'Export — LCL', enabled: true },
-              { label: 'Export — Breakbulk', enabled: false },
-              { label: 'Transshipment — FCL', enabled: true },
-              { label: 'Transshipment — LCL', enabled: false },
-            ].map((s) => (
-              <label key={s.label} class="flex items-center justify-between py-2.5 border-b border-border last:border-0 cursor-pointer">
-                <span class="text-sm text-foreground">{s.label}</span>
-                <input type="checkbox" checked={s.enabled} class="w-4 h-4 text-primary rounded" />
-              </label>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-
-    {/* Notifications */}
-    <div x-show={`tab === 'Notifications'`} class="max-w-2xl">
-      <Card>
-        <CardHeader>
-          <CardTitle class="font-semibold text-foreground text-base">Notification Settings</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div class="space-y-4">
-            {[
-              { label: 'Booking confirmation email', enabled: true },
-              { label: '24-hour reminder email', enabled: true },
-              { label: '2-hour reminder SMS', enabled: false },
-              { label: 'Check-in confirmation', enabled: true },
-              { label: 'No-show alert to admin', enabled: true },
-              { label: 'Slot hold expiry warning', enabled: true },
-            ].map((n) => (
-              <label key={n.label} class="flex items-center justify-between py-2.5 border-b border-border last:border-0 cursor-pointer">
-                <span class="text-sm text-foreground">{n.label}</span>
-                <input type="checkbox" checked={n.enabled} class="w-4 h-4 text-primary rounded" />
-              </label>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-
-    {/* Users */}
-    <div x-show={`tab === 'Users'`} class="max-w-2xl">
-      <Card class="overflow-hidden">
-        <CardHeader>
-          <CardTitle class="font-semibold text-foreground">Team Members</CardTitle>
-          <div class="col-start-2 row-start-1 justify-self-end">
-            <Button variant="outline" size="sm">+ Invite</Button>
-          </div>
-        </CardHeader>
-        <CardContent class="px-0 pb-0">
-          <Table>
-            <TableBody>
-              {[
-                { name: 'Admin User', email: 'admin@glido.pk', role: 'Admin', status: 'Active' },
-                { name: 'Reception Agent', email: 'reception@glido.pk', role: 'Reception', status: 'Active' },
-                { name: 'Supervisor', email: 'supervisor@glido.pk', role: 'Supervisor', status: 'Active' },
-              ].map((u) => (
-                <TableRow key={u.email}>
-                  <TableCell class="px-5 py-3.5">
-                    <p class="font-medium text-foreground">{u.name}</p>
-                    <p class="text-xs text-foreground-muted">{u.email}</p>
-                  </TableCell>
-                  <TableCell class="px-4 py-3.5">
-                    <Badge variant="default">{u.role}</Badge>
-                  </TableCell>
-                  <TableCell class="px-4 py-3.5">
-                    <Badge variant="success">{u.status}</Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </div>
-
-    {/* Branding */}
-    <div x-show={`tab === 'Branding'`} class="max-w-2xl">
-      <Card>
-        <CardHeader>
-          <CardTitle class="font-semibold text-foreground text-base">Branding</CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-5">
-          {[
-            { label: 'Platform Name', name: 'name', value: 'Glido', type: 'text' },
-            { label: 'Tagline', name: 'tagline', value: 'CFS Depot Management Platform', type: 'text' },
-            { label: 'Primary Colour', name: 'primaryColor', value: '#1d4ed8', type: 'color' },
-            { label: 'Support Email', name: 'supportEmail', value: 'support@glido.pk', type: 'email' },
-          ].map((f) => (
-            <div key={f.name}>
-              <label class="block text-sm font-medium text-foreground mb-1.5">{f.label}</label>
-              <Input type={f.type || 'text'} value={f.value} class="w-full" />
+            <div>
+              <label style={labelStyle}>Address</label>
+              <textarea name="address" rows={3} style={`${inputStyle} resize:vertical;`}>{tenant?.address ?? ''}</textarea>
             </div>
-          ))}
-          <div class="pt-2">
-            <Button>Save Changes</Button>
+            <div>
+              <label style={labelStyle}>Contact Email</label>
+              <input type="email" name="contact_email" value={tenant?.contact_email ?? ''} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Contact Phone</label>
+              <input type="tel" name="contact_phone" value={tenant?.contact_phone ?? ''} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Timezone</label>
+              <select name="timezone" style={inputStyle}>
+                {['Australia/Sydney', 'Australia/Melbourne', 'Australia/Perth', 'Asia/Kolkata'].map((tz) => (
+                  <option key={tz} value={tz} selected={tenant?.timezone === tz}>{tz}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label style={labelStyle}>Currency</label>
+              <select name="currency" style={inputStyle}>
+                {['AUD', 'INR'].map((c) => (
+                  <option key={c} value={c} selected={tenant?.currency === c}>{c}</option>
+                ))}
+              </select>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+          <button type="submit" style={saveBtn}>Save Changes</button>
+        </div>
+      </form>
     </div>
 
-    {/* Security */}
-    <div x-show={`tab === 'Security'`} class="max-w-2xl">
-      <Card>
-        <CardHeader>
-          <CardTitle class="font-semibold text-foreground text-base">Security Settings</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div class="space-y-4">
-            {[
-              { label: 'Require 2FA for admin login', enabled: false },
-              { label: 'Session timeout after inactivity (30 min)', enabled: true },
-              { label: 'Log all reception actions', enabled: true },
-              { label: 'Allow public booking without login', enabled: true },
-              { label: 'Rate-limit booking submissions', enabled: true },
-            ].map((s) => (
-              <label key={s.label} class="flex items-center justify-between py-2.5 border-b border-border last:border-0 cursor-pointer">
-                <span class="text-sm text-foreground">{s.label}</span>
-                <input type="checkbox" checked={s.enabled} class="w-4 h-4 text-primary rounded" />
-              </label>
-            ))}
+    {/* ── Slot Configuration ── */}
+    <div x-show={`tab === 'Slot Configuration'`} style="max-width:640px;">
+      <form method="post" action="/reception/settings">
+        <input type="hidden" name="tab" value="Slot Configuration" />
+        <div style={cardStyle}>
+          <p style="font-size:14px; font-weight:600; color:#44403C; margin-bottom:16px;">Slot Configuration</p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div>
+              <label style={labelStyle}>Slot Duration (min)</label>
+              <input type="number" name="slot_duration_min" value={tenant?.slot_duration_min ?? 60} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Max Bookings per Slot</label>
+              <input type="number" name="max_bookings_per_slot" value={tenant?.max_bookings_per_slot ?? 5} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Advance Booking Days</label>
+              <input type="number" name="advance_booking_days" value={tenant?.advance_booking_days ?? 7} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Slot Hold Duration (min)</label>
+              <input type="number" name="slot_hold_duration_min" value={tenant?.slot_hold_duration_min ?? 10} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Same-Day Cutoff Time</label>
+              <input type="time" name="same_day_cutoff_time" value={tenant?.same_day_cutoff_time ?? '09:00'} style={inputStyle} />
+            </div>
           </div>
-        </CardContent>
-      </Card>
+          <button type="submit" style={saveBtn}>Save Changes</button>
+        </div>
+      </form>
+    </div>
+
+    {/* ── Pricing & Charges ── */}
+    <div x-show={`tab === 'Pricing & Charges'`} style="max-width:640px;" x-data="{ gstEnabled: false }">
+      <form method="post" action="/reception/settings">
+        <input type="hidden" name="tab" value="Pricing & Charges" />
+        <div style={cardStyle}>
+          <p style="font-size:14px; font-weight:600; color:#44403C; margin-bottom:16px;">Pricing & Charges</p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div>
+              <label style={labelStyle}>Storage Rate per CBM</label>
+              <input type="number" step="0.01" name="storage_rate_per_cbm" value={tenant?.storage_rate_per_cbm ?? ''} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Storage Free Days</label>
+              <input type="number" name="storage_free_days" value={tenant?.storage_free_days ?? ''} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Shrink Wrap Rate / Pallet</label>
+              <input type="number" step="0.01" name="shrink_wrap_rate_per_pallet" value={tenant?.shrink_wrap_rate_per_pallet ?? ''} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Slot Fee — Pick Up</label>
+              <input type="number" step="0.01" name="slot_fee_pickup" value={tenant?.slot_fee_pickup ?? ''} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Slot Fee — Drop Off</label>
+              <input type="number" step="0.01" name="slot_fee_dropoff" value={tenant?.slot_fee_dropoff ?? ''} style={inputStyle} />
+            </div>
+          </div>
+          <div style="margin-top:14px; display:flex; align-items:center; gap:8px;">
+            <input
+              type="checkbox"
+              id="gst_enabled"
+              name="gst_enabled"
+              checked={tenant?.gst_enabled}
+              x-model="gstEnabled"
+              x-init={`gstEnabled = ${tenant?.gst_enabled ? 'true' : 'false'}`}
+            />
+            <label for="gst_enabled" style="font-size:12px; font-weight:500; color:#44403C; cursor:pointer;">GST Enabled</label>
+          </div>
+          <div style="margin-top:12px;" x-show="gstEnabled">
+            <label style={labelStyle}>GST Rate (%)</label>
+            <input type="number" name="gst_rate" value={tenant?.gst_rate ?? 10} style={inputStyle} />
+          </div>
+          <button type="submit" style={saveBtn}>Save Changes</button>
+        </div>
+      </form>
+    </div>
+
+    {/* ── Payment ── */}
+    <div x-show={`tab === 'Payment'`} style="max-width:640px;">
+      <form method="post" action="/reception/settings">
+        <input type="hidden" name="tab" value="Payment" />
+        <div style={cardStyle}>
+          <p style="font-size:14px; font-weight:600; color:#44403C; margin-bottom:16px;">Payment Settings</p>
+          <div style="display:flex; flex-direction:column; gap:14px;">
+            <div>
+              <label style={labelStyle}>Stripe Public Key</label>
+              <input type="text" name="stripe_public_key" value={tenant?.stripe_public_key ?? ''} placeholder="pk_live_..." style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>EFT Bank Name</label>
+              <input type="text" name="eft_bank_name" value={tenant?.eft_bank_name ?? ''} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>EFT BSB</label>
+              <input type="text" name="eft_bsb" value={tenant?.eft_bsb ?? ''} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>EFT Account Number</label>
+              <input type="text" name="eft_account_number" value={tenant?.eft_account_number ?? ''} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>EFT Account Name</label>
+              <input type="text" name="eft_account_name" value={tenant?.eft_account_name ?? ''} style={inputStyle} />
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <input
+                type="checkbox"
+                id="require_payment_to_confirm"
+                name="require_payment_to_confirm"
+                checked={tenant?.require_payment_to_confirm}
+              />
+              <label for="require_payment_to_confirm" style="font-size:12px; font-weight:500; color:#44403C; cursor:pointer;">Require payment to confirm booking</label>
+            </div>
+          </div>
+          <button type="submit" style={saveBtn}>Save Changes</button>
+        </div>
+      </form>
+    </div>
+
+    {/* ── Users ── */}
+    <div x-show={`tab === 'Users'`} style="max-width:640px;">
+      <div style={cardStyle}>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+          <p style="font-size:14px; font-weight:600; color:#44403C;">Team Members</p>
+          <button
+            type="button"
+            style="background:#F5F3EC; border:1px solid #D6D3D1; border-radius:6px; color:#44403C; font-size:12px; font-weight:500; padding:6px 14px; cursor:pointer;"
+          >
+            + Invite
+          </button>
+        </div>
+        <table style="width:100%; font-size:12px; border-collapse:collapse;">
+          <thead>
+            <tr style="border-bottom:1px solid #D6D3D1;">
+              <th style="text-align:left; padding:8px 0; color:#A8A29E; font-weight:500;">Name</th>
+              <th style="text-align:left; padding:8px 0; color:#A8A29E; font-weight:500;">Email</th>
+              <th style="text-align:left; padding:8px 0; color:#A8A29E; font-weight:500;">Role</th>
+              <th style="text-align:left; padding:8px 0; color:#A8A29E; font-weight:500;">Status</th>
+              <th style="padding:8px 0;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {(users ?? []).map((u: any) => (
+              <tr key={u.email} style="border-bottom:1px solid rgba(214,211,209,0.4);">
+                <td style="padding:10px 0; color:#44403C; font-weight:500;">{u.name}</td>
+                <td style="padding:10px 0; color:#78716C;">{u.email}</td>
+                <td style="padding:10px 0;">
+                  <span style="background:#EAE6DE; border:1px solid #D6D3D1; border-radius:4px; padding:2px 8px; font-size:11px; color:#44403C; font-weight:500;">{u.role}</span>
+                </td>
+                <td style="padding:10px 0;">
+                  <span style={`border-radius:4px; padding:2px 8px; font-size:11px; font-weight:500; ${u.status === 'Active' ? 'background:#DCFCE7; color:#166534; border:1px solid #BBF7D0;' : 'background:#F5F3EC; color:#A8A29E; border:1px solid #D6D3D1;'}`}>{u.status}</span>
+                </td>
+                <td style="padding:10px 0; text-align:right;">
+                  <button type="button" style="font-size:11px; color:#A8A29E; background:none; border:none; cursor:pointer;">Edit</button>
+                </td>
+              </tr>
+            ))}
+            {(users ?? []).length === 0 && (
+              <tr>
+                <td colspan={5} style="padding:32px 0; text-align:center; color:#A8A29E; font-size:12px;">No users found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 )
