@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/app.ts",
+    "dev": "tsx watch --env-file .env src/app.ts",
     "build": "tsc --noEmit",
     "start": "tsx src/app.ts",
     "css": "tailwindcss -i src/public/input.css -o src/public/styles.css --watch",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@hono/node-server": "^1.13.0",
     "@kiwa-ui/enhance": "^2.0.0",
+    "@supabase/supabase-js": "^2.105.4",
     "clsx": "^2.1.1",
     "hono": "^4.7.0",
     "lucide": "^0.575.0",

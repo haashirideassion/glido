@@ -3,11 +3,10 @@ import { PublicLayout } from '../layouts/PublicLayout'
 import { LandingLayout } from '../layouts/LandingLayout'
 import { Icon, ICONS } from '../lib/Icon'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { BookingWizard } from '../components/portal/BookingWizard'
 import { MyBookingsList } from '../components/portal/MyBookingsList'
 import { Input } from '@/components/ui/input'
-import { mockBookings, findBooking } from '../data/bookings'
+import { getBookings, findBooking } from '../lib/db/bookings'
 
 export const portalRoutes = new Hono()
 
@@ -83,20 +82,14 @@ portalRoutes.get('/', (c) => {
       <section id="how-it-works" class="py-24 bg-white">
         <div class="max-w-3xl mx-auto px-6">
 
-          {/* Eyebrow */}
           <p class="text-xs font-medium tracking-widest uppercase text-slate-400 mb-4">HOW IT WORKS</p>
-
-          {/* Heading */}
           <h2 class="text-4xl font-semibold text-slate-900 text-balance mb-4 tracking-tight">
             Four steps from browser to bay door
           </h2>
-
-          {/* Subtext */}
           <p class="text-slate-500 text-base leading-relaxed mb-12 max-w-xl">
             No spreadsheets, no radio calls. The whole process is handled online.
           </p>
 
-          {/* Step cards */}
           <div class="grid sm:grid-cols-2 gap-4">
             {[
               {
@@ -142,20 +135,14 @@ portalRoutes.get('/', (c) => {
       <section class="py-24 bg-slate-50 border-t border-slate-200">
         <div class="max-w-3xl mx-auto px-6">
 
-          {/* Eyebrow */}
           <p class="text-xs font-medium tracking-widest uppercase text-slate-400 mb-4">WHY GLIDO</p>
-
-          {/* Heading */}
           <h2 class="text-4xl font-semibold text-slate-900 text-balance mb-4 tracking-tight">
             Built for the depot floor, not a boardroom
           </h2>
-
-          {/* Subtext */}
           <p class="text-slate-500 text-base leading-relaxed max-w-xl">
             Purpose-built for Container Freight Stations. Every feature exists because it solves a real operational problem.
           </p>
 
-          {/* Feature tiles */}
           <div class="grid sm:grid-cols-2 gap-3 mt-12">
             {[
               {
@@ -209,7 +196,6 @@ portalRoutes.get('/', (c) => {
           <h2 class="text-4xl font-semibold text-white text-balance mb-5 tracking-tight" style="font-size: clamp(2rem, 5vw, 3rem);">
             Ready to skip the queue?
           </h2>
-
           <p class="text-slate-400 text-base leading-relaxed mb-8">
             Your first booking takes under 3 minutes. No account required.
           </p>
@@ -259,15 +245,15 @@ portalRoutes.get('/book', (c) => {
 })
 
 // ─── My Bookings ─────────────────────────────────────────────────────────────
-portalRoutes.get('/bookings', (c) => {
+portalRoutes.get('/bookings', async (c) => {
   const ref = c.req.query('ref')?.trim().toUpperCase()
-  let bookings = mockBookings
-  let heading = 'My Bookings'
+  let bookings = await getBookings()
+  let heading  = 'My Bookings'
 
   if (ref) {
-    const found = findBooking(ref)
+    const found = await findBooking(ref)
     bookings = found ? [found] : []
-    heading = `Results for "${ref}"`
+    heading  = `Results for "${ref}"`
   }
 
   return c.html(
@@ -300,4 +286,45 @@ portalRoutes.get('/bookings', (c) => {
       </div>
     </PublicLayout>
   )
+})
+
+// ─── Create booking (POST from wizard) ───────────────────────────────────────
+portalRoutes.post('/bookings', async (c) => {
+  const { createBooking } = await import('../lib/db/bookings')
+  const body = await c.req.parseBody()
+
+  try {
+    const booking = await createBooking({
+      serviceType:      (body.serviceType as any) || 'pickup',
+      loadType:         (body.loadType as any) || 'lcl',
+      slotDate:         body.slotDate as string,
+      slotStartTime:    body.slotStartTime as string,
+      slotEndTime:      body.slotEndTime as string,
+      driverName:       body.driverName as string,
+      driverPhone:      body.driverPhone as string | undefined,
+      guestName:        body.guestName as string | undefined,
+      guestPhone:       body.guestPhone as string | undefined,
+      houseBillNumber:  body.houseBillNumber as string | undefined,
+      containerNumber:  body.containerNumber as string | undefined,
+      weightKg:         body.weightKg ? Number(body.weightKg) : undefined,
+      volumeCbm:        body.volumeCbm ? Number(body.volumeCbm) : undefined,
+      packageCount:     body.packageCount ? Number(body.packageCount) : undefined,
+      palletCount:      body.palletCount ? Number(body.palletCount) : undefined,
+      palletType:       (body.palletType as any) || undefined,
+      paymentMethod:    (body.paymentMethod as any) || 'card',
+      paymentStatus:    'pending',
+      tenantId:         'tenant-abc-cfs',
+    })
+    return c.redirect(`/bookings?ref=${booking.referenceNumber}`)
+  } catch (err) {
+    console.error('[portal] createBooking error:', err)
+    return c.html(
+      <PublicLayout title="Booking Error">
+        <div class="max-w-xl mx-auto px-4 py-16 text-center">
+          <p class="text-red-500 font-medium mb-4">Something went wrong creating your booking.</p>
+          <a href="/book" class="text-blue-600 underline text-sm">Try again</a>
+        </div>
+      </PublicLayout>
+    )
+  }
 })
