@@ -1,19 +1,16 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from './db/types'
 
-const url = process.env.SUPABASE_URL
-const key = process.env.SUPABASE_ANON_KEY
-
-if (!url || !key) {
-  throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY environment variables')
-}
+// Use placeholder values so the module loads even when env vars are absent —
+// routes catch query errors gracefully instead of crashing the whole function.
+const url = process.env.SUPABASE_URL ?? 'http://localhost:54321'
+const key = process.env.SUPABASE_ANON_KEY ?? 'anon-placeholder'
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? key
 
 // Anon client — respects RLS (used for portal/kiosk public ops)
 export const supabase = createClient<Database>(url, key)
 
 // Service-role client — bypasses RLS (used for server-side reception ops)
-// Falls back to anon key if service role key not set (dev convenience)
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || key
 export const supabaseAdmin = createClient<Database>(url, serviceKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 })
