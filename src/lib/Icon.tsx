@@ -2,6 +2,7 @@ interface IconProps {
   name: string
   size?: number
   class?: string
+  style?: string
 }
 
 /**
@@ -9,12 +10,13 @@ interface IconProps {
  * Requires the Iconify script loaded in the page <head>.
  * Usage: <Icon name={ICONS.home} size={20} />
  */
-export const Icon = ({ name, size = 20, class: cls = '' }: IconProps) => (
+export const Icon = ({ name, size = 20, class: cls = '', style }: IconProps) => (
   <span
     class={`iconify ${cls}`.trim()}
     data-icon={name}
     data-width={String(size)}
     data-height={String(size)}
+    style={style}
   ></span>
 )
 
