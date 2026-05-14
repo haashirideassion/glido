@@ -27,10 +27,12 @@ function wizardStore() {
     // Step 3
     loadType: null,      // 'fcl' | 'lcl'
 
-    // Step 4
+    // Step 4 — date/slot selection
     selectedDate: null,
     selectedSlotId: null,
     selectedSlotLabel: null,
+    slots: [],
+    slotsLoading: false,
 
     // Hold timer
     holdSecondsRemaining: 600,
@@ -143,6 +145,30 @@ function wizardStore() {
     selectSlot(slotId, label) {
       this.selectedSlotId = slotId
       this.selectedSlotLabel = label
+    },
+
+    selectDate(date) {
+      this.selectedDate = date
+      this.selectedSlotId = null
+      this.selectedSlotLabel = null
+      this.fetchSlots(date)
+    },
+
+    fetchSlots(date) {
+      if (!date) return
+      this.slotsLoading = true
+      this.slots = []
+      var self = this
+      fetch('/api/slots?date=' + date)
+        .then(function (r) { return r.json() })
+        .then(function (data) {
+          self.slotsLoading = false
+          self.slots = data.slots || []
+        })
+        .catch(function () {
+          self.slotsLoading = false
+          self.slots = []
+        })
     },
 
     startHoldTimer() {
@@ -262,6 +288,8 @@ function wizardStore() {
       this.selectedDate = null
       this.selectedSlotId = null
       this.selectedSlotLabel = null
+      this.slots = []
+      this.slotsLoading = false
       this.holdSecondsRemaining = 600
       this.holdTimerInterval = null
       this.houseBillNumber = ''
@@ -338,23 +366,25 @@ function kioskStore() {
 
     performLookup() {
       if (!this.referenceInput.trim()) return
+      var self = this
       var ref = this.referenceInput.trim().toUpperCase()
-      if (ref.startsWith('GLD-')) {
-        this.lookupResult = {
-          ref: ref,
-          driverName: 'Carlos Mendez',
-          slotTime: 'Today 08:00 – 09:00',
-          serviceType: 'Pick Up',
-          loadType: 'LCL',
-          palletExchange: true,
-          palletCount: 1,
-        }
-        this.lookupError = false
-        this.goTo('idscan')
-      } else {
-        this.lookupError = true
-        this.lookupResult = null
-      }
+      self.lookupError = false
+      fetch('/kiosk/lookup/' + encodeURIComponent(ref))
+        .then(function (r) { return r.json() })
+        .then(function (data) {
+          if (data.found) {
+            self.lookupResult = data
+            self.lookupError = false
+            self.goTo('idscan')
+          } else {
+            self.lookupError = true
+            self.lookupResult = null
+          }
+        })
+        .catch(function () {
+          self.lookupError = true
+          self.lookupResult = null
+        })
     },
 
     confirmBooking() { this.goTo('idscan') },

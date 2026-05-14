@@ -1,132 +1,145 @@
 import { Icon, ICONS } from '../../lib/Icon'
 
-// Mock slot data for the time grid
-const SLOT_HOURS = [
-  { id: 's06', start: '06:00', end: '07:00', confirmed: 8,  capacity: 10, busyness: 'busy' },
-  { id: 's07', start: '07:00', end: '08:00', confirmed: 9,  capacity: 10, busyness: 'full' },
-  { id: 's08', start: '08:00', end: '09:00', confirmed: 6,  capacity: 10, busyness: 'busy' },
-  { id: 's09', start: '09:00', end: '10:00', confirmed: 3,  capacity: 10, busyness: 'available' },
-  { id: 's10', start: '10:00', end: '11:00', confirmed: 2,  capacity: 10, busyness: 'available' },
-  { id: 's11', start: '11:00', end: '12:00', confirmed: 4,  capacity: 10, busyness: 'available' },
-  { id: 's12', start: '12:00', end: '13:00', confirmed: 1,  capacity: 10, busyness: 'available' },
-  { id: 's13', start: '13:00', end: '14:00', confirmed: 2,  capacity: 10, busyness: 'available' },
-  { id: 's14', start: '14:00', end: '15:00', confirmed: 1,  capacity: 10, busyness: 'available' },
-  { id: 's15', start: '15:00', end: '16:00', confirmed: 3,  capacity: 10, busyness: 'available' },
-  { id: 's16', start: '16:00', end: '17:00', confirmed: 2,  capacity: 10, busyness: 'available' },
-  { id: 's17', start: '17:00', end: '18:00', confirmed: 0,  capacity: 10, busyness: 'available' },
-]
-
-const BUSYNESS_CLASS: Record<string, string> = {
-  available: 'bg-green-50 border border-green-200 text-green-800 hover:bg-green-100 cursor-pointer transition-colors',
-  busy:      'bg-amber-50 border border-amber-200 text-amber-800 hover:bg-amber-100 cursor-pointer transition-colors',
-  full:      'bg-red-50 border border-red-200 text-red-400 cursor-not-allowed opacity-60',
-  closed:    'bg-slate-50 border border-slate-200 text-slate-400 cursor-not-allowed',
+// Generate next N working days from today
+function workingDays(n: number): { iso: string; label: string; day: string; num: string; mon: string }[] {
+  const days: { iso: string; label: string; day: string; num: string; mon: string }[] = []
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  let d = new Date(today)
+  while (days.length < n) {
+    const dow = d.getDay()
+    if (dow !== 0 && dow !== 6) {
+      const iso = d.toISOString().split('T')[0]
+      const label = days.length === 0 ? 'Today' : days.length === 1 ? 'Tomorrow' : ''
+      const day = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dow]
+      const num = String(d.getDate())
+      const mon = d.toLocaleString('en-AU', { month: 'short' })
+      days.push({ iso, label, day, num, mon })
+    }
+    d = new Date(d.getTime() + 86400000)
+  }
+  return days
 }
 
-const BUSYNESS_LABEL: Record<string, string> = {
-  available: 'Spots available',
-  busy:      'Filling up',
-  full:      'Full',
-  closed:    'Closed',
-}
-
-// Generate 8 days from today (2026-05-12)
-const DATES = [
-  { iso: '2026-05-12', label: 'Today',     day: 'Tue', num: '12', mon: 'May' },
-  { iso: '2026-05-13', label: 'Tomorrow',  day: 'Wed', num: '13', mon: 'May' },
-  { iso: '2026-05-14', label: '',          day: 'Thu', num: '14', mon: 'May' },
-  { iso: '2026-05-15', label: '',          day: 'Fri', num: '15', mon: 'May' },
-  { iso: '2026-05-18', label: '',          day: 'Mon', num: '18', mon: 'May' },
-  { iso: '2026-05-19', label: '',          day: 'Tue', num: '19', mon: 'May' },
-  { iso: '2026-05-20', label: '',          day: 'Wed', num: '20', mon: 'May' },
-  { iso: '2026-05-21', label: '',          day: 'Thu', num: '21', mon: 'May' },
-]
+const DATES = workingDays(8)
 
 export const Step4ShipmentDetails = () => (
   <div x-show="$store.wizard.currentStep === 4" x-cloak>
-    <h2 class="text-xl font-bold text-foreground mb-1">Choose a Time Slot</h2>
-    <p class="text-foreground-muted text-sm mb-5">Select your preferred date and time. Your slot is held for 10 minutes while you complete the booking.</p>
+    <h2 class="text-xl font-bold mb-1" style="color:#44403C;">Choose a Time Slot</h2>
+    <p class="text-sm mb-5" style="color:#A8A29E;">Select your preferred date and time. Your slot is held for 10 minutes while you complete the booking.</p>
 
     {/* Date strip */}
-    <div class="flex gap-2 overflow-x-auto pb-2 mb-5 scrollbar-hide">
+    <div class="flex gap-2 overflow-x-auto pb-2 mb-5" style="scrollbar-width:none;">
       {DATES.map((d) => (
         <button
           key={d.iso}
           type="button"
-          x-on:click={`$store.wizard.selectedDate = '${d.iso}'; $store.wizard.selectedSlotId = null; $store.wizard.selectedSlotLabel = null`}
-          class="shrink-0 border rounded-xl px-3 py-2.5 text-center min-w-[68px] transition-all"
-          {...{"x-bind:class": `$store.wizard.selectedDate === '${d.iso}' ? 'bg-primary text-primary-foreground border-primary' : 'bg-card text-foreground-muted border-border hover:border-primary/40 hover:bg-primary-soft/50'`}}
+          x-on:click={`$store.wizard.selectDate('${d.iso}')`}
+          class="shrink-0 rounded-xl px-3 py-2.5 text-center transition-all"
+          style="min-width:68px; border:1px solid #D6D3D1; background:#F5F3EC; color:#78716C;"
+          {...{"x-bind:style": `$store.wizard.selectedDate === '${d.iso}' ? 'background:#F59E0B; border-color:#F59E0B; color:#fff;' : 'background:#F5F3EC; border-color:#D6D3D1; color:#78716C;'`}}
         >
-          {d.label && <div class="text-xs font-semibold mb-0.5 leading-tight">{d.label}</div>}
-          {!d.label && <div class="text-xs font-medium mb-0.5 leading-tight">{d.day}</div>}
+          {d.label
+            ? <div class="text-xs font-semibold mb-0.5 leading-tight">{d.label}</div>
+            : <div class="text-xs font-medium mb-0.5 leading-tight">{d.day}</div>
+          }
           <div class="text-xl font-bold leading-none">{d.num}</div>
           <div class="text-xs mt-0.5">{d.mon}</div>
         </button>
       ))}
     </div>
 
-    {/* Time grid */}
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-5">
-      {SLOT_HOURS.map((slot) => (
+    {/* No date selected prompt */}
+    <div x-show="$store.wizard.selectedDate === null" class="text-center py-10" style="color:#A8A29E;">
+      <Icon name={ICONS.calendar} size={32} class="mx-auto mb-2" />
+      <p class="text-sm">Select a date above to see available slots</p>
+    </div>
+
+    {/* Loading */}
+    <div x-show="$store.wizard.selectedDate !== null && $store.wizard.slotsLoading" class="text-center py-10" style="color:#A8A29E;">
+      <p class="text-sm">Loading slots…</p>
+    </div>
+
+    {/* Slot grid */}
+    <div
+      x-show="$store.wizard.selectedDate !== null && !$store.wizard.slotsLoading && $store.wizard.slots.length > 0"
+      class="grid grid-cols-2 gap-2 mb-5"
+      style="grid-template-columns: repeat(3, 1fr);"
+    >
+      <template x-for="slot in $store.wizard.slots" x-key="slot.id">
         <button
-          key={slot.id}
           type="button"
-          disabled={slot.busyness === 'full' || slot.busyness === 'closed'}
-          x-on:click={slot.busyness !== 'full' && slot.busyness !== 'closed'
-            ? `$store.wizard.selectSlot('${slot.id}', '${slot.start} – ${slot.end}')`
-            : ''}
-          class={`rounded-xl p-3 text-left transition-all relative ${BUSYNESS_CLASS[slot.busyness]}`}
-          {...{"x-bind:class": `$store.wizard.selectedSlotId === '${slot.id}' ? 'ring-2 ring-primary ring-offset-1 bg-primary text-primary-foreground border-primary' : ''`}}
+          x-bind:disabled="slot.busyness === 'full' || slot.busyness === 'closed'"
+          x-on:click="slot.busyness !== 'full' && slot.busyness !== 'closed' && $store.wizard.selectSlot(slot.id, slot.startTime + ' – ' + slot.endTime)"
+          class="rounded-xl p-3 text-left transition-all relative"
+          x-bind:style={`
+            $store.wizard.selectedSlotId === slot.id
+              ? 'background:#F59E0B; border:2px solid #F59E0B; color:#fff; cursor:pointer;'
+              : slot.busyness === 'available'
+                ? 'background:#F0FDF4; border:1px solid #BBF7D0; color:#166534; cursor:pointer;'
+                : slot.busyness === 'busy'
+                  ? 'background:#FFFBEB; border:1px solid #FDE68A; color:#92400E; cursor:pointer;'
+                  : 'background:#FEF2F2; border:1px solid #FECACA; color:#991B1B; opacity:0.6; cursor:not-allowed;'
+          `}
         >
-          <div class="font-bold text-sm">{slot.start}</div>
-          <div class="text-xs opacity-80">– {slot.end}</div>
-          <div class="text-xs mt-1 opacity-70">{BUSYNESS_LABEL[slot.busyness]}</div>
-          {slot.busyness !== 'full' && slot.busyness !== 'closed' && (
-            <div class="text-xs mt-0.5 opacity-60">{slot.capacity - slot.confirmed} left</div>
-          )}
+          <div class="font-bold text-sm" x-text="slot.startTime"></div>
+          <div class="text-xs opacity-80" x-text="'– ' + slot.endTime"></div>
+          <div
+            class="text-xs mt-1 opacity-70"
+            x-text="slot.busyness === 'available' ? 'Available' : slot.busyness === 'busy' ? 'Filling up' : 'Full'"
+          ></div>
+          <div class="text-xs mt-0.5 opacity-60" x-show="slot.busyness !== 'full'" x-text="(slot.capacity - slot.confirmed) + ' left'"></div>
 
           {/* Selected checkmark */}
-          <div
-            class="absolute top-2 right-2"
-            x-show={`$store.wizard.selectedSlotId === '${slot.id}'`}
-          >
-            <Icon name={ICONS.check} size={16} class="text-primary-foreground" />
+          <div class="absolute top-2 right-2" x-show="$store.wizard.selectedSlotId === slot.id">
+            <Icon name={ICONS.check} size={16} class="" style="color:#fff;" />
           </div>
         </button>
-      ))}
+      </template>
     </div>
 
-    {/* Selected slot info */}
+    {/* No slots for date */}
+    <div
+      x-show="$store.wizard.selectedDate !== null && !$store.wizard.slotsLoading && $store.wizard.slots.length === 0"
+      class="text-center py-10"
+      style="color:#A8A29E;"
+    >
+      <p class="text-sm">No slots available for this date.</p>
+    </div>
+
+    {/* Selected slot banner */}
     <div
       x-show="$store.wizard.selectedSlotId !== null"
-      class="bg-primary-soft border border-primary/30 rounded-2xl px-5 py-4 flex items-center justify-between text-sm"
+      class="rounded-2xl px-5 py-4 flex items-center justify-between text-sm"
+      style="background:#FFFBEB; border:1px solid #FDE68A;"
     >
-      <div class="flex items-center gap-2 text-primary">
-        <Icon name={ICONS.check} size={16} class="text-primary shrink-0" />
+      <div class="flex items-center gap-2" style="color:#92400E;">
+        <Icon name={ICONS.check} size={16} style="color:#F59E0B;" class="shrink-0" />
         <span class="font-semibold">Slot selected:</span>
-        <span class="text-foreground" x-text="$store.wizard.selectedSlotLabel"></span>
+        <span style="color:#44403C;" x-text="$store.wizard.selectedSlotLabel"></span>
       </div>
-      <span class="text-xs text-primary font-semibold">10-min hold starts on Next →</span>
+      <span class="text-xs font-semibold" style="color:#F59E0B;">10-min hold starts on Next →</span>
     </div>
 
-    {/* No slot selected state */}
+    {/* No slot prompt */}
     <div
-      x-show="$store.wizard.selectedSlotId === null"
-      class="text-center py-3 text-xs text-foreground-muted"
+      x-show="$store.wizard.selectedSlotId === null && $store.wizard.slots.length > 0"
+      class="text-center py-3 text-xs"
+      style="color:#A8A29E;"
     >
-      <Icon name={ICONS.clock} size={16} class="mx-auto mb-1 text-foreground-muted" />
+      <Icon name={ICONS.clock} size={16} class="mx-auto mb-1" />
       Select a time slot above
     </div>
 
     {/* Legend */}
-    <div class="flex flex-wrap gap-4 mt-4 text-xs text-foreground-muted">
+    <div class="flex flex-wrap gap-4 mt-4 text-xs" style="color:#A8A29E;">
       {[
-        { color: 'bg-green-100 border-green-300', label: 'Available' },
-        { color: 'bg-amber-100 border-amber-300', label: 'Filling up' },
-        { color: 'bg-red-100 border-red-300',     label: 'Full' },
+        { color: 'background:#F0FDF4; border:1px solid #BBF7D0;', label: 'Available' },
+        { color: 'background:#FFFBEB; border:1px solid #FDE68A;', label: 'Filling up' },
+        { color: 'background:#FEF2F2; border:1px solid #FECACA; opacity:0.6;', label: 'Full' },
       ].map((l) => (
         <div key={l.label} class="flex items-center gap-1.5">
-          <span class={`w-3 h-3 rounded border ${l.color} inline-block`}></span>
+          <span class="w-3 h-3 rounded inline-block" style={l.color}></span>
           {l.label}
         </div>
       ))}

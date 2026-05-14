@@ -8,7 +8,7 @@ import { ConfirmScreen } from '../components/kiosk/ConfirmScreen'
 import { ArrivedScreen } from '../components/kiosk/ArrivedScreen'
 import { WalkInScreen } from '../components/kiosk/WalkInScreen'
 import { Icon, ICONS } from '../lib/Icon'
-import { checkInBooking } from '../lib/db/bookings'
+import { checkInBooking, getBookingByRef } from '../lib/db/bookings'
 import { createCheckinRecord } from '../lib/db/checkin-records'
 import { DEFAULT_TENANT_ID } from '../lib/supabase'
 
@@ -69,6 +69,27 @@ kioskRoutes.get('/', (c) => {
       </div>
     </KioskLayout>
   )
+})
+
+// Lookup a booking by reference number for the kiosk
+kioskRoutes.get('/lookup/:ref', async (c) => {
+  const ref = c.req.param('ref').toUpperCase()
+  try {
+    const booking = await getBookingByRef(ref)
+    if (!booking) return c.json({ found: false })
+    return c.json({
+      found: true,
+      bookingId: booking.id,
+      ref: booking.referenceNumber,
+      driverName: booking.driverName,
+      slotTime: `${booking.slotDate} ${booking.slotStartTime} – ${booking.slotEndTime}`,
+      serviceType: booking.serviceType === 'pickup' ? 'Pick Up' : 'Drop Off',
+      loadType: booking.loadType.toUpperCase(),
+      status: booking.status,
+    })
+  } catch {
+    return c.json({ found: false, error: 'lookup failed' }, 500)
+  }
 })
 
 kioskRoutes.post('/checkin', async (c) => {

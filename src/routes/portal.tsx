@@ -7,6 +7,7 @@ import { BookingWizard } from '../components/portal/BookingWizard'
 import { MyBookingsList } from '../components/portal/MyBookingsList'
 import { Input } from '@/components/ui/input'
 import { getBookings, findBooking, createBooking } from '../lib/db/bookings'
+import { getSlotsByDate } from '../lib/db/slots'
 import { getTenant } from '../lib/db/tenants'
 import { lookupShipment, lookupShipmentByContainer } from '../lib/db/cfs-shipments'
 import { calculateCharges } from '../lib/charges'
@@ -341,6 +342,30 @@ portalRoutes.get('/api/tenants/config', async (c) => {
     slotFeeDropoff:          tenant.slot_fee_dropoff,
     requirePaymentToConfirm: tenant.require_payment_to_confirm,
   })
+})
+
+// ─── Slots API for wizard Step 4 ─────────────────────────────────────────────
+portalRoutes.get('/api/slots', async (c) => {
+  const date = c.req.query('date')
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return c.json({ slots: [] })
+  try {
+    const slots = await getSlotsByDate(date)
+    // If DB has no slots for this date, generate defaults from 06:00–18:00
+    if (slots.length === 0) {
+      const defaults = []
+      const tenant = await getTenant(DEFAULT_TENANT_ID)
+      const capacity = tenant?.max_bookings_per_slot ?? 10
+      for (let h = 6; h < 18; h++) {
+        const start = `${String(h).padStart(2, '0')}:00`
+        const end   = `${String(h + 1).padStart(2, '0')}:00`
+        defaults.push({ id: `gen-${date}-${h}`, startTime: start, endTime: end, capacity, confirmed: 0, held: 0, busyness: 'available' })
+      }
+      return c.json({ slots: defaults })
+    }
+    return c.json({ slots: slots.map(s => ({ id: s.id, startTime: s.startTime, endTime: s.endTime, capacity: s.capacity, confirmed: s.confirmed, held: s.held, busyness: s.busyness })) })
+  } catch {
+    return c.json({ slots: [] })
+  }
 })
 
 // ─── Create booking (POST from wizard) ───────────────────────────────────────
