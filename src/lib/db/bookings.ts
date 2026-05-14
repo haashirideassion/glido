@@ -1,4 +1,4 @@
-import { supabase } from '../supabase'
+import { supabase, DEFAULT_TENANT_ID } from '../supabase'
 import type {
   Booking, BookingStatus, ServiceType, LoadType,
   PalletType, IcsStatus, DashboardStats,

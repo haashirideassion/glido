@@ -2,209 +2,209 @@ import { Icon, ICONS } from '../../lib/Icon'
 
 export const Step7Confirmation = () => (
   <div x-show="$store.wizard.currentStep === 7" x-cloak>
-    <h2 class="text-xl font-bold text-slate-900 mb-1">Review & Pay</h2>
-    <p class="text-slate-500 text-sm mb-5">Review your booking and complete payment to confirm your slot hold.</p>
+    <h2 style="font-size:1.25rem; font-weight:700; color:#44403C; margin-bottom:4px;">Review & Pay</h2>
+    <p style="color:#A8A29E; font-size:0.875rem; margin-bottom:20px;">Review your booking and complete payment to confirm your slot hold.</p>
 
     {/* Hold timer banner */}
     <div
       x-show="$store.wizard.holdActive"
-      class="mb-5 flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium border"
-      {...{"x-bind:class": "$store.wizard.holdExpiring ? 'bg-red-50 border-red-200 text-red-800' : 'bg-amber-50 border-amber-200 text-amber-800'"}}
+      style="margin-bottom:20px; display:flex; align-items:center; gap:12px; border-radius:12px; padding:12px 16px; font-size:0.875rem; font-weight:500;"
+      {...{"x-bind:style": "$store.wizard.holdExpiring ? 'background:#FEF2F2; border:1px solid #FECACA; color:#991B1B;' : 'background:#FFFBEB; border:1px solid #FDE68A; color:#92400E;'"}}
     >
       <Icon name={ICONS.clock} size={16} class="shrink-0" />
       <span>
         Your slot is held for{' '}
-        <span class="font-bold font-mono" x-text="`${$store.wizard.holdMinutes}:${$store.wizard.holdSeconds}`"></span>.
+        <span style="font-weight:700; font-family:monospace;" x-text="`${$store.wizard.holdMinutes}:${$store.wizard.holdSeconds}`"></span>.
         Complete payment to secure it.
       </span>
     </div>
 
-    {/* Booking summary */}
-    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-5 text-sm space-y-2">
-      <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Booking Summary</p>
-      <div class="flex justify-between">
-        <span class="text-slate-500">Guest Name</span>
-        <span class="font-semibold" x-text="$store.wizard.guestName || '—'"></span>
+    {/* Booking summary — Card Style B */}
+    <div style="background:#F5F3EC; border:1px solid rgba(231,229,228,0.5); border-radius:12px; padding:20px; box-shadow:rgba(0,0,0,0.05) 0px 1px 2px 0px; margin-bottom:20px; font-size:0.875rem;">
+      <p style="font-size:0.625rem; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:12px;">Booking Summary</p>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="color:#A8A29E;">Guest Name</span>
+        <span style="font-weight:600; color:#44403C;" x-text="$store.wizard.guestName || '—'"></span>
       </div>
-      <div class="flex justify-between">
-        <span class="text-slate-500">Service</span>
-        <span class="font-semibold capitalize" x-text="$store.wizard.serviceType === 'pickup' ? 'Pick Up' : $store.wizard.serviceType === 'dropoff' ? 'Drop Off' : '—'"></span>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="color:#A8A29E;">Service</span>
+        <span style="font-weight:600; color:#44403C; text-transform:capitalize;" x-text="$store.wizard.serviceType === 'pickup' ? 'Pick Up' : $store.wizard.serviceType === 'dropoff' ? 'Drop Off' : '—'"></span>
       </div>
-      <div class="flex justify-between">
-        <span class="text-slate-500">Load Type</span>
-        <span class="font-semibold uppercase" x-text="$store.wizard.loadType || '—'"></span>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="color:#A8A29E;">Load Type</span>
+        <span style="font-weight:600; color:#44403C; text-transform:uppercase;" x-text="$store.wizard.loadType || '—'"></span>
       </div>
-      <div class="flex justify-between">
-        <span class="text-slate-500">Slot</span>
-        <span class="font-semibold" x-text="$store.wizard.selectedSlotLabel || '—'"></span>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="color:#A8A29E;">Slot</span>
+        <span style="font-weight:600; color:#44403C;" x-text="$store.wizard.selectedSlotLabel || '—'"></span>
       </div>
-      <div class="flex justify-between" x-show="$store.wizard.houseBillNumber">
-        <span class="text-slate-500">HBL</span>
-        <span class="font-mono text-xs font-bold" x-text="$store.wizard.houseBillNumber"></span>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;" x-show="$store.wizard.houseBillNumber">
+        <span style="color:#A8A29E;">HBL</span>
+        <span style="font-family:monospace; font-size:0.75rem; font-weight:700; color:#44403C;" x-text="$store.wizard.houseBillNumber"></span>
       </div>
-      <div class="flex justify-between" x-show="$store.wizard.containerNumber">
-        <span class="text-slate-500">Container</span>
-        <span class="font-mono text-xs font-bold" x-text="$store.wizard.containerNumber"></span>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;" x-show="$store.wizard.containerNumber">
+        <span style="color:#A8A29E;">Container</span>
+        <span style="font-family:monospace; font-size:0.75rem; font-weight:700; color:#44403C;" x-text="$store.wizard.containerNumber"></span>
       </div>
-      <div class="flex justify-between">
-        <span class="text-slate-500">Driver</span>
-        <span class="font-semibold" x-text="$store.wizard.driverName || '—'"></span>
+      <div style="display:flex; justify-content:space-between;">
+        <span style="color:#A8A29E;">Driver</span>
+        <span style="font-weight:600; color:#44403C;" x-text="$store.wizard.driverName || '—'"></span>
       </div>
     </div>
 
     {/* ICS status */}
-    <div x-show="$store.wizard.shipmentData" class="mb-5 flex items-center gap-2 text-sm">
-      <span class="text-slate-600 font-medium">ICS Status:</span>
+    <div x-show="$store.wizard.shipmentData" style="margin-bottom:20px; display:flex; align-items:center; gap:8px; font-size:0.875rem;">
+      <span style="color:#44403C; font-weight:500;">ICS Status:</span>
       <span
-        class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border"
-        {...{"x-bind:class": `{
-          'bg-green-100 text-green-800 border-green-200': $store.wizard.shipmentData?.icsStatus === 'cleared',
-          'bg-red-100 text-red-800 border-red-200': $store.wizard.shipmentData?.icsStatus === 'held',
-          'bg-amber-100 text-amber-800 border-amber-200': $store.wizard.shipmentData?.icsStatus === 'examination',
-          'bg-slate-100 text-slate-500 border-slate-200': !$store.wizard.shipmentData?.icsStatus
-        }`}}
+        style="display:inline-flex; align-items:center; gap:4px; font-size:0.75rem; font-weight:600; padding:2px 10px; border-radius:9999px; border:1px solid transparent;"
+        {...{"x-bind:style": `$store.wizard.shipmentData?.icsStatus === 'cleared' ? 'background:#DCFCE7; color:#166534; border-color:#BBF7D0;' : $store.wizard.shipmentData?.icsStatus === 'held' ? 'background:#FEE2E2; color:#991B1B; border-color:#FECACA;' : $store.wizard.shipmentData?.icsStatus === 'examination' ? 'background:#FFFBEB; color:#92400E; border-color:#FDE68A;' : 'background:#F5F3EC; color:#A8A29E; border-color:#D6D3D1;'`}}
         x-text="{'cleared':'Cleared','held':'Held','examination':'On Hold','pending':'Pending'}[$store.wizard.shipmentData?.icsStatus] || 'Unknown'"
       ></span>
     </div>
 
     {/* CHEP notice */}
-    <div x-show="$store.wizard.showChepWarning" class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-5 flex items-start gap-3">
+    <div x-show="$store.wizard.showChepWarning" style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:12px; padding:12px 16px; margin-bottom:20px; display:flex; align-items:flex-start; gap:12px;">
       <Icon name={ICONS.warning} size={16} class="text-amber-600 shrink-0 mt-0.5" />
-      <p class="text-xs text-amber-700 font-medium">Reminder: CHEP pallet exchange required at collection. Bring your CHEP pallets.</p>
+      <p style="font-size:0.75rem; color:#92400E; font-weight:500;">Reminder: CHEP pallet exchange required at collection. Bring your CHEP pallets.</p>
     </div>
 
-    {/* Charges breakdown */}
-    <div class="bg-white border border-slate-200 rounded-xl p-4 mb-5">
-      <p class="text-sm font-semibold text-slate-700 mb-3">Charges</p>
-      <div class="space-y-2 text-sm">
-        <div class="flex justify-between text-slate-600" x-show="$store.wizard.shipmentData?.storageCharge > 0">
+    {/* Charges breakdown — Card Style A */}
+    <div style="background:#EAE6DE; border:1px solid rgba(214,211,209,0.5); border-radius:8px 8px 8px 2px; padding:20px; box-shadow:rgba(0,0,0,0.05) 0px 1px 2px 0px; margin-bottom:20px;">
+      <p style="font-size:0.875rem; font-weight:600; color:#44403C; margin-bottom:12px;">Charges</p>
+      <div style="font-size:0.875rem;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px; color:#78716C;" x-show="$store.wizard.shipmentData?.storageCharge > 0">
           <span>Storage charge</span>
           <span x-text="$store.wizard.storageChargeFormatted"></span>
         </div>
-        <div class="flex justify-between text-slate-600" x-show="$store.wizard.shipmentData?.shrinkWrapCharge > 0">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px; color:#78716C;" x-show="$store.wizard.shipmentData?.shrinkWrapCharge > 0">
           <span>Shrink wrap</span>
           <span x-text="$store.wizard.shrinkWrapFormatted"></span>
         </div>
-        <div class="flex justify-between text-slate-600">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px; color:#78716C;">
           <span>Slot fee</span>
-          <span>$5.00</span>
+          <span x-text="'$' + ($store.wizard.slotFee || 5).toFixed(2)"></span>
         </div>
-        <div class="flex justify-between font-semibold text-slate-800 pt-2 border-t border-slate-100">
+        <div style="display:flex; justify-content:space-between; font-weight:600; color:#44403C; padding-top:8px; border-top:1px solid #D6D3D1; margin-top:4px; margin-bottom:4px;">
           <span>Subtotal</span>
           <span x-text="'$' + $store.wizard.totalCharges.toFixed(2)"></span>
         </div>
-        <div class="flex justify-between text-slate-500 text-xs">
+        <div style="display:flex; justify-content:space-between; color:#A8A29E; font-size:0.75rem; margin-bottom:8px;">
           <span>GST (10%)</span>
           <span x-text="'$' + ($store.wizard.totalCharges * 0.10).toFixed(2)"></span>
         </div>
-        <div class="flex justify-between font-bold text-slate-900 pt-2 border-t border-slate-200 text-base">
+        <div style="display:flex; justify-content:space-between; font-weight:700; color:#44403C; padding-top:8px; border-top:1px solid #D6D3D1; font-size:1rem;">
           <span>Total Due</span>
-          <span class="text-blue-700" x-text="'$' + $store.wizard.totalWithGst + ' AUD'"></span>
+          <span style="color:#F59E0B;" x-text="'$' + $store.wizard.totalWithGst + ' AUD'"></span>
         </div>
       </div>
     </div>
 
     {/* Payment method selector */}
-    <p class="text-sm font-semibold text-slate-700 mb-3">Payment Method</p>
-    <div class="grid grid-cols-2 gap-3 mb-5">
+    <p style="font-size:0.875rem; font-weight:600; color:#44403C; margin-bottom:12px;">Payment Method</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
       <button
         type="button"
         x-on:click="$store.wizard.paymentMethod = 'card'"
-        class="border-2 rounded-xl p-4 text-left transition-all"
-        {...{"x-bind:class": "$store.wizard.paymentMethod === 'card' ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-500 ring-offset-1' : 'border-slate-200 bg-white hover:border-blue-300'"}}
+        style="text-align:left; transition:all 0.15s; cursor:pointer;"
+        {...{"x-bind:style": "$store.wizard.paymentMethod === 'card' ? 'background:#FEF3C7; border:1px solid #F59E0B; border-radius:8px; padding:16px;' : 'background:#F5F3EC; border:1px solid #D6D3D1; border-radius:8px; padding:16px;'"}}
       >
-        <Icon name={ICONS.shield} size={20} class="text-blue-500 mb-2" />
-        <div class="font-semibold text-sm text-slate-800">Credit / Debit Card</div>
-        <div class="text-xs text-slate-400 mt-0.5">Visa, Mastercard, Amex</div>
+        <Icon name={ICONS.shield} size={20} class="mb-2" style="color:#F59E0B;" />
+        <div style="font-weight:600; font-size:0.875rem; color:#44403C;">Credit / Debit Card</div>
+        <div style="font-size:0.75rem; color:#A8A29E; margin-top:2px;">Visa, Mastercard, Amex</div>
       </button>
       <button
         type="button"
         x-on:click="$store.wizard.paymentMethod = 'eft'"
-        class="border-2 rounded-xl p-4 text-left transition-all"
-        {...{"x-bind:class": "$store.wizard.paymentMethod === 'eft' ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-500 ring-offset-1' : 'border-slate-200 bg-white hover:border-blue-300'"}}
+        style="text-align:left; transition:all 0.15s; cursor:pointer;"
+        {...{"x-bind:style": "$store.wizard.paymentMethod === 'eft' ? 'background:#FEF3C7; border:1px solid #F59E0B; border-radius:8px; padding:16px;' : 'background:#F5F3EC; border:1px solid #D6D3D1; border-radius:8px; padding:16px;'"}}
       >
-        <Icon name={ICONS.document} size={20} class="text-blue-500 mb-2" />
-        <div class="font-semibold text-sm text-slate-800">Bank Transfer (EFT)</div>
-        <div class="text-xs text-slate-400 mt-0.5">Transfer before slot date</div>
+        <Icon name={ICONS.document} size={20} class="mb-2" style="color:#F59E0B;" />
+        <div style="font-weight:600; font-size:0.875rem; color:#44403C;">Bank Transfer (EFT)</div>
+        <div style="font-size:0.75rem; color:#A8A29E; margin-top:2px;">Transfer before slot date</div>
       </button>
     </div>
 
     {/* Card details panel */}
-    <div x-show="$store.wizard.paymentMethod === 'card'" class="bg-white border border-slate-200 rounded-xl p-5 mb-5 space-y-4">
-      <div class="flex items-center gap-2 mb-1">
+    <div x-show="$store.wizard.paymentMethod === 'card'" style="background:#FCFBF8; border:1px solid #D6D3D1; border-radius:8px; padding:20px; margin-bottom:20px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
         <Icon name={ICONS.shield} size={16} class="text-green-500" />
-        <p class="text-xs text-slate-500 font-medium">Secure card payment powered by Stripe</p>
+        <p style="font-size:0.75rem; color:#A8A29E; font-weight:500;">Secure card payment powered by Stripe</p>
       </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Card Number</label>
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:0.75rem; font-weight:600; color:#44403C; margin-bottom:6px;">Card Number</label>
         <input
           type="text"
           placeholder="•••• •••• •••• ••••"
           maxLength={19}
-          class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          style="width:100%; border:1px solid #D6D3D1; border-radius:6px; background:#FCFBF8; color:#44403C; padding:12px 16px; font-size:0.875rem; outline:none; box-sizing:border-box;"
         />
       </div>
-      <div class="grid grid-cols-2 gap-3">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1.5">Expiry</label>
+          <label style="display:block; font-size:0.75rem; font-weight:600; color:#44403C; margin-bottom:6px;">Expiry</label>
           <input
             type="text"
             placeholder="MM / YY"
-            class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            style="width:100%; border:1px solid #D6D3D1; border-radius:6px; background:#FCFBF8; color:#44403C; padding:12px 16px; font-size:0.875rem; outline:none; box-sizing:border-box;"
           />
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1.5">CVV</label>
+          <label style="display:block; font-size:0.75rem; font-weight:600; color:#44403C; margin-bottom:6px;">CVV</label>
           <input
             type="text"
             placeholder="•••"
             maxLength={4}
-            class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            style="width:100%; border:1px solid #D6D3D1; border-radius:6px; background:#FCFBF8; color:#44403C; padding:12px 16px; font-size:0.875rem; outline:none; box-sizing:border-box;"
           />
         </div>
       </div>
     </div>
 
     {/* EFT panel */}
-    <div x-show="$store.wizard.paymentMethod === 'eft'" class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-5 text-sm">
-      <p class="font-semibold text-blue-800 mb-3">Bank Transfer Details</p>
-      {[
-        { label: 'Bank',         value: 'Commonwealth Bank' },
-        { label: 'Account Name', value: 'Glido CFS Terminal 1 Pty Ltd' },
-        { label: 'BSB',          value: '062-000' },
-        { label: 'Account No.',  value: '12345678' },
-      ].map((row) => (
-        <div key={row.label} class="flex justify-between py-1.5 border-b border-blue-100 last:border-0">
-          <span class="text-blue-600 text-xs">{row.label}</span>
-          <span class="font-mono font-semibold text-blue-900 text-xs">{row.value}</span>
-        </div>
-      ))}
-      <div class="mt-3 flex items-start gap-2.5">
+    <div x-show="$store.wizard.paymentMethod === 'eft'" style="background:#FEF3C7; border:1px solid #F59E0B; border-radius:8px; padding:16px; margin-bottom:20px; font-size:0.875rem;">
+      <p style="font-weight:600; color:#92400E; margin-bottom:12px;">Bank Transfer Details</p>
+      <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(245,158,11,0.2);">
+        <span style="color:#B45309; font-size:0.75rem;">Bank</span>
+        <span style="font-family:monospace; font-weight:600; color:#78350F; font-size:0.75rem;" x-text="$store.wizard.eftBankName || '—'"></span>
+      </div>
+      <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(245,158,11,0.2);">
+        <span style="color:#B45309; font-size:0.75rem;">Account Name</span>
+        <span style="font-family:monospace; font-weight:600; color:#78350F; font-size:0.75rem;" x-text="$store.wizard.eftAccountName || '—'"></span>
+      </div>
+      <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(245,158,11,0.2);">
+        <span style="color:#B45309; font-size:0.75rem;">BSB</span>
+        <span style="font-family:monospace; font-weight:600; color:#78350F; font-size:0.75rem;" x-text="$store.wizard.eftBsb || '—'"></span>
+      </div>
+      <div style="display:flex; justify-content:space-between; padding:6px 0;">
+        <span style="color:#B45309; font-size:0.75rem;">Account No.</span>
+        <span style="font-family:monospace; font-weight:600; color:#78350F; font-size:0.75rem;" x-text="$store.wizard.eftAccountNumber || '—'"></span>
+      </div>
+      <div style="margin-top:12px; display:flex; align-items:flex-start; gap:10px;">
         <input
           type="checkbox"
           id="eft-confirm"
           x-model="$store.wizard.eftConfirmed"
-          class="mt-0.5"
+          style="margin-top:2px;"
         />
-        <label for="eft-confirm" class="text-xs text-blue-700 cursor-pointer">
-          I confirm I will transfer <span class="font-bold" x-text="'$' + $store.wizard.totalWithGst + ' AUD'"></span> to the above account using my booking reference as the payment reference.
+        <label for="eft-confirm" style="font-size:0.75rem; color:#92400E; cursor:pointer;">
+          I confirm I will transfer <span style="font-weight:700;" x-text="'$' + $store.wizard.totalWithGst + ' AUD'"></span> to the above account using my booking reference as the payment reference.
         </label>
       </div>
     </div>
 
     {/* Terms checkbox */}
-    <div class="flex items-start gap-3 mb-5">
+    <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:20px;">
       <input
         type="checkbox"
         id="terms"
         x-model="$store.wizard.termsAccepted"
-        class="mt-0.5"
+        style="margin-top:2px;"
       />
-      <label for="terms" class="text-sm text-slate-600 cursor-pointer">
+      <label for="terms" style="font-size:0.875rem; color:#78716C; cursor:pointer;">
         I agree to the{' '}
-        <a href="#" class="text-blue-600 hover:underline">booking terms</a>
+        <a href="#" style="color:#F59E0B; text-decoration:underline;">booking terms</a>
         {' '}and{' '}
-        <a href="#" class="text-blue-600 hover:underline">cancellation policy</a>.
+        <a href="#" style="color:#F59E0B; text-decoration:underline;">cancellation policy</a>.
       </label>
     </div>
 
@@ -213,7 +213,8 @@ export const Step7Confirmation = () => (
       type="button"
       x-on:click="$store.wizard.submitBooking()"
       {...{"x-bind:disabled": `!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)`}}
-      class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-colors text-base shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+      style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:#F59E0B; color:#1C1917; border-radius:6px; font-size:12px; font-weight:500; padding:12px 24px; border:none; cursor:pointer; transition:opacity 0.15s;"
+      {...{"x-bind:style": "(!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? 'opacity:0.5; cursor:not-allowed; width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:#F59E0B; color:#1C1917; border-radius:6px; font-size:12px; font-weight:500; padding:12px 24px; border:none;' : ''"}}
     >
       <Icon name={ICONS.check} size={20} />
       <span x-text="'Confirm & Pay $' + $store.wizard.totalWithGst + ' AUD'">Confirm & Pay</span>

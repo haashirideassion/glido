@@ -6,7 +6,12 @@ import { Button } from '@/components/ui/button'
 import { BookingWizard } from '../components/portal/BookingWizard'
 import { MyBookingsList } from '../components/portal/MyBookingsList'
 import { Input } from '@/components/ui/input'
-import { getBookings, findBooking } from '../lib/db/bookings'
+import { getBookings, findBooking, createBooking } from '../lib/db/bookings'
+import { getTenant } from '../lib/db/tenants'
+import { lookupShipment, lookupShipmentByContainer } from '../lib/db/cfs-shipments'
+import { calculateCharges } from '../lib/charges'
+import { generateQRDataURL } from '../lib/qr'
+import { DEFAULT_TENANT_ID } from '../lib/supabase'
 
 export const portalRoutes = new Hono()
 
@@ -229,7 +234,7 @@ portalRoutes.get('/book', (c) => {
 // ─── My Bookings ─────────────────────────────────────────────────────────────
 portalRoutes.get('/bookings', async (c) => {
   const ref = c.req.query('ref')?.trim().toUpperCase()
-  let bookings = await getBookings()
+  let bookings = ref ? [] : await getBookings()
   let heading  = 'My Bookings'
 
   if (ref) {
@@ -268,9 +273,78 @@ portalRoutes.get('/bookings', async (c) => {
   )
 })
 
+// ─── Shipment lookup API (called by Alpine wizard) ────────────────────────────
+portalRoutes.post('/api/shipments/lookup', async (c) => {
+  try {
+    const body = await c.req.json<{ hbl?: string; container?: string; serviceType?: string; loadType?: string; slotDate?: string }>()
+    const tenant = await getTenant(DEFAULT_TENANT_ID)
+    if (!tenant) return c.json({ found: false, slotFee: 5 })
+
+    // Look up shipment
+    let shipment = body.hbl?.trim()
+      ? await lookupShipment(DEFAULT_TENANT_ID, body.hbl.trim())
+      : undefined
+    if (!shipment && body.container?.trim()) {
+      shipment = await lookupShipmentByContainer(DEFAULT_TENANT_ID, body.container.trim())
+    }
+
+    const slotDate = body.slotDate || new Date().toISOString().split('T')[0]
+    const charges = calculateCharges({
+      serviceType:      (body.serviceType as 'pickup' | 'dropoff') || 'pickup',
+      loadType:         (body.loadType as 'fcl' | 'lcl') || 'lcl',
+      weightKg:         shipment?.weightKg,
+      volumeCbm:        shipment?.volumeCbm,
+      palletCount:      shipment?.palletCount,
+      palletType:       shipment?.palletType,
+      storageStartDate: shipment?.storageStartDate,
+      slotDate,
+      tenant,
+    })
+
+    return c.json({
+      found:              !!shipment,
+      hbl:                shipment?.hbl,
+      containerNumber:    shipment?.containerNumber,
+      weightKg:           shipment?.weightKg,
+      volumeCbm:          shipment?.volumeCbm,
+      packageCount:       shipment?.packageCount,
+      palletCount:        shipment?.palletCount,
+      palletType:         shipment?.palletType,
+      storageStartDate:   shipment?.storageStartDate,
+      readyForCollection: shipment?.readyForCollection,
+      icsStatus:          'unavailable', // real ICS API pending OQ-01
+      ...charges,
+    })
+  } catch (err) {
+    console.error('[portal] shipment lookup error:', err)
+    return c.json({ found: false, slotFee: 5, subtotal: 5, gstAmount: 0.5, totalAmount: 5.5 })
+  }
+})
+
+// ─── Tenant public config API ─────────────────────────────────────────────────
+portalRoutes.get('/api/tenants/config', async (c) => {
+  const tenant = await getTenant(DEFAULT_TENANT_ID)
+  if (!tenant) return c.json({ error: 'not found' }, 404)
+  return c.json({
+    name:                    tenant.name,
+    primaryColor:            tenant.primary_color,
+    slotDurationMin:         tenant.slot_duration_min,
+    advanceBookingDays:      tenant.advance_booking_days,
+    currency:                tenant.currency,
+    gstEnabled:              tenant.gst_enabled,
+    gstRate:                 tenant.gst_rate,
+    eftBankName:             tenant.eft_bank_name,
+    eftBsb:                  tenant.eft_bsb,
+    eftAccountNumber:        tenant.eft_account_number,
+    eftAccountName:          tenant.eft_account_name,
+    slotFeePickup:           tenant.slot_fee_pickup,
+    slotFeeDropoff:          tenant.slot_fee_dropoff,
+    requirePaymentToConfirm: tenant.require_payment_to_confirm,
+  })
+})
+
 // ─── Create booking (POST from wizard) ───────────────────────────────────────
 portalRoutes.post('/bookings', async (c) => {
-  const { createBooking } = await import('../lib/db/bookings')
   const body = await c.req.parseBody()
 
   try {
@@ -280,7 +354,7 @@ portalRoutes.post('/bookings', async (c) => {
       slotDate:         body.slotDate as string,
       slotStartTime:    body.slotStartTime as string,
       slotEndTime:      body.slotEndTime as string,
-      driverName:       body.driverName as string,
+      driverName:       (body.driverName as string) || 'Guest',
       driverPhone:      body.driverPhone as string | undefined,
       guestName:        body.guestName as string | undefined,
       guestPhone:       body.guestPhone as string | undefined,
@@ -291,11 +365,19 @@ portalRoutes.post('/bookings', async (c) => {
       packageCount:     body.packageCount ? Number(body.packageCount) : undefined,
       palletCount:      body.palletCount ? Number(body.palletCount) : undefined,
       palletType:       (body.palletType as any) || undefined,
+      storageStartDate: body.storageStartDate as string | undefined,
+      storageDays:      body.storageDays ? Number(body.storageDays) : undefined,
+      storageCharge:    body.storageCharge ? Number(body.storageCharge) : undefined,
+      shrinkWrapCharge: body.shrinkWrapCharge ? Number(body.shrinkWrapCharge) : undefined,
+      slotFee:          body.slotFee ? Number(body.slotFee) : undefined,
+      subtotal:         body.subtotal ? Number(body.subtotal) : undefined,
+      gstAmount:        body.gstAmount ? Number(body.gstAmount) : undefined,
+      totalAmount:      body.totalAmount ? Number(body.totalAmount) : undefined,
       paymentMethod:    (body.paymentMethod as any) || 'card',
-      paymentStatus:    'pending',
-      tenantId:         'tenant-abc-cfs',
+      paymentStatus:    (body.paymentStatus as any) || 'pending',
+      tenantId:         DEFAULT_TENANT_ID,
     })
-    return c.redirect(`/bookings?ref=${booking.referenceNumber}`)
+    return c.redirect(`/booking-confirmed/${booking.referenceNumber}`)
   } catch (err) {
     console.error('[portal] createBooking error:', err)
     return c.html(
@@ -307,4 +389,162 @@ portalRoutes.post('/bookings', async (c) => {
       </PublicLayout>
     )
   }
+})
+
+// ─── Booking confirmed page (with QR) ────────────────────────────────────────
+portalRoutes.get('/booking-confirmed/:ref', async (c) => {
+  const ref     = c.req.param('ref').toUpperCase()
+  const booking = await findBooking(ref)
+  if (!booking) return c.redirect('/bookings')
+
+  const qrDataUrl = await generateQRDataURL(ref, 220)
+  const isEft     = booking.paymentMethod === 'eft'
+  const tenant    = await getTenant(DEFAULT_TENANT_ID)
+
+  return c.html(
+    <PublicLayout title="Booking Confirmed">
+      <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12">
+
+        {/* Success banner */}
+        <div
+          class="flex items-center gap-3 rounded-xl px-5 py-4 mb-8"
+          style="background:#F0FDF4; border:1px solid #BBF7D0;"
+        >
+          <div
+            class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+            style="background:#22C55E; color:#FFFFFF;"
+          >
+            <Icon name={ICONS.check} size={20} />
+          </div>
+          <div>
+            <p class="font-semibold text-sm" style="color:#15803D;">Booking Confirmed!</p>
+            <p class="text-xs font-mono font-bold mt-0.5" style="color:#166534;">{ref}</p>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-6">
+          {/* QR Code */}
+          <div
+            class="flex flex-col items-center justify-center p-8 rounded-2xl"
+            style="background:#EAE6DE; border:1px solid rgba(214,211,209,0.5); box-shadow:rgba(0,0,0,0.05) 0px 1px 2px 0px;"
+          >
+            <img src={qrDataUrl} alt={`QR code for ${ref}`} width={220} height={220} style="border-radius:8px;" />
+            <p class="text-xs font-medium mt-4" style="color:#78716C;">Scan at the kiosk to check in</p>
+            <p class="text-xs font-mono font-bold mt-1" style="color:#44403C;">{ref}</p>
+          </div>
+
+          {/* Booking summary */}
+          <div class="space-y-4">
+            <div
+              class="rounded-xl p-4"
+              style="background:#F5F3EC; border:1px solid rgba(231,229,228,0.5);"
+            >
+              <p class="text-xs font-semibold uppercase tracking-wide mb-3" style="color:#A8A29E;">Booking Details</p>
+              <div class="space-y-2 text-xs">
+                {[
+                  { label: 'Driver', value: booking.driverName },
+                  { label: 'Service', value: booking.serviceType === 'pickup' ? 'Pick Up' : 'Drop Off' },
+                  { label: 'Load type', value: booking.loadType.toUpperCase() },
+                  { label: 'Date', value: booking.slotDate },
+                  { label: 'Time', value: `${booking.slotStartTime} – ${booking.slotEndTime}` },
+                  ...(booking.houseBillNumber ? [{ label: 'HBL', value: booking.houseBillNumber }] : []),
+                  ...(booking.containerNumber ? [{ label: 'Container', value: booking.containerNumber }] : []),
+                ].map((row) => (
+                  <div key={row.label} class="flex justify-between">
+                    <span style="color:#A8A29E;">{row.label}</span>
+                    <span class="font-medium" style="color:#44403C;">{row.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Charges */}
+            {booking.totalAmount && (
+              <div
+                class="rounded-xl p-4"
+                style="background:#EAE6DE; border:1px solid rgba(214,211,209,0.5); border-radius:8px 8px 8px 2px;"
+              >
+                <p class="text-xs font-semibold uppercase tracking-wide mb-3" style="color:#A8A29E;">Charges</p>
+                <div class="space-y-1.5 text-xs">
+                  {(booking.storageCharge ?? 0) > 0 && (
+                    <div class="flex justify-between" style="color:#78716C;"><span>Storage</span><span>${booking.storageCharge!.toFixed(2)}</span></div>
+                  )}
+                  {(booking.shrinkWrapCharge ?? 0) > 0 && (
+                    <div class="flex justify-between" style="color:#78716C;"><span>Shrink wrap</span><span>${booking.shrinkWrapCharge!.toFixed(2)}</span></div>
+                  )}
+                  {(booking.slotFee ?? 0) > 0 && (
+                    <div class="flex justify-between" style="color:#78716C;"><span>Slot fee</span><span>${booking.slotFee!.toFixed(2)}</span></div>
+                  )}
+                  {(booking.gstAmount ?? 0) > 0 && (
+                    <div class="flex justify-between pt-1 border-t text-xs" style="color:#A8A29E; border-color:#D6D3D1;"><span>GST (10%)</span><span>${booking.gstAmount!.toFixed(2)}</span></div>
+                  )}
+                  <div class="flex justify-between font-bold pt-1 border-t" style="color:#44403C; border-color:#D6D3D1;">
+                    <span>Total</span>
+                    <span style="color:#F59E0B;">${booking.totalAmount.toFixed(2)}</span>
+                  </div>
+                  <div class="flex justify-between text-xs" style="color:#A8A29E;">
+                    <span>{booking.paymentMethod?.toUpperCase()}</span>
+                    <span style={booking.paymentStatus === 'paid' ? 'color:#16A34A;' : 'color:#D97706;'}>
+                      {booking.paymentStatus === 'paid' ? 'Paid' : booking.paymentStatus === 'pending_eft' ? 'EFT Pending' : 'Pending'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* EFT bank details */}
+            {isEft && tenant && (
+              <div
+                class="rounded-xl p-4"
+                style="background:#FEF3C7; border:1px solid #FDE68A;"
+              >
+                <p class="text-xs font-semibold mb-2" style="color:#92400E;">Transfer details</p>
+                <div class="space-y-1 text-xs" style="color:#78350F;">
+                  <div class="flex justify-between"><span>Bank</span><span class="font-medium">{tenant.eft_bank_name || '—'}</span></div>
+                  <div class="flex justify-between"><span>BSB</span><span class="font-mono font-medium">{tenant.eft_bsb || '—'}</span></div>
+                  <div class="flex justify-between"><span>Account No.</span><span class="font-mono font-medium">{tenant.eft_account_number || '—'}</span></div>
+                  <div class="flex justify-between"><span>Account Name</span><span class="font-medium">{tenant.eft_account_name || '—'}</span></div>
+                  <div class="flex justify-between"><span>Reference</span><span class="font-mono font-bold">{ref}</span></div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* CHEP warning */}
+        {booking.palletType === 'chep' && (
+          <div
+            class="flex items-start gap-3 rounded-xl px-4 py-3 mt-6"
+            style="background:#FEF3C7; border:1px solid #FDE68A;"
+          >
+            <Icon name={ICONS.warning} size={16} style="color:#D97706; flex-shrink:0; margin-top:2px;" />
+            <p class="text-xs font-medium" style="color:#92400E;">
+              Remember: Bring {booking.palletCount} empty CHEP pallet{(booking.palletCount ?? 1) > 1 ? 's' : ''} to exchange at collection.
+            </p>
+          </div>
+        )}
+
+        {/* Actions */}
+        <div class="flex flex-wrap gap-3 mt-8 justify-center">
+          <a
+            href="/book"
+            class="inline-flex items-center gap-2 text-xs font-medium px-5 py-2.5 rounded-full"
+            style="background:#F59E0B; color:#FFFFFF;"
+          >
+            <Icon name={ICONS.add} size={14} />
+            Book Another Visit
+          </a>
+          <a
+            href={`/bookings?ref=${ref}`}
+            class="inline-flex items-center gap-2 text-xs font-medium px-5 py-2.5 rounded-full"
+            style="color:#44403C; border:1px solid #D6D3D1; background:transparent;"
+          >
+            <Icon name={ICONS.search} size={14} />
+            View My Bookings
+          </a>
+        </div>
+
+      </div>
+    </PublicLayout>
+  )
 })

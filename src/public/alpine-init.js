@@ -60,6 +60,11 @@ function wizardStore() {
     eftConfirmed: false,
     termsAccepted: false,
     confirmationRef: null,
+    // Tenant EFT bank details (loaded from /api/tenants/config)
+    eftBankName: 'Commonwealth Bank',
+    eftBsb: '062-000',
+    eftAccountNumber: '12345678',
+    eftAccountName: 'Sydney CFS Pty Ltd',
 
     get holdMinutes() {
       return String(Math.floor(this.holdSecondsRemaining / 60)).padStart(2, '0')
@@ -157,60 +162,93 @@ function wizardStore() {
       }, 1000)
     },
 
-    // Mock shipment lookup
     fetchShipmentDetails() {
       if (!this.houseBillNumber.trim() && !this.containerNumber.trim()) return
       this.shipmentFetching = true
       this.shipmentFetched = false
       var self = this
-      setTimeout(function () {
-        self.shipmentFetching = false
-        self.shipmentFetched = true
-        self.shipmentData = {
-          weightKg: 340,
-          volumeCbm: 1.2,
-          packageCount: 6,
-          palletCount: 1,
-          palletType: 'chep',
-          storageStartDate: '21 Apr 2026',
-          storageDays: 21,
-          storageCharge: 252.00,
-          shrinkWrapCharge: 10.00,
-          icsStatus: 'cleared',
-        }
-      }, 1200)
+      var body = JSON.stringify({ hbl: self.houseBillNumber.trim(), container: self.containerNumber.trim(), serviceType: self.serviceType, loadType: self.loadType, slotDate: self.selectedDate })
+      fetch('/api/shipments/lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body })
+        .then(function (r) { return r.json() })
+        .then(function (data) {
+          self.shipmentFetching = false
+          self.shipmentFetched = true
+          if (data.found) {
+            self.shipmentData = data
+          } else {
+            self.shipmentData = { found: false, storageCharge: 0, shrinkWrapCharge: 0, slotFee: data.slotFee || 5, subtotal: data.slotFee || 5, gstAmount: (data.slotFee || 5) * 0.1, totalAmount: (data.slotFee || 5) * 1.1, icsStatus: 'unavailable' }
+          }
+        })
+        .catch(function () {
+          self.shipmentFetching = false
+          self.shipmentFetched = true
+          self.shipmentData = { found: false, storageCharge: 0, shrinkWrapCharge: 0, slotFee: 5, subtotal: 5, gstAmount: 0.5, totalAmount: 5.5, icsStatus: 'unavailable' }
+        })
     },
 
-    // Mock FCL lookup
     fetchFclDetails() {
       if (!this.containerNumber.trim()) return
       this.shipmentFetching = true
       this.shipmentFetched = false
       var self = this
-      setTimeout(function () {
-        self.shipmentFetching = false
-        self.shipmentFetched = true
-        self.shipmentData = {
-          weightKg: 18500,
-          volumeCbm: 28.0,
-          packageCount: 1,
-          palletCount: 0,
-          palletType: 'none',
-          storageStartDate: null,
-          storageDays: 0,
-          storageCharge: 0,
-          shrinkWrapCharge: 0,
-          icsStatus: 'cleared',
-        }
-      }, 1200)
+      var body = JSON.stringify({ hbl: '', container: self.containerNumber.trim(), serviceType: self.serviceType, loadType: 'fcl', slotDate: self.selectedDate })
+      fetch('/api/shipments/lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body })
+        .then(function (r) { return r.json() })
+        .then(function (data) {
+          self.shipmentFetching = false
+          self.shipmentFetched = true
+          self.shipmentData = data.found ? data : { found: false, storageCharge: 0, shrinkWrapCharge: 0, slotFee: data.slotFee || 5, subtotal: data.slotFee || 5, gstAmount: (data.slotFee || 5) * 0.1, totalAmount: (data.slotFee || 5) * 1.1, icsStatus: 'unavailable' }
+        })
+        .catch(function () {
+          self.shipmentFetching = false
+          self.shipmentFetched = true
+          self.shipmentData = { found: false, storageCharge: 0, shrinkWrapCharge: 0, slotFee: 5, subtotal: 5, gstAmount: 0.5, totalAmount: 5.5, icsStatus: 'unavailable' }
+        })
     },
 
     submitBooking() {
-      var rand = String(Math.floor(Math.random() * 90000) + 10000)
-      this.confirmationRef = 'GLD-2026-' + rand
       clearInterval(this.holdTimerInterval)
       this.holdTimerInterval = null
-      this.currentStep = 8  // beyond 7 = success screen
+      var form = document.createElement('form')
+      form.method = 'POST'
+      form.action = '/bookings'
+      var fields = {
+        serviceType: this.serviceType,
+        loadType: this.loadType,
+        slotDate: this.selectedDate,
+        slotStartTime: this.selectedSlotLabel ? this.selectedSlotLabel.split(' – ')[0] : '',
+        slotEndTime: this.selectedSlotLabel ? this.selectedSlotLabel.split(' – ')[1] : '',
+        driverName: this.driverName,
+        driverPhone: this.driverPhone,
+        guestName: this.guestName,
+        guestPhone: this.guestPhone,
+        houseBillNumber: this.houseBillNumber,
+        containerNumber: this.containerNumber,
+        weightKg: this.shipmentData ? (this.shipmentData.weightKg || '') : '',
+        volumeCbm: this.shipmentData ? (this.shipmentData.volumeCbm || '') : '',
+        packageCount: this.shipmentData ? (this.shipmentData.packageCount || '') : '',
+        palletCount: this.shipmentData ? (this.shipmentData.palletCount || '') : '',
+        palletType: this.shipmentData ? (this.shipmentData.palletType || '') : '',
+        storageStartDate: this.shipmentData ? (this.shipmentData.storageStartDate || '') : '',
+        storageDays: this.shipmentData ? (this.shipmentData.storageDays || '') : '',
+        storageCharge: this.shipmentData ? (this.shipmentData.storageCharge || '0') : '0',
+        shrinkWrapCharge: this.shipmentData ? (this.shipmentData.shrinkWrapCharge || '0') : '0',
+        slotFee: this.shipmentData ? (this.shipmentData.slotFee || '5') : '5',
+        subtotal: this.shipmentData ? (this.shipmentData.subtotal || '5') : '5',
+        gstAmount: this.shipmentData ? (this.shipmentData.gstAmount || '0.5') : '0.5',
+        totalAmount: this.shipmentData ? (this.shipmentData.totalAmount || '5.5') : '5.5',
+        paymentMethod: this.paymentMethod,
+        paymentStatus: this.paymentMethod === 'eft' ? 'pending_eft' : 'pending',
+      }
+      for (var key in fields) {
+        var input = document.createElement('input')
+        input.type = 'hidden'
+        input.name = key
+        input.value = fields[key] !== null && fields[key] !== undefined ? String(fields[key]) : ''
+        form.appendChild(input)
+      }
+      document.body.appendChild(form)
+      form.submit()
     },
 
     reset() {
