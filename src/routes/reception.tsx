@@ -32,8 +32,8 @@ const WALK_IN_PURPOSE_LABEL: Record<WalkInPurpose, string> = {
 // ─── Dashboard ──────────────────────────────────────────────────────────────
 receptionRoutes.get('/', async (c) => {
   const [todayBookings, stats] = await Promise.all([
-    getTodayBookings(),
-    getDashboardStats(),
+    getTodayBookings().catch(() => []),
+    getDashboardStats().catch(() => ({ total: 0, confirmed: 0, checkedIn: 0, completed: 0 })),
   ])
   return c.html(
     <ReceptionLayout title="Dashboard" activeNav="/reception">
@@ -51,8 +51,8 @@ receptionRoutes.get('/bookings', async (c) => {
   const isHtmx  = c.req.header('HX-Request') === 'true'
 
   let bookings = date
-    ? await getBookingsByDate(date)
-    : await getBookings()
+    ? await getBookingsByDate(date).catch(() => [])
+    : await getBookings().catch(() => [])
 
   if (status)  bookings = bookings.filter(b => b.status === status)
   if (service) bookings = bookings.filter(b => b.serviceType === service)
@@ -118,7 +118,7 @@ receptionRoutes.post('/bookings/:id/mark-eft-paid', async (c) => {
 
 // ─── Walk-ins list ───────────────────────────────────────────────────────────
 receptionRoutes.get('/walk-ins', async (c) => {
-  const walkIns = await getActiveWalkIns(DEFAULT_TENANT_ID)
+  const walkIns = await getActiveWalkIns(DEFAULT_TENANT_ID).catch(() => [])
   return c.html(
     <ReceptionLayout title="Walk-Ins" activeNav="/reception/walk-ins">
       <div style="background:#FCFBF8; border-radius:12px; border:1px solid #D6D3D1; overflow:hidden;">
@@ -254,7 +254,7 @@ receptionRoutes.get('/reports', (c) => {
 // ─── Settings GET ─────────────────────────────────────────────────────────────
 receptionRoutes.get('/settings', async (c) => {
   const tab = c.req.query('tab') || 'General'
-  const tenant = await getTenant(DEFAULT_TENANT_ID)
+  const tenant = await getTenant(DEFAULT_TENANT_ID).catch(() => null)
   return c.html(
     <ReceptionLayout title="Settings" activeNav="/reception/settings">
       <SettingsView activeTab={tab} tenant={tenant} users={[]} />

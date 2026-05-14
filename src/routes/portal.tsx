@@ -235,11 +235,11 @@ portalRoutes.get('/book', (c) => {
 // ─── My Bookings ─────────────────────────────────────────────────────────────
 portalRoutes.get('/bookings', async (c) => {
   const ref = c.req.query('ref')?.trim().toUpperCase()
-  let bookings = ref ? [] : await getBookings()
+  let bookings = ref ? [] : (await getBookings().catch(() => []))
   let heading  = 'My Bookings'
 
   if (ref) {
-    const found = await findBooking(ref)
+    const found = await findBooking(ref).catch(() => null)
     bookings = found ? [found] : []
     heading  = `Results for "${ref}"`
   }
@@ -324,7 +324,7 @@ portalRoutes.post('/api/shipments/lookup', async (c) => {
 
 // ─── Tenant public config API ─────────────────────────────────────────────────
 portalRoutes.get('/api/tenants/config', async (c) => {
-  const tenant = await getTenant(DEFAULT_TENANT_ID)
+  const tenant = await getTenant(DEFAULT_TENANT_ID).catch(() => null)
   if (!tenant) return c.json({ error: 'not found' }, 404)
   return c.json({
     name:                    tenant.name,
@@ -419,12 +419,12 @@ portalRoutes.post('/bookings', async (c) => {
 // ─── Booking confirmed page (with QR) ────────────────────────────────────────
 portalRoutes.get('/booking-confirmed/:ref', async (c) => {
   const ref     = c.req.param('ref').toUpperCase()
-  const booking = await findBooking(ref)
+  const booking = await findBooking(ref).catch(() => null)
   if (!booking) return c.redirect('/bookings')
 
-  const qrDataUrl = await generateQRDataURL(ref, 220)
+  const qrDataUrl = await generateQRDataURL(ref, 220).catch(() => '')
   const isEft     = booking.paymentMethod === 'eft'
-  const tenant    = await getTenant(DEFAULT_TENANT_ID)
+  const tenant    = await getTenant(DEFAULT_TENANT_ID).catch(() => null)
 
   return c.html(
     <PublicLayout title="Booking Confirmed">
