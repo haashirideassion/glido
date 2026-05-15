@@ -22,13 +22,19 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{title} — Glido Reception</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="/public/styles.css" />
+        <style>{`* { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }`}</style>
+        {/* ECharts — loaded sync so inline chart scripts can reference window.echarts */}
+        <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
         <script src="/public/alpine-init.js"></script>
         <script src="https://unpkg.com/alpinejs@3.14.3/dist/cdn.min.js" defer></script>
         <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
         <script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
       </head>
-      <body class="min-h-screen bg-background text-foreground font-sans antialiased flex">
+      <body style="min-height:100vh; background:#F5EDD8; color:#1C1917; font-family:'Inter',ui-sans-serif,system-ui,sans-serif; display:flex; -webkit-font-smoothing:antialiased;">
 
         {/* ── Sidebar — warm stone dark ──────────────────────────────────── */}
         <aside
