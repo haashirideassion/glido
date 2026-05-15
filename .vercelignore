@@ -1,3 +1,6 @@
-# Prevent Vercel from creating index.func from src/app.ts.
-# The app is served entirely via api/bundle.js (esbuild CJS bundle).
+# Exclude the local dev entry point — only api/index.ts is the Vercel function.
 src/app.ts
+
+# Exclude any stale esbuild artifacts so they don't get registered as extra functions.
+api/bundle.js
+api/bundle.cjs
