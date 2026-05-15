@@ -1,10 +1,8 @@
 import { Hono } from 'hono'
-import { handle } from 'hono/vercel'
+import { handle } from '@hono/node-server/vercel'
 import { portalRoutes } from '../src/routes/portal'
 import { receptionRoutes } from '../src/routes/reception'
 import { kioskRoutes } from '../src/routes/kiosk'
-
-export const config = { runtime: 'nodejs' }
 
 const app = new Hono()
 
