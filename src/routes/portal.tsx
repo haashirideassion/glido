@@ -527,11 +527,11 @@ portalRoutes.get('/', (c) => {
 portalRoutes.get('/book', (c) => {
   return c.html(
     <PublicLayout title="Book a Visit">
-      <div style="min-height:calc(100vh - 56px); background:#FFEDD5; padding:40px 24px 64px;">
+      <div style="min-height:calc(100vh - 56px); background:#EDE9E2; padding:40px 24px 64px;">
         <div style="max-width:540px; margin:0 auto;">
           <div style="margin-bottom:28px;">
             <h1 style="font-size:22px; font-weight:600; color:#1C1917; letter-spacing:-0.025em; margin-bottom:4px;">Book a Depot Visit</h1>
-            <p style="font-size:13px; color:#78716C;">Sydney Container Freight Station · Mon–Fri 06:00–18:00</p>
+            <p style="font-size:13px; color:#A8A29E;">Sydney Container Freight Station · Mon–Fri 06:00–18:00</p>
           </div>
           <BookingWizard />
         </div>
