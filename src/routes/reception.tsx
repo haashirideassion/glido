@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { ReceptionLayout } from '../layouts/ReceptionLayout'
 import { KpiTiles } from '../components/reception/KpiTiles'
+import { DayChart } from '../components/reception/DayChart'
 import { BookingTable } from '../components/reception/BookingTable'
 import { BookingSlideOver } from '../components/reception/BookingSlideOver'
 import { WalkInForm } from '../components/reception/WalkInForm'
@@ -38,6 +39,7 @@ receptionRoutes.get('/', async (c) => {
   return c.html(
     <ReceptionLayout title="Dashboard" activeNav="/reception">
       <KpiTiles stats={stats} />
+      <DayChart bookings={todayBookings} />
       <BookingTable bookings={todayBookings} />
     </ReceptionLayout>
   )
