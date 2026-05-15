@@ -1,5 +1,5 @@
 import type { FC, JSX, PropsWithChildren } from 'hono/jsx'
-import { cn } from '@/lib/utils'
+import { cn } from '../../lib/utils'
 
 type TabsProps = PropsWithChildren<{
   defaultValue?: string

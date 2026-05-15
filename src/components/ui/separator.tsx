@@ -1,5 +1,5 @@
 import type { FC, JSX } from 'hono/jsx'
-import { cn } from '@/lib/utils'
+import { cn } from '../../lib/utils'
 
 type SeparatorProps = JSX.IntrinsicElements['div'] & {
   orientation?: 'horizontal' | 'vertical'

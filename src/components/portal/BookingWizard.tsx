@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '../ui/button'
 import { Icon, ICONS } from '../../lib/Icon'
 import { Step1ServiceType } from './Step1ServiceType'
 import { Step2SlotPicker } from './Step2SlotPicker'

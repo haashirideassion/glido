@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Button } from '../ui/button'
+import { Badge } from '../ui/badge'
 import { Icon, ICONS } from '../../lib/Icon'
 import { STATUS_LABEL, STATUS_BADGE_VARIANT, SERVICE_LABEL, LOAD_LABEL, ICS_BADGE_CLASS, ICS_LABEL } from '../../lib/constants'
 import type { Booking } from '../../data/types'

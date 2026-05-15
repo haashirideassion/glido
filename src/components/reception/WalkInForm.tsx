@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '../ui/button'
 
 export const WalkInForm = () => (
   <div class="max-w-2xl">

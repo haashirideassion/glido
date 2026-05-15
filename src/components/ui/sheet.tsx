@@ -1,7 +1,7 @@
 import type { FC, JSX, PropsWithChildren } from "hono/jsx";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { XIcon } from "@/components/ui/icon";
+import { cn } from "../../lib/utils";
+import { Button } from "./button";
+import { XIcon } from "./icon";
 
 type Side = "top" | "right" | "bottom" | "left";
 

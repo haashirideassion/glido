@@ -8,3 +8,4 @@ dist/
 api/bundle.js
 # Vercel static output
 public/public/
+.vercel

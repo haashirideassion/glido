@@ -1,5 +1,5 @@
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '../ui/card'
+import { Badge } from '../ui/badge'
 import { Icon, ICONS } from '../../lib/Icon'
 import { STATUS_LABEL, STATUS_BADGE_VARIANT, SERVICE_LABEL, LOAD_LABEL } from '../../lib/constants'
 import type { Booking } from '../../data/types'

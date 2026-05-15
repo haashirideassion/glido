@@ -1,8 +1,8 @@
 import { mockBookings } from '../../data/bookings'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
+import { Card, CardContent } from '../ui/card'
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../ui/table'
 import { STATUS_LABEL, STATUS_BADGE_VARIANT, SERVICE_LABEL, LOAD_LABEL } from '../../lib/constants'
 import type { BookingStatus } from '../../data/types'
 
