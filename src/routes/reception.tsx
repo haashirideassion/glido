@@ -33,7 +33,7 @@ const WALK_IN_PURPOSE_LABEL: Record<WalkInPurpose, string> = {
 receptionRoutes.get('/', async (c) => {
   const [todayBookings, stats] = await Promise.all([
     getTodayBookings().catch(() => []),
-    getDashboardStats().catch(() => ({ total: 0, confirmed: 0, checkedIn: 0, completed: 0 })),
+    getDashboardStats().catch(() => ({ totalScheduled: 0, checkedIn: 0, completed: 0, held: 0 })),
   ])
   return c.html(
     <ReceptionLayout title="Dashboard" activeNav="/reception">
