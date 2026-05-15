@@ -24,14 +24,14 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §1  HERO — split layout, floating booking card preview
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section class="bg-hero-gradient" style="padding-top:6rem; padding-bottom:0; overflow:hidden; position:relative; min-height:90vh; display:flex; align-items:center;">
+      <section class="bg-hero-gradient" style="padding-top:2rem; padding-bottom:4rem; overflow:hidden; position:relative; min-height:80vh; display:flex; align-items:flex-start;">
 
         {/* Background orb */}
         <div style="position:absolute; top:-120px; right:-80px; width:600px; height:600px; border-radius:9999px; background:radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%); pointer-events:none;" />
         <div style="position:absolute; bottom:0; left:-60px; width:400px; height:400px; border-radius:9999px; background:radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%); pointer-events:none;" />
 
         <div class="max-w-6xl mx-auto px-6 w-full" style="padding-bottom:5rem;">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; padding-top:3rem;">
 
             {/* Left: text */}
             <div>
@@ -172,13 +172,13 @@ portalRoutes.get('/', (c) => {
         </div>
 
         {/* Fade to next section */}
-        <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background:linear-gradient(to bottom, transparent, #FFEDD5); pointer-events:none;" />
+        <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background:linear-gradient(to bottom, transparent, #F2EDE4); pointer-events:none;" />
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
           §2  MARQUEE — trust strip
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:28px 0; background:#FFEDD5; overflow:hidden; border-top:1px solid rgba(249,115,22,0.10); border-bottom:1px solid rgba(249,115,22,0.10);">
+      <section style="padding:28px 0; background:#F2EDE4; overflow:hidden; border-top:1px solid rgba(249,115,22,0.10); border-bottom:1px solid rgba(249,115,22,0.10);">
         <div style="display:flex; overflow:hidden; mask-image:linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%); -webkit-mask-image:linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);">
           <div class="animate-marquee" style="display:flex; gap:0; white-space:nowrap; flex-shrink:0;">
             {[
@@ -216,7 +216,7 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §3  STATS — animated counters
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:80px 24px; background:#FFEDD5;">
+      <section style="padding:80px 24px; background:#F2EDE4;">
         <div class="max-w-5xl mx-auto">
 
           <div class="reveal" style="text-align:center; margin-bottom:56px;">
@@ -311,7 +311,7 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §5  FEATURES — asymmetric bento grid
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:80px 24px; background:#FFEDD5;">
+      <section style="padding:80px 24px; background:#F2EDE4;">
         <div class="max-w-5xl mx-auto">
 
           {/* Header */}
@@ -527,7 +527,7 @@ portalRoutes.get('/', (c) => {
 portalRoutes.get('/book', (c) => {
   return c.html(
     <PublicLayout title="Book a Visit">
-      <div style="min-height:calc(100vh - 56px); background:#EDE9E2; padding:40px 24px 64px;">
+      <div style="min-height:calc(100vh - 56px); background:#F2EDE4; padding:40px 24px 64px;">
         <div style="max-width:540px; margin:0 auto;">
           <div style="margin-bottom:28px;">
             <h1 style="font-size:22px; font-weight:600; color:#1C1917; letter-spacing:-0.025em; margin-bottom:4px;">Book a Depot Visit</h1>
@@ -554,7 +554,7 @@ portalRoutes.get('/bookings', async (c) => {
 
   return c.html(
     <PublicLayout title="My Bookings">
-      <div style="min-height:calc(100vh - 56px); background:#FFEDD5; padding:40px 24px 64px;">
+      <div style="min-height:calc(100vh - 56px); background:#F2EDE4; padding:40px 24px 64px;">
         <div style="max-width:640px; margin:0 auto;">
 
           {/* Page header */}
@@ -571,9 +571,9 @@ portalRoutes.get('/bookings', async (c) => {
                 name="ref"
                 value={ref || ''}
                 placeholder="Booking reference — e.g. GLD-2026-10142"
-                style="width:100%; padding:10px 14px; font-size:13.5px; color:#1C1917; background:#FFF7ED; border:1.5px solid rgba(240,197,137,0.6); border-radius:10px; outline:none; box-sizing:border-box; font-family:inherit;"
-                onfocus="this.style.borderColor='#F97316';"
-                onblur="this.style.borderColor='rgba(240,197,137,0.6)';"
+                style="width:100%; padding:10px 14px; font-size:13.5px; color:#1A1815; background:#FEFCFA; border:1.5px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; font-family:inherit;"
+                onfocus="this.style.borderColor='#F97316'; this.style.boxShadow='0 0 0 3px rgba(249,115,22,0.12)';"
+                onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
               />
             </div>
             <button

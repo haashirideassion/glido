@@ -31,18 +31,18 @@ export const BookingWizard = () => (
             {/* Connector line */}
             {i > 0 && (
               <div style="flex:1; height:2px; margin:0 4px; border-radius:9999px; transition:background 0.3s ease;"
-                x-bind:style={`${s.n} <= $store.wizard.currentStep ? 'background:#1C1917;' : 'background:rgba(0,0,0,0.12);'`}
+                x-bind:style={`${s.n} <= $store.wizard.currentStep ? 'background:#1A1815;' : 'background:rgba(0,0,0,0.10);'`}
               ></div>
             )}
 
             {/* Bubble */}
             <div
-              style="width:28px; height:28px; border-radius:9999px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:11px; font-weight:700; letter-spacing:-0.01em; transition:all 0.25s ease; position:relative; z-index:1;"
+              style="width:34px; height:34px; border-radius:9999px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:12px; font-weight:700; letter-spacing:-0.01em; transition:all 0.25s ease; position:relative; z-index:1;"
               x-bind:style={`${s.n} < $store.wizard.currentStep
-                ? 'background:#1C1917; color:white; box-shadow:none;'
+                ? 'background:#1A1815; color:white;'
                 : ${s.n} === $store.wizard.currentStep
-                  ? 'background:#F97316; color:white; box-shadow:0 0 0 3px rgba(249,115,22,0.18), 0 2px 8px rgba(249,115,22,0.3);'
-                  : 'background:#F9F7F4; color:#A8A29E; box-shadow:2px 2px 5px rgba(0,0,0,0.09),-1px -1px 4px rgba(255,255,255,0.9); border:1px solid rgba(0,0,0,0.06);'`}
+                  ? 'background:#F97316; color:white; box-shadow:0 0 0 4px rgba(249,115,22,0.15), 0 2px 10px rgba(249,115,22,0.35);'
+                  : 'background:#FEFCFA; color:#A09990; box-shadow:0 2px 6px rgba(0,0,0,0.08); border:1.5px solid rgba(0,0,0,0.09);'`}
             >
               {/* Past: check icon */}
               <span
@@ -89,7 +89,7 @@ export const BookingWizard = () => (
     </div>
 
     {/* ── Step panels ──────────────────────────────────────────────────────── */}
-    <div style="background:#FAFAF8; border-radius:20px; padding:28px; min-height:380px; box-shadow:0 4px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.9);">
+    <div style="background:#FEFCFA; border-radius:20px; padding:28px; min-height:380px; box-shadow:0 4px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.9);">
       <Step1ServiceType />
       <Step2SlotPicker />
       <Step3HoldConfirm />
@@ -149,37 +149,33 @@ export const BookingWizard = () => (
 
     {/* ── Navigation ───────────────────────────────────────────────────────── */}
     <div
-      style="display:flex; align-items:center; justify-content:space-between; margin-top:16px;"
+      style="display:flex; align-items:center; justify-content:space-between; margin-top:24px; padding-top:20px; border-top:1px solid rgba(0,0,0,0.07);"
       x-show="$store.wizard.currentStep < 7"
     >
-      {/* Back — neumorphic raised */}
+      {/* Back — clear white border button */}
       <button
         type="button"
         x-on:click="$store.wizard.prevStep()"
         x-bind:disabled="$store.wizard.currentStep <= 1"
-        style="display:inline-flex; align-items:center; gap:7px; padding:11px 20px; font-size:13px; font-weight:500; color:#57534E; background:#EDE9E2; border:none; border-radius:9999px; cursor:pointer; box-shadow:4px 4px 8px rgba(0,0,0,0.09),-2px -2px 6px rgba(255,255,255,0.85); transition:box-shadow 0.15s ease, transform 0.1s ease;"
-        x-bind:style="$store.wizard.currentStep <= 1 ? 'opacity:0.35; cursor:not-allowed; pointer-events:none;' : ''"
-        onmousedown="this.style.boxShadow='2px 2px 4px rgba(0,0,0,0.09),-1px -1px 3px rgba(255,255,255,0.85)'; this.style.transform='translateY(1px)';"
-        onmouseup="this.style.boxShadow='4px 4px 8px rgba(0,0,0,0.09),-2px -2px 6px rgba(255,255,255,0.85)'; this.style.transform='';"
-        onmouseleave="this.style.boxShadow='4px 4px 8px rgba(0,0,0,0.09),-2px -2px 6px rgba(255,255,255,0.85)'; this.style.transform='';"
+        style="display:inline-flex; align-items:center; gap:8px; padding:12px 22px; font-size:13px; font-weight:500; color:#6B6560; background:#FEFCFA; border:1.5px solid rgba(0,0,0,0.13); border-radius:12px; cursor:pointer; transition:all 0.15s ease; box-shadow:0 1px 3px rgba(0,0,0,0.06);"
+        x-bind:style="$store.wizard.currentStep <= 1 ? 'opacity:0.3; cursor:not-allowed; pointer-events:none;' : ''"
+        onmouseover="if(this.style.cursor!=='not-allowed'){this.style.borderColor='rgba(0,0,0,0.22)'; this.style.color='#1A1815';}"
+        onmouseout="this.style.borderColor='rgba(0,0,0,0.13)'; this.style.color='#6B6560';"
       >
-        <Icon name={ICONS.arrowLeft} size={14} />
-        Back
+        ← Back
       </button>
 
-      {/* Next — orange gradient pill */}
+      {/* Next — orange gradient */}
       <button
         type="button"
         x-on:click="$store.wizard.nextStep()"
         x-bind:disabled="!$store.wizard.canProceed"
-        style="display:inline-flex; align-items:center; gap:7px; padding:11px 24px; font-size:13px; font-weight:600; color:white; background:linear-gradient(135deg,#F97316,#EA6C0A); border:none; border-radius:9999px; cursor:pointer; box-shadow:rgba(249,115,22,0.30) 0px 4px 14px 0px, rgba(249,115,22,0.12) 0px 1px 3px 0px; letter-spacing:0.01em; transition:opacity 0.15s ease, transform 0.1s ease;"
+        style="display:inline-flex; align-items:center; gap:8px; padding:12px 28px; font-size:13px; font-weight:600; color:white; background:linear-gradient(135deg,#F97316,#EA6C0A); border:none; border-radius:12px; cursor:pointer; box-shadow:rgba(249,115,22,0.35) 0px 4px 16px 0px; letter-spacing:0.01em; transition:all 0.15s ease;"
         x-bind:style="!$store.wizard.canProceed ? 'opacity:0.35; cursor:not-allowed;' : ''"
-        onmousedown="if(!this.disabled){this.style.transform='translateY(1px)';}"
-        onmouseup="this.style.transform='';"
-        onmouseleave="this.style.transform='';"
+        onmouseover="if(this.style.cursor!=='not-allowed'){this.style.boxShadow='rgba(249,115,22,0.45) 0px 6px 20px 0px';}"
+        onmouseout="this.style.boxShadow='rgba(249,115,22,0.35) 0px 4px 16px 0px';"
       >
-        <span x-text="$store.wizard.currentStep === 6 ? 'Review & Pay' : 'Next'">Next</span>
-        <Icon name={ICONS.arrowRight} size={14} />
+        <span x-text="$store.wizard.currentStep === 6 ? 'Review & Pay' : 'Next →'">Next →</span>
       </button>
     </div>
   </div>

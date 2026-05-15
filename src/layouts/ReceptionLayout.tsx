@@ -34,23 +34,23 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
         <script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
       </head>
-      <body style="min-height:100vh; background:#F5EDD8; color:#1C1917; font-family:'Inter',ui-sans-serif,system-ui,sans-serif; display:flex; -webkit-font-smoothing:antialiased;">
+      <body style="min-height:100vh; background:#F2EDE4; color:#1A1815; font-family:'Inter',ui-sans-serif,system-ui,sans-serif; display:flex; -webkit-font-smoothing:antialiased;">
 
-        {/* ── Sidebar — warm stone dark ──────────────────────────────────── */}
+        {/* ── Sidebar — refined dark ────────────────────────────────────── */}
         <aside
           class="w-60 flex flex-col shrink-0 sticky top-0 h-screen"
-          style="background:#1C1917; color:#E7E5E4;"
+          style="background:#141214; color:#E8E4E0;"
         >
           {/* Logo */}
           <div
             class="h-16 flex items-center px-5 gap-2"
-            style="border-bottom: 1px solid #292524;"
+            style="border-bottom: 1px solid #1E1B1E;"
           >
-            <Icon name={ICONS.logo} size={22} style="color:#F59E0B;" />
+            <Icon name={ICONS.logo} size={22} style="color:#F97316;" />
             <span class="font-semibold text-base tracking-tight" style="color:#FCFBF8;">Glido</span>
             <span
               class="ml-1 text-xs px-1.5 py-0.5 rounded font-medium"
-              style="background:#F59E0B; color:#1C1917;"
+              style="background:rgba(249,115,22,0.18); color:#F97316;"
             >
               Reception
             </span>
@@ -66,10 +66,10 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
                   href={item.href}
                   class="flex items-center gap-3 px-3 py-2.5 rounded-md text-xs font-medium transition-colors"
                   style={isActive
-                    ? 'background:#F59E0B; color:#1C1917;'
-                    : 'color:#A8A29E;'}
-                  onmouseover={!isActive ? "this.style.background='#292524'; this.style.color='#FCFBF8';" : undefined}
-                  onmouseout={!isActive ? "this.style.background='transparent'; this.style.color='#A8A29E';" : undefined}
+                    ? 'background:rgba(249,115,22,0.10); color:#F97316; border-left:3px solid #F97316; padding-left:9px;'
+                    : 'color:#7C7470; border-left:3px solid transparent;'}
+                  onmouseover={!isActive ? "this.style.background='rgba(255,255,255,0.05)'; this.style.color='#E8E4E0';" : undefined}
+                  onmouseout={!isActive ? "this.style.background='transparent'; this.style.color='#7C7470';" : undefined}
                 >
                   <Icon name={item.icon} size={18} />
                   <span class="flex-1">{item.label}</span>
@@ -87,17 +87,17 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
           </nav>
 
           {/* User footer */}
-          <div class="px-4 py-4" style="border-top: 1px solid #292524;">
+          <div class="px-4 py-4" style="border-top: 1px solid #1E1B1E;">
             <div class="flex items-center gap-3">
               <div
                 class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                style="background:#F59E0B; color:#1C1917;"
+                style="background:rgba(249,115,22,0.18); color:#F97316;"
               >
                 RA
               </div>
               <div>
                 <p class="text-xs font-medium" style="color:#FCFBF8;">Reception Agent</p>
-                <p class="text-xs" style="color:#78716C;">Sydney CFS Terminal 1</p>
+                <p class="text-xs" style="color:#7C7470;">Sydney CFS Terminal 1</p>
               </div>
             </div>
           </div>
@@ -108,13 +108,13 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
           {/* Top header */}
           <header
             class="h-16 flex items-center justify-between px-6 shrink-0"
-            style="background:#FCFBF8; border-bottom: 1px solid #D6D3D1;"
+            style="background:#FEFCFA; border-bottom: 1px solid rgba(0,0,0,0.08);"
           >
-            <h1 class="text-sm font-semibold" style="color:#44403C;">{title}</h1>
-            <div class="flex items-center gap-3 text-xs" style="color:#A8A29E;">
+            <h1 class="text-sm font-semibold" style="color:#1A1815;">{title}</h1>
+            <div class="flex items-center gap-3 text-xs" style="color:#A09990;">
               <span id="live-clock" x-data="{}" x-text="new Date().toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit'})"></span>
               <span style="color:#D6D3D1;">|</span>
-              <a href="/" class="transition-colors text-xs" style="color:#F59E0B;">Visitor Portal ↗</a>
+              <a href="/" class="transition-colors text-xs" style="color:#F97316;">Visitor Portal ↗</a>
             </div>
           </header>
 

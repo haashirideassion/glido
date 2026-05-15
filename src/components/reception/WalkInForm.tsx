@@ -1,41 +1,41 @@
-import { Button } from '../ui/button'
+const wlabel = 'display:block; font-size:11px; font-weight:600; color:#6B6560; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:7px;'
+const winput = 'width:100%; padding:11px 14px; font-size:14px; color:#1A1815; background:#FEFCFA; border:1.5px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; transition:border-color 0.15s ease, box-shadow 0.15s ease; box-sizing:border-box;'
+const wfocus = `onfocus="this.style.borderColor='#F97316'; this.style.boxShadow='0 0 0 3px rgba(249,115,22,0.12)';" onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"`
 
 export const WalkInForm = () => (
   <div class="max-w-2xl">
     {/* Info banner */}
     <div
-      class="mb-6 rounded-xl px-4 py-3 flex items-start gap-3"
-      style="background:#FEF3C7; border:1px solid rgba(245,158,11,0.3); border-radius:12px"
+      class="mb-6 flex items-start gap-3"
+      style="background:#F0F4FF; border:1px solid rgba(99,102,241,0.15); border-radius:12px; padding:14px 16px;"
     >
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-0.5">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4338CA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-0.5">
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
       <div>
-        <p class="font-semibold text-sm" style="color:#92400E">Walk-in Registration</p>
-        <p class="text-xs mt-0.5" style="color:#B45309">
+        <p style="font-size:13px; font-weight:600; color:#3730A3; margin-bottom:3px;">Walk-in Registration</p>
+        <p style="font-size:12px; color:#4338CA; line-height:1.5;">
           Use this form for visitors who arrive without a prior booking. A booking reference will be generated on submission.
         </p>
       </div>
     </div>
 
     <form
-      class="rounded-xl p-6 space-y-5"
-      style="background:#FCFBF8; border:1px solid #D6D3D1; border-radius:12px; box-shadow:rgba(0,0,0,0) 0 0 0 0,rgba(0,0,0,0) 0 0 0 0,rgba(0,0,0,0.05) 0 1px 2px 0"
+      style="background:#FEFCFA; border:1px solid rgba(0,0,0,0.08); border-radius:16px; padding:24px; box-shadow:0 1px 3px rgba(0,0,0,0.06);"
       hx-post="/reception/walk-in"
       hx-target="#walk-in-result"
       hx-swap="innerHTML"
     >
-      <div class="grid grid-cols-2 gap-4">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
         <div>
-          <label class="block text-sm font-medium mb-1.5" style="color:#57534E">
+          <label style={wlabel}>
             Service Type <span style="color:#DC2626">*</span>
           </label>
           <select
             name="serviceType"
-            class="w-full rounded-lg px-3.5 py-2.5 text-sm focus:outline-none"
-            style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C"
-            onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-            onblur="this.style.outline='none'"
+            style={winput}
+            onfocus="this.style.borderColor='#F97316'; this.style.boxShadow='0 0 0 3px rgba(249,115,22,0.12)';"
+            onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
           >
             <option value="">Select…</option>
             <option value="import">Import</option>
@@ -44,15 +44,14 @@ export const WalkInForm = () => (
           </select>
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1.5" style="color:#57534E">
+          <label style={wlabel}>
             Load Type <span style="color:#DC2626">*</span>
           </label>
           <select
             name="loadType"
-            class="w-full rounded-lg px-3.5 py-2.5 text-sm focus:outline-none"
-            style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C"
-            onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-            onblur="this.style.outline='none'"
+            style={winput}
+            onfocus="this.style.borderColor='#F97316'; this.style.boxShadow='0 0 0 3px rgba(249,115,22,0.12)';"
+            onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
           >
             <option value="">Select…</option>
             <option value="fcl">FCL</option>
@@ -62,8 +61,8 @@ export const WalkInForm = () => (
         </div>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium mb-1.5" style="color:#57534E">
+      <div style="margin-bottom:16px;">
+        <label style={wlabel}>
           Visitor Full Name <span style="color:#DC2626">*</span>
         </label>
         <input
@@ -71,28 +70,26 @@ export const WalkInForm = () => (
           name="visitorName"
           placeholder="e.g. Ahmed Raza"
           required
-          class="w-full rounded-lg px-3.5 py-2.5 text-sm focus:outline-none"
-          style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C"
-          onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-          onblur="this.style.outline='none'"
+          style={winput}
+          onfocus="this.style.borderColor='#F97316'; this.style.boxShadow='0 0 0 3px rgba(249,115,22,0.12)';"
+          onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
         />
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
         <div>
-          <label class="block text-sm font-medium mb-1.5" style="color:#57534E">Phone</label>
+          <label style={wlabel}>Phone</label>
           <input
             type="tel"
             name="phone"
             placeholder="03XX-XXXXXXX"
-            class="w-full rounded-lg px-3.5 py-2.5 text-sm focus:outline-none"
-            style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C"
-            onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-            onblur="this.style.outline='none'"
+            style={winput}
+            onfocus="this.style.borderColor='#F97316'; this.style.boxShadow='0 0 0 3px rgba(249,115,22,0.12)';"
+            onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
           />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1.5" style="color:#57534E">
+          <label style={wlabel}>
             Vehicle Registration <span style="color:#DC2626">*</span>
           </label>
           <input
@@ -100,16 +97,16 @@ export const WalkInForm = () => (
             name="vehicleReg"
             placeholder="LEA-1234"
             required
-            class="w-full rounded-lg px-3.5 py-2.5 text-sm focus:outline-none uppercase"
-            style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C"
-            onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-            onblur="this.style.outline='none'"
+            class="uppercase"
+            style={winput}
+            onfocus="this.style.borderColor='#F97316'; this.style.boxShadow='0 0 0 3px rgba(249,115,22,0.12)';"
+            onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
           />
         </div>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium mb-1.5" style="color:#57534E">
+      <div style="margin-bottom:16px;">
+        <label style={wlabel}>
           B/L Number <span style="color:#DC2626">*</span>
         </label>
         <input
@@ -117,15 +114,14 @@ export const WalkInForm = () => (
           name="blNumber"
           placeholder="e.g. COSCO2026041201"
           required
-          class="w-full rounded-lg px-3.5 py-2.5 text-sm focus:outline-none"
-          style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C"
-          onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-          onblur="this.style.outline='none'"
+          style={winput}
+          onfocus="this.style.borderColor='#F97316'; this.style.boxShadow='0 0 0 3px rgba(249,115,22,0.12)';"
+          onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
         />
       </div>
 
-      <div>
-        <label class="block text-sm font-medium mb-1.5" style="color:#57534E">
+      <div style="margin-bottom:16px;">
+        <label style={wlabel}>
           Cargo Description <span style="color:#DC2626">*</span>
         </label>
         <textarea
@@ -133,38 +129,33 @@ export const WalkInForm = () => (
           rows={2}
           placeholder="Brief description of cargo"
           required
-          class="w-full rounded-lg px-3.5 py-2.5 text-sm focus:outline-none resize-none"
-          style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C"
-          onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-          onblur="this.style.outline='none'"
+          style={`${winput} resize:none;`}
+          onfocus="this.style.borderColor='#F97316'; this.style.boxShadow='0 0 0 3px rgba(249,115,22,0.12)';"
+          onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
         ></textarea>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium mb-1.5" style="color:#57534E">Assign to Slot</label>
+      <div style="margin-bottom:24px;">
+        <label style={wlabel}>Assign to Slot</label>
         <select
           name="slotId"
-          class="w-full rounded-lg px-3.5 py-2.5 text-sm focus:outline-none"
-          style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C"
-          onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-          onblur="this.style.outline='none'"
+          style={winput}
+          onfocus="this.style.borderColor='#F97316'; this.style.boxShadow='0 0 0 3px rgba(249,115,22,0.12)';"
+          onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
         >
           <option value="">Next available slot</option>
           <option value="immediate">Immediate / Now</option>
         </select>
       </div>
 
-      <div class="pt-2">
-        <button
-          type="submit"
-          class="w-full font-medium text-sm py-2.5 rounded-lg"
-          style="background:#F59E0B; color:#FFFFFF; border-radius:6px; font-size:12px; font-weight:500"
-          onmouseover="this.style.background='#D97706'"
-          onmouseout="this.style.background='#F59E0B'"
-        >
-          Register Walk-In
-        </button>
-      </div>
+      <button
+        type="submit"
+        style="width:100%; padding:14px; background:linear-gradient(135deg,#F97316,#EA6C0A); color:white; border:none; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; box-shadow:rgba(249,115,22,0.35) 0px 4px 16px 0px; transition:box-shadow 0.15s ease; letter-spacing:0.01em;"
+        onmouseover="this.style.boxShadow='rgba(249,115,22,0.45) 0px 6px 20px 0px';"
+        onmouseout="this.style.boxShadow='rgba(249,115,22,0.35) 0px 4px 16px 0px';"
+      >
+        Register Walk-In
+      </button>
     </form>
 
     <div id="walk-in-result" class="mt-4"></div>

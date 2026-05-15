@@ -33,7 +33,7 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
         {/* Anime.js for scroll and counter animations */}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
       </head>
-      <body style="background:#FFEDD5; color:#1C1917; overflow-x:hidden;">
+      <body style="background:#F2EDE4; color:#1A1815; overflow-x:hidden;">
 
         {/* ── Fixed nav ─────────────────────────────────────────────────── */}
         <header
@@ -43,10 +43,10 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
         >
           <div
             style={`
-              background: rgba(255,237,213,0.75);
+              background: rgba(252,250,247,0.88);
               backdrop-filter: blur(16px) saturate(1.5);
               -webkit-backdrop-filter: blur(16px) saturate(1.5);
-              border-bottom: 1px solid rgba(249,115,22,0.10);
+              border-bottom: 1px solid rgba(0,0,0,0.07);
             `}
           >
             <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -63,7 +63,7 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
                 >
                   <Icon name={ICONS.logo} size={18} style="color:white;" />
                 </div>
-                <span style="font-weight:600; font-size:15px; letter-spacing:-0.02em; color:#1C1917;">Glido</span>
+                <span style="font-weight:600; font-size:15px; letter-spacing:-0.02em; color:#1A1815;">Glido</span>
               </a>
 
               {/* Center nav */}
@@ -76,9 +76,9 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
                   <a
                     key={l.href}
                     href={l.href}
-                    style="font-size:14px; font-weight:500; color:#78716C; text-decoration:none; transition: color 0.15s ease;"
-                    onmouseover="this.style.color='#1C1917'"
-                    onmouseout="this.style.color='#78716C'"
+                    style="font-size:14px; font-weight:500; color:#6B6560; text-decoration:none; transition: color 0.15s ease;"
+                    onmouseover="this.style.color='#1A1815'"
+                    onmouseout="this.style.color='#6B6560'"
                   >
                     {l.label}
                   </a>
@@ -100,7 +100,7 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
         </main>
 
         {/* ── Footer ────────────────────────────────────────────────────── */}
-        <footer style="border-top: 1px solid rgba(249,115,22,0.12); background:#1C1917; padding:64px 24px 32px;">
+        <footer style="border-top: 1px solid rgba(0,0,0,0.08); background:#1C1917; padding:64px 24px 32px;">
           <div class="max-w-6xl mx-auto">
             <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:48px; margin-bottom:48px;" class="footer-grid">
 
@@ -181,10 +181,23 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
                   io.unobserve(el);
                 }
               });
-            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+            }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
 
             document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale')
               .forEach(function(el) { io.observe(el); });
+
+            // Fire immediately for elements already in view
+            setTimeout(function() {
+              document.querySelectorAll('.reveal:not(.revealed), .reveal-left:not(.revealed), .reveal-right:not(.revealed), .reveal-scale:not(.revealed)')
+                .forEach(function(el) {
+                  var rect = el.getBoundingClientRect();
+                  if (rect.top < window.innerHeight * 0.9) {
+                    var delay = parseInt(el.getAttribute('data-reveal-delay') || '0');
+                    setTimeout(function() { el.classList.add('revealed'); }, delay);
+                    io.unobserve(el);
+                  }
+                });
+            }, 100);
           })();
 
           /* ── Animated counter ── */
