@@ -3,6 +3,6 @@
   "framework": null,
   "buildCommand": "npm run vercel-build",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api/index" }
+    { "source": "/(.*)", "destination": "/api/bundle" }
   ]
 }
