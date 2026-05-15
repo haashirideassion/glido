@@ -2,83 +2,111 @@ import { Icon, ICONS } from '../../lib/Icon'
 
 export const Step3HoldConfirm = () => (
   <div x-show="$store.wizard.currentStep === 3" x-cloak>
-    <h2 class="text-xl font-bold text-foreground mb-1">What type of cargo?</h2>
-    <p class="text-foreground-muted text-sm mb-7">Select your cargo type. This determines what details we'll ask for next.</p>
 
-    <div class="grid grid-cols-2 gap-4 mb-6">
-      {/* FCL card */}
+    <h2 style="font-size:17px; font-weight:600; color:#1C1917; letter-spacing:-0.015em; margin-bottom:4px;">
+      What type of cargo?
+    </h2>
+    <p style="font-size:13px; color:#78716C; margin-bottom:20px; line-height:1.5;">
+      This determines which details we ask for on the next screen.
+    </p>
+
+    <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:20px;">
+
+      {/* FCL row */}
       <button
         type="button"
         x-on:click="$store.wizard.selectLoadType('fcl')"
-        class="border-2 rounded-2xl p-8 text-left transition-all focus:outline-none relative"
-        {...{"x-bind:class": "$store.wizard.loadType === 'fcl' ? 'bg-primary-soft border-primary ring-2 ring-primary/20' : 'bg-card border-border hover:border-primary/40 hover:bg-primary-soft/50'"}}
+        style="display:flex; align-items:center; gap:14px; padding:14px 16px; border-radius:14px; border:1.5px solid; cursor:pointer; text-align:left; transition:background 0.15s ease, border-color 0.15s ease; width:100%;"
+        x-bind:style="$store.wizard.loadType === 'fcl'
+          ? 'background:rgba(249,115,22,0.07); border-color:#F97316;'
+          : 'background:rgba(234,230,219,0.4); border-color:rgba(240,197,137,0.4);'"
       >
-        {/* Selected badge */}
         <div
-          class="absolute top-3 right-3 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center"
-          x-show="$store.wizard.loadType === 'fcl'"
+          style="width:40px; height:40px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.15s ease;"
+          x-bind:style="$store.wizard.loadType === 'fcl'
+            ? 'background:linear-gradient(135deg,#F97316,#FB923C); box-shadow:rgba(249,115,22,0.25) 0px 4px 10px 0px;'
+            : 'background:rgba(168,162,158,0.15);'"
         >
-          <Icon name={ICONS.check} size={13} />
+          <Icon
+            name={ICONS.container}
+            size={18}
+            x-bind:style="$store.wizard.loadType === 'fcl' ? 'color:white;' : 'color:#A8A29E;'"
+          />
+        </div>
+
+        <div style="flex:1; min-width:0;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
+            <p
+              style="font-size:14px; font-weight:600; letter-spacing:-0.01em; transition:color 0.15s ease;"
+              x-bind:style="$store.wizard.loadType === 'fcl' ? 'color:#F97316;' : 'color:#1C1917;'"
+            >FCL</p>
+            <span style="font-size:11px; font-weight:500; color:#78716C; font-style:normal;">Full Container Load</span>
+          </div>
+          <p style="font-size:12px; color:#A8A29E;">Container number required · No HBL needed</p>
         </div>
 
         <div
-          class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-colors"
-          {...{"x-bind:class": "$store.wizard.loadType === 'fcl' ? 'bg-primary text-primary-foreground' : 'bg-background-subtle text-foreground-muted'"}}
+          style="width:18px; height:18px; border-radius:9999px; border:1.5px solid; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:background 0.15s ease, border-color 0.15s ease;"
+          x-bind:style="$store.wizard.loadType === 'fcl'
+            ? 'background:#F97316; border-color:#F97316;'
+            : 'background:transparent; border-color:rgba(168,162,158,0.4);'"
         >
-          <Icon name={ICONS.container} size={26} />
+          <span
+            x-show="$store.wizard.loadType === 'fcl'"
+            style="width:7px; height:7px; border-radius:9999px; background:white; display:block;"
+          ></span>
         </div>
-        <p
-          class="font-bold text-lg mb-1 transition-colors"
-          {...{"x-bind:class": "$store.wizard.loadType === 'fcl' ? 'text-primary' : 'text-foreground'"}}
-        >
-          FCL
-        </p>
-        <p class="text-sm text-foreground-muted leading-relaxed mb-4">Full container load</p>
-        <ul class="space-y-1.5">
-          <li class="text-xs text-foreground-muted">• Single container</li>
-          <li class="text-xs text-foreground-muted">• Container number required</li>
-          <li class="text-xs text-foreground-muted">• No HBL needed</li>
-        </ul>
       </button>
 
-      {/* LCL card */}
+      {/* LCL row */}
       <button
         type="button"
         x-on:click="$store.wizard.selectLoadType('lcl')"
-        class="border-2 rounded-2xl p-8 text-left transition-all focus:outline-none relative"
-        {...{"x-bind:class": "$store.wizard.loadType === 'lcl' ? 'bg-primary-soft border-primary ring-2 ring-primary/20' : 'bg-card border-border hover:border-primary/40 hover:bg-primary-soft/50'"}}
+        style="display:flex; align-items:center; gap:14px; padding:14px 16px; border-radius:14px; border:1.5px solid; cursor:pointer; text-align:left; transition:background 0.15s ease, border-color 0.15s ease; width:100%;"
+        x-bind:style="$store.wizard.loadType === 'lcl'
+          ? 'background:rgba(249,115,22,0.07); border-color:#F97316;'
+          : 'background:rgba(234,230,219,0.4); border-color:rgba(240,197,137,0.4);'"
       >
-        {/* Selected badge */}
         <div
-          class="absolute top-3 right-3 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center"
-          x-show="$store.wizard.loadType === 'lcl'"
+          style="width:40px; height:40px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.15s ease;"
+          x-bind:style="$store.wizard.loadType === 'lcl'
+            ? 'background:linear-gradient(135deg,#F97316,#FB923C); box-shadow:rgba(249,115,22,0.25) 0px 4px 10px 0px;'
+            : 'background:rgba(168,162,158,0.15);'"
         >
-          <Icon name={ICONS.check} size={13} />
+          <Icon
+            name={ICONS.cargo}
+            size={18}
+            x-bind:style="$store.wizard.loadType === 'lcl' ? 'color:white;' : 'color:#A8A29E;'"
+          />
+        </div>
+
+        <div style="flex:1; min-width:0;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
+            <p
+              style="font-size:14px; font-weight:600; letter-spacing:-0.01em; transition:color 0.15s ease;"
+              x-bind:style="$store.wizard.loadType === 'lcl' ? 'color:#F97316;' : 'color:#1C1917;'"
+            >LCL</p>
+            <span style="font-size:11px; font-weight:500; color:#78716C;">Less than Container Load</span>
+          </div>
+          <p style="font-size:12px; color:#A8A29E;">Shared container · HBL + container number · ICS auto-checked</p>
         </div>
 
         <div
-          class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-colors"
-          {...{"x-bind:class": "$store.wizard.loadType === 'lcl' ? 'bg-primary text-primary-foreground' : 'bg-background-subtle text-foreground-muted'"}}
+          style="width:18px; height:18px; border-radius:9999px; border:1.5px solid; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:background 0.15s ease, border-color 0.15s ease;"
+          x-bind:style="$store.wizard.loadType === 'lcl'
+            ? 'background:#F97316; border-color:#F97316;'
+            : 'background:transparent; border-color:rgba(168,162,158,0.4);'"
         >
-          <Icon name={ICONS.cargo} size={26} />
+          <span
+            x-show="$store.wizard.loadType === 'lcl'"
+            style="width:7px; height:7px; border-radius:9999px; background:white; display:block;"
+          ></span>
         </div>
-        <p
-          class="font-bold text-lg mb-1 transition-colors"
-          {...{"x-bind:class": "$store.wizard.loadType === 'lcl' ? 'text-primary' : 'text-foreground'"}}
-        >
-          LCL
-        </p>
-        <p class="text-sm text-foreground-muted leading-relaxed mb-4">Less than container load</p>
-        <ul class="space-y-1.5">
-          <li class="text-xs text-foreground-muted">• Shared container</li>
-          <li class="text-xs text-foreground-muted">• HBL + container number required</li>
-          <li class="text-xs text-foreground-muted">• ICS auto-checked</li>
-        </ul>
       </button>
     </div>
 
-    <p class="text-xs text-foreground-muted text-center">
-      Not sure which applies? <a href="#" class="text-primary hover:underline">FCL vs LCL explained →</a>
+    <p style="font-size:12px; color:#A8A29E; text-align:center;">
+      Not sure? <a href="#" style="color:#F97316; text-decoration:none; border-bottom:1px solid rgba(249,115,22,0.3);">FCL vs LCL explained →</a>
     </p>
   </div>
 )

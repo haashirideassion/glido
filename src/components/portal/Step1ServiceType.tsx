@@ -1,86 +1,99 @@
 export const Step1ServiceType = () => (
   <div x-show="$store.wizard.currentStep === 1" x-cloak>
-    <h2 class="text-xl font-bold mb-1" style="color:#44403C;">How many shipments are you booking today?</h2>
-    <p class="text-sm mb-7" style="color:#A8A29E;">Each shipment (House Bill Number) requires its own slot.</p>
 
-    {/* Slot counter */}
-    <div class="mb-8">
-      <div class="flex items-center gap-5 mb-5">
+    <h2 style="font-size:17px; font-weight:600; color:#1C1917; letter-spacing:-0.015em; margin-bottom:4px;">
+      How many shipments today?
+    </h2>
+    <p style="font-size:13px; color:#78716C; margin-bottom:24px; line-height:1.5;">
+      Each HBL or container number needs its own time slot.
+    </p>
+
+    {/* ── Slot count ─────────────────────────────────────────────────────── */}
+    <div style="margin-bottom:24px;">
+      <div style="display:flex; align-items:center; gap:0; margin-bottom:12px; width:fit-content; background:rgba(234,230,219,0.6); border:1px solid rgba(249,115,22,0.15); border-radius:12px; overflow:hidden;">
         <button
           type="button"
           x-on:click="if ($store.wizard.slotCount > 1) $store.wizard.slotCount--"
-          {...{"x-bind:disabled": "$store.wizard.slotCount <= 1"}}
-          class="w-14 h-14 rounded-2xl font-bold text-2xl flex items-center justify-center transition-all select-none disabled:opacity-30 disabled:cursor-not-allowed"
-          style="border:2px solid #D6D3D1; color:#78716C; background:#F5F3EC;"
-        >
-          −
-        </button>
-        <span class="w-20 text-center text-4xl font-bold tabular-nums" style="color:#44403C;" x-text="$store.wizard.slotCount">1</span>
+          x-bind:disabled="$store.wizard.slotCount <= 1"
+          style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:400; color:#78716C; background:none; border:none; cursor:pointer; border-right:1px solid rgba(249,115,22,0.12); transition:background 0.1s ease;"
+          x-bind:style="$store.wizard.slotCount <= 1 ? 'opacity:0.35; cursor:not-allowed;' : ''"
+          onmouseover="if(this.style.cursor!=='not-allowed'){this.style.background='rgba(249,115,22,0.06)';}"
+          onmouseout="this.style.background='none';"
+        >−</button>
+        <span
+          style="width:48px; text-align:center; font-size:16px; font-weight:600; color:#1C1917; font-variant-numeric:tabular-nums;"
+          x-text="$store.wizard.slotCount"
+        >1</span>
         <button
           type="button"
           x-on:click="if ($store.wizard.slotCount < 10) $store.wizard.slotCount++"
-          {...{"x-bind:disabled": "$store.wizard.slotCount >= 10"}}
-          class="w-14 h-14 rounded-2xl font-bold text-2xl flex items-center justify-center transition-all select-none disabled:opacity-30 disabled:cursor-not-allowed"
-          style="border:2px solid #D6D3D1; color:#78716C; background:#F5F3EC;"
-        >
-          +
-        </button>
-        <span class="text-sm" style="color:#A8A29E;">slot(s) · max 10 per session</span>
+          x-bind:disabled="$store.wizard.slotCount >= 10"
+          style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:400; color:#78716C; background:none; border:none; cursor:pointer; border-left:1px solid rgba(249,115,22,0.12); transition:background 0.1s ease;"
+          x-bind:style="$store.wizard.slotCount >= 10 ? 'opacity:0.35; cursor:not-allowed;' : ''"
+          onmouseover="if(this.style.cursor!=='not-allowed'){this.style.background='rgba(249,115,22,0.06)';}"
+          onmouseout="this.style.background='none';"
+        >+</button>
       </div>
 
-      {/* Quick-select chips */}
-      <div class="flex gap-2 flex-wrap">
+      {/* Quick-select */}
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
         {[1, 2, 3, 5, 10].map((n) => (
           <button
             key={n}
             type="button"
             x-on:click={`$store.wizard.slotCount = ${n}`}
-            class="border rounded-xl px-4 py-2 text-sm font-semibold transition-all"
-            {...{"x-bind:style": `$store.wizard.slotCount === ${n} ? 'background:#F59E0B; color:#fff; border-color:#F59E0B;' : 'background:#F5F3EC; color:#78716C; border-color:#D6D3D1;'`}}
+            style="padding:4px 12px; font-size:12px; font-weight:500; border-radius:9999px; border:1px solid; cursor:pointer; transition:background 0.15s ease, color 0.15s ease, border-color 0.15s ease;"
+            x-bind:style={`$store.wizard.slotCount === ${n}
+              ? 'background:#F97316; color:white; border-color:#F97316;'
+              : 'background:transparent; color:#78716C; border-color:rgba(240,197,137,0.6);'`}
           >
             {n}
           </button>
         ))}
+        <span style="font-size:11px; color:#A8A29E; align-self:center; margin-left:4px;">max 10</span>
       </div>
     </div>
 
-    {/* Guest name */}
-    <div class="space-y-4">
+    {/* ── Guest info ──────────────────────────────────────────────────────── */}
+    <div style="display:flex; flex-direction:column; gap:16px;">
+
       <div>
-        <label class="block text-sm font-semibold mb-1.5" style="color:#57534E;">
-          Your name (for records) <span style="color:#EF4444;">*</span>
+        <label style="display:block; font-size:12px; font-weight:600; color:#57534E; letter-spacing:0.02em; text-transform:uppercase; margin-bottom:7px;">
+          Your name <span style="color:#F97316;">*</span>
         </label>
         <input
           type="text"
           x-model="$store.wizard.guestName"
           placeholder="e.g. Sarah Nguyen"
-          class="w-full rounded-xl px-4 py-3 text-sm transition"
-          style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C; outline:none;"
+          style="width:100%; padding:10px 14px; font-size:13.5px; color:#1C1917; background:#FFFBF5; border:1.5px solid rgba(240,197,137,0.6); border-radius:10px; outline:none; transition:border-color 0.15s ease; box-sizing:border-box;"
+          onfocus="this.style.borderColor='#F97316';"
+          onblur="this.style.borderColor='rgba(240,197,137,0.6)';"
         />
-        <p class="text-xs mt-1" style="color:#A8A29E;">Required — min. 2 characters</p>
+        <p style="font-size:11px; color:#A8A29E; margin-top:4px;">Required — min. 2 characters</p>
       </div>
 
       <div>
-        <label class="block text-sm font-semibold mb-1.5" style="color:#57534E;">
-          Phone number <span style="color:#A8A29E; font-weight:normal;">(optional)</span>
+        <label style="display:block; font-size:12px; font-weight:600; color:#57534E; letter-spacing:0.02em; text-transform:uppercase; margin-bottom:7px;">
+          Phone number <span style="font-size:11px; color:#A8A29E; text-transform:none; font-weight:400; letter-spacing:0;">(optional)</span>
         </label>
         <input
           type="tel"
           x-model="$store.wizard.guestPhone"
           placeholder="+61 4XX XXX XXX"
-          class="w-full rounded-xl px-4 py-3 text-sm transition"
-          style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C; outline:none;"
+          style="width:100%; padding:10px 14px; font-size:13.5px; color:#1C1917; background:#FFFBF5; border:1.5px solid rgba(240,197,137,0.6); border-radius:10px; outline:none; transition:border-color 0.15s ease; box-sizing:border-box;"
+          onfocus="this.style.borderColor='#F97316';"
+          onblur="this.style.borderColor='rgba(240,197,137,0.6)';"
         />
       </div>
     </div>
 
+    {/* Multi-slot note */}
     <div
-      class="mt-5 rounded-xl px-4 py-3 text-xs"
-      style="background:#FFFBEB; border:1px solid #FDE68A; color:#92400E;"
       x-show="$store.wizard.slotCount > 1"
+      style="margin-top:16px; border-radius:10px; padding:10px 14px; font-size:12px; line-height:1.5; background:rgba(249,115,22,0.06); border:1px solid rgba(249,115,22,0.15); color:#92400E;"
     >
-      You've selected <span class="font-bold" x-text="$store.wizard.slotCount"></span> slots.
-      Each slot = one time window at the depot. You'll go through shipment details for each slot separately.
+      <span class="font-semibold" x-text="$store.wizard.slotCount"></span> slots selected — you'll enter shipment details for each one separately.
     </div>
+
   </div>
 )

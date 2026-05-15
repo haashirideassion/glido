@@ -527,11 +527,11 @@ portalRoutes.get('/', (c) => {
 portalRoutes.get('/book', (c) => {
   return c.html(
     <PublicLayout title="Book a Visit">
-      <div class="min-h-[calc(100vh-8rem)] py-10" style="background:#F5F3EC;">
-        <div class="max-w-2xl mx-auto px-4 sm:px-6">
-          <div class="mb-8 text-center">
-            <h1 class="font-medium tracking-tight mb-1" style="font-size:24px; color:#44403C;">Book a Depot Visit</h1>
-            <p class="text-xs" style="color:#A8A29E;">Sydney Container Freight Station · Mon–Fri 06:00–18:00</p>
+      <div style="min-height:calc(100vh - 56px); background:#FFEDD5; padding:40px 24px 64px;">
+        <div style="max-width:540px; margin:0 auto;">
+          <div style="margin-bottom:28px;">
+            <h1 style="font-size:22px; font-weight:600; color:#1C1917; letter-spacing:-0.025em; margin-bottom:4px;">Book a Depot Visit</h1>
+            <p style="font-size:13px; color:#78716C;">Sydney Container Freight Station · Mon–Fri 06:00–18:00</p>
           </div>
           <BookingWizard />
         </div>
@@ -554,29 +554,50 @@ portalRoutes.get('/bookings', async (c) => {
 
   return c.html(
     <PublicLayout title="My Bookings">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
-        <h1 class="font-medium tracking-tight mb-1" style="font-size:22px; color:#44403C;">My Bookings</h1>
-        <p class="text-xs mb-6" style="color:#A8A29E;">Track the status of your depot slot bookings.</p>
+      <div style="min-height:calc(100vh - 56px); background:#FFEDD5; padding:40px 24px 64px;">
+        <div style="max-width:640px; margin:0 auto;">
 
-        <form method="get" action="/bookings" class="flex gap-2 mb-8">
-          <Input
-            type="text"
-            name="ref"
-            value={ref || ''}
-            placeholder="Enter booking reference (e.g. GLD-2026-10142)"
-            class="flex-1"
-          />
-          <Button type="submit">Search</Button>
+          {/* Page header */}
+          <div style="margin-bottom:28px;">
+            <h1 style="font-size:22px; font-weight:600; color:#1C1917; letter-spacing:-0.025em; margin-bottom:4px;">My Bookings</h1>
+            <p style="font-size:13px; color:#78716C;">Track the status of your depot slot bookings.</p>
+          </div>
+
+          {/* Search bar */}
+          <form method="get" action="/bookings" style="display:flex; gap:8px; margin-bottom:28px;">
+            <div style="flex:1; position:relative;">
+              <input
+                type="text"
+                name="ref"
+                value={ref || ''}
+                placeholder="Booking reference — e.g. GLD-2026-10142"
+                style="width:100%; padding:10px 14px; font-size:13.5px; color:#1C1917; background:#FFF7ED; border:1.5px solid rgba(240,197,137,0.6); border-radius:10px; outline:none; box-sizing:border-box; font-family:inherit;"
+                onfocus="this.style.borderColor='#F97316';"
+                onblur="this.style.borderColor='rgba(240,197,137,0.6)';"
+              />
+            </div>
+            <button
+              type="submit"
+              style="padding:10px 20px; font-size:13px; font-weight:500; color:white; background:linear-gradient(135deg,#F97316,#EA6C0A); border:none; border-radius:10px; cursor:pointer; white-space:nowrap; box-shadow:rgba(249,115,22,0.22) 0px 4px 10px 0px;"
+            >
+              Search
+            </button>
+            {ref && (
+              <a
+                href="/bookings"
+                style="display:flex; align-items:center; padding:10px 16px; font-size:13px; font-weight:500; color:#78716C; background:transparent; border:1.5px solid rgba(240,197,137,0.5); border-radius:10px; text-decoration:none; white-space:nowrap;"
+              >
+                Clear
+              </a>
+            )}
+          </form>
+
           {ref && (
-            <a href="/bookings">
-              <Button variant="outline" type="button">Clear</Button>
-            </a>
+            <p style="font-size:12px; font-weight:500; color:#78716C; margin-bottom:16px;">{heading}</p>
           )}
-        </form>
 
-        {ref && <p class="text-xs mb-4 font-medium" style="color:#44403C;">{heading}</p>}
-
-        <MyBookingsList bookings={bookings} query={ref} />
+          <MyBookingsList bookings={bookings} query={ref} />
+        </div>
       </div>
     </PublicLayout>
   )
