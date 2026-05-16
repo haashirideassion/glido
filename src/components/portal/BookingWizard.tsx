@@ -21,18 +21,18 @@ export const BookingWizard = () => (
   <div x-data="{}">
 
     {/* ── Step indicator ──────────────────────────────────────────────────── */}
-    <div x-show="$store.wizard.currentStep <= 7" style="margin-bottom:28px;">
+    <div x-show="$store.wizard.currentStep !== 8" style="margin-bottom:28px;">
 
       {/* Stepper track */}
       <div class="step-track" style="margin-bottom:10px;">
         {STEPS.map((s, i) => (
           <div key={s.n} class="step-track-item">
 
-            {/* Connector before this step */}
+            {/* Connector before this step — flip comparisons to avoid < in JSX attrs */}
             {i > 0 && (
               <div
                 class="step-connector"
-                x-bind:class={`${s.n} < $store.wizard.currentStep ? 'done' : ${s.n} === $store.wizard.currentStep ? 'active' : 'future'`}
+                x-bind:class={`$store.wizard.currentStep > ${s.n} ? 'done' : $store.wizard.currentStep === ${s.n} ? 'active' : 'future'`}
               />
             )}
 
@@ -40,22 +40,22 @@ export const BookingWizard = () => (
             <div style="display:flex; flex-direction:column; align-items:center;">
               <div
                 class="step-bubble"
-                x-bind:class={`${s.n} < $store.wizard.currentStep ? 'done' : ${s.n} === $store.wizard.currentStep ? 'active' : 'inactive'`}
+                x-bind:class={`$store.wizard.currentStep > ${s.n} ? 'done' : $store.wizard.currentStep === ${s.n} ? 'active' : 'inactive'`}
               >
-                {/* Checkmark for completed */}
+                {/* Checkmark for completed — x-show uses > not < */}
                 <svg
-                  x-show={`${s.n} < $store.wizard.currentStep`}
+                  x-show={`$store.wizard.currentStep > ${s.n}`}
                   style="width:13px; height:13px; flex-shrink:0;"
                   viewBox="0 0 12 12" fill="none"
                 >
                   <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                {/* Number for current/future */}
-                <span x-show={`${s.n} >= $store.wizard.currentStep`} style="line-height:1;">{s.n}</span>
+                {/* Number — show when current or future */}
+                <span x-show={`!($store.wizard.currentStep > ${s.n})`} style="line-height:1;">{s.n}</span>
               </div>
               <span
                 class="step-label"
-                x-bind:class={`${s.n} < $store.wizard.currentStep ? 'done' : ${s.n} === $store.wizard.currentStep ? 'active' : 'inactive'`}
+                x-bind:class={`$store.wizard.currentStep > ${s.n} ? 'done' : $store.wizard.currentStep === ${s.n} ? 'active' : 'inactive'`}
               >
                 {s.label}
               </span>
@@ -154,31 +154,35 @@ export const BookingWizard = () => (
 
     {/* ── Navigation ───────────────────────────────────────────────────────── */}
     <div
-      style="display:flex; align-items:center; justify-content:space-between; margin-top:20px; padding-top:18px; border-top:1px solid rgba(255,255,255,0.07);"
-      x-show="$store.wizard.currentStep < 7"
+      style="display:flex; align-items:center; justify-content:space-between; margin-top:20px; padding-top:18px; border-top:1px solid rgba(255,255,255,0.07); gap:12px;"
+      x-show="7 > $store.wizard.currentStep"
     >
-      {/* Back */}
+      {/* Back button — ghost pill with left arrow */}
       <button
         type="button"
         x-on:click="$store.wizard.prevStep()"
-        x-bind:disabled="$store.wizard.currentStep <= 1"
-        style="font-size:13px; font-weight:500; color:rgba(255,255,255,0.35); background:none; border:none; cursor:pointer; padding:4px 0; transition:color 0.12s ease; letter-spacing:-0.01em;"
-        x-bind:style="$store.wizard.currentStep <= 1 ? 'opacity:0; pointer-events:none;' : ''"
-        onmouseover="this.style.color='rgba(255,255,255,0.75)'"
-        onmouseout="this.style.color='rgba(255,255,255,0.35)'"
+        x-bind:disabled="$store.wizard.currentStep === 1"
+        x-bind:style="$store.wizard.currentStep === 1 ? 'opacity:0; pointer-events:none; visibility:hidden;' : 'opacity:1;'"
+        style="display:inline-flex; align-items:center; gap:6px; padding:9px 16px; font-size:13px; font-weight:500; color:#94A3B8; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); border-radius:9999px; cursor:pointer; transition:all 0.15s ease; letter-spacing:-0.01em; flex-shrink:0; box-shadow:inset 0 1px 0 rgba(255,255,255,0.06);"
+        onmouseover="this.style.background='rgba(255,255,255,0.07)'; this.style.color='#F1F5F9'; this.style.borderColor='rgba(255,255,255,0.14)'"
+        onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.color='#94A3B8'; this.style.borderColor='rgba(255,255,255,0.09)'"
       >
-        ← Back
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;">
+          <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back
       </button>
 
-      {/* Next */}
+      {/* Continue / Pay button */}
       <button
         type="button"
         x-on:click="$store.wizard.nextStep()"
         x-bind:disabled="!$store.wizard.canProceed"
-        class="btn-dark"
-        x-bind:style="!$store.wizard.canProceed ? 'opacity:0.25; cursor:not-allowed; pointer-events:none;' : ''"
+        class="btn-primary"
+        style="padding:10px 22px; font-size:13px; min-width:130px; justify-content:center;"
+        x-bind:style="!$store.wizard.canProceed ? 'opacity:0.30; cursor:not-allowed; pointer-events:none;' : ''"
       >
-        <span x-text="$store.wizard.currentStep === 6 ? 'Review & Pay' : 'Continue →'">Continue →</span>
+        <span x-text="$store.wizard.currentStep === 6 ? 'Review & Pay →' : 'Continue →'">Continue →</span>
       </button>
     </div>
   </div>
