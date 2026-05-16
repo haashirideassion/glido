@@ -595,6 +595,90 @@
 
   /* ── Wizard design system ──────────────────────────────────────────────── */
 
+  /* ── Progress stepper ─────────────────────────────────────────────────── */
+  .step-track {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+  }
+  .step-track-item {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+  .step-track-item:last-child { flex: 0; }
+
+  /* Connecting line */
+  .step-connector {
+    flex: 1;
+    height: 1.5px;
+    border-radius: 9999px;
+    margin: 0 4px;
+    transition: background 0.3s ease;
+  }
+  .step-connector.done   { background: linear-gradient(90deg, rgba(252,101,20,0.55), rgba(252,101,20,0.30)); }
+  .step-connector.active { background: linear-gradient(90deg, rgba(252,101,20,0.30), rgba(255,255,255,0.06)); }
+  .step-connector.future { background: rgba(255,255,255,0.07); }
+
+  /* Circle bubble */
+  .step-bubble {
+    width: 32px;
+    height: 32px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+    position: relative;
+    transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
+    border: 1.5px solid transparent;
+  }
+  .step-bubble.done {
+    background: rgba(252,101,20,0.12);
+    border-color: rgba(252,101,20,0.30);
+    color: #FC6514;
+  }
+  .step-bubble.active {
+    background: linear-gradient(180deg, #FF7A2A 0%, #E85A0A 100%);
+    border-color: transparent;
+    color: white;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      0 4px 14px rgba(252,101,20,0.45),
+      0 1px 3px rgba(0,0,0,0.40);
+  }
+  .step-bubble.inactive {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.22);
+  }
+
+  /* Step label below bubble */
+  .step-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    text-align: center;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+    line-height: 1;
+  }
+  .step-label.done    { color: rgba(252,101,20,0.60); }
+  .step-label.active  { color: #FC6514; }
+  .step-label.inactive{ color: rgba(255,255,255,0.18); }
+
+  @media (max-width: 480px) {
+    .step-label { display: none; }
+    .step-bubble { width: 26px; height: 26px; font-size: 10px; }
+  }
+
   /* Card — Level 1 elevation */
   .wizard-card {
     background: linear-gradient(180deg, #1F2831 0%, #1A2028 100%);

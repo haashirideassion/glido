@@ -21,47 +21,56 @@ export const BookingWizard = () => (
   <div x-data="{}">
 
     {/* ── Step indicator ──────────────────────────────────────────────────── */}
-    <div x-show="$store.wizard.currentStep <= 7" style="margin-bottom:32px;">
+    <div x-show="$store.wizard.currentStep <= 7" style="margin-bottom:28px;">
 
-      {/* Track row */}
-      <div style="display:flex; align-items:center; position:relative; margin-bottom:14px;">
+      {/* Stepper track */}
+      <div class="step-track" style="margin-bottom:10px;">
         {STEPS.map((s, i) => (
-          <div key={s.n} style="display:flex; align-items:center; flex:1;">
+          <div key={s.n} class="step-track-item">
 
-            {/* Connector */}
+            {/* Connector before this step */}
             {i > 0 && (
               <div
-                style="flex:1; height:1px; margin:0 3px;"
-                x-bind:style={`${s.n} <= $store.wizard.currentStep ? 'background:rgba(252,101,20,0.40);' : 'background:rgba(255,255,255,0.08);'`}
-              ></div>
+                class="step-connector"
+                x-bind:class={`${s.n} < $store.wizard.currentStep ? 'done' : ${s.n} === $store.wizard.currentStep ? 'active' : 'future'`}
+              />
             )}
 
-            {/* Marker — sharp square */}
-            <div
-              style="width:28px; height:28px; border-radius:4px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:11px; font-weight:700; transition:all 0.15s ease; position:relative;"
-              x-bind:style={`${s.n} < $store.wizard.currentStep
-                ? 'background:rgba(255,255,255,0.08); color:#94A3B8; border:1px solid rgba(255,255,255,0.13); box-shadow:inset 0 1px 0 rgba(255,255,255,0.10);'
-                : ${s.n} === $store.wizard.currentStep
-                  ? 'background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); color:white; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 12px rgba(252,101,20,0.40), 0 1px 3px rgba(0,0,0,0.40); border:1px solid rgba(0,0,0,0.15);'
-                  : 'background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.25); border:1px solid rgba(255,255,255,0.07);'`}
-            >
-              <span x-show={`${s.n} < $store.wizard.currentStep`} style="font-size:10px; line-height:1;">✓</span>
-              <span x-show={`${s.n} >= $store.wizard.currentStep`}>{s.n}</span>
+            {/* Step column: bubble + label */}
+            <div style="display:flex; flex-direction:column; align-items:center;">
+              <div
+                class="step-bubble"
+                x-bind:class={`${s.n} < $store.wizard.currentStep ? 'done' : ${s.n} === $store.wizard.currentStep ? 'active' : 'inactive'`}
+              >
+                {/* Checkmark for completed */}
+                <svg
+                  x-show={`${s.n} < $store.wizard.currentStep`}
+                  style="width:13px; height:13px; flex-shrink:0;"
+                  viewBox="0 0 12 12" fill="none"
+                >
+                  <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {/* Number for current/future */}
+                <span x-show={`${s.n} >= $store.wizard.currentStep`} style="line-height:1;">{s.n}</span>
+              </div>
+              <span
+                class="step-label"
+                x-bind:class={`${s.n} < $store.wizard.currentStep ? 'done' : ${s.n} === $store.wizard.currentStep ? 'active' : 'inactive'`}
+              >
+                {s.label}
+              </span>
             </div>
 
           </div>
         ))}
       </div>
 
-      {/* Step label row */}
-      <div style="display:flex; align-items:center; justify-content:space-between;">
-        <span style="font-size:11px; color:#64748B; letter-spacing:0.02em;">
-          Step <span x-text="$store.wizard.currentStep" style="font-weight:600; color:#94A3B8;"></span> of 7
-        </span>
-        <span
-          style="font-size:10px; font-weight:700; color:#FC6514; letter-spacing:0.08em; text-transform:uppercase;"
-          x-text="['Slots','Service','Cargo','Time','Details','Docs','Payment'][$store.wizard.currentStep - 1] || ''"
-        ></span>
+      {/* Progress bar */}
+      <div style="height:2px; background:rgba(255,255,255,0.06); border-radius:9999px; overflow:hidden; margin-top:4px;">
+        <div
+          style="height:100%; border-radius:9999px; background:linear-gradient(90deg,#FF7A2A,#FC6514); transition:width 0.4s cubic-bezier(0.16,1,0.3,1);"
+          x-bind:style="`width:${Math.round(($store.wizard.currentStep - 1) / 6 * 100)}%`"
+        />
       </div>
     </div>
 
