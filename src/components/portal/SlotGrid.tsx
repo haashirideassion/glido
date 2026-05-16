@@ -15,8 +15,8 @@ export const SlotGrid = ({ slots, date }: Props) => {
 
       {/* Date header */}
       <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:14px;">
-        <p style="font-size:14px; font-weight:600; color:#1C1917;">{dayName}</p>
-        <p style="font-size:12px; color:#A8A29E;">{fullDate}</p>
+        <p style="font-size:14px; font-weight:600; color:#F1F5F9;">{dayName}</p>
+        <p style="font-size:12px; color:#64748B;">{fullDate}</p>
       </div>
 
       {slots.length === 0 ? (
@@ -49,16 +49,16 @@ export const SlotGrid = ({ slots, date }: Props) => {
                   ${isFull ? 'opacity:0.4; pointer-events:none;' : ''}
                 `}
                 x-bind:style={`$store.wizard.selectedSlotId === '${slot.id}'
-                  ? 'background:rgba(249,115,22,0.08); border-color:#F97316;'
+                  ? 'background:rgba(252,101,20,0.08); border-color:#FC6514;'
                   : '${isFull ? '' : 'border-color:rgba(240,197,137,0.35); background:transparent;'}'`}
-                onmouseover={canSelect ? `if($store.wizard.selectedSlotId !== '${slot.id}'){this.style.background='rgba(249,115,22,0.04)'; this.style.borderColor='rgba(249,115,22,0.4)';}` : ''}
+                onmouseover={canSelect ? `if($store.wizard.selectedSlotId !== '${slot.id}'){this.style.background='rgba(252,101,20,0.04)'; this.style.borderColor='rgba(252,101,20,0.4)';}` : ''}
                 onmouseout={canSelect ? `if($store.wizard.selectedSlotId !== '${slot.id}'){this.style.background='transparent'; this.style.borderColor='rgba(240,197,137,0.35)';}` : ''}
               >
                 {/* Time */}
                 <div style="width:88px; flex-shrink:0;">
                   <span
                     style="font-size:14px; font-weight:600; font-variant-numeric:tabular-nums; transition:color 0.12s ease;"
-                    x-bind:style={`$store.wizard.selectedSlotId === '${slot.id}' ? 'color:#F97316;' : '${isFull ? 'color:#A8A29E;' : 'color:#1C1917;'}'`}
+                    x-bind:style={`$store.wizard.selectedSlotId === '${slot.id}' ? 'color:#FC6514;' : '${isFull ? 'color:#64748B;' : 'color:#F1F5F9;'}'`}
                   >
                     {slot.startTime}
                   </span>
@@ -68,7 +68,7 @@ export const SlotGrid = ({ slots, date }: Props) => {
                 {/* Capacity bar */}
                 <div style="flex:1; min-width:0;">
                   <div style="height:4px; background:rgba(168,162,158,0.15); border-radius:9999px; overflow:hidden;">
-                    <div style={`height:100%; border-radius:9999px; width:${pct}%; transition:width 0.3s ease; background:${pct > 80 ? '#F97316' : pct > 50 ? '#FB923C' : '#FBD0A8'};`}></div>
+                    <div style={`height:100%; border-radius:9999px; width:${pct}%; transition:width 0.3s ease; background:${pct > 80 ? '#FC6514' : pct > 50 ? '#FC8A3C' : '#FBD0A8'};`}></div>
                   </div>
                 </div>
 
@@ -77,7 +77,7 @@ export const SlotGrid = ({ slots, date }: Props) => {
                   {isFull ? (
                     <span style="font-size:11px; font-weight:500; color:#A8A29E;">Full</span>
                   ) : (
-                    <span style="font-size:11px; font-weight:500; color:#78716C;">
+                    <span style="font-size:11px; font-weight:500; color:#64748B;">
                       {remaining} left
                     </span>
                   )}
@@ -87,7 +87,7 @@ export const SlotGrid = ({ slots, date }: Props) => {
                 <div
                   style="width:18px; height:18px; border-radius:9999px; border:1.5px solid; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:background 0.12s ease, border-color 0.12s ease;"
                   x-bind:style={`$store.wizard.selectedSlotId === '${slot.id}'
-                    ? 'background:#F97316; border-color:#F97316;'
+                    ? 'background:#FC6514; border-color:#FC6514;'
                     : 'background:transparent; border-color:rgba(168,162,158,0.35);'`}
                 >
                   <span
@@ -108,7 +108,7 @@ export const SlotGrid = ({ slots, date }: Props) => {
           Open
         </span>
         <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#A8A29E;">
-          <span style="display:inline-block; width:20px; height:3px; border-radius:9999px; background:#F97316;"></span>
+          <span style="display:inline-block; width:20px; height:3px; border-radius:9999px; background:#FC6514;"></span>
           Filling up
         </span>
         <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#A8A29E;">

@@ -1,64 +1,46 @@
-import { Icon, ICONS } from '../../lib/Icon'
-
 export const Step2SlotPicker = () => (
   <div x-show="$store.wizard.currentStep === 2" x-cloak>
 
-    <h2 style="font-size:17px; font-weight:600; color:#1C1917; letter-spacing:-0.015em; margin-bottom:4px;">
+    <h2 style="font-size:18px; font-weight:700; color:#F1F5F9; letter-spacing:-0.03em; margin-bottom:3px;">
       What are you here for?
     </h2>
-    <p style="font-size:13px; color:#A8A29E; margin-bottom:24px; line-height:1.5;">
+    <p style="font-size:13px; color:#64748B; margin-bottom:28px; line-height:1.5;">
       This applies to all slots in this session.
     </p>
 
-    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:24px;">
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
 
       {/* Pick Up */}
       <button
         type="button"
         x-on:click="$store.wizard.selectServiceType('pickup')"
-        style="display:flex; align-items:center; gap:14px; padding:16px 18px; border-radius:16px; cursor:pointer; text-align:left; width:100%; transition:all 0.18s ease; background:#FFFFFF; border:1.5px solid rgba(0,0,0,0.08); box-shadow:0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03);"
-        x-bind:style="$store.wizard.serviceType === 'pickup'
-          ? 'background:#FFFFFF; border-color:rgba(249,115,22,0.45); box-shadow:0 0 0 3px rgba(249,115,22,0.08), 0 2px 8px rgba(249,115,22,0.08);'
-          : ''"
-        onmouseover="if(!this.style.borderColor.includes('249')){this.style.borderColor='rgba(0,0,0,0.16)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)';}"
-        onmouseout="if(!this.style.borderColor.includes('249')){this.style.borderColor='rgba(0,0,0,0.08)'; this.style.boxShadow='0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03)';}"
+        class="wizard-option-card"
+        x-bind:class="$store.wizard.serviceType === 'pickup' ? 'selected' : ''"
       >
-        {/* Icon */}
+        {/* Icon box */}
         <div
-          style="width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.18s ease; background:#F5F2EC; box-shadow:2px 2px 5px rgba(0,0,0,0.09),-1px -1px 4px rgba(255,255,255,0.9);"
-          x-bind:style="$store.wizard.serviceType === 'pickup'
-            ? 'background:linear-gradient(135deg,#F97316,#FB923C); box-shadow:rgba(249,115,22,0.3) 0px 4px 12px 0px;'
-            : ''"
+          style="width:44px; height:44px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10); transition:all 0.12s ease;"
+          x-bind:style="$store.wizard.serviceType === 'pickup' ? 'background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-color:transparent; box-shadow:0 4px 12px rgba(252,101,20,0.35);' : ''"
         >
-          <Icon
-            name={ICONS.arrowDown}
-            size={17}
-            x-bind:style="$store.wizard.serviceType === 'pickup' ? 'color:white;' : 'color:#A8A29E;'"
-          />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+            x-bind:style="$store.wizard.serviceType === 'pickup' ? 'stroke:white;' : 'stroke:rgba(255,255,255,0.35);'">
+            <path d="M12 4v12M6 12l6 6 6-6"/>
+            <line x1="4" y1="20" x2="20" y2="20"/>
+          </svg>
         </div>
 
         {/* Text */}
         <div style="flex:1; min-width:0; text-align:left;">
-          <p
-            style="font-size:14px; font-weight:600; letter-spacing:-0.01em; margin-bottom:2px; color:#1C1917; transition:color 0.15s ease;"
-            x-bind:style="$store.wizard.serviceType === 'pickup' ? 'color:#F97316;' : ''"
-          >
-            Pick Up
-          </p>
-          <p style="font-size:12px; color:#A8A29E;">Collect cargo from the CFS · ICS checked automatically</p>
+          <p style="font-size:14px; font-weight:700; letter-spacing:-0.02em; margin-bottom:2px; color:#F1F5F9;">Pick Up</p>
+          <p style="font-size:12px; color:#64748B; line-height:1.4;">Collect cargo from the CFS · ICS checked automatically</p>
         </div>
 
-        {/* Radio */}
+        {/* Selector */}
         <div
-          style="width:20px; height:20px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.18s ease; border:1.5px solid rgba(0,0,0,0.15); background:#F5F2EC; box-shadow:inset 1px 1px 3px rgba(0,0,0,0.07);"
-          x-bind:style="$store.wizard.serviceType === 'pickup'
-            ? 'background:#F97316; border-color:#F97316; box-shadow:rgba(249,115,22,0.25) 0px 2px 6px 0px;'
-            : ''"
+          style="width:20px; height:20px; border-radius:3px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1.5px solid rgba(255,255,255,0.18); background:transparent; transition:all 0.12s ease;"
+          x-bind:style="$store.wizard.serviceType === 'pickup' ? 'background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-color:transparent;' : ''"
         >
-          <span
-            x-show="$store.wizard.serviceType === 'pickup'"
-            style="width:7px; height:7px; border-radius:9999px; background:white; display:block;"
-          ></span>
+          <span x-show="$store.wizard.serviceType === 'pickup'" style="color:white; font-size:11px; font-weight:700; line-height:1;">✓</span>
         </div>
       </button>
 
@@ -66,53 +48,37 @@ export const Step2SlotPicker = () => (
       <button
         type="button"
         x-on:click="$store.wizard.selectServiceType('dropoff')"
-        style="display:flex; align-items:center; gap:14px; padding:16px 18px; border-radius:16px; cursor:pointer; text-align:left; width:100%; transition:all 0.18s ease; background:#FFFFFF; border:1.5px solid rgba(0,0,0,0.08); box-shadow:0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03);"
-        x-bind:style="$store.wizard.serviceType === 'dropoff'
-          ? 'background:#FFFFFF; border-color:rgba(249,115,22,0.45); box-shadow:0 0 0 3px rgba(249,115,22,0.08), 0 2px 8px rgba(249,115,22,0.08);'
-          : ''"
-        onmouseover="if(!this.style.borderColor.includes('249')){this.style.borderColor='rgba(0,0,0,0.16)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)';}"
-        onmouseout="if(!this.style.borderColor.includes('249')){this.style.borderColor='rgba(0,0,0,0.08)'; this.style.boxShadow='0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03)';}"
+        class="wizard-option-card"
+        x-bind:class="$store.wizard.serviceType === 'dropoff' ? 'selected' : ''"
       >
         <div
-          style="width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.18s ease; background:#F5F2EC; box-shadow:2px 2px 5px rgba(0,0,0,0.09),-1px -1px 4px rgba(255,255,255,0.9);"
-          x-bind:style="$store.wizard.serviceType === 'dropoff'
-            ? 'background:linear-gradient(135deg,#F97316,#FB923C); box-shadow:rgba(249,115,22,0.3) 0px 4px 12px 0px;'
-            : ''"
+          style="width:44px; height:44px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10); transition:all 0.12s ease;"
+          x-bind:style="$store.wizard.serviceType === 'dropoff' ? 'background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-color:transparent; box-shadow:0 4px 12px rgba(252,101,20,0.35);' : ''"
         >
-          <Icon
-            name={ICONS.arrowUp}
-            size={17}
-            x-bind:style="$store.wizard.serviceType === 'dropoff' ? 'color:white;' : 'color:#A8A29E;'"
-          />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+            x-bind:style="$store.wizard.serviceType === 'dropoff' ? 'stroke:white;' : 'stroke:rgba(255,255,255,0.35);'">
+            <path d="M12 20V8M6 12l6-6 6 6"/>
+            <line x1="4" y1="4" x2="20" y2="4"/>
+          </svg>
         </div>
 
         <div style="flex:1; min-width:0; text-align:left;">
-          <p
-            style="font-size:14px; font-weight:600; letter-spacing:-0.01em; margin-bottom:2px; color:#1C1917; transition:color 0.15s ease;"
-            x-bind:style="$store.wizard.serviceType === 'dropoff' ? 'color:#F97316;' : ''"
-          >
-            Drop Off
-          </p>
-          <p style="font-size:12px; color:#A8A29E;">Deliver cargo to the CFS · Container or HBL required</p>
+          <p style="font-size:14px; font-weight:700; letter-spacing:-0.02em; margin-bottom:2px; color:#F1F5F9;">Drop Off</p>
+          <p style="font-size:12px; color:#64748B; line-height:1.4;">Deliver cargo to the CFS · Container or HBL required</p>
         </div>
 
         <div
-          style="width:20px; height:20px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.18s ease; border:1.5px solid rgba(0,0,0,0.15); background:#F5F2EC; box-shadow:inset 1px 1px 3px rgba(0,0,0,0.07);"
-          x-bind:style="$store.wizard.serviceType === 'dropoff'
-            ? 'background:#F97316; border-color:#F97316; box-shadow:rgba(249,115,22,0.25) 0px 2px 6px 0px;'
-            : ''"
+          style="width:20px; height:20px; border-radius:3px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1.5px solid rgba(255,255,255,0.18); background:transparent; transition:all 0.12s ease;"
+          x-bind:style="$store.wizard.serviceType === 'dropoff' ? 'background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-color:transparent;' : ''"
         >
-          <span
-            x-show="$store.wizard.serviceType === 'dropoff'"
-            style="width:7px; height:7px; border-radius:9999px; background:white; display:block;"
-          ></span>
+          <span x-show="$store.wizard.serviceType === 'dropoff'" style="color:white; font-size:11px; font-weight:700; line-height:1;">✓</span>
         </div>
       </button>
     </div>
 
-    <p style="font-size:12px; color:#C2BEBB; text-align:center;">
+    <p style="font-size:12px; color:rgba(255,255,255,0.22); text-align:center;">
       Not sure?{' '}
-      <a href="#" style="color:#78716C; text-decoration:underline; text-underline-offset:2px; text-decoration-color:rgba(0,0,0,0.2);">
+      <a href="#" style="color:#64748B; text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(255,255,255,0.15);">
         View depot services guide →
       </a>
     </p>

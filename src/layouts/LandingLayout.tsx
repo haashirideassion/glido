@@ -1,5 +1,6 @@
 import type { FC } from 'hono/jsx'
 import { Icon, ICONS } from '../lib/Icon'
+import { GlidoLogo } from '../lib/GlidoLogo'
 
 interface Props {
   title?: string
@@ -33,7 +34,7 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
         {/* Anime.js for scroll and counter animations */}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
       </head>
-      <body style="background:#F2EDE4; color:#1A1815; overflow-x:hidden;">
+      <body style="background:#090D12; color:#F1F5F9; overflow-x:hidden;">
 
         {/* ── Fixed nav ─────────────────────────────────────────────────── */}
         <header
@@ -42,28 +43,13 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
           style="transition: background 0.3s ease, box-shadow 0.3s ease;"
         >
           <div
-            style={`
-              background: rgba(252,250,247,0.88);
-              backdrop-filter: blur(16px) saturate(1.5);
-              -webkit-backdrop-filter: blur(16px) saturate(1.5);
-              border-bottom: 1px solid rgba(0,0,0,0.07);
-            `}
+            style="background:rgba(9,13,18,0.85); backdrop-filter:blur(16px) saturate(180%); -webkit-backdrop-filter:blur(16px) saturate(180%); border-bottom:1px solid rgba(255,255,255,0.07);"
           >
             <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 
               {/* Logo */}
-              <a href="/" class="flex items-center gap-2.5" style="text-decoration:none;">
-                <div
-                  style={`
-                    width:34px; height:34px; border-radius:10px;
-                    background: linear-gradient(135deg,#F97316,#FB923C);
-                    display:flex; align-items:center; justify-content:center;
-                    box-shadow: rgba(249,115,22,0.30) 0px 4px 12px 0px;
-                  `}
-                >
-                  <Icon name={ICONS.logo} size={18} style="color:white;" />
-                </div>
-                <span style="font-weight:600; font-size:15px; letter-spacing:-0.02em; color:#1A1815;">Glido</span>
+              <a href="/" class="flex items-center" style="text-decoration:none;">
+                <GlidoLogo height={22} onDark={true} />
               </a>
 
               {/* Center nav */}
@@ -76,9 +62,9 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
                   <a
                     key={l.href}
                     href={l.href}
-                    style="font-size:14px; font-weight:500; color:#6B6560; text-decoration:none; transition: color 0.15s ease;"
-                    onmouseover="this.style.color='#1A1815'"
-                    onmouseout="this.style.color='#6B6560'"
+                    style="font-size:14px; font-weight:500; color:#64748B; text-decoration:none; transition: color 0.15s ease;"
+                    onmouseover="this.style.color='#F1F5F9'"
+                    onmouseout="this.style.color='#64748B'"
                   >
                     {l.label}
                   </a>
@@ -100,19 +86,16 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
         </main>
 
         {/* ── Footer ────────────────────────────────────────────────────── */}
-        <footer style="border-top: 1px solid rgba(0,0,0,0.08); background:#1C1917; padding:64px 24px 32px;">
+        <footer style="border-top:1px solid rgba(255,255,255,0.07); background:#090D12; padding:64px 24px 32px;">
           <div class="max-w-6xl mx-auto">
             <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:48px; margin-bottom:48px;" class="footer-grid">
 
               {/* Brand column */}
               <div>
-                <div class="flex items-center gap-2.5 mb-4">
-                  <div style="width:32px; height:32px; border-radius:10px; background:linear-gradient(135deg,#F97316,#FB923C); display:flex; align-items:center; justify-content:center;">
-                    <Icon name={ICONS.logo} size={16} style="color:white;" />
-                  </div>
-                  <span style="font-weight:600; font-size:14px; color:#FFFFFF; letter-spacing:-0.02em;">Glido</span>
+                <div class="flex items-center mb-4">
+                  <GlidoLogo height={20} onDark={true} />
                 </div>
-                <p style="font-size:13px; color:#78716C; line-height:1.7; max-width:220px;">
+                <p style="font-size:13px; color:#64748B; line-height:1.7; max-width:220px;">
                   Streamlining container freight station operations — from booking to bay door.
                 </p>
                 <div style="display:flex; gap:12px; margin-top:20px;">
@@ -124,10 +107,10 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
                       key={s.icon}
                       href={s.href}
                       style="width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; transition:background 0.15s ease;"
-                      onmouseover="this.style.background='rgba(249,115,22,0.15)'"
+                      onmouseover="this.style.background='rgba(252,101,20,0.15)'"
                       onmouseout="this.style.background='rgba(255,255,255,0.06)'"
                     >
-                      <Icon name={s.icon} size={14} style="color:#78716C;" />
+                      <Icon name={s.icon} size={14} style="color:#64748B;" />
                     </a>
                   ))}
                 </div>
@@ -140,15 +123,15 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
                 { heading: 'Company', links: [{ label: 'Privacy', href: '#' }, { label: 'Terms', href: '#' }, { label: 'Contact', href: '#' }] },
               ].map(col => (
                 <div key={col.heading}>
-                  <p style="font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#57534E; margin-bottom:16px;">{col.heading}</p>
+                  <p style="font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#64748B; margin-bottom:16px;">{col.heading}</p>
                   <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px;">
                     {col.links.map(l => (
                       <li key={l.label}>
                         <a
                           href={l.href}
-                          style="font-size:13px; color:#78716C; text-decoration:none; transition:color 0.15s ease;"
-                          onmouseover="this.style.color='#D4D0C8'"
-                          onmouseout="this.style.color='#78716C'"
+                          style="font-size:13px; color:#64748B; text-decoration:none; transition:color 0.15s ease;"
+                          onmouseover="this.style.color='#94A3B8'"
+                          onmouseout="this.style.color='#64748B'"
                         >
                           {l.label}
                         </a>
@@ -159,9 +142,9 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
               ))}
             </div>
 
-            <div style="padding-top:24px; border-top:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-              <span style="font-size:12px; color:#57534E;">© 2026 Glido CFS. All rights reserved.</span>
-              <span style="font-size:12px; color:#57534E;">Sydney Container Freight Station · Mon–Fri 06:00–18:00</span>
+            <div style="padding-top:24px; border-top:1px solid rgba(255,255,255,0.07); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <span style="font-size:12px; color:#64748B;">© 2026 Glido CFS. All rights reserved.</span>
+              <span style="font-size:12px; color:#64748B;">Sydney Container Freight Station · Mon–Fri 06:00–18:00</span>
             </div>
           </div>
         </footer>

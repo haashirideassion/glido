@@ -10,16 +10,18 @@ interface Props {
 
 type StatusVariant = 'warning' | 'default' | 'success' | 'secondary' | 'outline' | 'destructive'
 
+const SECTION_LABEL = "font-size:10px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px;"
+const PANEL_STYLE  = "background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:14px 16px;"
+const ROW_LABEL    = "display:flex; align-items:center; gap:6px; font-size:12px; color:#64748B;"
+const ROW_VALUE    = "font-size:12px; font-weight:600; color:#F1F5F9;"
+
 export const BookingSlideOver = ({ booking: b }: Props) => (
-  <div class="flex flex-col h-full" x-data="{ confirmModal: false, completionNotes: '' }">
+  <div style="display:flex; flex-direction:column; height:100%;" x-data="{ confirmModal: false, completionNotes: '' }">
     {/* Header */}
-    <div
-      class="flex items-center justify-between px-6 py-4 shrink-0"
-      style="border-bottom:1px solid #D6D3D1; background:#FCFBF8"
-    >
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.07); background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); flex-shrink:0;">
       <div>
-        <p class="font-mono text-sm font-bold" style="color:#44403C">{b.referenceNumber}</p>
-        <Badge variant={STATUS_BADGE_VARIANT[b.status] as StatusVariant} class="mt-1">
+        <p style="font-family:ui-monospace,monospace; font-size:13px; font-weight:700; color:#FC6514; margin-bottom:4px;">{b.referenceNumber}</p>
+        <Badge variant={STATUS_BADGE_VARIANT[b.status] as StatusVariant}>
           {STATUS_LABEL[b.status]}
         </Badge>
       </div>
@@ -34,28 +36,23 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
     </div>
 
     {/* Body */}
-    <div class="flex-1 overflow-y-auto px-6 py-5 space-y-5" style="background:#FCFBF8">
+    <div style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:20px; background:#090D12;">
 
-      {/* Visitor */}
+      {/* Driver / Visitor */}
       <section>
-        <h3
-          class="mb-3"
-          style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-        >
-          Driver / Visitor
-        </h3>
-        <div class="rounded-xl p-4 space-y-2 text-sm" style="background:#F5F3EC; border:1px solid rgba(231,229,228,0.5)">
+        <p style={SECTION_LABEL}>Driver / Visitor</p>
+        <div style={PANEL_STYLE + " display:flex; flex-direction:column; gap:10px;"}>
           {[
             { label: 'Driver', value: b.driverName,  icon: ICONS.user },
             { label: 'Phone',  value: b.driverPhone || '—', icon: ICONS.phone },
             { label: 'Guest',  value: b.guestName || b.driverName, icon: ICONS.users },
           ].map((row) => (
-            <div key={row.label} class="flex justify-between items-center">
-              <span class="flex items-center gap-1.5" style="color:#78716C">
-                <Icon name={row.icon} size={13} style="color:#A8A29E" />
+            <div key={row.label} style="display:flex; justify-content:space-between; align-items:center;">
+              <span style={ROW_LABEL}>
+                <Icon name={row.icon} size={13} style="color:#64748B;" />
                 {row.label}
               </span>
-              <span class="font-semibold text-xs" style="color:#44403C">{row.value}</span>
+              <span style={ROW_VALUE}>{row.value}</span>
             </div>
           ))}
         </div>
@@ -63,93 +60,71 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
 
       {/* Slot */}
       <section>
-        <h3
-          class="mb-3"
-          style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-        >
-          Slot
-        </h3>
-        <div class="rounded-xl p-4 grid grid-cols-2 gap-3 text-sm" style="background:#F5F3EC; border:1px solid rgba(231,229,228,0.5)">
+        <p style={SECTION_LABEL}>Slot</p>
+        <div style={PANEL_STYLE + " display:grid; grid-template-columns:1fr 1fr; gap:12px;"}>
           <div>
-            <p class="text-xs mb-0.5" style="color:#A8A29E">Date</p>
-            <p class="font-semibold flex items-center gap-1" style="color:#44403C">
-              <Icon name={ICONS.calendar} size={13} style="color:#A8A29E" />
+            <p style="font-size:10px; color:#64748B; margin-bottom:3px;">Date</p>
+            <p style="font-size:13px; font-weight:600; color:#F1F5F9; display:flex; align-items:center; gap:5px;">
+              <Icon name={ICONS.calendar} size={13} style="color:#64748B;" />
               {b.slotDate}
             </p>
           </div>
           <div>
-            <p class="text-xs mb-0.5" style="color:#A8A29E">Time</p>
-            <p class="font-semibold flex items-center gap-1" style="color:#44403C">
-              <Icon name={ICONS.clock} size={13} style="color:#A8A29E" />
+            <p style="font-size:10px; color:#64748B; margin-bottom:3px;">Time</p>
+            <p style="font-size:13px; font-weight:600; color:#F1F5F9; display:flex; align-items:center; gap:5px;">
+              <Icon name={ICONS.clock} size={13} style="color:#64748B;" />
               {b.slotStartTime} – {b.slotEndTime}
             </p>
           </div>
           <div>
-            <p class="text-xs mb-0.5" style="color:#A8A29E">Service</p>
-            <p class="font-semibold" style="color:#44403C">{SERVICE_LABEL[b.serviceType]}</p>
+            <p style="font-size:10px; color:#64748B; margin-bottom:3px;">Service</p>
+            <p style="font-size:13px; font-weight:600; color:#F1F5F9;">{SERVICE_LABEL[b.serviceType]}</p>
           </div>
           <div>
-            <p class="text-xs mb-0.5" style="color:#A8A29E">Load Type</p>
-            <p class="font-semibold" style="color:#44403C">{LOAD_LABEL[b.loadType]}</p>
+            <p style="font-size:10px; color:#64748B; margin-bottom:3px;">Load Type</p>
+            <p style="font-size:13px; font-weight:600; color:#F1F5F9;">{LOAD_LABEL[b.loadType]}</p>
           </div>
         </div>
       </section>
 
       {/* Shipment */}
       <section>
-        <h3
-          class="mb-3"
-          style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-        >
-          Shipment
-        </h3>
-        <div class="space-y-2 text-sm">
+        <p style={SECTION_LABEL}>Shipment</p>
+        <div style="display:flex; flex-direction:column; gap:8px;">
           {b.houseBillNumber && (
-            <div class="flex justify-between items-center">
-              <span class="flex items-center gap-1.5" style="color:#78716C">
-                <Icon name={ICONS.document} size={13} style="color:#A8A29E" />
-                HBL
-              </span>
-              <span class="font-mono text-xs font-bold" style="color:#57534E">{b.houseBillNumber}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style={ROW_LABEL}><Icon name={ICONS.document} size={13} style="color:#64748B;" />HBL</span>
+              <span style="font-family:ui-monospace,monospace; font-size:12px; font-weight:700; color:#94A3B8;">{b.houseBillNumber}</span>
             </div>
           )}
           {b.containerNumber && (
-            <div class="flex justify-between items-center">
-              <span class="flex items-center gap-1.5" style="color:#78716C">
-                <Icon name={ICONS.container} size={13} style="color:#A8A29E" />
-                Container
-              </span>
-              <span class="font-mono text-xs font-bold" style="color:#57534E">{b.containerNumber}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style={ROW_LABEL}><Icon name={ICONS.container} size={13} style="color:#64748B;" />Container</span>
+              <span style="font-family:ui-monospace,monospace; font-size:12px; font-weight:700; color:#94A3B8;">{b.containerNumber}</span>
             </div>
           )}
           {b.weightKg && (
-            <div class="flex justify-between items-center">
-              <span class="flex items-center gap-1.5" style="color:#78716C">
-                <Icon name={ICONS.cargo} size={13} style="color:#A8A29E" />
-                Weight
-              </span>
-              <span class="font-semibold text-xs" style="color:#44403C">{b.weightKg.toLocaleString()} kg</span>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style={ROW_LABEL}><Icon name={ICONS.cargo} size={13} style="color:#64748B;" />Weight</span>
+              <span style={ROW_VALUE}>{b.weightKg.toLocaleString()} kg</span>
             </div>
           )}
           {b.volumeCbm && (
-            <div class="flex justify-between items-center">
-              <span class="flex items-center gap-1.5" style="color:#78716C">
-                <Icon name={ICONS.layers} size={13} style="color:#A8A29E" />
-                Volume
-              </span>
-              <span class="font-semibold text-xs" style="color:#44403C">{b.volumeCbm} CBM</span>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style={ROW_LABEL}><Icon name={ICONS.layers} size={13} style="color:#64748B;" />Volume</span>
+              <span style={ROW_VALUE}>{b.volumeCbm} CBM</span>
             </div>
           )}
           {b.packageCount && (
-            <div class="flex justify-between items-center">
-              <span class="ml-5" style="color:#78716C">Packages</span>
-              <span class="font-semibold text-xs" style="color:#44403C">{b.packageCount} pkgs</span>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style={ROW_LABEL + " padding-left:19px;"}>Packages</span>
+              <span style={ROW_VALUE}>{b.packageCount} pkgs</span>
             </div>
           )}
           {b.palletCount !== undefined && b.palletCount > 0 && (
-            <div class="flex justify-between items-center">
-              <span class="ml-5" style="color:#78716C">Pallets</span>
-              <span class="font-semibold text-xs" style="color:#44403C">{b.palletCount} × {b.palletType}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style={ROW_LABEL + " padding-left:19px;"}>Pallets</span>
+              <span style={ROW_VALUE}>{b.palletCount} × {b.palletType}</span>
             </div>
           )}
         </div>
@@ -157,11 +132,11 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
 
       {/* CHEP warning */}
       {b.palletType === 'chep' && (
-        <div class="border rounded-xl px-4 py-3 flex items-start gap-2" style="background:#FFFBEB; border-color:#FDE68A">
-          <Icon name={ICONS.warning} size={16} class="shrink-0 mt-0.5" style="color:#D97706" />
+        <div style="background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.20); border-radius:10px; padding:12px 16px; display:flex; align-items:flex-start; gap:10px;">
+          <Icon name={ICONS.warning} size={16} style="color:#FBBF24; flex-shrink:0; margin-top:1px;" />
           <div>
-            <p class="font-semibold text-sm" style="color:#92400E">CHEP Pallet Exchange</p>
-            <p class="text-xs mt-0.5" style="color:#B45309">
+            <p style="font-size:13px; font-weight:600; color:#FBBF24; margin-bottom:2px;">CHEP Pallet Exchange</p>
+            <p style="font-size:12px; color:rgba(251,191,36,0.65);">
               {b.palletCount} CHEP pallet{(b.palletCount || 0) > 1 ? 's' : ''} must be exchanged at collection.
             </p>
           </div>
@@ -171,41 +146,25 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
       {/* ICS */}
       {b.icsStatus && (
         <section>
-          <h3
-            class="mb-3"
-            style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-          >
-            ICS Status
-          </h3>
-          <div class="flex items-center justify-between rounded-xl p-3" style="background:#F5F3EC; border:1px solid rgba(231,229,228,0.5)">
-            <span
-              class={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full border ${ICS_BADGE_CLASS[b.icsStatus]}`}
-            >
+          <p style={SECTION_LABEL}>ICS Status</p>
+          <div style={PANEL_STYLE + " display:flex; align-items:center; justify-content:space-between;"}>
+            <span class={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full border ${ICS_BADGE_CLASS[b.icsStatus]}`}>
               {ICS_LABEL[b.icsStatus]}
             </span>
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                class="text-xs flex items-center gap-1 hover:underline"
-                style="color:#F59E0B"
-              >
+            <div style="display:flex; align-items:center; gap:10px;">
+              <button type="button" style="font-size:11px; color:#FC6514; background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:4px;">
                 <Icon name={ICONS.refresh} size={12} />
                 Refresh ICS
               </button>
-              <span style="color:#D6D3D1">|</span>
-              <a
-                href="https://ics.abf.gov.au"
-                target="_blank"
-                class="text-xs flex items-center gap-1 hover:underline"
-                style="color:#F59E0B"
-              >
+              <span style="color:rgba(255,255,255,0.12);">|</span>
+              <a href="https://ics.abf.gov.au" target="_blank" style="font-size:11px; color:#FC6514; text-decoration:none; display:flex; align-items:center; gap:4px;">
                 Open in ICS portal
                 <Icon name={ICONS.arrowRight} size={12} />
               </a>
             </div>
           </div>
           {b.icsLastCheckedAt && (
-            <p class="text-xs mt-1" style="color:#A8A29E">
+            <p style="font-size:11px; color:#64748B; margin-top:5px;">
               Last checked: {new Date(b.icsLastCheckedAt).toLocaleString('en-AU')}
             </p>
           )}
@@ -215,56 +174,49 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
       {/* Charges */}
       {b.totalAmount && (
         <section>
-          <h3
-            class="mb-3"
-            style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-          >
-            Charges
-          </h3>
-          <div class="space-y-1.5 text-sm">
+          <p style={SECTION_LABEL}>Charges</p>
+          <div style="display:flex; flex-direction:column; gap:7px; font-size:13px;">
             {b.storageCharge !== undefined && b.storageCharge > 0 && (
-              <div class="flex justify-between" style="color:#78716C">
+              <div style="display:flex; justify-content:space-between; color:#94A3B8;">
                 <span>Storage ({b.storageDays} days)</span>
                 <span>${b.storageCharge.toFixed(2)}</span>
               </div>
             )}
             {b.shrinkWrapCharge !== undefined && b.shrinkWrapCharge > 0 && (
-              <div class="flex justify-between" style="color:#78716C">
+              <div style="display:flex; justify-content:space-between; color:#94A3B8;">
                 <span>Shrink wrap</span>
                 <span>${b.shrinkWrapCharge.toFixed(2)}</span>
               </div>
             )}
             {b.slotFee !== undefined && (
-              <div class="flex justify-between" style="color:#78716C">
+              <div style="display:flex; justify-content:space-between; color:#94A3B8;">
                 <span>Slot fee</span>
                 <span>${b.slotFee.toFixed(2)}</span>
               </div>
             )}
             {b.gstAmount !== undefined && (
-              <div class="flex justify-between text-xs pt-1" style="color:#A8A29E; border-top:1px solid #E7E5E4">
+              <div style="display:flex; justify-content:space-between; font-size:12px; color:#64748B; padding-top:6px; border-top:1px solid rgba(255,255,255,0.07);">
                 <span>GST (10%)</span>
                 <span>${b.gstAmount.toFixed(2)}</span>
               </div>
             )}
-            <div class="flex justify-between font-bold pt-1" style="color:#44403C; border-top:1px solid #D6D3D1">
+            <div style="display:flex; justify-content:space-between; font-weight:700; color:#F1F5F9; padding-top:6px; border-top:1px solid rgba(255,255,255,0.09);">
               <span>Total</span>
-              <span>${b.totalAmount.toFixed(2)}</span>
+              <span style="color:#FC6514;">${b.totalAmount.toFixed(2)}</span>
             </div>
-            <div class="flex justify-between text-xs" style="color:#A8A29E">
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:#64748B;">
               <span>{b.paymentMethod?.toUpperCase() || '—'}</span>
-              <span style={b.paymentStatus === 'paid' ? 'color:#16A34A; font-weight:500' : 'color:#F59E0B'}>
+              <span style={b.paymentStatus === 'paid' ? 'color:#22C55E; font-weight:500;' : 'color:#FBBF24; font-weight:500;'}>
                 {b.paymentStatus === 'paid' ? 'Paid' : b.paymentStatus === 'pending_eft' ? 'EFT Pending' : b.paymentStatus}
               </span>
             </div>
           </div>
 
-          {/* EFT Mark as Paid button */}
           {b.paymentStatus === 'pending_eft' && (
-            <div class="mt-3">
+            <div style="margin-top:12px;">
               <button
                 type="button"
-                class="w-full"
-                style="background:#F59E0B; color:#FFFFFF; border-radius:6px; padding:8px 16px; font-size:12px; font-weight:500; width:100%"
+                style="width:100%; background:rgba(252,101,20,0.15); color:#FC6514; border:1px solid rgba(252,101,20,0.30); border-radius:8px; padding:8px 16px; font-size:12px; font-weight:600; cursor:pointer;"
                 hx-post={`/reception/bookings/${b.id}/mark-eft-paid`}
                 hx-target="#slide-over-content"
                 hx-swap="innerHTML"
@@ -276,72 +228,42 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
         </section>
       )}
 
-      {/* Name match (mock) */}
+      {/* Identity check */}
       <section>
-        <h3
-          class="mb-2"
-          style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-        >
-          Identity Check
-        </h3>
-        <div class="flex items-center gap-2 text-sm">
-          <span class="inline-flex items-center gap-1.5 border text-xs font-semibold px-2.5 py-1 rounded-full" style="background:#F0FDF4; border-color:#BBF7D0; color:#16A34A">
+        <p style={SECTION_LABEL}>Identity Check</p>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="display:inline-flex; align-items:center; gap:5px; border:1px solid rgba(34,197,94,0.22); font-size:11px; font-weight:600; padding:4px 10px; border-radius:9999px; background:rgba(34,197,94,0.10); color:#22C55E;">
             <Icon name={ICONS.check} size={11} />
             Name Matched
           </span>
-          <span class="text-xs" style="color:#A8A29E">Driver licence verified at kiosk</span>
+          <span style="font-size:11px; color:#64748B;">Driver licence verified at kiosk</span>
         </div>
       </section>
 
       {/* Timeline */}
       <section>
-        <h3
-          class="mb-3"
-          style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-        >
-          Timeline
-        </h3>
-        <div class="space-y-2 text-sm">
-          <div class="flex justify-between">
-            <span class="flex items-center gap-1.5" style="color:#78716C">
-              <Icon name={ICONS.document} size={13} style="color:#A8A29E" />
-              Booking Created
-            </span>
-            <span class="text-xs font-medium" style="color:#57534E">
-              {new Date(b.createdAt).toLocaleString('en-AU')}
-            </span>
+        <p style={SECTION_LABEL}>Timeline</p>
+        <div style="display:flex; flex-direction:column; gap:8px; font-size:12px;">
+          <div style="display:flex; justify-content:space-between;">
+            <span style={ROW_LABEL}><Icon name={ICONS.document} size={13} style="color:#64748B;" />Booking Created</span>
+            <span style="font-size:11px; font-weight:500; color:#94A3B8;">{new Date(b.createdAt).toLocaleString('en-AU')}</span>
           </div>
           {b.paymentStatus === 'paid' && (
-            <div class="flex justify-between">
-              <span class="flex items-center gap-1.5" style="color:#78716C">
-                <Icon name={ICONS.check} size={13} style="color:#16A34A" />
-                Payment Received
-              </span>
-              <span class="text-xs font-medium" style="color:#57534E">
-                {new Date(b.createdAt).toLocaleString('en-AU')}
-              </span>
+            <div style="display:flex; justify-content:space-between;">
+              <span style={ROW_LABEL}><Icon name={ICONS.check} size={13} style="color:#22C55E;" />Payment Received</span>
+              <span style="font-size:11px; font-weight:500; color:#94A3B8;">{new Date(b.createdAt).toLocaleString('en-AU')}</span>
             </div>
           )}
           {b.checkedInAt && (
-            <div class="flex justify-between">
-              <span class="flex items-center gap-1.5" style="color:#78716C">
-                <Icon name={ICONS.userCheck} size={13} style="color:#F59E0B" />
-                Checked In
-              </span>
-              <span class="text-xs font-medium" style="color:#57534E">
-                {new Date(b.checkedInAt).toLocaleString('en-AU')}
-              </span>
+            <div style="display:flex; justify-content:space-between;">
+              <span style={ROW_LABEL}><Icon name={ICONS.userCheck} size={13} style="color:#FBBF24;" />Checked In</span>
+              <span style="font-size:11px; font-weight:500; color:#94A3B8;">{new Date(b.checkedInAt).toLocaleString('en-AU')}</span>
             </div>
           )}
           {b.completedAt && (
-            <div class="flex justify-between">
-              <span class="flex items-center gap-1.5" style="color:#78716C">
-                <Icon name={ICONS.checkSquare} size={13} style="color:#16A34A" />
-                Completed
-              </span>
-              <span class="text-xs font-medium" style="color:#57534E">
-                {new Date(b.completedAt).toLocaleString('en-AU')}
-              </span>
+            <div style="display:flex; justify-content:space-between;">
+              <span style={ROW_LABEL}><Icon name={ICONS.checkSquare} size={13} style="color:#22C55E;" />Completed</span>
+              <span style="font-size:11px; font-weight:500; color:#94A3B8;">{new Date(b.completedAt).toLocaleString('en-AU')}</span>
             </div>
           )}
         </div>
@@ -349,13 +271,11 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
     </div>
 
     {/* Action buttons */}
-    <div class="shrink-0 px-6 py-4 space-y-2" style="border-top:1px solid #D6D3D1; background:#FCFBF8">
-      {/* Check-in button for scheduled bookings */}
+    <div style="flex-shrink:0; padding:16px 20px; display:flex; flex-direction:column; gap:8px; border-top:1px solid rgba(255,255,255,0.07); background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%);">
       {b.status === 'scheduled' && (
         <button
           type="button"
-          class="w-full flex items-center justify-center gap-2 text-sm font-semibold py-2.5 rounded-xl"
-          style="background:#16A34A; color:#FFFFFF"
+          style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; font-weight:600; padding:12px 20px; border-radius:10px; border:none; cursor:pointer; background:linear-gradient(180deg,#4ADE80 0%,#16A34A 100%); color:white; box-shadow:0 4px 14px rgba(34,197,94,0.30), inset 0 1px 0 rgba(255,255,255,0.22);"
           hx-post={`/reception/bookings/${b.id}/check-in`}
           hx-target="#slide-over-content"
           hx-swap="innerHTML"
@@ -365,12 +285,11 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
         </button>
       )}
 
-      {/* Mark Complete button for checked-in bookings */}
       {b.status === 'checked_in' && (
         <button
           type="button"
-          class="w-full flex items-center justify-center gap-2 text-sm font-semibold py-2.5 rounded-xl"
-          style="background:#F59E0B; color:#FFFFFF"
+          class="btn-primary"
+          style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; font-weight:600; padding:12px 20px; border:none; cursor:pointer;"
           x-on:click="confirmModal = true"
         >
           <Icon name={ICONS.checkSquare} size={18} />
@@ -381,63 +300,51 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
 
     {/* Mark Complete confirmation modal */}
     <div
-      class="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style="background:rgba(0,0,0,0.5)"
+      style="position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px);"
       x-show="confirmModal"
       x-cloak
     >
-      <div
-        class="rounded-2xl shadow-2xl max-w-md w-full p-6"
-        style="background:#FCFBF8; border:1px solid #D6D3D1"
-      >
-        <h3 class="text-lg font-bold mb-1" style="color:#44403C">Complete this job?</h3>
-        <p class="text-sm mb-5" style="color:#78716C">
-          You are marking <strong>{b.driverName}</strong>'s visit as complete. This action is final.
+      <div style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.09); border-radius:16px; box-shadow:0 24px 64px rgba(0,0,0,0.70); max-width:420px; width:100%; padding:24px;">
+        <h3 style="font-size:17px; font-weight:700; color:#F1F5F9; margin-bottom:6px;">Complete this job?</h3>
+        <p style="font-size:13px; color:#64748B; margin-bottom:20px; line-height:1.5;">
+          You are marking <strong style="color:#94A3B8;">{b.driverName}</strong>'s visit as complete. This action is final.
         </p>
 
-        {/* Checklist */}
-        <div class="space-y-2.5 mb-5">
-          {[
-            'Driver identity verified',
-            'Documents checked',
-            'Cargo released',
-          ].map((item) => (
-            <div key={item} class="flex items-center gap-2.5 text-sm" style="color:#57534E">
-              <span class="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style="background:#DCFCE7">
-                <Icon name={ICONS.check} size={12} style="color:#16A34A" />
+        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+          {['Driver identity verified','Documents checked','Cargo released'].map((item) => (
+            <div key={item} style="display:flex; align-items:center; gap:10px; font-size:13px; color:#94A3B8;">
+              <span style="width:20px; height:20px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.22);">
+                <Icon name={ICONS.check} size={11} style="color:#22C55E;" />
               </span>
               {item}
             </div>
           ))}
         </div>
 
-        {/* Notes */}
-        <div class="mb-5">
-          <label class="block text-sm font-medium mb-1.5" style="color:#57534E">Completion Notes (optional)</label>
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-size:11px; font-weight:600; color:rgba(255,255,255,0.35); letter-spacing:0.07em; text-transform:uppercase; margin-bottom:6px;">Completion Notes (optional)</label>
           <textarea
             rows={2}
             x-model="completionNotes"
             placeholder="Any notes for records..."
-            class="w-full rounded-xl px-4 py-3 text-sm resize-none focus:outline-none"
-            style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C"
-            onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-            onblur="this.style.outline='none'"
+            class="wizard-field"
+            style="width:100%; padding:10px 14px; font-size:13px; resize:none; box-sizing:border-box;"
           ></textarea>
         </div>
 
-        <div class="flex gap-3">
+        <div style="display:flex; gap:10px;">
           <button
             type="button"
-            class="flex-1 rounded-md font-medium text-sm py-2"
-            style="background:#FCFBF8; color:#57534E; border:1px solid #E7E5E4; border-radius:6px; padding:8px 16px; font-size:12px; font-weight:500"
+            class="btn-ghost"
+            style="flex:1; padding:10px 16px; font-size:13px; cursor:pointer;"
             x-on:click="confirmModal = false"
           >
             Cancel
           </button>
           <button
             type="button"
-            class="flex-1 flex items-center justify-center gap-2 rounded-md font-medium text-sm py-2"
-            style="background:#F59E0B; color:#FFFFFF; border-radius:6px; padding:8px 16px; font-size:12px; font-weight:500"
+            class="btn-primary"
+            style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 16px; font-size:13px; font-weight:600; border:none; cursor:pointer;"
             hx-post={`/reception/bookings/${b.id}/complete`}
             hx-target="#slide-over-content"
             hx-swap="innerHTML"

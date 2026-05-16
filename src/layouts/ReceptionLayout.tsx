@@ -1,5 +1,6 @@
 import type { FC } from 'hono/jsx'
 import { Icon, ICONS } from '../lib/Icon'
+import { GlidoLogo } from '../lib/GlidoLogo'
 
 interface Props {
   title?: string
@@ -34,23 +35,22 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
         <script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
       </head>
-      <body style="min-height:100vh; background:#F2EDE4; color:#1A1815; font-family:'Inter',ui-sans-serif,system-ui,sans-serif; display:flex; -webkit-font-smoothing:antialiased;">
+      <body style="min-height:100vh; background:#090D12; color:#F1F5F9; font-family:'Inter',ui-sans-serif,system-ui,sans-serif; display:flex; -webkit-font-smoothing:antialiased;">
 
-        {/* ── Sidebar — refined dark ────────────────────────────────────── */}
+        {/* ── Sidebar — Level 1 glass ──────────────────────────────────── */}
         <aside
           class="w-60 flex flex-col shrink-0 sticky top-0 h-screen"
-          style="background:#141214; color:#E8E4E0;"
+          style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border-right:1px solid rgba(255,255,255,0.07); box-shadow:inset -1px 0 0 rgba(0,0,0,0.20), 4px 0 24px rgba(0,0,0,0.30); color:#F1F5F9;"
         >
           {/* Logo */}
           <div
-            class="h-16 flex items-center px-5 gap-2"
-            style="border-bottom: 1px solid #1E1B1E;"
+            class="h-16 flex items-center px-5 gap-3"
+            style="border-bottom:1px solid rgba(255,255,255,0.07);"
           >
-            <Icon name={ICONS.logo} size={22} style="color:#F97316;" />
-            <span class="font-semibold text-base tracking-tight" style="color:#FCFBF8;">Glido</span>
+            <GlidoLogo height={18} onDark={true} />
             <span
-              class="ml-1 text-xs px-1.5 py-0.5 rounded font-medium"
-              style="background:rgba(249,115,22,0.18); color:#F97316;"
+              class="text-xs px-1.5 py-0.5 rounded font-medium"
+              style="background:rgba(252,101,20,0.18); color:#FC6514; flex-shrink:0;"
             >
               Reception
             </span>
@@ -66,10 +66,10 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
                   href={item.href}
                   class="flex items-center gap-3 px-3 py-2.5 rounded-md text-xs font-medium transition-colors"
                   style={isActive
-                    ? 'background:rgba(249,115,22,0.10); color:#F97316; border-left:3px solid #F97316; padding-left:9px;'
-                    : 'color:#7C7470; border-left:3px solid transparent;'}
-                  onmouseover={!isActive ? "this.style.background='rgba(255,255,255,0.05)'; this.style.color='#E8E4E0';" : undefined}
-                  onmouseout={!isActive ? "this.style.background='transparent'; this.style.color='#7C7470';" : undefined}
+                    ? 'background:rgba(252,101,20,0.10); color:#F1F5F9; border-left:2px solid #FC6514; padding-left:10px; border-radius:6px;'
+                    : 'color:#64748B; border-left:2px solid transparent;'}
+                  onmouseover={!isActive ? "this.style.background='rgba(255,255,255,0.04)'; this.style.color='#94A3B8';" : undefined}
+                  onmouseout={!isActive ? "this.style.background='transparent'; this.style.color='#64748B';" : undefined}
                 >
                   <Icon name={item.icon} size={18} />
                   <span class="flex-1">{item.label}</span>
@@ -87,17 +87,17 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
           </nav>
 
           {/* User footer */}
-          <div class="px-4 py-4" style="border-top: 1px solid #1E1B1E;">
+          <div class="px-4 py-4" style="border-top:1px solid rgba(255,255,255,0.07);">
             <div class="flex items-center gap-3">
               <div
                 class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                style="background:rgba(249,115,22,0.18); color:#F97316;"
+                style="background:rgba(252,101,20,0.15); color:#FC6514; border:1px solid rgba(252,101,20,0.25);"
               >
                 RA
               </div>
               <div>
-                <p class="text-xs font-medium" style="color:#FCFBF8;">Reception Agent</p>
-                <p class="text-xs" style="color:#7C7470;">Sydney CFS Terminal 1</p>
+                <p class="text-xs font-medium" style="color:#F1F5F9;">Reception Agent</p>
+                <p class="text-xs" style="color:#64748B;">Sydney CFS Terminal 1</p>
               </div>
             </div>
           </div>
@@ -108,13 +108,13 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
           {/* Top header */}
           <header
             class="h-16 flex items-center justify-between px-6 shrink-0"
-            style="background:#FEFCFA; border-bottom: 1px solid rgba(0,0,0,0.08);"
+            style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border-bottom:1px solid rgba(255,255,255,0.07); box-shadow:0 1px 0 rgba(0,0,0,0.30);"
           >
-            <h1 class="text-sm font-semibold" style="color:#1A1815;">{title}</h1>
-            <div class="flex items-center gap-3 text-xs" style="color:#A09990;">
+            <h1 class="text-sm font-semibold" style="color:#F1F5F9;">{title}</h1>
+            <div class="flex items-center gap-3 text-xs" style="color:#64748B;">
               <span id="live-clock" x-data="{}" x-text="new Date().toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit'})"></span>
-              <span style="color:#D6D3D1;">|</span>
-              <a href="/" class="transition-colors text-xs" style="color:#F97316;">Visitor Portal ↗</a>
+              <span style="color:rgba(255,255,255,0.15);">|</span>
+              <a href="/" class="transition-colors text-xs" style="color:#FC6514;">Visitor Portal ↗</a>
             </div>
           </header>
 
@@ -127,13 +127,13 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <div
           id="slide-over-backdrop"
           class="hidden fixed inset-0 z-40"
-          style="background: rgb(28 25 23 / 0.5);"
+          style="background:rgba(9,13,18,0.75); backdrop-filter:blur(4px);"
           onclick="document.getElementById('slide-over-backdrop').classList.add('hidden'); document.getElementById('slide-over').classList.add('translate-x-full')"
         ></div>
         <div
           id="slide-over"
           class="fixed right-0 top-0 h-full w-[480px] shadow-2xl z-50 translate-x-full transition-transform duration-300 overflow-y-auto flex flex-col"
-          style="background:#FCFBF8; border-left: 1px solid #D6D3D1;"
+          style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border-left:1px solid rgba(255,255,255,0.07); box-shadow:inset 1px 0 0 rgba(255,255,255,0.06), -8px 0 40px rgba(0,0,0,0.60);"
         >
           <div id="slide-over-content"></div>
         </div>

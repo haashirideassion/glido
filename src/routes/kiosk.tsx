@@ -43,7 +43,7 @@ kioskRoutes.get('/', (c) => {
         {/* Screensaver screen */}
         <div
           class="absolute inset-0 flex flex-col items-center justify-center"
-          style="background:#1C1917"
+          style="background:#1C232C"
           x-show="$store.kiosk.currentScreen === 'screensaver'"
           x-transition:enter="transition-opacity duration-500"
           x-transition:enter-start="opacity-0"
@@ -56,9 +56,9 @@ kioskRoutes.get('/', (c) => {
           <div class="text-center" style="animation: pulse 3s ease-in-out infinite;">
             <div
               class="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-6"
-              style="background:rgba(245,158,11,0.15)"
+              style="background:rgba(252,101,20,0.15)"
             >
-              <Icon name={ICONS.logo} size={56} style="color:#F59E0B; opacity:0.8" />
+              <Icon name={ICONS.logo} size={56} style="color:#FC6514; opacity:0.8" />
             </div>
             <p class="text-4xl font-light mb-2" style="color:rgba(255,255,255,0.8)">Sydney CFS</p>
             <p class="text-lg mb-10" style="color:rgba(255,255,255,0.4)">Container Freight Station</p>

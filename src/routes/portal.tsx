@@ -24,11 +24,11 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §1  HERO — split layout, floating booking card preview
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section class="bg-hero-gradient" style="padding-top:2rem; padding-bottom:4rem; overflow:hidden; position:relative; min-height:80vh; display:flex; align-items:flex-start;">
+      <section class="bg-hero-gradient noise" style="padding-top:2rem; padding-bottom:4rem; overflow:hidden; position:relative; min-height:80vh; display:flex; align-items:flex-start;">
 
         {/* Background orb */}
-        <div style="position:absolute; top:-120px; right:-80px; width:600px; height:600px; border-radius:9999px; background:radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%); pointer-events:none;" />
-        <div style="position:absolute; bottom:0; left:-60px; width:400px; height:400px; border-radius:9999px; background:radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%); pointer-events:none;" />
+        <div style="position:absolute; top:-120px; right:-80px; width:600px; height:600px; border-radius:9999px; background:radial-gradient(circle, rgba(252,101,20,0.12) 0%, transparent 70%); pointer-events:none;" />
+        <div style="position:absolute; bottom:0; left:-60px; width:400px; height:400px; border-radius:9999px; background:radial-gradient(circle, rgba(252,101,20,0.06) 0%, transparent 70%); pointer-events:none;" />
 
         <div class="max-w-6xl mx-auto px-6 w-full" style="padding-bottom:5rem;">
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; padding-top:3rem;">
@@ -44,13 +44,13 @@ portalRoutes.get('/', (c) => {
               {/* Headline with rotating word */}
               <h1
                 class="hero-words"
-                style="font-size:clamp(2.4rem,4.5vw,3.4rem); font-weight:500; color:#1C1917; letter-spacing:-0.03em; line-height:1.08; margin-bottom:24px;"
+                style="font-size:clamp(2.4rem,4.5vw,3.4rem); font-weight:700; color:#F1F5F9; letter-spacing:-0.04em; line-height:1.05; margin-bottom:24px;"
               >
                 <span class="hero-word" style="display:block;">Schedule your</span>
                 <span class="hero-word" style="display:block;">
                   <span
                     id="rotating-word"
-                    style="color:#F97316; display:inline-block; min-width:200px;"
+                    style="color:#FC6514; display:inline-block; min-width:200px;"
                   >Collection</span>
                 </span>
                 <span class="hero-word" style="display:block;">at the CFS.</span>
@@ -58,7 +58,7 @@ portalRoutes.get('/', (c) => {
 
               <p
                 class="animate-fade-up delay-300"
-                style="font-size:15px; color:#78716C; line-height:1.7; max-width:440px; margin-bottom:36px;"
+                style="font-size:15px; color:#94A3B8; line-height:1.7; max-width:440px; margin-bottom:36px;"
               >
                 Skip the queue. Book a slot online, arrive on time, scan your QR at the kiosk — all without a single phone call.
               </p>
@@ -74,7 +74,7 @@ portalRoutes.get('/', (c) => {
                 </a>
               </div>
 
-              <p class="animate-fade-up delay-500" style="font-size:12px; color:#A8A29E; margin-top:20px;">
+              <p class="animate-fade-up delay-500" style="font-size:12px; color:#64748B; margin-top:20px;">
                 No account required · Takes under 3 minutes
               </p>
             </div>
@@ -82,21 +82,21 @@ portalRoutes.get('/', (c) => {
             {/* Right: floating card mockup */}
             <div class="animate-fade-up delay-200" style="position:relative;">
 
-              {/* Main card */}
+              {/* Main card — Level 3 elevation */}
               <div
                 class="card-shell animate-float-slow"
                 style="position:relative; z-index:2;"
               >
-                <div class="card-shell-inner" style="padding:28px; border-radius:39px;">
+                <div class="card-shell-inner" style="padding:28px;">
 
                   {/* Card header */}
                   <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:22px;">
                     <div>
-                      <p style="font-size:11px; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:#A8A29E;">Available Slots</p>
-                      <p style="font-size:14px; font-weight:500; color:#1C1917; margin-top:2px;">Thursday, 15 May</p>
+                      <p style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#64748B;">Available Slots</p>
+                      <p style="font-size:14px; font-weight:600; color:#F1F5F9; margin-top:2px;">Thursday, 15 May</p>
                     </div>
-                    <div style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#F97316,#FB923C); display:flex; align-items:center; justify-content:center; box-shadow:rgba(249,115,22,0.30) 0px 4px 12px 0px;">
-                      <Icon name={ICONS.calendar} size={16} style="color:white;" />
+                    <div style="width:34px; height:34px; border-radius:8px; background:rgba(252,101,20,0.12); border:1px solid rgba(252,101,20,0.22); display:flex; align-items:center; justify-content:center;">
+                      <Icon name={ICONS.calendar} size={15} style="color:#FC6514;" />
                     </div>
                   </div>
 
@@ -112,14 +112,14 @@ portalRoutes.get('/', (c) => {
                     ].map(slot => (
                       <div
                         style={slot.s === 'selected'
-                          ? 'background:linear-gradient(135deg,#F97316,#FB923C); border-radius:12px; padding:10px 8px; text-align:center; box-shadow:rgba(249,115,22,0.30) 0px 4px 12px 0px;'
+                          ? 'background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-radius:8px; padding:10px 8px; text-align:center; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 12px rgba(252,101,20,0.40);'
                           : slot.s === 'busy'
-                          ? 'background:rgba(168,162,158,0.12); border:1px solid rgba(168,162,158,0.2); border-radius:12px; padding:10px 8px; text-align:center; opacity:0.5;'
-                          : 'background:rgba(249,115,22,0.07); border:1px solid rgba(249,115,22,0.18); border-radius:12px; padding:10px 8px; text-align:center; cursor:pointer;'
+                          ? 'background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:10px 8px; text-align:center; opacity:0.40;'
+                          : 'background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:10px 8px; text-align:center; cursor:pointer;'
                         }
                       >
-                        <p style={`font-size:12px; font-weight:600; ${slot.s==='selected'?'color:white;':'color:#78716C;'}`}>{slot.t}</p>
-                        <p style={`font-size:10px; margin-top:2px; ${slot.s==='selected'?'color:rgba(255,255,255,0.75);':slot.s==='busy'?'color:#A8A29E;':'color:#F97316;'}`}>
+                        <p style={`font-size:12px; font-weight:600; ${slot.s==='selected'?'color:white;':'color:#94A3B8;'}`}>{slot.t}</p>
+                        <p style={`font-size:10px; margin-top:2px; ${slot.s==='selected'?'color:rgba(255,255,255,0.75);':slot.s==='busy'?'color:#64748B;':'color:#FC6514;'}`}>
                           {slot.s === 'selected' ? 'Selected' : slot.s === 'busy' ? 'Full' : 'Open'}
                         </p>
                       </div>
@@ -127,12 +127,12 @@ portalRoutes.get('/', (c) => {
                   </div>
 
                   {/* CTA in card */}
-                  <div style="background:linear-gradient(135deg,#F97316,#EA6C0A); border-radius:16px; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; box-shadow:rgba(249,115,22,0.25) 0px 8px 24px -4px;">
+                  <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); border-radius:10px; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; box-shadow:inset 0 1px 0 rgba(255,255,255,0.06);">
                     <div>
-                      <p style="font-size:12px; font-weight:600; color:white;">09:00 – 10:00</p>
-                      <p style="font-size:11px; color:rgba(255,255,255,0.75); margin-top:1px;">Pick Up · LCL</p>
+                      <p style="font-size:12px; font-weight:600; color:#F1F5F9;">09:00 – 10:00</p>
+                      <p style="font-size:11px; color:#64748B; margin-top:1px;">Pick Up · LCL</p>
                     </div>
-                    <div style="background:rgba(255,255,255,0.2); border-radius:10px; padding:8px 14px;">
+                    <div style="background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-radius:6px; padding:7px 13px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 3px 8px rgba(252,101,20,0.40);">
                       <p style="font-size:11px; font-weight:600; color:white;">Confirm →</p>
                     </div>
                   </div>
@@ -141,29 +141,29 @@ portalRoutes.get('/', (c) => {
 
               {/* Floating mini badge — top right */}
               <div
-                class="glass-warm"
-                style="position:absolute; top:-20px; right:-20px; border-radius:16px; padding:10px 14px; display:flex; align-items:center; gap:8px; z-index:3; box-shadow:rgba(180,170,160,0.25) 0px 8px 24px -4px;"
+                class="glass"
+                style="position:absolute; top:-20px; right:-20px; border-radius:12px; padding:10px 14px; display:flex; align-items:center; gap:8px; z-index:3;"
               >
-                <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,#16A34A,#22C55E); display:flex; align-items:center; justify-content:center;">
-                  <Icon name={ICONS.check} size={14} style="color:white;" />
+                <div style="width:28px; height:28px; border-radius:8px; background:rgba(34,197,94,0.14); border:1px solid rgba(34,197,94,0.25); display:flex; align-items:center; justify-content:center;">
+                  <Icon name={ICONS.check} size={14} style="color:#22C55E;" />
                 </div>
                 <div>
-                  <p style="font-size:11px; font-weight:600; color:#1C1917; line-height:1.2;">Confirmed</p>
-                  <p style="font-size:10px; color:#78716C;">GLD-2026-10142</p>
+                  <p style="font-size:11px; font-weight:600; color:#F1F5F9; line-height:1.2;">Confirmed</p>
+                  <p style="font-size:10px; color:#64748B;">GLD-2026-10142</p>
                 </div>
               </div>
 
               {/* Floating mini badge — bottom left */}
               <div
-                class="glass-warm"
-                style="position:absolute; bottom:-16px; left:-24px; border-radius:16px; padding:10px 14px; display:flex; align-items:center; gap:8px; z-index:3; box-shadow:rgba(180,170,160,0.25) 0px 8px 24px -4px;"
+                class="glass"
+                style="position:absolute; bottom:-16px; left:-24px; border-radius:12px; padding:10px 14px; display:flex; align-items:center; gap:8px; z-index:3;"
               >
-                <div style="width:28px; height:28px; border-radius:8px; background:rgba(249,115,22,0.12); display:flex; align-items:center; justify-content:center;">
-                  <Icon name={ICONS.clock} size={14} style="color:#F97316;" />
+                <div style="width:28px; height:28px; border-radius:8px; background:rgba(252,101,20,0.12); border:1px solid rgba(252,101,20,0.22); display:flex; align-items:center; justify-content:center;">
+                  <Icon name={ICONS.clock} size={14} style="color:#FC6514;" />
                 </div>
                 <div>
-                  <p style="font-size:11px; font-weight:600; color:#1C1917; line-height:1.2;">Gate time</p>
-                  <p style="font-size:10px; color:#78716C;">4 min avg.</p>
+                  <p style="font-size:11px; font-weight:600; color:#F1F5F9; line-height:1.2;">Gate time</p>
+                  <p style="font-size:10px; color:#64748B;">4 min avg.</p>
                 </div>
               </div>
 
@@ -172,13 +172,13 @@ portalRoutes.get('/', (c) => {
         </div>
 
         {/* Fade to next section */}
-        <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background:linear-gradient(to bottom, transparent, #F2EDE4); pointer-events:none;" />
+        <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background:linear-gradient(to bottom, transparent, #090D12); pointer-events:none;" />
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
           §2  MARQUEE — trust strip
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:28px 0; background:#F2EDE4; overflow:hidden; border-top:1px solid rgba(249,115,22,0.10); border-bottom:1px solid rgba(249,115,22,0.10);">
+      <section style="padding:24px 0; background:#090D12; overflow:hidden; border-top:1px solid rgba(255,255,255,0.07); border-bottom:1px solid rgba(255,255,255,0.07);">
         <div style="display:flex; overflow:hidden; mask-image:linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%); -webkit-mask-image:linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);">
           <div class="animate-marquee" style="display:flex; gap:0; white-space:nowrap; flex-shrink:0;">
             {[
@@ -204,8 +204,8 @@ portalRoutes.get('/', (c) => {
               'Trident Freight',
               'Atlas Logistics',
             ].map((name, i) => (
-              <span key={i} style="display:inline-flex; align-items:center; gap:20px; padding:0 32px; font-size:12px; font-weight:500; color:#A8A29E; letter-spacing:0.04em; text-transform:uppercase;">
-                <span style="width:4px; height:4px; border-radius:9999px; background:rgba(249,115,22,0.4); display:inline-block; flex-shrink:0;" />
+              <span key={i} style="display:inline-flex; align-items:center; gap:20px; padding:0 32px; font-size:11px; font-weight:600; color:rgba(255,255,255,0.20); letter-spacing:0.06em; text-transform:uppercase;">
+                <span style="width:3px; height:3px; border-radius:9999px; background:rgba(255,255,255,0.15); display:inline-block; flex-shrink:0;" />
                 {name}
               </span>
             ))}
@@ -216,12 +216,12 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §3  STATS — animated counters
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:80px 24px; background:#F2EDE4;">
+      <section style="padding:80px 24px; background:#090D12;">
         <div class="max-w-5xl mx-auto">
 
           <div class="reveal" style="text-align:center; margin-bottom:56px;">
-            <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#F97316; margin-bottom:10px;">By the numbers</p>
-            <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); font-weight:500; color:#1C1917; letter-spacing:-0.025em; line-height:1.15;">
+            <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#FC6514; margin-bottom:10px;">By the numbers</p>
+            <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); font-weight:700; color:#F1F5F9; letter-spacing:-0.03em; line-height:1.1;">
               The CFS platform that actually works
             </h2>
           </div>
@@ -234,23 +234,21 @@ portalRoutes.get('/', (c) => {
               { count: 0,    suffix: '',   label: 'phone calls needed',  icon: ICONS.check,    delay: 300 },
             ].map(s => (
               <div
-                class="reveal stat-card"
+                class="reveal gl-card"
                 data-reveal-delay={String(s.delay)}
-                style="background:rgba(234,230,219,0.6); border:1px solid rgba(249,115,22,0.12); border-radius:24px; padding:28px 24px; text-align:center; box-shadow:rgba(180,170,160,0.12) 0px 4px 16px -4px, rgba(255,255,255,0.60) 0px 1px 3px 0px inset; transition:transform 0.2s ease, box-shadow 0.2s ease;"
-                onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='rgba(249,115,22,0.15) 0px 12px 32px -8px, rgba(255,255,255,0.70) 0px 1px 3px 0px inset';"
-                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='rgba(180,170,160,0.12) 0px 4px 16px -4px, rgba(255,255,255,0.60) 0px 1px 3px 0px inset';"
+                style="padding:28px 24px; text-align:center;"
               >
-                <div style="width:40px; height:40px; border-radius:12px; background:rgba(249,115,22,0.10); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; box-shadow:rgba(249,115,22,0.15) 0px 2px 8px 0px;">
-                  <Icon name={s.icon} size={18} style="color:#F97316;" />
+                <div style="width:36px; height:36px; border-radius:8px; background:rgba(252,101,20,0.10); border:1px solid rgba(252,101,20,0.18); display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+                  <Icon name={s.icon} size={16} style="color:#FC6514;" />
                 </div>
                 <p
                   data-count={String(s.count)}
                   data-suffix={s.suffix}
-                  style="font-size:2.4rem; font-weight:600; color:#1C1917; letter-spacing:-0.04em; line-height:1; margin-bottom:8px;"
+                  style="font-size:2.4rem; font-weight:800; color:#F1F5F9; letter-spacing:-0.04em; line-height:1; margin-bottom:8px;"
                 >
                   {s.count === 0 ? 'Zero' : `${s.count}${s.suffix}`}
                 </p>
-                <p style="font-size:12px; color:#78716C; line-height:1.5;">{s.label}</p>
+                <p style="font-size:12px; color:#64748B; line-height:1.5;">{s.label}</p>
               </div>
             ))}
           </div>
@@ -260,16 +258,16 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §4  HOW IT WORKS — numbered step cards with connector
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section id="how-it-works" style="padding:80px 24px; background:linear-gradient(180deg,#FEF0DC 0%,#FFEDD5 100%);">
+      <section id="how-it-works" style="padding:80px 24px; background:#090D12; border-top:1px solid rgba(255,255,255,0.07);">
         <div class="max-w-5xl mx-auto">
 
           {/* Header */}
           <div class="reveal" style="max-width:520px; margin-bottom:60px;">
-            <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#F97316; margin-bottom:10px;">How it works</p>
-            <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); font-weight:500; color:#1C1917; letter-spacing:-0.025em; line-height:1.15; margin-bottom:14px;">
+            <p style="font-size:10px; font-weight:700; letter-spacing:0.10em; text-transform:uppercase; color:#FC6514; opacity:0.75; margin-bottom:10px;">How it works</p>
+            <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); font-weight:700; color:#F1F5F9; letter-spacing:-0.03em; line-height:1.1; margin-bottom:14px;">
               From browser to bay door in four steps
             </h2>
-            <p style="font-size:14px; color:#78716C; line-height:1.7;">
+            <p style="font-size:14px; color:#94A3B8; line-height:1.7;">
               No spreadsheets. No radio calls. The whole check-in process runs online.
             </p>
           </div>
@@ -278,7 +276,7 @@ portalRoutes.get('/', (c) => {
           <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px; position:relative;" class="steps-grid">
 
             {/* Connector line */}
-            <div style="position:absolute; top:52px; left:calc(12.5% + 12px); right:calc(12.5% + 12px); height:1px; background:linear-gradient(to right, rgba(249,115,22,0.3), rgba(249,115,22,0.6), rgba(249,115,22,0.3)); pointer-events:none; z-index:0;" class="hide-mobile" />
+            <div style="position:absolute; top:52px; left:calc(12.5% + 12px); right:calc(12.5% + 12px); height:1px; background:rgba(255,255,255,0.08); pointer-events:none; z-index:0;" class="hide-mobile" />
 
             {[
               { num: '01', icon: ICONS.users,   title: 'Your details',     desc: 'Name, service type, and cargo category. Takes 60 seconds.' },
@@ -287,21 +285,19 @@ portalRoutes.get('/', (c) => {
               { num: '04', icon: ICONS.qrCode,   title: 'Scan & enter',   desc: 'Scan your QR at the kiosk. No counter queue, no wait.' },
             ].map((step, i) => (
               <div
-                class="reveal step-card"
+                class="reveal gl-card"
                 data-reveal-delay={String(i * 120)}
-                style="position:relative; z-index:1; background:rgba(255,247,237,0.75); border:1px solid rgba(249,115,22,0.14); border-radius:28px; padding:24px 20px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:rgba(180,170,160,0.15) 0px 4px 20px -4px, rgba(255,255,255,0.70) 0px 1px 3px 0px inset; transition:transform 0.2s ease, box-shadow 0.2s ease;"
-                onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='rgba(249,115,22,0.18) 0px 16px 40px -8px, rgba(255,255,255,0.80) 0px 1px 3px 0px inset';"
-                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='rgba(180,170,160,0.15) 0px 4px 20px -4px, rgba(255,255,255,0.70) 0px 1px 3px 0px inset';"
+                style="position:relative; z-index:1; padding:24px 20px;"
               >
                 {/* Step number + icon */}
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px;">
-                  <div style="width:44px; height:44px; border-radius:14px; background:linear-gradient(135deg,#F97316,#FB923C); display:flex; align-items:center; justify-content:center; box-shadow:rgba(249,115,22,0.30) 0px 4px 12px 0px; flex-shrink:0;">
-                    <Icon name={step.icon} size={18} style="color:white;" />
+                  <div style="width:40px; height:40px; border-radius:8px; background:rgba(252,101,20,0.10); border:1px solid rgba(252,101,20,0.20); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <Icon name={step.icon} size={17} style="color:#FC6514;" />
                   </div>
-                  <span style="font-size:11px; font-weight:700; letter-spacing:0.08em; color:#A8A29E;">{step.num}</span>
+                  <span style="font-size:11px; font-weight:700; letter-spacing:0.08em; color:#64748B;">{step.num}</span>
                 </div>
-                <p style="font-size:14px; font-weight:600; color:#1C1917; margin-bottom:8px; letter-spacing:-0.015em;">{step.title}</p>
-                <p style="font-size:12.5px; color:#78716C; line-height:1.65;">{step.desc}</p>
+                <p style="font-size:14px; font-weight:600; color:#F1F5F9; margin-bottom:8px; letter-spacing:-0.015em;">{step.title}</p>
+                <p style="font-size:12.5px; color:#94A3B8; line-height:1.65;">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -311,16 +307,16 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §5  FEATURES — asymmetric bento grid
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:80px 24px; background:#F2EDE4;">
+      <section style="padding:80px 24px; background:#090D12; border-top:1px solid rgba(255,255,255,0.07);">
         <div class="max-w-5xl mx-auto">
 
           {/* Header */}
           <div class="reveal" style="text-align:center; margin-bottom:56px;">
-            <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#F97316; margin-bottom:10px;">Built different</p>
-            <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); font-weight:500; color:#1C1917; letter-spacing:-0.025em; line-height:1.15; margin-bottom:14px;">
+            <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#FC6514; margin-bottom:10px;">Built different</p>
+            <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); font-weight:700; color:#F1F5F9; letter-spacing:-0.03em; line-height:1.1; margin-bottom:14px;">
               Purpose-built for the depot floor
             </h2>
-            <p style="font-size:14px; color:#78716C; max-width:440px; margin:0 auto; line-height:1.7;">
+            <p style="font-size:14px; color:#94A3B8; max-width:440px; margin:0 auto; line-height:1.7;">
               Every feature exists because it solves a real operational headache at a Container Freight Station.
             </p>
           </div>
@@ -328,22 +324,22 @@ portalRoutes.get('/', (c) => {
           {/* Bento grid — top row: 1 wide + 2 narrow */}
           <div style="display:grid; grid-template-columns:1.6fr 1fr 1fr; gap:12px; margin-bottom:12px;" class="bento-row">
 
-            {/* Wide feature */}
+            {/* Wide feature — Level 4 brand surface */}
             <div
-              class="reveal-left"
-              style="background:linear-gradient(135deg,rgba(249,115,22,0.08) 0%,rgba(254,240,220,0.6) 100%); border:1px solid rgba(249,115,22,0.18); border-radius:28px; padding:32px; position:relative; overflow:hidden; box-shadow:rgba(180,170,160,0.18) 0px 8px 32px -8px;"
+              class="reveal-left noise"
+              style="background:linear-gradient(135deg,rgba(252,101,20,0.15) 0%,rgba(232,90,10,0.08) 100%); border:1px solid rgba(252,101,20,0.22); border-radius:16px; padding:32px; position:relative; overflow:hidden; box-shadow:inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px rgba(252,101,20,0.12);"
             >
-              <div style="position:absolute; top:-40px; right:-40px; width:180px; height:180px; border-radius:9999px; background:radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%); pointer-events:none;" />
-              <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg,#F97316,#FB923C); display:flex; align-items:center; justify-content:center; margin-bottom:20px; box-shadow:rgba(249,115,22,0.30) 0px 4px 12px 0px;">
+              <div style="position:absolute; top:-40px; right:-40px; width:180px; height:180px; border-radius:9999px; background:radial-gradient(circle, rgba(252,101,20,0.20) 0%, transparent 70%); pointer-events:none;" />
+              <div style="width:48px; height:48px; border-radius:10px; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); display:flex; align-items:center; justify-content:center; margin-bottom:20px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 14px rgba(252,101,20,0.40);">
                 <Icon name={ICONS.shield} size={22} style="color:white;" />
               </div>
-              <p style="font-size:16px; font-weight:600; color:#1C1917; letter-spacing:-0.02em; margin-bottom:10px;">Automatic ICS clearance check</p>
-              <p style="font-size:13px; color:#78716C; line-height:1.7; max-width:280px;">
+              <p style="font-size:16px; font-weight:600; color:#F1F5F9; letter-spacing:-0.02em; margin-bottom:10px;">Automatic ICS clearance check</p>
+              <p style="font-size:13px; color:#94A3B8; line-height:1.7; max-width:280px;">
                 Customs clearance status is fetched automatically the moment you enter your shipment number — no manual checks needed.
               </p>
-              <div style="margin-top:24px; display:inline-flex; align-items:center; gap:6px; background:rgba(22,163,74,0.10); border:1px solid rgba(22,163,74,0.20); border-radius:9999px; padding:6px 12px;">
-                <span style="width:6px; height:6px; border-radius:9999px; background:#16A34A;" />
-                <span style="font-size:11px; font-weight:500; color:#16A34A;">Clearance verified</span>
+              <div style="margin-top:24px; display:inline-flex; align-items:center; gap:6px; background:rgba(34,197,94,0.10); border:1px solid rgba(34,197,94,0.22); border-radius:9999px; padding:6px 12px;">
+                <span class="gl-live-dot" style="width:6px; height:6px;" />
+                <span style="font-size:11px; font-weight:500; color:#22C55E;">Clearance verified</span>
               </div>
             </div>
 
@@ -353,17 +349,15 @@ portalRoutes.get('/', (c) => {
               { icon: ICONS.qrCode,  title: 'QR check-in kiosk',    desc: 'Scan at arrival. Skip the counter entirely.' },
             ].map((feat, i) => (
               <div
-                class="reveal"
+                class="reveal gl-card"
                 data-reveal-delay={String((i + 1) * 100)}
-                style="background:rgba(234,230,219,0.55); border:1px solid rgba(249,115,22,0.12); border-radius:28px; padding:28px; box-shadow:rgba(180,170,160,0.12) 0px 4px 16px -4px, rgba(255,255,255,0.60) 0px 1px 3px 0px inset; transition:transform 0.2s ease, box-shadow 0.2s ease;"
-                onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='rgba(249,115,22,0.15) 0px 12px 32px -8px';"
-                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='rgba(180,170,160,0.12) 0px 4px 16px -4px, rgba(255,255,255,0.60) 0px 1px 3px 0px inset';"
+                style="padding:28px;"
               >
-                <div style="width:44px; height:44px; border-radius:14px; background:rgba(249,115,22,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:18px; box-shadow:rgba(249,115,22,0.12) 0px 2px 8px 0px;">
-                  <Icon name={feat.icon} size={20} style="color:#F97316;" />
+                <div style="width:44px; height:44px; border-radius:10px; background:rgba(252,101,20,0.10); border:1px solid rgba(252,101,20,0.18); display:flex; align-items:center; justify-content:center; margin-bottom:18px;">
+                  <Icon name={feat.icon} size={20} style="color:#FC6514;" />
                 </div>
-                <p style="font-size:14px; font-weight:600; color:#1C1917; letter-spacing:-0.015em; margin-bottom:8px;">{feat.title}</p>
-                <p style="font-size:12.5px; color:#78716C; line-height:1.65;">{feat.desc}</p>
+                <p style="font-size:14px; font-weight:600; color:#F1F5F9; letter-spacing:-0.015em; margin-bottom:8px;">{feat.title}</p>
+                <p style="font-size:12.5px; color:#94A3B8; line-height:1.65;">{feat.desc}</p>
               </div>
             ))}
           </div>
@@ -376,17 +370,15 @@ portalRoutes.get('/', (c) => {
               { icon: ICONS.reports, title: 'Reception dashboard',    desc: 'Staff see live bookings, walk-ins, and clearance holds in a single view.' },
             ].map((feat, i) => (
               <div
-                class="reveal"
+                class="reveal gl-card"
                 data-reveal-delay={String(i * 80)}
-                style="background:rgba(234,230,219,0.55); border:1px solid rgba(249,115,22,0.12); border-radius:28px; padding:28px; box-shadow:rgba(180,170,160,0.12) 0px 4px 16px -4px, rgba(255,255,255,0.60) 0px 1px 3px 0px inset; transition:transform 0.2s ease, box-shadow 0.2s ease;"
-                onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='rgba(249,115,22,0.15) 0px 12px 32px -8px';"
-                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='rgba(180,170,160,0.12) 0px 4px 16px -4px, rgba(255,255,255,0.60) 0px 1px 3px 0px inset';"
+                style="padding:28px;"
               >
-                <div style="width:44px; height:44px; border-radius:14px; background:rgba(249,115,22,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:18px;">
-                  <Icon name={feat.icon} size={20} style="color:#F97316;" />
+                <div style="width:44px; height:44px; border-radius:10px; background:rgba(252,101,20,0.10); border:1px solid rgba(252,101,20,0.18); display:flex; align-items:center; justify-content:center; margin-bottom:18px;">
+                  <Icon name={feat.icon} size={20} style="color:#FC6514;" />
                 </div>
-                <p style="font-size:14px; font-weight:600; color:#1C1917; letter-spacing:-0.015em; margin-bottom:8px;">{feat.title}</p>
-                <p style="font-size:12.5px; color:#78716C; line-height:1.65;">{feat.desc}</p>
+                <p style="font-size:14px; font-weight:600; color:#F1F5F9; letter-spacing:-0.015em; margin-bottom:8px;">{feat.title}</p>
+                <p style="font-size:12.5px; color:#94A3B8; line-height:1.65;">{feat.desc}</p>
               </div>
             ))}
           </div>
@@ -396,33 +388,33 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §6  TESTIMONIAL / TRUST QUOTE
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:80px 24px; background:linear-gradient(180deg,#FFEDD5 0%,#FEF0DC 100%);">
+      <section style="padding:80px 24px; background:#090D12; border-top:1px solid rgba(255,255,255,0.06);">
         <div class="max-w-3xl mx-auto">
           <div
-            class="reveal card-shell"
-            style="border-radius:40px;"
+            class="reveal"
+            style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.09); border-radius:16px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.09), inset 0 -1px 0 rgba(0,0,0,0.25), 0 4px 24px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.30);"
           >
-            <div class="card-shell-inner" style="padding:52px 48px; border-radius:39px; text-align:center;">
+            <div style="padding:52px 48px; text-align:center;">
 
               {/* Quote marks */}
-              <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg,#F97316,#FB923C); display:flex; align-items:center; justify-content:center; margin:0 auto 28px; box-shadow:rgba(249,115,22,0.30) 0px 4px 12px 0px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color:white;">
-                  <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" fill="currentColor"/>
-                  <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" fill="currentColor"/>
+              <div style="width:48px; height:48px; border-radius:10px; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); display:flex; align-items:center; justify-content:center; margin:0 auto 28px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 14px rgba(252,101,20,0.40), 0 1px 3px rgba(0,0,0,0.40);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                  <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/>
+                  <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>
                 </svg>
               </div>
 
-              <blockquote style="font-size:clamp(1.1rem,2.5vw,1.4rem); font-weight:400; color:#1C1917; letter-spacing:-0.02em; line-height:1.55; margin-bottom:28px; font-style:italic;">
+              <blockquote style="font-size:clamp(1.1rem,2.5vw,1.4rem); font-weight:400; color:#F1F5F9; letter-spacing:-0.02em; line-height:1.55; margin-bottom:28px; font-style:italic;">
                 "We used to spend 40 minutes every morning taking phone bookings and updating a whiteboard. Now drivers book online, the system handles ICS checks, and our gate time is down to under 4 minutes."
               </blockquote>
 
               <div style="display:flex; align-items:center; justify-content:center; gap:12px;">
-                <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg,#F97316,#FB923C); display:flex; align-items:center; justify-content:center;">
-                  <Icon name={ICONS.users} size={18} style="color:white;" />
+                <div style="width:40px; height:40px; border-radius:8px; background:rgba(252,101,20,0.15); border:1px solid rgba(252,101,20,0.25); display:flex; align-items:center; justify-content:center;">
+                  <Icon name={ICONS.users} size={18} style="color:#FC6514;" />
                 </div>
                 <div style="text-align:left;">
-                  <p style="font-size:13px; font-weight:600; color:#1C1917;">James R.</p>
-                  <p style="font-size:12px; color:#78716C;">Operations Manager, Sydney CFS</p>
+                  <p style="font-size:13px; font-weight:600; color:#F1F5F9;">James R.</p>
+                  <p style="font-size:12px; color:#64748B;">Operations Manager, Sydney CFS</p>
                 </div>
               </div>
 
@@ -434,16 +426,16 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §7  FINAL CTA — dark section
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:96px 24px; background:#1C1917; position:relative; overflow:hidden;">
+      <section style="padding:96px 24px; background:#090D12; position:relative; overflow:hidden;">
 
         {/* Ambient glow */}
-        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:700px; height:400px; border-radius:9999px; background:radial-gradient(ellipse, rgba(249,115,22,0.12) 0%, transparent 65%); pointer-events:none;" />
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:700px; height:400px; border-radius:9999px; background:radial-gradient(ellipse, rgba(252,101,20,0.12) 0%, transparent 65%); pointer-events:none;" />
 
         <div class="max-w-2xl mx-auto" style="text-align:center; position:relative; z-index:1;">
 
-          <div class="reveal" style="display:inline-flex; align-items:center; gap:8px; border:1px solid rgba(249,115,22,0.25); border-radius:9999px; padding:7px 16px; margin-bottom:28px;">
-            <span style="width:6px; height:6px; border-radius:9999px; background:#F97316; animation:pulse-dot 2s ease-in-out infinite;" />
-            <span style="font-size:11px; font-weight:500; color:rgba(249,115,22,0.85);">Open Mon–Fri 06:00–18:00</span>
+          <div class="reveal" style="display:inline-flex; align-items:center; gap:8px; border:1px solid rgba(252,101,20,0.25); border-radius:9999px; padding:7px 16px; margin-bottom:28px;">
+            <span style="width:6px; height:6px; border-radius:9999px; background:#FC6514; animation:pulse-dot 2s ease-in-out infinite;" />
+            <span style="font-size:11px; font-weight:500; color:rgba(252,101,20,0.85);">Open Mon–Fri 06:00–18:00</span>
           </div>
 
           <h2
@@ -458,7 +450,7 @@ portalRoutes.get('/', (c) => {
           <p
             class="reveal"
             data-reveal-delay="150"
-            style="font-size:14px; color:#78716C; line-height:1.7; margin-bottom:36px; max-width:380px; margin-left:auto; margin-right:auto;"
+            style="font-size:14px; color:#94A3B8; line-height:1.7; margin-bottom:36px; max-width:380px; margin-left:auto; margin-right:auto;"
           >
             Your first booking takes under 3 minutes. No account, no calls, no paper.
           </p>
@@ -476,7 +468,7 @@ portalRoutes.get('/', (c) => {
             <a
               href="/bookings"
               style="display:inline-flex; align-items:center; gap:8px; padding:14px 24px; font-size:14px; font-weight:500; color:#A8A29E; border:1px solid rgba(255,255,255,0.10); border-radius:9999px; text-decoration:none; transition:border-color 0.15s ease, color 0.15s ease;"
-              onmouseover="this.style.borderColor='rgba(255,255,255,0.25)'; this.style.color='#D6D3D1';"
+              onmouseover="this.style.borderColor='rgba(255,255,255,0.25)'; this.style.color='#F1F5F9';"
               onmouseout="this.style.borderColor='rgba(255,255,255,0.10)'; this.style.color='#A8A29E';"
             >
               <Icon name={ICONS.search} size={15} />
@@ -484,7 +476,7 @@ portalRoutes.get('/', (c) => {
             </a>
           </div>
 
-          <p class="reveal" data-reveal-delay="250" style="font-size:12px; color:#44403C; margin-top:20px;">
+          <p class="reveal" data-reveal-delay="250" style="font-size:12px; color:#64748B; margin-top:20px;">
             Sydney Container Freight Station · ABN 12 345 678 901
           </p>
         </div>
@@ -510,9 +502,9 @@ portalRoutes.get('/', (c) => {
           gap: 7px;
           font-size: 12px;
           font-weight: 500;
-          color: #78716C;
-          background: rgba(255,247,237,0.85);
-          border: 1px solid rgba(249,115,22,0.18);
+          color: rgba(252,101,20,0.85);
+          background: rgba(252,101,20,0.08);
+          border: 1px solid rgba(252,101,20,0.20);
           border-radius: 9999px;
           padding: 6px 14px;
           backdrop-filter: blur(8px);
@@ -527,11 +519,11 @@ portalRoutes.get('/', (c) => {
 portalRoutes.get('/book', (c) => {
   return c.html(
     <PublicLayout title="Book a Visit">
-      <div style="min-height:calc(100vh - 56px); background:#F2EDE4; padding:40px 24px 64px;">
+      <div style="min-height:calc(100vh - 56px); background:#090D12; padding:40px 24px 64px;">
         <div style="max-width:540px; margin:0 auto;">
           <div style="margin-bottom:28px;">
-            <h1 style="font-size:22px; font-weight:600; color:#1C1917; letter-spacing:-0.025em; margin-bottom:4px;">Book a Depot Visit</h1>
-            <p style="font-size:13px; color:#A8A29E;">Sydney Container Freight Station · Mon–Fri 06:00–18:00</p>
+            <h1 style="font-size:22px; font-weight:700; color:#F1F5F9; letter-spacing:-0.03em; margin-bottom:4px;">Book a Depot Visit</h1>
+            <p style="font-size:13px; color:#64748B;">Sydney Container Freight Station · Mon–Fri 06:00–18:00</p>
           </div>
           <BookingWizard />
         </div>
@@ -554,13 +546,13 @@ portalRoutes.get('/bookings', async (c) => {
 
   return c.html(
     <PublicLayout title="My Bookings">
-      <div style="min-height:calc(100vh - 56px); background:#F2EDE4; padding:40px 24px 64px;">
+      <div style="min-height:calc(100vh - 56px); background:#090D12; padding:40px 24px 64px;">
         <div style="max-width:640px; margin:0 auto;">
 
           {/* Page header */}
           <div style="margin-bottom:28px;">
-            <h1 style="font-size:22px; font-weight:600; color:#1C1917; letter-spacing:-0.025em; margin-bottom:4px;">My Bookings</h1>
-            <p style="font-size:13px; color:#78716C;">Track the status of your depot slot bookings.</p>
+            <h1 style="font-size:22px; font-weight:700; color:#F1F5F9; letter-spacing:-0.03em; margin-bottom:4px;">My Bookings</h1>
+            <p style="font-size:13px; color:#64748B;">Track the status of your depot slot bookings.</p>
           </div>
 
           {/* Search bar */}
@@ -571,21 +563,24 @@ portalRoutes.get('/bookings', async (c) => {
                 name="ref"
                 value={ref || ''}
                 placeholder="Booking reference — e.g. GLD-2026-10142"
-                style="width:100%; padding:10px 14px; font-size:13.5px; color:#1A1815; background:#FEFCFA; border:1.5px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; font-family:inherit;"
-                onfocus="this.style.borderColor='#F97316'; this.style.boxShadow='0 0 0 3px rgba(249,115,22,0.12)';"
-                onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
+                class="wizard-field"
+                style="width:100%; padding:10px 14px; font-size:13.5px; border-radius:10px; outline:none; box-sizing:border-box; font-family:inherit;"
+                onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.25), 0 0 0 3px rgba(252,101,20,0.15)';"
+                onblur="this.style.borderColor='rgba(255,255,255,0.09)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(0,0,0,0.20)';"
               />
             </div>
             <button
               type="submit"
-              style="padding:10px 20px; font-size:13px; font-weight:500; color:white; background:linear-gradient(135deg,#F97316,#EA6C0A); border:none; border-radius:10px; cursor:pointer; white-space:nowrap; box-shadow:rgba(249,115,22,0.22) 0px 4px 10px 0px;"
+              class="btn-primary"
+              style="padding:10px 20px; font-size:13px; white-space:nowrap; border:none; cursor:pointer;"
             >
               Search
             </button>
             {ref && (
               <a
                 href="/bookings"
-                style="display:flex; align-items:center; padding:10px 16px; font-size:13px; font-weight:500; color:#78716C; background:transparent; border:1.5px solid rgba(240,197,137,0.5); border-radius:10px; text-decoration:none; white-space:nowrap;"
+                class="btn-ghost"
+                style="padding:10px 16px; font-size:13px; white-space:nowrap;"
               >
                 Clear
               </a>
@@ -593,7 +588,7 @@ portalRoutes.get('/bookings', async (c) => {
           </form>
 
           {ref && (
-            <p style="font-size:12px; font-weight:500; color:#78716C; margin-bottom:16px;">{heading}</p>
+            <p style="font-size:12px; font-weight:500; color:#94A3B8; margin-bottom:16px;">{heading}</p>
           )}
 
           <MyBookingsList bookings={bookings} query={ref} />
@@ -738,7 +733,7 @@ portalRoutes.post('/bookings', async (c) => {
       <PublicLayout title="Booking Error">
         <div class="max-w-xl mx-auto px-4 py-16 text-center">
           <p class="text-xs font-medium mb-4" style="color:#DC2626;">Something went wrong creating your booking.</p>
-          <a href="/book" class="text-xs underline" style="color:#F59E0B;">Try again</a>
+          <a href="/book" class="text-xs underline" style="color:#FC6514;">Try again</a>
         </div>
       </PublicLayout>
     )
@@ -757,44 +752,42 @@ portalRoutes.get('/booking-confirmed/:ref', async (c) => {
 
   return c.html(
     <PublicLayout title="Booking Confirmed">
-      <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12">
+      <div style="min-height:calc(100vh - 56px); background:#090D12; padding:40px 24px 64px;">
+      <div class="max-w-2xl mx-auto">
 
         {/* Success banner */}
         <div
           class="flex items-center gap-3 rounded-xl px-5 py-4 mb-8"
-          style="background:#F0FDF4; border:1px solid #BBF7D0;"
+          style="background:rgba(34,197,94,0.10); border:1px solid rgba(34,197,94,0.22);"
         >
           <div
-            class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-            style="background:#22C55E; color:#FFFFFF;"
+            style="width:40px; height:40px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#4ADE80 0%,#16A34A 100%); box-shadow:0 4px 12px rgba(34,197,94,0.35);"
           >
-            <Icon name={ICONS.check} size={20} />
+            <Icon name={ICONS.check} size={20} style="color:white;" />
           </div>
           <div>
-            <p class="font-semibold text-sm" style="color:#15803D;">Booking Confirmed!</p>
-            <p class="text-xs font-mono font-bold mt-0.5" style="color:#166534;">{ref}</p>
+            <p style="font-size:13px; font-weight:600; color:#22C55E;">Booking Confirmed!</p>
+            <p style="font-size:12px; font-family:ui-monospace,monospace; font-weight:700; color:#94A3B8; margin-top:2px;">{ref}</p>
           </div>
         </div>
 
         <div class="grid sm:grid-cols-2 gap-6">
           {/* QR Code */}
           <div
-            class="flex flex-col items-center justify-center p-8 rounded-2xl"
-            style="background:#EAE6DE; border:1px solid rgba(214,211,209,0.5); box-shadow:rgba(0,0,0,0.05) 0px 1px 2px 0px;"
+            style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; border-radius:16px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); box-shadow:inset 0 1px 0 rgba(255,255,255,0.06);"
           >
             <img src={qrDataUrl} alt={`QR code for ${ref}`} width={220} height={220} style="border-radius:8px;" />
-            <p class="text-xs font-medium mt-4" style="color:#78716C;">Scan at the kiosk to check in</p>
-            <p class="text-xs font-mono font-bold mt-1" style="color:#44403C;">{ref}</p>
+            <p style="font-size:12px; font-weight:500; color:#64748B; margin-top:14px;">Scan at the kiosk to check in</p>
+            <p style="font-size:12px; font-family:ui-monospace,monospace; font-weight:700; color:#F1F5F9; margin-top:4px;">{ref}</p>
           </div>
 
           {/* Booking summary */}
-          <div class="space-y-4">
+          <div style="display:flex; flex-direction:column; gap:14px;">
             <div
-              class="rounded-xl p-4"
-              style="background:#F5F3EC; border:1px solid rgba(231,229,228,0.5);"
+              style="border-radius:12px; padding:16px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09);"
             >
-              <p class="text-xs font-semibold uppercase tracking-wide mb-3" style="color:#A8A29E;">Booking Details</p>
-              <div class="space-y-2 text-xs">
+              <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#64748B; margin-bottom:12px;">Booking Details</p>
+              <div style="display:flex; flex-direction:column; gap:7px; font-size:12px;">
                 {[
                   { label: 'Driver', value: booking.driverName },
                   { label: 'Service', value: booking.serviceType === 'pickup' ? 'Pick Up' : 'Drop Off' },
@@ -804,9 +797,9 @@ portalRoutes.get('/booking-confirmed/:ref', async (c) => {
                   ...(booking.houseBillNumber ? [{ label: 'HBL', value: booking.houseBillNumber }] : []),
                   ...(booking.containerNumber ? [{ label: 'Container', value: booking.containerNumber }] : []),
                 ].map((row) => (
-                  <div key={row.label} class="flex justify-between">
-                    <span style="color:#A8A29E;">{row.label}</span>
-                    <span class="font-medium" style="color:#44403C;">{row.value}</span>
+                  <div key={row.label} style="display:flex; justify-content:space-between;">
+                    <span style="color:#64748B;">{row.label}</span>
+                    <span style="font-weight:500; color:#F1F5F9;">{row.value}</span>
                   </div>
                 ))}
               </div>
@@ -815,30 +808,29 @@ portalRoutes.get('/booking-confirmed/:ref', async (c) => {
             {/* Charges */}
             {booking.totalAmount && (
               <div
-                class="rounded-xl p-4"
-                style="background:#EAE6DE; border:1px solid rgba(214,211,209,0.5); border-radius:8px 8px 8px 2px;"
+                style="border-radius:12px; padding:16px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09);"
               >
-                <p class="text-xs font-semibold uppercase tracking-wide mb-3" style="color:#A8A29E;">Charges</p>
-                <div class="space-y-1.5 text-xs">
+                <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#64748B; margin-bottom:12px;">Charges</p>
+                <div style="display:flex; flex-direction:column; gap:6px; font-size:12px;">
                   {(booking.storageCharge ?? 0) > 0 && (
-                    <div class="flex justify-between" style="color:#78716C;"><span>Storage</span><span>${booking.storageCharge!.toFixed(2)}</span></div>
+                    <div style="display:flex; justify-content:space-between; color:#94A3B8;"><span>Storage</span><span>${booking.storageCharge!.toFixed(2)}</span></div>
                   )}
                   {(booking.shrinkWrapCharge ?? 0) > 0 && (
-                    <div class="flex justify-between" style="color:#78716C;"><span>Shrink wrap</span><span>${booking.shrinkWrapCharge!.toFixed(2)}</span></div>
+                    <div style="display:flex; justify-content:space-between; color:#94A3B8;"><span>Shrink wrap</span><span>${booking.shrinkWrapCharge!.toFixed(2)}</span></div>
                   )}
                   {(booking.slotFee ?? 0) > 0 && (
-                    <div class="flex justify-between" style="color:#78716C;"><span>Slot fee</span><span>${booking.slotFee!.toFixed(2)}</span></div>
+                    <div style="display:flex; justify-content:space-between; color:#94A3B8;"><span>Slot fee</span><span>${booking.slotFee!.toFixed(2)}</span></div>
                   )}
                   {(booking.gstAmount ?? 0) > 0 && (
-                    <div class="flex justify-between pt-1 border-t text-xs" style="color:#A8A29E; border-color:#D6D3D1;"><span>GST (10%)</span><span>${booking.gstAmount!.toFixed(2)}</span></div>
+                    <div style="display:flex; justify-content:space-between; color:#64748B; padding-top:6px; border-top:1px solid rgba(255,255,255,0.07);"><span>GST (10%)</span><span>${booking.gstAmount!.toFixed(2)}</span></div>
                   )}
-                  <div class="flex justify-between font-bold pt-1 border-t" style="color:#44403C; border-color:#D6D3D1;">
+                  <div style="display:flex; justify-content:space-between; font-weight:700; color:#F1F5F9; padding-top:6px; border-top:1px solid rgba(255,255,255,0.09);">
                     <span>Total</span>
-                    <span style="color:#F59E0B;">${booking.totalAmount.toFixed(2)}</span>
+                    <span style="color:#FC6514;">${booking.totalAmount.toFixed(2)}</span>
                   </div>
-                  <div class="flex justify-between text-xs" style="color:#A8A29E;">
+                  <div style="display:flex; justify-content:space-between; color:#64748B;">
                     <span>{booking.paymentMethod?.toUpperCase()}</span>
-                    <span style={booking.paymentStatus === 'paid' ? 'color:#16A34A;' : 'color:#D97706;'}>
+                    <span style={booking.paymentStatus === 'paid' ? 'color:#22C55E; font-weight:500;' : 'color:#FBBF24; font-weight:500;'}>
                       {booking.paymentStatus === 'paid' ? 'Paid' : booking.paymentStatus === 'pending_eft' ? 'EFT Pending' : 'Pending'}
                     </span>
                   </div>
@@ -849,16 +841,15 @@ portalRoutes.get('/booking-confirmed/:ref', async (c) => {
             {/* EFT bank details */}
             {isEft && tenant && (
               <div
-                class="rounded-xl p-4"
-                style="background:#FEF3C7; border:1px solid #FDE68A;"
+                style="border-radius:12px; padding:16px; background:rgba(252,101,20,0.06); border:1px solid rgba(252,101,20,0.20);"
               >
-                <p class="text-xs font-semibold mb-2" style="color:#92400E;">Transfer details</p>
-                <div class="space-y-1 text-xs" style="color:#78350F;">
-                  <div class="flex justify-between"><span>Bank</span><span class="font-medium">{tenant.eft_bank_name || '—'}</span></div>
-                  <div class="flex justify-between"><span>BSB</span><span class="font-mono font-medium">{tenant.eft_bsb || '—'}</span></div>
-                  <div class="flex justify-between"><span>Account No.</span><span class="font-mono font-medium">{tenant.eft_account_number || '—'}</span></div>
-                  <div class="flex justify-between"><span>Account Name</span><span class="font-medium">{tenant.eft_account_name || '—'}</span></div>
-                  <div class="flex justify-between"><span>Reference</span><span class="font-mono font-bold">{ref}</span></div>
+                <p style="font-size:11px; font-weight:600; color:#FC6514; margin-bottom:10px;">Transfer details</p>
+                <div style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:rgba(252,101,20,0.65);">
+                  <div style="display:flex; justify-content:space-between;"><span>Bank</span><span style="font-weight:500; color:#FC6514;">{tenant.eft_bank_name || '—'}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><span>BSB</span><span style="font-family:ui-monospace,monospace; font-weight:500; color:#FC6514;">{tenant.eft_bsb || '—'}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><span>Account No.</span><span style="font-family:ui-monospace,monospace; font-weight:500; color:#FC6514;">{tenant.eft_account_number || '—'}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><span>Account Name</span><span style="font-weight:500; color:#FC6514;">{tenant.eft_account_name || '—'}</span></div>
+                  <div style="display:flex; justify-content:space-between;"><span>Reference</span><span style="font-family:ui-monospace,monospace; font-weight:700; color:#FC6514;">{ref}</span></div>
                 </div>
               </div>
             )}
@@ -868,11 +859,10 @@ portalRoutes.get('/booking-confirmed/:ref', async (c) => {
         {/* CHEP warning */}
         {booking.palletType === 'chep' && (
           <div
-            class="flex items-start gap-3 rounded-xl px-4 py-3 mt-6"
-            style="background:#FEF3C7; border:1px solid #FDE68A;"
+            style="display:flex; align-items:flex-start; gap:10px; border-radius:10px; padding:12px 16px; margin-top:20px; background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.20);"
           >
-            <Icon name={ICONS.warning} size={16} style="color:#D97706; flex-shrink:0; margin-top:2px;" />
-            <p class="text-xs font-medium" style="color:#92400E;">
+            <Icon name={ICONS.warning} size={16} style="color:#FBBF24; flex-shrink:0; margin-top:2px;" />
+            <p style="font-size:12px; font-weight:500; color:rgba(251,191,36,0.75); line-height:1.5;">
               Remember: Bring {booking.palletCount} empty CHEP pallet{(booking.palletCount ?? 1) > 1 ? 's' : ''} to exchange at collection.
             </p>
           </div>
@@ -882,22 +872,23 @@ portalRoutes.get('/booking-confirmed/:ref', async (c) => {
         <div class="flex flex-wrap gap-3 mt-8 justify-center">
           <a
             href="/book"
-            class="inline-flex items-center gap-2 text-xs font-medium px-5 py-2.5 rounded-full"
-            style="background:#F59E0B; color:#FFFFFF;"
+            class="btn-primary"
+            style="padding:11px 22px; font-size:13px;"
           >
             <Icon name={ICONS.add} size={14} />
             Book Another Visit
           </a>
           <a
             href={`/bookings?ref=${ref}`}
-            class="inline-flex items-center gap-2 text-xs font-medium px-5 py-2.5 rounded-full"
-            style="color:#44403C; border:1px solid #D6D3D1; background:transparent;"
+            class="btn-ghost"
+            style="padding:11px 20px; font-size:13px;"
           >
             <Icon name={ICONS.search} size={14} />
             View My Bookings
           </a>
         </div>
 
+      </div>
       </div>
     </PublicLayout>
   )

@@ -12,36 +12,31 @@ interface Props {
 
 type StatusVariant = 'warning' | 'default' | 'success' | 'secondary' | 'outline' | 'destructive'
 
+const SELECT_STYLE = "font-size:13px; border-radius:8px; padding:6px 10px; outline:none; background:rgba(9,13,18,0.60); border:1px solid rgba(255,255,255,0.09); color:#F1F5F9; box-shadow:inset 0 2px 4px rgba(0,0,0,0.25); cursor:pointer;"
+
 export const BookingTable = ({ bookings, title = "Today's Bookings", showFilters = false }: Props) => (
   <div
     class="rounded-xl overflow-hidden"
-    style="background:#FCFBF8; border:1px solid #D6D3D1"
+    style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.07); box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 16px rgba(0,0,0,0.40);"
   >
-    <div class="flex items-center justify-between px-5 py-4" style="border-bottom:1px solid #E7E5E4">
-      <h2 class="font-semibold" style="color:#44403C">{title}</h2>
-      <span
-        class="text-xs px-2.5 py-1 rounded-full font-medium"
-        style="color:#A8A29E; background:#EAE6DE"
-      >
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.07);">
+      <h2 style="font-size:14px; font-weight:600; color:#F1F5F9;">{title}</h2>
+      <span style="font-size:11px; font-weight:500; color:#64748B; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:9999px; padding:3px 10px;">
         {bookings.length} records
       </span>
     </div>
 
     {showFilters && (
-      <div class="px-5 py-3 flex flex-wrap gap-3 items-center" style="border-bottom:1px solid #E7E5E4; background:#F5F3EC">
-        <Icon name={ICONS.filter} size={16} style="color:#A8A29E" />
+      <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:12px 20px; border-bottom:1px solid rgba(255,255,255,0.07); background:rgba(255,255,255,0.02);">
+        <Icon name={ICONS.filter} size={15} style="color:#64748B;" />
 
-        {/* Status filter */}
         <select
           name="status"
           hx-get="/reception/bookings"
           hx-target="#bookings-table"
           hx-swap="outerHTML"
           hx-include="[name='status'],[name='service'],[name='date'],[name='search']"
-          class="text-sm rounded-lg px-3 py-1.5 focus:outline-none"
-          style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C"
-          onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-          onblur="this.style.outline='none'"
+          style={SELECT_STYLE}
         >
           <option value="">All Statuses</option>
           <option value="scheduled">Scheduled</option>
@@ -50,24 +45,19 @@ export const BookingTable = ({ bookings, title = "Today's Bookings", showFilters
           <option value="cancelled">Cancelled</option>
         </select>
 
-        {/* Service filter */}
         <select
           name="service"
           hx-get="/reception/bookings"
           hx-target="#bookings-table"
           hx-swap="outerHTML"
           hx-include="[name='status'],[name='service'],[name='date'],[name='search']"
-          class="text-sm rounded-lg px-3 py-1.5 focus:outline-none"
-          style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C"
-          onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-          onblur="this.style.outline='none'"
+          style={SELECT_STYLE}
         >
           <option value="">All Services</option>
           <option value="pickup">Pick Up</option>
           <option value="dropoff">Drop Off</option>
         </select>
 
-        {/* Date filter */}
         <input
           type="date"
           name="date"
@@ -76,13 +66,9 @@ export const BookingTable = ({ bookings, title = "Today's Bookings", showFilters
           hx-swap="outerHTML"
           hx-include="[name='status'],[name='service'],[name='date'],[name='search']"
           hx-trigger="change"
-          class="text-sm rounded-lg px-3 py-1.5 focus:outline-none"
-          style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C"
-          onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-          onblur="this.style.outline='none'"
+          style={SELECT_STYLE}
         />
 
-        {/* Text search */}
         <input
           type="text"
           name="search"
@@ -92,108 +78,69 @@ export const BookingTable = ({ bookings, title = "Today's Bookings", showFilters
           hx-swap="outerHTML"
           hx-include="[name='status'],[name='service'],[name='date'],[name='search']"
           hx-trigger="input changed delay:300ms"
-          class="text-sm rounded-lg px-3 py-1.5 focus:outline-none"
-          style="border:1px solid #D6D3D1; background:#FCFBF8; color:#44403C; min-width:200px"
-          onfocus="this.style.outline='2px solid #F59E0B'; this.style.outlineOffset='2px'"
-          onblur="this.style.outline='none'"
+          style={SELECT_STYLE + "min-width:200px;"}
         />
       </div>
     )}
 
-    <div class="overflow-x-auto" id="bookings-table">
+    <div style="overflow-x:auto;" id="bookings-table">
       {bookings.length === 0 ? (
-        <div class="text-center py-12" style="color:#A8A29E">
-          <Icon name={ICONS.bookings} size={40} class="mx-auto mb-2" style="color:#D6D3D1" />
-          <p class="text-sm">No bookings match your filters.</p>
+        <div style="text-align:center; padding:48px 0; color:#64748B;">
+          <Icon name={ICONS.bookings} size={36} style="margin:0 auto 10px; opacity:0.25;" />
+          <p style="font-size:13px;">No bookings match your filters.</p>
         </div>
       ) : (
         <Table>
           <TableHeader>
-            <TableRow style="background:#F5F3EC; border-bottom:1px solid #D6D3D1">
-              <TableHead
-                class="text-left px-5 py-3 font-semibold"
-                style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-              >
-                Reference
-              </TableHead>
-              <TableHead
-                class="text-left px-4 py-3 font-semibold"
-                style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-              >
-                Driver
-              </TableHead>
-              <TableHead
-                class="text-left px-4 py-3 font-semibold"
-                style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-              >
-                Slot
-              </TableHead>
-              <TableHead
-                class="text-left px-4 py-3 font-semibold"
-                style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-              >
-                Service
-              </TableHead>
-              <TableHead
-                class="text-left px-4 py-3 font-semibold"
-                style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-              >
-                HBL
-              </TableHead>
-              <TableHead
-                class="text-left px-4 py-3 font-semibold"
-                style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-              >
-                ICS
-              </TableHead>
-              <TableHead
-                class="text-left px-4 py-3 font-semibold"
-                style="font-size:10px; font-weight:600; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em"
-              >
-                Status
-              </TableHead>
-              <TableHead class="px-4 py-3"></TableHead>
+            <TableRow style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.07);">
+              {['Reference','Driver','Slot','Service','HBL','ICS','Status',''].map((h) => (
+                <TableHead
+                  key={h}
+                  class="text-left px-5 py-3"
+                  style="font-size:10px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.08em; white-space:nowrap;"
+                >
+                  {h}
+                </TableHead>
+              ))}
             </TableRow>
           </TableHeader>
-          <TableBody style="border-top:none">
+          <TableBody style="border-top:none;">
             {bookings.map((b) => {
-              // Determine row background based on priority: ICS held > checked_in > completed > default
               let rowBg = ''
               if (b.icsStatus === 'held') {
-                rowBg = '#FEF2F2'
+                rowBg = 'rgba(239,68,68,0.06)'
               } else if (b.status === 'checked_in') {
-                rowBg = '#F0FDF4'
+                rowBg = 'rgba(34,197,94,0.05)'
               } else if (b.status === 'completed') {
-                rowBg = '#F9FAFB'
+                rowBg = 'rgba(255,255,255,0.02)'
               }
 
               return (
                 <TableRow
                   key={b.id}
-                  class="transition-colors cursor-pointer"
-                  style={rowBg ? `background:${rowBg}; border-bottom:1px solid #E7E5E4` : 'border-bottom:1px solid #E7E5E4'}
-                  onmouseover={`this.style.background='#F5F3EC'`}
+                  style={`border-bottom:1px solid rgba(255,255,255,0.06); cursor:pointer; transition:background 0.12s ease;${rowBg ? ` background:${rowBg};` : ''}`}
+                  onmouseover={`this.style.background='rgba(255,255,255,0.04)'`}
                   onmouseout={`this.style.background='${rowBg}'`}
                   hx-get={`/reception/bookings/${b.id}`}
                   hx-target="#slide-over-content"
                   hx-swap="innerHTML"
                   {...{"hx-on:htmx:after-request": "document.getElementById('slide-over-backdrop').classList.remove('hidden'); document.getElementById('slide-over').classList.remove('translate-x-full')"}}
                 >
-                  <TableCell class="px-5 py-3.5 font-mono text-xs font-bold" style="color:#57534E">
+                  <TableCell class="px-5 py-3.5" style="font-family:ui-monospace,monospace; font-size:12px; font-weight:700; color:#FC6514; white-space:nowrap;">
                     {b.referenceNumber}
                   </TableCell>
                   <TableCell class="px-4 py-3.5">
-                    <p class="font-semibold" style="color:#44403C">{b.driverName}</p>
-                    <p class="text-xs" style="color:#A8A29E">{b.driverPhone || '—'}</p>
+                    <p style="font-size:13px; font-weight:600; color:#F1F5F9;">{b.driverName}</p>
+                    <p style="font-size:11px; color:#64748B;">{b.driverPhone || '—'}</p>
                   </TableCell>
                   <TableCell class="px-4 py-3.5">
-                    <p class="font-semibold" style="color:#44403C">{b.slotStartTime} – {b.slotEndTime}</p>
-                    <p class="text-xs" style="color:#A8A29E">{b.slotDate}</p>
+                    <p style="font-size:13px; font-weight:600; color:#F1F5F9; white-space:nowrap;">{b.slotStartTime} – {b.slotEndTime}</p>
+                    <p style="font-size:11px; color:#64748B;">{b.slotDate}</p>
                   </TableCell>
-                  <TableCell class="px-4 py-3.5 text-xs font-medium" style="color:#78716C">
+                  <TableCell class="px-4 py-3.5" style="font-size:12px; font-weight:500; color:#94A3B8; white-space:nowrap;">
                     {SERVICE_LABEL[b.serviceType]} · {LOAD_LABEL[b.loadType]}
                   </TableCell>
-                  <TableCell class="px-4 py-3.5 font-mono text-xs" style="color:#78716C">
+                  <TableCell class="px-4 py-3.5" style="font-family:ui-monospace,monospace; font-size:12px; color:#94A3B8;">
                     {b.houseBillNumber || b.containerNumber || '—'}
                   </TableCell>
                   <TableCell class="px-4 py-3.5">
@@ -202,7 +149,7 @@ export const BookingTable = ({ bookings, title = "Today's Bookings", showFilters
                         {ICS_LABEL[b.icsStatus]}
                       </span>
                     ) : (
-                      <span class="text-xs" style="color:#A8A29E">—</span>
+                      <span style="font-size:12px; color:#64748B;">—</span>
                     )}
                   </TableCell>
                   <TableCell class="px-4 py-3.5">
@@ -210,7 +157,7 @@ export const BookingTable = ({ bookings, title = "Today's Bookings", showFilters
                       {STATUS_LABEL[b.status]}
                     </Badge>
                   </TableCell>
-                  <TableCell class="px-4 py-3.5" style="color:#D6D3D1">
+                  <TableCell class="px-4 py-3.5" style="color:rgba(255,255,255,0.20);">
                     <Icon name={ICONS.arrowRight} size={16} />
                   </TableCell>
                 </TableRow>

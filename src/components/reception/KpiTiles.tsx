@@ -17,7 +17,7 @@ function spark(final: number, seed: number): number[] {
   return pts
 }
 
-const EC_THEME = `var FONT='Inter,ui-sans-serif,sans-serif';`
+const EC_THEME = `var FONT='Inter,ui-sans-serif,sans-serif'; var BG='rgba(9,13,18,0)';`
 
 export const KpiTiles = ({ stats }: Props) => {
   const tiles = [
@@ -27,12 +27,12 @@ export const KpiTiles = ({ stats }: Props) => {
       value:   stats.totalScheduled,
       sub:     'booked for today',
       icon:    ICONS.calendar,
-      iconBg:  'rgba(245,158,11,0.10)',
-      iconFg:  '#F59E0B',
-      valueFg: '#44403C',
-      lineColor: '#F59E0B',
-      fillStart: 'rgba(245,158,11,0.18)',
-      fillEnd:   'rgba(245,158,11,0)',
+      iconBg:  'rgba(251,191,36,0.10)',
+      iconFg:  '#FBBF24',
+      valueFg: '#F1F5F9',
+      lineColor: '#FBBF24',
+      fillStart: 'rgba(251,191,36,0.18)',
+      fillEnd:   'rgba(251,191,36,0)',
       seed: 2,
     },
     {
@@ -41,12 +41,12 @@ export const KpiTiles = ({ stats }: Props) => {
       value:   stats.checkedIn,
       sub:     'currently on site',
       icon:    ICONS.userCheck,
-      iconBg:  'rgba(22,163,74,0.10)',
-      iconFg:  '#16A34A',
-      valueFg: '#16A34A',
-      lineColor: '#16A34A',
-      fillStart: 'rgba(22,163,74,0.18)',
-      fillEnd:   'rgba(22,163,74,0)',
+      iconBg:  'rgba(34,197,94,0.10)',
+      iconFg:  '#22C55E',
+      valueFg: '#22C55E',
+      lineColor: '#22C55E',
+      fillStart: 'rgba(34,197,94,0.18)',
+      fillEnd:   'rgba(34,197,94,0)',
       seed: 5,
     },
     {
@@ -55,12 +55,12 @@ export const KpiTiles = ({ stats }: Props) => {
       value:   stats.completed,
       sub:     'finished today',
       icon:    ICONS.checkSquare,
-      iconBg:  'rgba(120,113,108,0.10)',
-      iconFg:  '#78716C',
-      valueFg: '#44403C',
-      lineColor: '#A8A29E',
-      fillStart: 'rgba(168,162,158,0.15)',
-      fillEnd:   'rgba(168,162,158,0)',
+      iconBg:  'rgba(148,163,184,0.10)',
+      iconFg:  '#94A3B8',
+      valueFg: '#F1F5F9',
+      lineColor: '#94A3B8',
+      fillStart: 'rgba(148,163,184,0.15)',
+      fillEnd:   'rgba(148,163,184,0)',
       seed: 1,
     },
     {
@@ -69,12 +69,12 @@ export const KpiTiles = ({ stats }: Props) => {
       value:   stats.held,
       sub:     'customs holds today',
       icon:    ICONS.warning,
-      iconBg:  'rgba(220,38,38,0.08)',
-      iconFg:  '#DC2626',
-      valueFg: '#DC2626',
-      lineColor: '#F87171',
-      fillStart: 'rgba(220,38,38,0.12)',
-      fillEnd:   'rgba(220,38,38,0)',
+      iconBg:  'rgba(239,68,68,0.10)',
+      iconFg:  '#EF4444',
+      valueFg: '#EF4444',
+      lineColor: '#EF4444',
+      fillStart: 'rgba(239,68,68,0.14)',
+      fillEnd:   'rgba(239,68,68,0)',
       seed: 3,
     },
   ]
@@ -134,7 +134,7 @@ ${EC_THEME}
       {tiles.map((tile) => (
         <div
           key={tile.label}
-          style="background:#FCFBF8; border:1px solid rgba(214,211,209,0.6); border-radius:14px; padding:18px 18px 0; overflow:hidden; box-shadow:rgba(0,0,0,0.04) 0 1px 3px 0;"
+          style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:18px 18px 0; overflow:hidden; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.25), 0 4px 24px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.30);"
         >
           {/* Header row */}
           <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:14px;">
@@ -147,12 +147,12 @@ ${EC_THEME}
 
           {/* Value + labels */}
           <p
-            style={`font-size:30px; font-weight:600; letter-spacing:-0.03em; line-height:1; color:${tile.valueFg}; margin-bottom:4px; font-variant-numeric:tabular-nums;`}
+            style={`font-size:30px; font-weight:700; letter-spacing:-0.03em; line-height:1; color:${tile.valueFg}; margin-bottom:4px; font-variant-numeric:tabular-nums;`}
           >
             {tile.value}
           </p>
-          <p style="font-size:12px; font-weight:600; color:#44403C; margin-bottom:1px;">{tile.label}</p>
-          <p style="font-size:11px; color:#A8A29E; margin-bottom:12px;">{tile.sub}</p>
+          <p style="font-size:12px; font-weight:600; color:#94A3B8; margin-bottom:1px;">{tile.label}</p>
+          <p style="font-size:11px; color:#64748B; margin-bottom:12px;">{tile.sub}</p>
 
           {/* Sparkline */}
           <div

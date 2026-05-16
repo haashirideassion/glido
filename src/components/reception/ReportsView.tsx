@@ -25,14 +25,14 @@ const dayLabels   = DAYS_7.map(d => {
 
 // Status distribution
 const STATUS_COLORS: Record<string, string> = {
-  completed:   '#16A34A',
-  confirmed:   '#F97316',
-  checked_in:  '#FB923C',
+  completed:   '#22C55E',
+  confirmed:   '#FC6514',
+  checked_in:  '#FC8A3C',
   cancelled:   '#DC2626',
   pending:     '#D97706',
   pending_eft: '#2563EB',
   no_show:     '#A8A29E',
-  scheduled:   '#78716C',
+  scheduled:   '#64748B',
 }
 
 const statusCounts = Object.entries(
@@ -56,14 +56,14 @@ const fclCount     = mockBookings.filter(b => b.loadType === 'fcl').length
 const lclCount     = mockBookings.filter(b => b.loadType === 'lcl').length
 
 const STATUS_STYLE: Record<string, string> = {
-  confirmed:    'background:rgba(22,163,74,0.10); color:#15803D; border:1px solid rgba(22,163,74,0.2);',
-  checked_in:   'background:rgba(249,115,22,0.10); color:#C2550A; border:1px solid rgba(249,115,22,0.22);',
-  completed:    'background:rgba(168,162,158,0.12); color:#57534E; border:1px solid rgba(168,162,158,0.2);',
-  cancelled:    'background:rgba(220,38,38,0.08); color:#B91C1C; border:1px solid rgba(220,38,38,0.15);',
-  pending:      'background:rgba(217,119,6,0.10); color:#92400E; border:1px solid rgba(217,119,6,0.2);',
-  pending_eft:  'background:rgba(37,99,235,0.08); color:#1E3A8A; border:1px solid rgba(37,99,235,0.15);',
-  no_show:      'background:rgba(168,162,158,0.10); color:#78716C; border:1px solid rgba(168,162,158,0.18);',
-  scheduled:    'background:rgba(120,113,108,0.08); color:#57534E; border:1px solid rgba(120,113,108,0.15);',
+  confirmed:    'background:rgba(34,197,94,0.12); color:#22C55E; border:1px solid rgba(34,197,94,0.22);',
+  checked_in:   'background:rgba(252,101,20,0.12); color:#FC6514; border:1px solid rgba(252,101,20,0.25);',
+  completed:    'background:rgba(148,163,184,0.10); color:#94A3B8; border:1px solid rgba(148,163,184,0.20);',
+  cancelled:    'background:rgba(239,68,68,0.10); color:#EF4444; border:1px solid rgba(239,68,68,0.22);',
+  pending:      'background:rgba(251,191,36,0.10); color:#FBBF24; border:1px solid rgba(251,191,36,0.22);',
+  pending_eft:  'background:rgba(56,189,248,0.10); color:#38BDF8; border:1px solid rgba(56,189,248,0.22);',
+  no_show:      'background:rgba(148,163,184,0.08); color:#64748B; border:1px solid rgba(148,163,184,0.15);',
+  scheduled:    'background:rgba(148,163,184,0.08); color:#64748B; border:1px solid rgba(148,163,184,0.15);',
 }
 
 // JSON serialisation helpers (safe for inline scripts)
@@ -78,12 +78,14 @@ const jsStatusColors = JSON.stringify(statusCounts.map(([s]) => STATUS_COLORS[s]
 // Shared ECharts theme tokens
 const EC_THEME = `
   var FONT = "'Inter', ui-sans-serif, system-ui, sans-serif";
-  var ORANGE = '#F97316';
-  var ORANGE2 = '#FB923C';
-  var GRID_LINE = 'rgba(240,197,137,0.25)';
-  var AXIS_LABEL = '#A8A29E';
-  var TOOLTIP_BG = 'rgba(255,247,237,0.96)';
-  var TOOLTIP_BORDER = 'rgba(249,115,22,0.2)';
+  var DARK = '#F1F5F9';
+  var DARK2 = 'rgba(241,245,249,0.65)';
+  var ORANGE = '#FC6514';
+  var GRID_LINE = 'rgba(255,255,255,0.06)';
+  var AXIS_LABEL = '#64748B';
+  var TOOLTIP_BG = 'rgba(35,44,56,0.97)';
+  var TOOLTIP_BORDER = 'rgba(255,255,255,0.13)';
+  var TOOLTIP_TEXT = '#F1F5F9';
 `
 
 export const ReportsView = () => (
@@ -92,12 +94,13 @@ export const ReportsView = () => (
     {/* ── Page header ──────────────────────────────────────────────────────── */}
     <div style="display:flex; align-items:center; justify-content:space-between;">
       <div>
-        <h2 style="font-size:17px; font-weight:600; color:#1C1917; letter-spacing:-0.015em; margin-bottom:2px;">Reports</h2>
-        <p style="font-size:12.5px; color:#78716C;">Activity analytics across all bookings</p>
+        <h2 style="font-size:17px; font-weight:600; color:#F1F5F9; letter-spacing:-0.015em; margin-bottom:2px;">Reports</h2>
+        <p style="font-size:12.5px; color:#64748B;">Activity analytics across all bookings</p>
       </div>
       <button
         type="button"
-        style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; font-size:12px; font-weight:500; color:#78716C; background:transparent; border:1.5px solid rgba(240,197,137,0.5); border-radius:9999px; cursor:pointer;"
+        class="btn-ghost"
+        style="padding:8px 16px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;"
       >
         <Icon name={ICONS.download} size={13} />
         Export CSV
@@ -107,17 +110,17 @@ export const ReportsView = () => (
     {/* ── KPI summary strip ────────────────────────────────────────────────── */}
     <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px;">
       {[
-        { label: 'Total Bookings', value: mockBookings.length,                                      color: '#F97316' },
-        { label: 'Completed',      value: mockBookings.filter(b => b.status === 'completed').length, color: '#16A34A' },
-        { label: 'Cancelled',      value: mockBookings.filter(b => b.status === 'cancelled').length, color: '#DC2626' },
-        { label: 'Scheduled',      value: mockBookings.filter(b => b.status === 'scheduled').length, color: '#78716C' },
+        { label: 'Total Bookings', value: mockBookings.length,                                      color: '#F1F5F9' },
+        { label: 'Completed',      value: mockBookings.filter(b => b.status === 'completed').length, color: '#22C55E' },
+        { label: 'Cancelled',      value: mockBookings.filter(b => b.status === 'cancelled').length, color: '#EF4444' },
+        { label: 'Scheduled',      value: mockBookings.filter(b => b.status === 'scheduled').length, color: '#94A3B8' },
       ].map(s => (
         <div
           key={s.label}
-          style="background:rgba(255,247,237,0.75); border:1.5px solid rgba(249,115,22,0.12); border-radius:16px; padding:18px 20px;"
+          style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:18px 20px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 24px rgba(0,0,0,0.45);"
         >
-          <p style={`font-size:28px; font-weight:600; letter-spacing:-0.04em; color:${s.color}; line-height:1; margin-bottom:6px;`}>{s.value}</p>
-          <p style="font-size:12px; color:#78716C;">{s.label}</p>
+          <p style={`font-size:28px; font-weight:700; letter-spacing:-0.04em; color:${s.color}; line-height:1; margin-bottom:6px;`}>{s.value}</p>
+          <p style="font-size:12px; color:#64748B;">{s.label}</p>
         </div>
       ))}
     </div>
@@ -126,16 +129,16 @@ export const ReportsView = () => (
     <div style="display:grid; grid-template-columns:1.6fr 1fr; gap:12px;">
 
       {/* Weekly bookings bar chart */}
-      <div style="background:rgba(255,247,237,0.75); border:1.5px solid rgba(249,115,22,0.12); border-radius:20px; padding:24px;">
-        <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:4px;">Bookings — last 7 days</p>
-        <p style="font-size:11.5px; color:#A8A29E; margin-bottom:16px;">Daily booking volume</p>
+      <div style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:24px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.25), 0 4px 24px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.30);">
+        <p style="font-size:13px; font-weight:600; color:#F1F5F9; margin-bottom:4px;">Bookings — last 7 days</p>
+        <p style="font-size:11.5px; color:#64748B; margin-bottom:16px;">Daily booking volume</p>
         <div id="chart-weekly" style="width:100%; height:220px;"></div>
       </div>
 
       {/* Status donut */}
-      <div style="background:rgba(255,247,237,0.75); border:1.5px solid rgba(249,115,22,0.12); border-radius:20px; padding:24px;">
-        <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:4px;">Status breakdown</p>
-        <p style="font-size:11.5px; color:#A8A29E; margin-bottom:16px;">All-time distribution</p>
+      <div style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:24px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.25), 0 4px 24px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.30);">
+        <p style="font-size:13px; font-weight:600; color:#F1F5F9; margin-bottom:4px;">Status breakdown</p>
+        <p style="font-size:11.5px; color:#64748B; margin-bottom:16px;">All-time distribution</p>
         <div id="chart-status" style="width:100%; height:220px;"></div>
       </div>
     </div>
@@ -144,34 +147,34 @@ export const ReportsView = () => (
     <div style="display:grid; grid-template-columns:1.8fr 1fr; gap:12px;">
 
       {/* Hourly traffic line chart */}
-      <div style="background:rgba(255,247,237,0.75); border:1.5px solid rgba(249,115,22,0.12); border-radius:20px; padding:24px;">
-        <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:4px;">Hourly traffic pattern</p>
-        <p style="font-size:11.5px; color:#A8A29E; margin-bottom:16px;">Average bookings by time window</p>
+      <div style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:24px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.25), 0 4px 24px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.30);">
+        <p style="font-size:13px; font-weight:600; color:#F1F5F9; margin-bottom:4px;">Hourly traffic pattern</p>
+        <p style="font-size:11.5px; color:#64748B; margin-bottom:16px;">Average bookings by time window</p>
         <div id="chart-hourly" style="width:100%; height:200px;"></div>
       </div>
 
       {/* Service mix — two stacked bars */}
-      <div style="background:rgba(255,247,237,0.75); border:1.5px solid rgba(249,115,22,0.12); border-radius:20px; padding:24px;">
-        <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:4px;">Service mix</p>
-        <p style="font-size:11.5px; color:#A8A29E; margin-bottom:20px;">Pick Up vs Drop Off · FCL vs LCL</p>
+      <div style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:24px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.25), 0 4px 24px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.30);">
+        <p style="font-size:13px; font-weight:600; color:#F1F5F9; margin-bottom:4px;">Service mix</p>
+        <p style="font-size:11.5px; color:#64748B; margin-bottom:20px;">Pick Up vs Drop Off · FCL vs LCL</p>
         <div id="chart-mix" style="width:100%; height:200px;"></div>
       </div>
     </div>
 
     {/* ── Booking table ────────────────────────────────────────────────────── */}
-    <div style="background:rgba(255,247,237,0.75); border:1.5px solid rgba(249,115,22,0.12); border-radius:20px; overflow:hidden;">
-      <div style="display:flex; align-items:center; justify-content:space-between; padding:18px 24px; border-bottom:1px solid rgba(249,115,22,0.10);">
-        <p style="font-size:13px; font-weight:600; color:#1C1917;">All Bookings</p>
-        <span style="font-size:12px; color:#A8A29E;">{mockBookings.length} records</span>
+    <div style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.07); border-radius:16px; overflow:hidden; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 24px rgba(0,0,0,0.45);">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:18px 24px; border-bottom:1px solid rgba(255,255,255,0.07);">
+        <p style="font-size:13px; font-weight:600; color:#F1F5F9;">All Bookings</p>
+        <span style="font-size:12px; color:#64748B;">{mockBookings.length} records</span>
       </div>
       <div style="overflow-x:auto;">
         <table style="width:100%; border-collapse:collapse;">
           <thead>
-            <tr style="background:rgba(234,230,219,0.4);">
+            <tr style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.07);">
               {['Reference', 'Date', 'Time', 'Driver', 'Service', 'Status'].map(h => (
                 <th
                   key={h}
-                  style="padding:10px 20px; text-align:left; font-size:10px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#A8A29E; white-space:nowrap;"
+                  style="padding:10px 20px; text-align:left; font-size:10px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#64748B; white-space:nowrap;"
                 >{h}</th>
               ))}
             </tr>
@@ -180,13 +183,13 @@ export const ReportsView = () => (
             {mockBookings.slice(0, 12).map((b, i) => (
               <tr
                 key={b.id}
-                style={`border-top:1px solid rgba(249,115,22,0.07); ${i % 2 === 0 ? '' : 'background:rgba(254,240,220,0.2);'}`}
+                style={`border-top:1px solid rgba(255,255,255,0.05); ${i % 2 !== 0 ? 'background:rgba(255,255,255,0.02);' : ''}`}
               >
-                <td style="padding:11px 20px; font-family:ui-monospace,monospace; font-size:12px; font-weight:700; color:#1C1917; white-space:nowrap;">{b.referenceNumber}</td>
-                <td style="padding:11px 20px; font-size:12.5px; color:#57534E; white-space:nowrap;">{b.slotDate}</td>
-                <td style="padding:11px 20px; font-size:12.5px; color:#57534E; white-space:nowrap;">{b.slotStartTime} – {b.slotEndTime}</td>
-                <td style="padding:11px 20px; font-size:12.5px; color:#1C1917;">{b.driverName}</td>
-                <td style="padding:11px 20px; font-size:12px; color:#78716C; white-space:nowrap;">
+                <td style="padding:11px 20px; font-family:ui-monospace,monospace; font-size:12px; font-weight:700; color:#FC6514; white-space:nowrap;">{b.referenceNumber}</td>
+                <td style="padding:11px 20px; font-size:12.5px; color:#94A3B8; white-space:nowrap;">{b.slotDate}</td>
+                <td style="padding:11px 20px; font-size:12.5px; color:#94A3B8; white-space:nowrap;">{b.slotStartTime} – {b.slotEndTime}</td>
+                <td style="padding:11px 20px; font-size:12.5px; color:#F1F5F9;">{b.driverName}</td>
+                <td style="padding:11px 20px; font-size:12px; color:#64748B; white-space:nowrap;">
                   {SERVICE_LABEL[b.serviceType]} · {LOAD_LABEL[b.loadType]}
                 </td>
                 <td style="padding:11px 20px;">
@@ -227,7 +230,7 @@ export const ReportsView = () => (
         borderColor: TOOLTIP_BORDER,
         borderWidth: 1,
         padding: [8, 12],
-        textStyle: { color: '#1C1917', fontFamily: FONT, fontSize: 12 },
+        textStyle: { color: '#F1F5F9', fontFamily: FONT, fontSize: 12 },
         formatter: function(p) { return p[0].name + '<br/><b>' + p[0].value + ' bookings</b>'; }
       },
       xAxis: {
@@ -253,11 +256,11 @@ export const ReportsView = () => (
         itemStyle: {
           borderRadius: [6, 6, 0, 0],
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: ORANGE },
-            { offset: 1, color: ORANGE2 }
+            { offset: 0, color: DARK },
+            { offset: 1, color: DARK2 }
           ])
         },
-        emphasis: { itemStyle: { color: '#EA6C0A' } }
+        emphasis: { itemStyle: { color: DARK } }
       }]
     });
 
@@ -270,7 +273,7 @@ export const ReportsView = () => (
         borderColor: TOOLTIP_BORDER,
         borderWidth: 1,
         padding: [8, 12],
-        textStyle: { color: '#1C1917', fontFamily: FONT, fontSize: 12 },
+        textStyle: { color: '#F1F5F9', fontFamily: FONT, fontSize: 12 },
         formatter: '{b}: <b>{c}</b> ({d}%)'
       },
       legend: {
@@ -280,7 +283,7 @@ export const ReportsView = () => (
         itemWidth: 8,
         itemHeight: 8,
         borderRadius: 4,
-        textStyle: { color: '#78716C', fontFamily: FONT, fontSize: 11 }
+        textStyle: { color: '#64748B', fontFamily: FONT, fontSize: 11 }
       },
       series: [{
         type: 'pie',
@@ -292,7 +295,7 @@ export const ReportsView = () => (
         emphasis: {
           scale: true,
           scaleSize: 4,
-          itemStyle: { shadowBlur: 12, shadowColor: 'rgba(249,115,22,0.25)' }
+          itemStyle: { shadowBlur: 12, shadowColor: 'rgba(252,101,20,0.25)' }
         },
         data: statusNames.map(function(name, i) {
           return { value: statusVals[i], name: name, itemStyle: { color: statusColors[i], borderRadius: 3 } };
@@ -310,7 +313,7 @@ export const ReportsView = () => (
         borderColor: TOOLTIP_BORDER,
         borderWidth: 1,
         padding: [8, 12],
-        textStyle: { color: '#1C1917', fontFamily: FONT, fontSize: 12 },
+        textStyle: { color: '#F1F5F9', fontFamily: FONT, fontSize: 12 },
         formatter: function(p) { return p[0].name + '<br/><b>' + p[0].value + ' bookings</b>'; }
       },
       xAxis: {
@@ -336,12 +339,12 @@ export const ReportsView = () => (
         smooth: 0.4,
         symbol: 'circle',
         symbolSize: 6,
-        lineStyle: { color: ORANGE, width: 2.5 },
-        itemStyle: { color: ORANGE, borderColor: '#fff', borderWidth: 2 },
+        lineStyle: { color: DARK, width: 2.5 },
+        itemStyle: { color: DARK, borderColor: '#fff', borderWidth: 2 },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(249,115,22,0.18)' },
-            { offset: 1, color: 'rgba(249,115,22,0.02)' }
+            { offset: 0, color: 'rgba(28,35,44,0.14)' },
+            { offset: 1, color: 'rgba(28,35,44,0.02)' }
           ])
         }
       }]
@@ -358,7 +361,7 @@ export const ReportsView = () => (
         borderColor: TOOLTIP_BORDER,
         borderWidth: 1,
         padding: [8, 12],
-        textStyle: { color: '#1C1917', fontFamily: FONT, fontSize: 12 },
+        textStyle: { color: '#F1F5F9', fontFamily: FONT, fontSize: 12 },
         axisPointer: { type: 'none' }
       },
       yAxis: {
@@ -384,15 +387,15 @@ export const ReportsView = () => (
           itemStyle: {
             borderRadius: [0, 6, 6, 0],
             color: function(p) {
-              var c = [ORANGE, ORANGE2, '#FB923C', '#FBD0A8'];
-              return c[p.dataIndex] || ORANGE;
+              var c = [DARK, 'rgba(28,35,44,0.75)', 'rgba(28,35,44,0.55)', 'rgba(28,35,44,0.35)'];
+              return c[p.dataIndex] || DARK;
             }
           },
           label: {
             show: true,
             position: 'right',
             formatter: function(p) { return p.value + ' (' + Math.round(p.value/total*100) + '%)'; },
-            color: '#78716C',
+            color: '#64748B',
             fontFamily: FONT,
             fontSize: 11
           }
@@ -401,7 +404,7 @@ export const ReportsView = () => (
           type: 'bar',
           data: [total - ${pickupCount}, total - ${dropoffCount}, total - ${fclCount}, total - ${lclCount}],
           barMaxWidth: 24,
-          itemStyle: { color: 'rgba(240,197,137,0.18)', borderRadius: [0, 6, 6, 0] },
+          itemStyle: { color: 'rgba(28,35,44,0.07)', borderRadius: [0, 6, 6, 0] },
           label: { show: false },
           emphasis: { disabled: true },
           stack: 'nope'

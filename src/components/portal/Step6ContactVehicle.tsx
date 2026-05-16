@@ -6,83 +6,87 @@ export const Step6ContactVehicle = () => (
     x-cloak
     x-data="{ documents: [], dragging: false, addFile(name, size) { this.documents.push({ name, size }) }, removeFile(i) { this.documents.splice(i, 1) } }"
   >
-    <h2 class="text-xl font-bold text-slate-900 mb-1">Upload your Delivery Order</h2>
-    <p class="text-slate-500 text-sm mb-6">Upload your Delivery Order and any other required documents before proceeding to payment.</p>
+    <h2 style="font-size:18px; font-weight:700; color:#F1F5F9; letter-spacing:-0.03em; margin-bottom:3px;">Upload your Delivery Order</h2>
+    <p style="font-size:13px; color:#64748B; margin-bottom:28px; line-height:1.5;">Upload your Delivery Order and any other required documents before proceeding to payment.</p>
 
     {/* Required docs checklist */}
-    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-5">
-      <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Required Documents</p>
-      <ul class="space-y-2.5">
-        <li class="flex items-center gap-3 text-sm">
+    <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.09); border-radius:10px; padding:16px; margin-bottom:20px;">
+      <p style="font-size:10px; font-weight:700; color:#64748B; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Required Documents</p>
+      <ul style="display:flex; flex-direction:column; gap:10px; list-style:none; padding:0; margin:0;">
+        <li style="display:flex; align-items:center; gap:10px; font-size:13px;">
           <span
-            class="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
-            {...{"x-bind:class": "documents.length > 0 ? 'bg-green-100 text-green-600' : 'bg-slate-200 text-slate-400'"}}
+            style="width:20px; height:20px; border-radius:9999px; display:flex; align-items:center; justify-content:center; flex-shrink:0;"
+            {...{"x-bind:style": "documents.length > 0 ? 'background:rgba(34,197,94,0.14); color:#22C55E;' : 'background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.25);'"}}
           >
             <Icon name={ICONS.check} size={12} />
           </span>
-          <span class="text-slate-700">Delivery Order</span>
-          <span class="text-xs text-red-500 font-medium">Required</span>
+          <span style="color:#F1F5F9;">Delivery Order</span>
+          <span style="font-size:11px; color:#EF4444; font-weight:600;">Required</span>
         </li>
         <li
           x-show="$store.wizard.serviceType === 'dropoff'"
-          class="flex items-center gap-3 text-sm"
+          style="display:flex; align-items:center; gap:10px; font-size:13px;"
         >
-          <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center shrink-0">
+          <span style="width:20px; height:20px; border-radius:9999px; background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
             <Icon name={ICONS.check} size={12} />
           </span>
-          <span class="text-slate-700">Packing List</span>
-          <span class="text-xs text-red-500 font-medium">Required for drop-offs</span>
+          <span style="color:#F1F5F9;">Packing List</span>
+          <span style="font-size:11px; color:#EF4444; font-weight:600;">Required for drop-offs</span>
         </li>
-        <li class="flex items-center gap-3 text-sm text-slate-500">
-          <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-300 flex items-center justify-center shrink-0">
+        <li style="display:flex; align-items:center; gap:10px; font-size:13px; color:#64748B;">
+          <span style="width:20px; height:20px; border-radius:9999px; background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
             <Icon name={ICONS.check} size={12} />
           </span>
           <span>Import Permit</span>
-          <span class="text-xs text-slate-400 font-medium">If applicable</span>
+          <span style="font-size:11px; color:#64748B; font-weight:600;">If applicable</span>
         </li>
       </ul>
     </div>
 
     {/* Drop zone */}
     <div
-      class="border-2 border-dashed rounded-2xl p-10 text-center transition-colors cursor-pointer"
-      {...{"x-bind:class": "dragging ? 'border-blue-500 bg-blue-50' : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-blue-50/30'"}}
+      style="border:2px dashed rgba(255,255,255,0.13); border-radius:10px; padding:40px 24px; text-align:center; transition:border-color 0.15s ease, background 0.15s ease; cursor:pointer;"
+      {...{"x-bind:style": "dragging ? 'border-color:rgba(252,101,20,0.50); background:rgba(252,101,20,0.05);' : ''"}}
       {...{"x-on:dragover.prevent": "dragging = true"}}
       {...{"x-on:dragleave.prevent": "dragging = false"}}
       {...{"x-on:drop.prevent": "dragging = false; const files = Array.from($event.dataTransfer.files); files.forEach(f => addFile(f.name, f.size))"}}
     >
-      <Icon name={ICONS.upload} size={36} class="mx-auto mb-3 text-slate-300" />
-      <p class="text-sm font-semibold text-slate-600 mb-1">Drag &amp; drop your files here, or click to browse</p>
-      <p class="text-xs text-slate-400 mb-4">PDF, JPG, PNG — max 10 MB each</p>
-      <label class="inline-flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-medium px-4 py-2 rounded-xl cursor-pointer transition-colors">
-        <Icon name={ICONS.upload} size={15} />
+      <div style="width:44px; height:44px; border-radius:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.06);">
+        <Icon name={ICONS.upload} size={22} style="color:#64748B;" />
+      </div>
+      <p style="font-size:14px; font-weight:600; color:#F1F5F9; margin-bottom:4px;">Drag &amp; drop your files here, or click to browse</p>
+      <p style="font-size:12px; color:#64748B; margin-bottom:18px;">PDF, JPG, PNG — max 10 MB each</p>
+      <label class="btn-ghost" style="padding:9px 18px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+        <Icon name={ICONS.upload} size={14} />
         Browse files
         <input
           type="file"
           multiple
           accept=".pdf,.jpg,.jpeg,.png"
-          class="sr-only"
+          style="display:none;"
           x-on:change="const files = Array.from($event.target.files); files.forEach(f => addFile(f.name, f.size))"
         />
       </label>
     </div>
 
     {/* File list */}
-    <div class="mt-4 space-y-2" x-show="documents.length > 0">
-      <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Uploaded files</p>
+    <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px;" x-show="documents.length > 0">
+      <p style="font-size:10px; font-weight:700; color:#64748B; letter-spacing:0.09em; text-transform:uppercase;">Uploaded files</p>
       <template x-for="(doc, i) in documents" {...{"x-key": "i"}}>
-        <div class="flex items-center justify-between bg-white border border-slate-200 rounded-xl px-4 py-3">
-          <div class="flex items-center gap-3 min-w-0">
-            <Icon name={ICONS.document} size={18} class="text-blue-500 shrink-0" />
-            <div class="min-w-0">
-              <p class="text-sm font-medium text-slate-800 truncate" x-text="doc.name"></p>
-              <p class="text-xs text-slate-400" x-text="doc.size ? (doc.size / 1024).toFixed(0) + ' KB' : ''"></p>
+        <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.09); border-radius:8px; padding:10px 14px;">
+          <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+            <Icon name={ICONS.document} size={18} style="color:#94A3B8; flex-shrink:0;" />
+            <div style="min-width:0;">
+              <p style="font-size:13px; font-weight:500; color:#F1F5F9; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" x-text="doc.name"></p>
+              <p style="font-size:11px; color:#64748B;" x-text="doc.size ? (doc.size / 1024).toFixed(0) + ' KB' : ''"></p>
             </div>
           </div>
           <button
             type="button"
             x-on:click="removeFile(i)"
-            class="ml-3 shrink-0 text-slate-400 hover:text-red-500 transition-colors p-1"
+            style="margin-left:12px; flex-shrink:0; color:#64748B; background:transparent; border:none; cursor:pointer; padding:4px; border-radius:4px; transition:color 0.12s ease;"
+            onmouseover="this.style.color='#EF4444';"
+            onmouseout="this.style.color='#64748B';"
           >
             <Icon name={ICONS.trash} size={16} />
           </button>
@@ -93,18 +97,18 @@ export const Step6ContactVehicle = () => (
     {/* Pick-up note */}
     <div
       x-show="$store.wizard.serviceType === 'pickup'"
-      class="mt-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-xs text-amber-700 flex items-start gap-2"
+      style="margin-top:16px; background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.20); border-radius:8px; padding:12px 16px; font-size:12px; color:#FBBF24; display:flex; align-items:flex-start; gap:10px; line-height:1.6;"
     >
-      <Icon name={ICONS.info} size={14} class="text-amber-500 shrink-0 mt-0.5" />
+      <Icon name={ICONS.info} size={14} style="color:#FBBF24; flex-shrink:0; margin-top:1px;" />
       <span>For pick-ups, a Delivery Order is required. You cannot proceed to payment without uploading one.</span>
     </div>
 
     {/* Drop-off note */}
     <div
       x-show="$store.wizard.serviceType === 'dropoff'"
-      class="mt-4 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs text-blue-700 flex items-start gap-2"
+      style="margin-top:16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.09); border-radius:8px; padding:12px 16px; font-size:12px; color:#64748B; display:flex; align-items:flex-start; gap:10px; line-height:1.6;"
     >
-      <Icon name={ICONS.info} size={14} class="text-blue-500 shrink-0 mt-0.5" />
+      <Icon name={ICONS.info} size={14} style="color:#64748B; flex-shrink:0; margin-top:1px;" />
       <span>For drop-offs, a Delivery Order may not be required if your consignment has not been issued one yet. Upload what you have.</span>
     </div>
   </div>

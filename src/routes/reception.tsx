@@ -81,7 +81,7 @@ receptionRoutes.get('/bookings/:id', async (c) => {
   if (isHtmx) return c.html(<BookingSlideOver booking={booking} />)
   return c.html(
     <ReceptionLayout title={booking.referenceNumber} activeNav="/reception/bookings">
-      <div style="max-width:672px; margin:0 auto; background:#FCFBF8; border-radius:12px; border:1px solid #D6D3D1;">
+      <div style="max-width:672px; margin:0 auto; background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border-radius:12px; border:1px solid rgba(255,255,255,0.07);">
         <BookingSlideOver booking={booking} />
       </div>
     </ReceptionLayout>
@@ -123,58 +123,60 @@ receptionRoutes.get('/walk-ins', async (c) => {
   const walkIns = await getActiveWalkIns(DEFAULT_TENANT_ID).catch(() => [])
   return c.html(
     <ReceptionLayout title="Walk-Ins" activeNav="/reception/walk-ins">
-      <div style="background:#FCFBF8; border-radius:12px; border:1px solid #D6D3D1; overflow:hidden;">
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #EAE6DE;">
-          <h2 style="font-weight:600; color:#44403C; font-size:14px;">Walk-In Visitors</h2>
-          <span style="font-size:11px; color:#A8A29E; background:#F5F3EC; border:1px solid #D6D3D1; padding:2px 10px; border-radius:9999px; font-weight:500;">
+      <div style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border-radius:12px; border:1px solid rgba(255,255,255,0.07); overflow:hidden; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 16px rgba(0,0,0,0.40);">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.07);">
+          <h2 style="font-weight:600; color:#F1F5F9; font-size:14px;">Walk-In Visitors</h2>
+          <span style="font-size:11px; color:#64748B; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); padding:2px 10px; border-radius:9999px; font-weight:500;">
             {walkIns.length} active
           </span>
         </div>
         <div style="overflow-x:auto;">
           <table style="width:100%; font-size:12px; border-collapse:collapse;">
             <thead>
-              <tr style="background:#F5F3EC; border-bottom:1px solid #EAE6DE;">
-                <th style="text-align:left; padding:10px 20px; color:#A8A29E; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Name</th>
-                <th style="text-align:left; padding:10px 16px; color:#A8A29E; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Phone</th>
-                <th style="text-align:left; padding:10px 16px; color:#A8A29E; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Purpose</th>
-                <th style="text-align:left; padding:10px 16px; color:#A8A29E; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Arrived</th>
-                <th style="text-align:left; padding:10px 16px; color:#A8A29E; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Licence</th>
+              <tr style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.07);">
+                <th style="text-align:left; padding:10px 20px; color:#64748B; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Name</th>
+                <th style="text-align:left; padding:10px 16px; color:#64748B; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Phone</th>
+                <th style="text-align:left; padding:10px 16px; color:#64748B; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Purpose</th>
+                <th style="text-align:left; padding:10px 16px; color:#64748B; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Arrived</th>
+                <th style="text-align:left; padding:10px 16px; color:#64748B; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Licence</th>
                 <th style="padding:10px 16px;"></th>
               </tr>
             </thead>
             <tbody>
               {walkIns.map((w) => (
-                <tr key={w.id} style="border-bottom:1px solid rgba(214,211,209,0.4);">
+                <tr key={w.id} style="border-bottom:1px solid rgba(255,255,255,0.05);" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
                   <td style="padding:12px 20px;">
-                    <p style="font-weight:600; color:#44403C;">{w.visitorName}</p>
+                    <p style="font-weight:600; color:#F1F5F9;">{w.visitorName}</p>
                     {w.personBeingVisited && (
-                      <p style="font-size:11px; color:#A8A29E; margin-top:2px;">→ {w.personBeingVisited}</p>
+                      <p style="font-size:11px; color:#64748B; margin-top:2px;">→ {w.personBeingVisited}</p>
                     )}
                   </td>
-                  <td style="padding:12px 16px; color:#78716C; font-size:11px;">{w.contactNumber || '—'}</td>
+                  <td style="padding:12px 16px; color:#94A3B8; font-size:11px;">{w.contactNumber || '—'}</td>
                   <td style="padding:12px 16px;">
-                    <span style="display:inline-flex; align-items:center; font-size:11px; font-weight:500; padding:2px 8px; border-radius:9999px; background:#EAE6DE; color:#44403C; border:1px solid #D6D3D1;">
+                    <span style="display:inline-flex; align-items:center; font-size:11px; font-weight:500; padding:2px 8px; border-radius:9999px; background:rgba(252,101,20,0.10); color:rgba(252,101,20,0.85); border:1px solid rgba(252,101,20,0.22);">
                       {WALK_IN_PURPOSE_LABEL[w.purpose]}
                     </span>
                   </td>
-                  <td style="padding:12px 16px; font-size:11px; color:#78716C;">
+                  <td style="padding:12px 16px; font-size:11px; color:#94A3B8;">
                     {new Date(w.arrivedAt).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })}
                   </td>
                   <td style="padding:12px 16px;">
                     {w.licenceCaptured ? (
-                      <span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:500; color:#166534;">
-                        <Icon name={ICONS.check} size={12} style="color:#16A34A;" />
+                      <span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:500; color:#22C55E;">
+                        <Icon name={ICONS.check} size={12} style="color:#22C55E;" />
                         Captured
                       </span>
                     ) : (
-                      <span style="font-size:11px; color:#A8A29E;">Not captured</span>
+                      <span style="font-size:11px; color:#64748B;">Not captured</span>
                     )}
                   </td>
                   <td style="padding:12px 16px;">
                     <form method="post" action={`/reception/walk-ins/${w.id}/dismiss`} style="display:inline;">
                       <button
                         type="submit"
-                        style="font-size:11px; color:#A8A29E; background:none; border:none; cursor:pointer;"
+                        style="font-size:11px; color:#64748B; background:none; border:none; cursor:pointer; transition:color 0.15s ease;"
+                        onmouseover="this.style.color='#94A3B8'"
+                        onmouseout="this.style.color='#64748B'"
                       >
                         Dismiss
                       </button>
@@ -184,7 +186,7 @@ receptionRoutes.get('/walk-ins', async (c) => {
               ))}
               {walkIns.length === 0 && (
                 <tr>
-                  <td colspan={6} style="padding:32px 20px; text-align:center; font-size:12px; color:#A8A29E;">
+                  <td colspan={6} style="padding:32px 20px; text-align:center; font-size:12px; color:#64748B;">
                     No active walk-ins
                   </td>
                 </tr>
@@ -226,19 +228,19 @@ receptionRoutes.post('/walk-in', async (c) => {
   })
 
   return c.html(
-    <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:12px; padding:20px;">
+    <div style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.22); border-radius:12px; padding:20px;">
       <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-        <div style="width:40px; height:40px; background:#DCFCE7; border-radius:9999px; display:flex; align-items:center; justify-content:center;">
-          <Icon name={ICONS.check} size={20} style="color:#16A34A;" />
+        <div style="width:40px; height:40px; background:rgba(34,197,94,0.15); border-radius:9999px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+          <Icon name={ICONS.check} size={20} style="color:#22C55E;" />
         </div>
         <div>
-          <p style="font-weight:600; color:#166534;">Walk-in Registered</p>
-          <p style="font-size:13px; color:#16A34A;">{walkIn.visitorName}</p>
+          <p style="font-weight:600; color:#22C55E;">Walk-in Registered</p>
+          <p style="font-size:13px; color:#4ADE80;">{walkIn.visitorName}</p>
         </div>
       </div>
-      <div style="background:#FCFBF8; border-radius:8px; padding:12px 16px; display:inline-block;">
-        <p style="font-size:11px; color:#A8A29E; margin-bottom:2px;">Walk-in ID</p>
-        <p style="font-family:monospace; font-weight:700; font-size:18px; color:#44403C;">{walkIn.id.slice(0, 8).toUpperCase()}</p>
+      <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:8px; padding:12px 16px; display:inline-block;">
+        <p style="font-size:11px; color:#64748B; margin-bottom:2px;">Walk-in ID</p>
+        <p style="font-family:ui-monospace,monospace; font-weight:700; font-size:18px; color:#F1F5F9;">{walkIn.id.slice(0, 8).toUpperCase()}</p>
       </div>
     </div>
   )
