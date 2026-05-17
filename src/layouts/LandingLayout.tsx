@@ -53,28 +53,29 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
               </a>
 
               {/* Center nav */}
-              <nav class="hidden sm:flex items-center gap-8">
+              <nav class="hidden sm:flex items-center gap-1">
                 {[
-                  { href: '#how-it-works', label: 'How it works' },
-                  { href: '/book',         label: 'Book a Slot' },
-                  { href: '/bookings',     label: 'My Bookings' },
+                  { href: '#how-it-works', label: 'How it works', icon: 'solar:info-circle-bold-duotone'    },
+                  { href: '/book',         label: 'Book a Slot',  icon: ICONS.calendar                      },
+                  { href: '/bookings',     label: 'My Bookings',  icon: ICONS.bookings                      },
                 ].map(l => (
                   <a
                     key={l.href}
                     href={l.href}
-                    style="font-size:14px; font-weight:500; color:#64748B; text-decoration:none; transition: color 0.15s ease;"
-                    onmouseover="this.style.color='#F1F5F9'"
-                    onmouseout="this.style.color='#64748B'"
+                    style="display:inline-flex; align-items:center; gap:5px; padding:7px 13px; border-radius:8px; font-size:13px; font-weight:500; color:#64748B; text-decoration:none; transition:all 0.15s ease;"
+                    onmouseover="this.style.color='#F1F5F9'; this.style.background='rgba(255,255,255,0.05)';"
+                    onmouseout="this.style.color='#64748B'; this.style.background='transparent';"
                   >
+                    <Icon name={l.icon} size={14} style="opacity:0.7;" />
                     {l.label}
                   </a>
                 ))}
               </nav>
 
               {/* CTA */}
-              <a href="/book" class="btn-primary" style="padding:10px 22px; font-size:13px;">
-                Book a Visit
-                <Icon name={ICONS.arrowRight} size={14} />
+              <a href="/book" class="btn-primary" style="padding:9px 18px; font-size:13px; gap:6px;">
+                <Icon name={ICONS.calendar} size={13} />
+                Book a Slot
               </a>
             </div>
           </div>
