@@ -136,169 +136,136 @@ const Illus7 = () => (
   </svg>
 )
 
-const ILLUS = [Illus1, Illus2, Illus3, Illus4, Illus5, Illus6, Illus7]
-
 export const BookingWizard = () => (
-  /*
-    Height must be definite (not min-height) so flex:1 children can stretch.
-    PublicLayout: header 56px + main padding 12px×2 + footer 64px = 144px total chrome.
-  */
-  <div x-data="{}" style="display:flex; flex-direction:column; height:calc(100vh - 144px);">
+  <div x-data="{}" style="display:flex; flex-direction:column; min-height:calc(100vh - 232px);">
 
     {/* ═══════════════════════════════════════════════════════════════════
-        SPLIT BODY
-    ═══════════════════════════════════════════════════════════════════ */}
-    <div x-show="$store.wizard.currentStep !== 8" x-cloak style="display:flex; flex:1; min-height:0; overflow:hidden;">
-
-      {/* ── LEFT CONTEXT PANEL ──────────────────────────────────────── */}
-      <div
-        style="width:38%; min-width:260px; max-width:400px; background:linear-gradient(155deg,#1A0F07 0%,#2D1A0E 55%,#1A0F07 100%); display:flex; flex-direction:column; padding:44px 38px 32px; position:relative; overflow:hidden; flex-shrink:0; align-self:stretch;"
-      >
-        {/* Ambient orbs */}
-        <div style="position:absolute; bottom:-90px; right:-60px; width:280px; height:280px; border-radius:9999px; background:radial-gradient(circle, rgba(252,101,20,0.22) 0%, transparent 65%); pointer-events:none;" />
-        <div style="position:absolute; top:-50px; left:-50px; width:180px; height:180px; border-radius:9999px; background:radial-gradient(circle, rgba(252,101,20,0.12) 0%, transparent 65%); pointer-events:none;" />
-        <div style="position:absolute; top:40%; right:-30px; width:120px; height:120px; border-radius:9999px; background:radial-gradient(circle, rgba(252,101,20,0.08) 0%, transparent 70%); pointer-events:none;" />
-
-        {/* Step number (big faded) */}
-        <div style="position:relative; z-index:1; margin-bottom:4px;">
-          <span style="font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:rgba(252,101,20,0.50); display:block; margin-bottom:0px;">Step</span>
-          <span
-            style="font-size:88px; font-weight:800; color:rgba(252,101,20,0.16); line-height:0.95; display:block; letter-spacing:-0.04em; font-variant-numeric:tabular-nums;"
-            x-text="$store.wizard.currentStep"
-          />
-        </div>
-
-        {/* Illustration — one per step, all overlaid, x-show shows correct one */}
-        <div
-          id="wiz-illus"
-          style="flex:1; display:flex; align-items:center; justify-content:center; position:relative; z-index:1; min-height:140px;"
-          x-init={`$watch('$store.wizard.currentStep', function() {
-            var il = document.getElementById('wiz-illus');
-            if (il) il.animate([{opacity:0,transform:'scale(0.86) translateY(12px)'},{opacity:1,transform:'scale(1) translateY(0)'}], {duration:400,easing:'cubic-bezier(0.16,1,0.3,1)'});
-          })`}
-        >
-          {ILLUS.map((IllusComp, i) => (
-            <div
-              key={i}
-              x-show={`$store.wizard.currentStep === ${i + 1}`}
-              x-cloak
-              style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;"
-            >
-              <IllusComp />
-            </div>
-          ))}
-        </div>
-
-        {/* Step name + tip */}
-        <div style="position:relative; z-index:1; margin-bottom:24px;">
-          {STEP_CTX.map((ctx, i) => (
-            <div key={i} x-show={`$store.wizard.currentStep === ${i + 1}`} x-cloak>
-              <p style="font-size:17px; font-weight:700; color:#FFFFFF; letter-spacing:-0.02em; margin-bottom:7px; line-height:1.25;">{ctx.label}</p>
-              <p style="font-size:12px; color:rgba(255,255,255,0.38); line-height:1.65; max-width:220px;">{ctx.tip}</p>
-            </div>
-          ))}
-
-          {/* Hold timer (steps 5+) */}
-          <div
-            x-show="$store.wizard.currentStep > 4 && $store.wizard.holdActive"
-            x-cloak
-            style="margin-top:12px; display:inline-flex; align-items:center; gap:7px; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:600;"
-            x-bind:style="$store.wizard.holdExpiring ? 'background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.22); color:#EF4444;' : 'background:rgba(252,101,20,0.10); border:1px solid rgba(252,101,20,0.20); color:rgba(252,101,20,0.80);'"
-          >
-            <Icon name={ICONS.clock} size={11} style="flex-shrink:0;" />
-            <span>Slot held · <span style="font-family:ui-monospace,monospace; font-weight:700;" x-text="$store.wizard.holdMinutes + ':' + $store.wizard.holdSeconds" /></span>
-          </div>
-        </div>
-
-        {/* Progress pills */}
-        <div style="display:flex; gap:5px; position:relative; z-index:1;">
-          {[1,2,3,4,5,6,7].map(n => (
-            <div
-              key={n}
-              style="height:3px; border-radius:9999px; transition:all 0.38s cubic-bezier(0.16,1,0.3,1);"
-              x-bind:style={`$store.wizard.currentStep === ${n} ? 'background:#FC6514; width:28px; flex-shrink:0;' : $store.wizard.currentStep > ${n} ? 'background:rgba(252,101,20,0.42); width:14px; flex-shrink:0;' : 'background:rgba(255,255,255,0.14); width:14px; flex-shrink:0;'`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* ── RIGHT FORM PANEL ────────────────────────────────────────── */}
-      <div style="flex:1; overflow-y:auto; background:#FFFFFF; display:flex; flex-direction:column;">
-
-        {/* ── Sticky progress header ────────────────────────────────── */}
-        <div style="position:sticky; top:0; z-index:20; background:#FFFFFF; border-bottom:1px solid rgba(0,0,0,0.06); padding:14px 52px 12px; flex-shrink:0;">
-          {/* Step label row */}
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:9px;">
-            <span style="font-size:10.5px; font-weight:700; letter-spacing:0.09em; text-transform:uppercase; color:#A8A29E;">
-              Step <span x-text="$store.wizard.currentStep" /> of 7
-            </span>
-            {/* Step name — shows current */}
-            {STEP_CTX.map((ctx, i) => (
-              <span
-                key={i}
-                x-show={`$store.wizard.currentStep === ${i + 1}`}
-                x-cloak
-                style="font-size:11.5px; font-weight:600; color:#78716C;"
-              >
-                {ctx.label}
-              </span>
-            ))}
-          </div>
-          {/* Progress track */}
-          <div style="height:3px; background:rgba(0,0,0,0.06); border-radius:9999px; overflow:hidden;">
-            <div
-              style="height:100%; background:linear-gradient(90deg,#FF7A2A 0%,#FC6514 100%); border-radius:9999px; transition:width 0.45s cubic-bezier(0.16,1,0.3,1);"
-              x-bind:style="'width:' + Math.round(($store.wizard.currentStep / 7) * 100) + '%'"
-            />
-          </div>
-          {/* Step dots */}
-          <div style="display:flex; gap:0; margin-top:8px; position:relative;">
-            {[1,2,3,4,5,6,7].map(n => (
-              <div key={n} style="flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;">
-                <div
-                  style="width:7px; height:7px; border-radius:9999px; transition:all 0.3s ease;"
-                  x-bind:style={`$store.wizard.currentStep === ${n} ? 'background:#FC6514; box-shadow:0 0 0 3px rgba(252,101,20,0.18); transform:scale(1.2);' : $store.wizard.currentStep > ${n} ? 'background:#FC6514; opacity:0.45;' : 'background:rgba(0,0,0,0.12);'`}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Scrollable form content ───────────────────────────────── */}
-        <div
-          style="flex:1; padding:36px 52px 40px;"
-          x-init={`$watch('$store.wizard.currentStep', function() {
-            $el.animate([{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'translateY(0)'}],
-              {duration:300,easing:'cubic-bezier(0.16,1,0.3,1)'});
-          })`}
-        >
-          <Step1ServiceType />
-          <Step2SlotPicker />
-          <Step3HoldConfirm />
-          <Step4ShipmentDetails />
-          <Step5Documents />
-          <Step6ContactVehicle />
-          <Step7Confirmation />
-        </div>
-      </div>
-    </div>
-
-    {/* ═══════════════════════════════════════════════════════════════════
-        FOOTER — Back (left) · step counter (center) · Continue (right)
+        PROGRESS STRIP — sticky, stays at top while form scrolls
     ═══════════════════════════════════════════════════════════════════ */}
     <div
       x-show="$store.wizard.currentStep !== 8"
       x-cloak
-      style="flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:14px 40px 16px; border-top:1px solid rgba(0,0,0,0.07); background:#FFFFFF;"
+      style="flex-shrink:0; padding:24px 48px 20px; border-bottom:1px solid rgba(0,0,0,0.06);"
+    >
+      {/* Step nodes + connector */}
+      <div style="display:flex; align-items:center; gap:0; margin-bottom:14px;">
+        {[1,2,3,4,5,6,7].map((n, i) => (
+          <>
+            {/* Node */}
+            <div key={n} style="display:flex; flex-direction:column; align-items:center; gap:5px; flex-shrink:0;">
+              <div
+                style="width:28px; height:28px; border-radius:9999px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; transition:all 0.35s cubic-bezier(0.16,1,0.3,1);"
+                x-bind:style={`$store.wizard.currentStep === ${n}
+                  ? 'background:#FC6514; color:#FFFFFF; box-shadow:0 0 0 4px rgba(252,101,20,0.15);'
+                  : $store.wizard.currentStep > ${n}
+                    ? 'background:rgba(252,101,20,0.12); color:#FC6514;'
+                    : 'background:rgba(0,0,0,0.05); color:#A8A29E;'`}
+              >
+                {/* Checkmark for completed, number for rest */}
+                <span x-show={`$store.wizard.currentStep > ${n}`} x-cloak>
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                    <path d="M2.5 6l2.5 2.5 4.5-5" stroke="#FC6514" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span x-show={`$store.wizard.currentStep <= ${n}`} x-cloak style="line-height:1;">{n}</span>
+              </div>
+            </div>
+            {/* Connector between nodes */}
+            {i < 6 && (
+              <div key={`c${n}`} style="flex:1; height:1.5px; position:relative; overflow:hidden; border-radius:2px; background:rgba(0,0,0,0.07);">
+                <div
+                  style="position:absolute; inset-y:0; left:0; background:#FC6514; border-radius:2px; transition:width 0.5s cubic-bezier(0.16,1,0.3,1);"
+                  x-bind:style={`$store.wizard.currentStep > ${n} ? 'width:100%; opacity:0.45;' : 'width:0%;'`}
+                />
+              </div>
+            )}
+          </>
+        ))}
+      </div>
+
+      {/* Step label row */}
+      <div style="display:flex; align-items:baseline; justify-content:space-between;">
+        <span style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#A8A29E;">
+          Step <span x-text="$store.wizard.currentStep" /> of 7
+        </span>
+        {STEP_CTX.map((ctx, i) => (
+          <span
+            key={i}
+            x-show={`$store.wizard.currentStep === ${i + 1}`}
+            x-cloak
+            style="font-size:12px; font-weight:600; color:#78716C;"
+          >
+            {ctx.label}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    {/* ═══════════════════════════════════════════════════════════════════
+        FORM BODY — scrollable
+    ═══════════════════════════════════════════════════════════════════ */}
+    <div
+      x-show="$store.wizard.currentStep !== 8"
+      x-cloak
+      style="flex:1; overflow-y:auto;"
+    >
+      <div
+        style="max-width:600px; margin:0 auto; padding:44px 48px 52px;"
+        x-init={`$watch('$store.wizard.currentStep', function() {
+          $el.animate(
+            [{opacity:0, transform:'translateY(10px)'}, {opacity:1, transform:'translateY(0)'}],
+            {duration:280, easing:'cubic-bezier(0.16,1,0.3,1)'}
+          );
+        })`}
+      >
+        {/* Step heading */}
+        <div style="margin-bottom:32px;">
+          {STEP_CTX.map((ctx, i) => (
+            <div key={i} x-show={`$store.wizard.currentStep === ${i + 1}`} x-cloak>
+              <p style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#FC6514; margin-bottom:8px;">Step {i + 1}</p>
+              <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">{ctx.label}</h2>
+              <p style="font-size:13px; color:#78716C; line-height:1.65;">{ctx.tip}</p>
+            </div>
+          ))}
+
+          {/* Hold timer badge — steps 5-7 */}
+          <div
+            x-show="$store.wizard.currentStep > 4 && $store.wizard.holdActive"
+            x-cloak
+            style="margin-top:14px; display:inline-flex; align-items:center; gap:7px; padding:6px 13px; border-radius:8px; font-size:11.5px; font-weight:600;"
+            x-bind:style="$store.wizard.holdExpiring ? 'background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.18); color:#EF4444;' : 'background:rgba(252,101,20,0.07); border:1px solid rgba(252,101,20,0.16); color:rgba(252,101,20,0.85);'"
+          >
+            <Icon name={ICONS.clock} size={12} style="flex-shrink:0;" />
+            <span>Slot held · <span style="font-family:ui-monospace,monospace; font-weight:700;" x-text="$store.wizard.holdMinutes + ':' + $store.wizard.holdSeconds" /></span>
+          </div>
+        </div>
+
+        <Step1ServiceType />
+        <Step2SlotPicker />
+        <Step3HoldConfirm />
+        <Step4ShipmentDetails />
+        <Step5Documents />
+        <Step6ContactVehicle />
+        <Step7Confirmation />
+      </div>
+    </div>
+
+    {/* ═══════════════════════════════════════════════════════════════════
+        FOOTER — Back (left) · counter (center) · Continue (right)
+    ═══════════════════════════════════════════════════════════════════ */}
+    <div
+      x-show="$store.wizard.currentStep !== 8"
+      x-cloak
+      style="flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:16px 48px 18px; border-top:1px solid rgba(0,0,0,0.07);"
     >
       {/* Back */}
       <button
         type="button"
         x-on:click="$store.wizard.prevStep()"
-        x-bind:disabled="$store.wizard.currentStep === 1"
-        x-bind:style="$store.wizard.currentStep === 1 ? 'opacity:0; pointer-events:none; visibility:hidden;' : 'opacity:1;'"
-        class="btn-ghost"
-        style="padding:9px 22px; font-size:13px; gap:6px; border-radius:9999px; min-width:100px;"
+        x-bind:style="$store.wizard.currentStep === 1 ? 'opacity:0; pointer-events:none;' : 'opacity:1;'"
+        style="display:inline-flex; align-items:center; gap:6px; padding:9px 20px; font-size:13px; font-weight:500; color:#78716C; border:1px solid rgba(0,0,0,0.10); border-radius:9999px; background:transparent; cursor:pointer; transition:border-color 0.15s ease, color 0.15s ease;"
+        onmouseover="this.style.borderColor='rgba(0,0,0,0.22)'; this.style.color='#1C1917';"
+        onmouseout="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.color='#78716C';"
       >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;">
           <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
@@ -306,21 +273,21 @@ export const BookingWizard = () => (
         Back
       </button>
 
-      {/* Step counter */}
-      <span style="font-size:11px; font-weight:500; color:#A8A29E; font-variant-numeric:tabular-nums; letter-spacing:0.02em;">
-        <span x-text="$store.wizard.currentStep" /> <span style="opacity:0.5;">/ 7</span>
+      {/* Counter */}
+      <span style="font-size:11.5px; font-weight:500; color:#A8A29E; font-variant-numeric:tabular-nums;">
+        <span x-text="$store.wizard.currentStep" /> <span style="opacity:0.45;">/ 7</span>
       </span>
 
       {/* Continue */}
       <button
         type="button"
         x-on:click="$store.wizard.nextStep()"
-        x-bind:disabled="!$store.wizard.canProceed"
-        class="btn-primary"
-        style="padding:9px 26px; font-size:13px; min-width:150px; justify-content:center; gap:6px; border-radius:9999px;"
-        x-bind:style="!$store.wizard.canProceed ? 'filter:grayscale(1) opacity(0.28); cursor:not-allowed; pointer-events:none;' : ''"
+        style="display:inline-flex; align-items:center; gap:6px; padding:10px 26px; font-size:13px; font-weight:600; color:#FFFFFF; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border:none; border-radius:9999px; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 14px rgba(252,101,20,0.35); transition:opacity 0.15s ease, box-shadow 0.15s ease; min-width:140px; justify-content:center;"
+        x-bind:style="!$store.wizard.canProceed ? 'filter:grayscale(1) opacity(0.3); cursor:not-allowed; pointer-events:none;' : ''"
+        onmouseover="if(this.style.pointerEvents !== 'none') this.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 20px rgba(252,101,20,0.50)';"
+        onmouseout="this.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 14px rgba(252,101,20,0.35)';"
       >
-        <span x-text="$store.wizard.currentStep === 6 ? 'Review & Pay' : 'Continue'">Continue</span>
+        <span x-text="$store.wizard.currentStep === 6 ? 'Review & Submit' : 'Continue'">Continue</span>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;">
           <path d="M4.5 2l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -333,51 +300,45 @@ export const BookingWizard = () => (
     <div
       x-show="$store.wizard.currentStep === 8"
       x-cloak
-      style="flex:1; display:flex; align-items:center; justify-content:center; padding:60px 28px; background:#FFFFFF;"
+      style="flex:1; display:flex; align-items:center; justify-content:center; padding:60px 28px;"
     >
-      <div style="max-width:380px; width:100%; text-align:center;">
-        <div style="width:56px; height:56px; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-radius:14px; display:flex; align-items:center; justify-content:center; margin:0 auto 22px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 24px rgba(252,101,20,0.50), 0 1px 3px rgba(0,0,0,0.45);">
-          <Icon name={ICONS.check} size={26} style="color:white;" />
+      <div style="max-width:400px; width:100%; text-align:center;">
+        <div style="width:52px; height:52px; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-radius:13px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 24px rgba(252,101,20,0.45);">
+          <Icon name={ICONS.check} size={24} style="color:white;" />
         </div>
 
         <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:6px;">Booking Confirmed</h2>
         <p style="font-size:13px; color:#78716C; margin-bottom:28px; line-height:1.6;">Your QR code is ready — screenshot or print it before arriving at the depot.</p>
 
-        <div style="display:inline-block; background:rgba(252,101,20,0.06); border:1px solid rgba(252,101,20,0.18); border-radius:10px; padding:10px 28px; margin-bottom:24px;">
-          <p style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:rgba(252,101,20,0.55); margin-bottom:3px;">Reference</p>
+        <div style="display:inline-block; background:rgba(252,101,20,0.06); border:1px solid rgba(252,101,20,0.16); border-radius:10px; padding:10px 28px; margin-bottom:24px;">
+          <p style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:rgba(252,101,20,0.50); margin-bottom:3px;">Reference</p>
           <p style="font-family:ui-monospace,monospace; font-size:19px; font-weight:700; color:#FC6514; letter-spacing:0.05em;" x-text="$store.wizard.confirmationRef" />
         </div>
 
-        <div style="width:144px; height:144px; border:1.5px dashed rgba(0,0,0,0.10); border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; margin:0 auto 24px; background:rgba(0,0,0,0.02);">
-          <Icon name={ICONS.qrCode} size={44} style="color:rgba(0,0,0,0.16); margin-bottom:6px;" />
+        <div style="width:144px; height:144px; border:1.5px dashed rgba(0,0,0,0.09); border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; margin:0 auto 24px; background:rgba(0,0,0,0.02);">
+          <Icon name={ICONS.qrCode} size={44} style="color:rgba(0,0,0,0.14); margin-bottom:6px;" />
           <p style="font-size:11px; color:#A8A29E;">Scan at kiosk</p>
         </div>
 
-        <div style="background:#F7F4F0; border:1px solid rgba(0,0,0,0.07); border-radius:12px; padding:16px 20px; text-align:left; margin-bottom:24px;">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px 20px;">
-            <div>
-              <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#A8A29E; margin-bottom:3px;">Service</p>
-              <p style="font-size:13px; font-weight:600; color:#1C1917;" x-text="$store.wizard.serviceType === 'pickup' ? 'Pick Up' : 'Drop Off'" />
-            </div>
-            <div>
-              <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#A8A29E; margin-bottom:3px;">Load</p>
-              <p style="font-size:13px; font-weight:600; color:#1C1917;" x-text="($store.wizard.loadType || '—').toUpperCase()" />
-            </div>
-            <div>
-              <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#A8A29E; margin-bottom:3px;">Slot</p>
-              <p style="font-size:13px; font-weight:600; color:#1C1917;" x-text="$store.wizard.selectedSlotLabel || '—'" />
-            </div>
-            <div>
-              <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#A8A29E; margin-bottom:3px;">Driver</p>
-              <p style="font-size:13px; font-weight:600; color:#1C1917;" x-text="$store.wizard.driverName || $store.wizard.guestName || '—'" />
-            </div>
+        <div style="background:#F7F4F0; border:1px solid rgba(0,0,0,0.06); border-radius:12px; padding:16px 20px; text-align:left; margin-bottom:24px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px 20px;">
+            {[
+              { label: 'Service', expr: "$store.wizard.serviceType === 'pickup' ? 'Pick Up' : 'Drop Off'" },
+              { label: 'Load',    expr: "($store.wizard.loadType || '—').toUpperCase()" },
+              { label: 'Slot',    expr: "$store.wizard.selectedSlotLabel || '—'" },
+              { label: 'Driver',  expr: "$store.wizard.driverName || $store.wizard.guestName || '—'" },
+            ].map(row => (
+              <div key={row.label}>
+                <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#A8A29E; margin-bottom:4px;">{row.label}</p>
+                <p style="font-size:13px; font-weight:600; color:#1C1917;" x-text={row.expr} />
+              </div>
+            ))}
           </div>
         </div>
 
         <button
           type="button"
-          class="btn-ghost"
-          style="font-size:13px; padding:9px 20px; border-radius:9999px;"
+          style="display:inline-flex; align-items:center; gap:6px; padding:9px 20px; font-size:13px; font-weight:500; color:#78716C; border:1px solid rgba(0,0,0,0.10); border-radius:9999px; background:transparent; cursor:pointer;"
           x-on:click="$store.wizard.reset(); window.location.href = '/book'"
         >
           Book another visit
