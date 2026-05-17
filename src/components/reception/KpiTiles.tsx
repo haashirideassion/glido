@@ -17,7 +17,7 @@ function spark(final: number, seed: number): number[] {
   return pts
 }
 
-const EC_THEME = `var FONT='Inter,ui-sans-serif,sans-serif'; var BG='rgba(9,13,18,0)';`
+const EC_THEME = `var FONT='Inter,ui-sans-serif,sans-serif'; var BG='rgba(255,255,255,0)';`
 
 export const KpiTiles = ({ stats }: Props) => {
   const tiles = [
@@ -29,7 +29,7 @@ export const KpiTiles = ({ stats }: Props) => {
       icon:    ICONS.calendar,
       iconBg:  'rgba(251,191,36,0.10)',
       iconFg:  '#FBBF24',
-      valueFg: '#F1F5F9',
+      valueFg: '#1C1917',
       lineColor: '#FBBF24',
       fillStart: 'rgba(251,191,36,0.18)',
       fillEnd:   'rgba(251,191,36,0)',
@@ -57,7 +57,7 @@ export const KpiTiles = ({ stats }: Props) => {
       icon:    ICONS.checkSquare,
       iconBg:  'rgba(148,163,184,0.10)',
       iconFg:  '#94A3B8',
-      valueFg: '#F1F5F9',
+      valueFg: '#1C1917',
       lineColor: '#94A3B8',
       fillStart: 'rgba(148,163,184,0.15)',
       fillEnd:   'rgba(148,163,184,0)',
@@ -134,7 +134,7 @@ ${EC_THEME}
       {tiles.map((tile) => (
         <div
           key={tile.label}
-          style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:18px 18px 0; overflow:hidden; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.25), 0 4px 24px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.30);"
+          style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:16px; padding:18px 18px 0; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07);"
         >
           {/* Header row */}
           <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:14px;">
@@ -151,8 +151,8 @@ ${EC_THEME}
           >
             {tile.value}
           </p>
-          <p style="font-size:12px; font-weight:600; color:#94A3B8; margin-bottom:1px;">{tile.label}</p>
-          <p style="font-size:11px; color:#64748B; margin-bottom:12px;">{tile.sub}</p>
+          <p style="font-size:12px; font-weight:600; color:#78716C; margin-bottom:1px;">{tile.label}</p>
+          <p style="font-size:11px; color:#A8A29E; margin-bottom:12px;">{tile.sub}</p>
 
           {/* Sparkline */}
           <div

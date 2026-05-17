@@ -1,6 +1,6 @@
-const wlabel = 'display:block; font-size:10px; font-weight:700; color:rgba(255,255,255,0.38); letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;'
-const winput = 'width:100%; padding:11px 14px; font-size:14px; color:#F1F5F9; background:rgba(9,13,18,0.60); border:1px solid rgba(255,255,255,0.09); border-radius:10px; outline:none; transition:border-color 0.15s ease, box-shadow 0.15s ease; box-sizing:border-box; box-shadow:inset 0 2px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(0,0,0,0.20);'
-const wfocus = `onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.25), 0 0 0 3px rgba(252,101,20,0.15)';" onblur="this.style.borderColor='rgba(255,255,255,0.09)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(0,0,0,0.20)';"`
+const wlabel = 'display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;'
+const winput = 'width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F4F0; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; transition:border-color 0.15s ease, box-shadow 0.15s ease; box-sizing:border-box;'
+const wfocus = `onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';" onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"`
 
 export const WalkInForm = () => (
   <div class="max-w-2xl">
@@ -21,7 +21,7 @@ export const WalkInForm = () => (
     </div>
 
     <form
-      style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:24px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 16px rgba(0,0,0,0.40);"
+      style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:16px; padding:24px; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07);"
       hx-post="/reception/walk-in"
       hx-target="#walk-in-result"
       hx-swap="innerHTML"
@@ -31,7 +31,7 @@ export const WalkInForm = () => (
           <label style={wlabel}>
             Service Type <span style="color:#EF4444;">*</span>
           </label>
-          <select name="serviceType" style={winput} {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.25), 0 0 0 3px rgba(252,101,20,0.15)';", onblur:"this.style.borderColor='rgba(255,255,255,0.09)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(0,0,0,0.20)';"}}>
+          <select name="serviceType" style={winput} {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';", onblur:"this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"}}>
             <option value="">Select…</option>
             <option value="import">Import</option>
             <option value="export">Export</option>
@@ -42,7 +42,7 @@ export const WalkInForm = () => (
           <label style={wlabel}>
             Load Type <span style="color:#EF4444;">*</span>
           </label>
-          <select name="loadType" style={winput} {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.25), 0 0 0 3px rgba(252,101,20,0.15)';", onblur:"this.style.borderColor='rgba(255,255,255,0.09)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(0,0,0,0.20)';"}}>
+          <select name="loadType" style={winput} {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';", onblur:"this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"}}>
             <option value="">Select…</option>
             <option value="fcl">FCL</option>
             <option value="lcl">LCL</option>
@@ -54,38 +54,38 @@ export const WalkInForm = () => (
       <div style="margin-bottom:16px;">
         <label style={wlabel}>Visitor Full Name <span style="color:#EF4444;">*</span></label>
         <input type="text" name="visitorName" placeholder="e.g. Ahmed Raza" required style={winput}
-          {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.25), 0 0 0 3px rgba(252,101,20,0.15)';", onblur:"this.style.borderColor='rgba(255,255,255,0.09)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(0,0,0,0.20)';"}} />
+          {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';", onblur:"this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"}} />
       </div>
 
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
         <div>
           <label style={wlabel}>Phone</label>
           <input type="tel" name="phone" placeholder="03XX-XXXXXXX" style={winput}
-            {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.25), 0 0 0 3px rgba(252,101,20,0.15)';", onblur:"this.style.borderColor='rgba(255,255,255,0.09)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(0,0,0,0.20)';"}} />
+            {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';", onblur:"this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"}} />
         </div>
         <div>
           <label style={wlabel}>Vehicle Registration <span style="color:#EF4444;">*</span></label>
           <input type="text" name="vehicleReg" placeholder="LEA-1234" required class="uppercase" style={winput}
-            {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.25), 0 0 0 3px rgba(252,101,20,0.15)';", onblur:"this.style.borderColor='rgba(255,255,255,0.09)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(0,0,0,0.20)';"}} />
+            {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';", onblur:"this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"}} />
         </div>
       </div>
 
       <div style="margin-bottom:16px;">
         <label style={wlabel}>B/L Number <span style="color:#EF4444;">*</span></label>
         <input type="text" name="blNumber" placeholder="e.g. COSCO2026041201" required style={winput}
-          {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.25), 0 0 0 3px rgba(252,101,20,0.15)';", onblur:"this.style.borderColor='rgba(255,255,255,0.09)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(0,0,0,0.20)';"}} />
+          {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';", onblur:"this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"}} />
       </div>
 
       <div style="margin-bottom:16px;">
         <label style={wlabel}>Cargo Description <span style="color:#EF4444;">*</span></label>
         <textarea name="cargoDescription" rows={2} placeholder="Brief description of cargo" required style={winput + "resize:none;"}
-          {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.25), 0 0 0 3px rgba(252,101,20,0.15)';", onblur:"this.style.borderColor='rgba(255,255,255,0.09)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(0,0,0,0.20)';"}}></textarea>
+          {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';", onblur:"this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"}}></textarea>
       </div>
 
       <div style="margin-bottom:24px;">
         <label style={wlabel}>Assign to Slot</label>
         <select name="slotId" style={winput}
-          {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.25), 0 0 0 3px rgba(252,101,20,0.15)';", onblur:"this.style.borderColor='rgba(255,255,255,0.09)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(0,0,0,0.20)';"}}>
+          {...{onfocus:"this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';", onblur:"this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"}}>
           <option value="">Next available slot</option>
           <option value="immediate">Immediate / Now</option>
         </select>

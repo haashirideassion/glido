@@ -53,7 +53,7 @@ export const DayChart = ({ bookings }: Props) => {
       yAxis:{
         type:'value',
         minInterval:1,
-        splitLine:{lineStyle:{color:'rgba(214,211,209,0.35)',type:'dashed'}},
+        splitLine:{lineStyle:{color:'rgba(0,0,0,0.06)',type:'dashed'}},
         axisLabel:{color:'#A8A29E',fontFamily:'Inter,ui-sans-serif,sans-serif',fontSize:11}
       },
       series:[
@@ -95,11 +95,11 @@ export const DayChart = ({ bookings }: Props) => {
 
   return (
     <div
-      style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:18px 20px; margin-bottom:20px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 16px rgba(0,0,0,0.40);"
+      style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:14px; padding:18px 20px; margin-bottom:20px; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07);"
     >
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
-        <h2 style="font-size:13px; font-weight:600; color:#F1F5F9; letter-spacing:-0.01em;">Day at a Glance</h2>
-        <span style="font-size:11px; color:#64748B;">Today · hourly schedule</span>
+        <h2 style="font-size:13px; font-weight:600; color:#1C1917; letter-spacing:-0.01em;">Day at a Glance</h2>
+        <span style="font-size:11px; color:#A8A29E;">Today · hourly schedule</span>
       </div>
       <div id="chart-day" style="height:160px; width:100%;"></div>
       <script dangerouslySetInnerHTML={{ __html: script }} />

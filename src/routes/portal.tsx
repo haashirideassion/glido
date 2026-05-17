@@ -79,94 +79,126 @@ portalRoutes.get('/', (c) => {
               </p>
             </div>
 
-            {/* Right: floating card mockup */}
-            <div class="animate-fade-up delay-200" style="position:relative;">
+            {/* Right: Three.js interactive 3D illustration */}
+            <div class="animate-fade-up delay-200" style="position:relative; display:flex; align-items:center; justify-content:center;">
+              <canvas
+                id="hero-3d"
+                style="width:100%; height:480px; display:block; cursor:grab;"
+              ></canvas>
+              <script dangerouslySetInnerHTML={{ __html: `
+                (function() {
+                  function waitAndInit() {
+                    if (typeof THREE === 'undefined') { setTimeout(waitAndInit, 60); return; }
+                    var canvas = document.getElementById('hero-3d');
+                    if (!canvas) return;
 
-              {/* Main card — Level 3 elevation */}
-              <div
-                class="card-shell animate-float-slow"
-                style="position:relative; z-index:2;"
-              >
-                <div class="card-shell-inner" style="padding:28px;">
+                    var W = canvas.parentElement.offsetWidth || 500;
+                    var H = 480;
+                    canvas.width  = W * window.devicePixelRatio;
+                    canvas.height = H * window.devicePixelRatio;
 
-                  {/* Card header */}
-                  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:22px;">
-                    <div>
-                      <p style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#64748B;">Available Slots</p>
-                      <p style="font-size:14px; font-weight:600; color:#1C1917; margin-top:2px;">Thursday, 15 May</p>
-                    </div>
-                    <div style="width:34px; height:34px; border-radius:8px; background:rgba(252,101,20,0.12); border:1px solid rgba(252,101,20,0.22); display:flex; align-items:center; justify-content:center;">
-                      <Icon name={ICONS.calendar} size={15} style="color:#FC6514;" />
-                    </div>
-                  </div>
+                    var scene    = new THREE.Scene();
+                    var camera   = new THREE.PerspectiveCamera(40, W / H, 0.1, 100);
+                    camera.position.set(0, 1.2, 14);
 
-                  {/* Slot grid */}
-                  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:18px;">
-                    {[
-                      { t:'06:00', s:'available' },
-                      { t:'07:00', s:'busy' },
-                      { t:'08:00', s:'available' },
-                      { t:'09:00', s:'selected' },
-                      { t:'10:00', s:'available' },
-                      { t:'11:00', s:'busy' },
-                    ].map(slot => (
-                      <div
-                        style={slot.s === 'selected'
-                          ? 'background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-radius:8px; padding:10px 8px; text-align:center; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 12px rgba(252,101,20,0.40);'
-                          : slot.s === 'busy'
-                          ? 'background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.06); border-radius:8px; padding:10px 8px; text-align:center; opacity:0.40;'
-                          : 'background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:10px 8px; text-align:center; cursor:pointer;'
-                        }
-                      >
-                        <p style={`font-size:12px; font-weight:600; ${slot.s==='selected'?'color:white;':'color:#78716C;'}`}>{slot.t}</p>
-                        <p style={`font-size:10px; margin-top:2px; ${slot.s==='selected'?'color:rgba(255,255,255,0.75);':slot.s==='busy'?'color:#64748B;':'color:#FC6514;'}`}>
-                          {slot.s === 'selected' ? 'Selected' : slot.s === 'busy' ? 'Full' : 'Open'}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
+                    var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+                    renderer.setSize(W, H);
+                    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                    renderer.setClearColor(0x000000, 0);
 
-                  {/* CTA in card */}
-                  <div style="background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:14px 18px; display:flex; align-items:center; justify-content:space-between;">
-                    <div>
-                      <p style="font-size:12px; font-weight:600; color:#1C1917;">09:00 – 10:00</p>
-                      <p style="font-size:11px; color:#64748B; margin-top:1px;">Pick Up · LCL</p>
-                    </div>
-                    <div style="background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-radius:6px; padding:7px 13px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 3px 8px rgba(252,101,20,0.40);">
-                      <p style="font-size:11px; font-weight:600; color:white;">Confirm →</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                    /* ── Lights ── */
+                    scene.add(new THREE.AmbientLight(0xffffff, 1.1));
+                    var sun = new THREE.DirectionalLight(0xffffff, 1.4);
+                    sun.position.set(8, 12, 8);
+                    scene.add(sun);
+                    var fill = new THREE.DirectionalLight(0xfff4ec, 0.6);
+                    fill.position.set(-8, -2, 6);
+                    scene.add(fill);
+                    var glow = new THREE.PointLight(0xFC6514, 3.0, 18);
+                    glow.position.set(0, 2, 6);
+                    scene.add(glow);
 
-              {/* Floating mini badge — top right */}
-              <div
-                class="glass"
-                style="position:absolute; top:-20px; right:-20px; border-radius:12px; padding:10px 14px; display:flex; align-items:center; gap:8px; z-index:3;"
-              >
-                <div style="width:28px; height:28px; border-radius:8px; background:rgba(34,197,94,0.14); border:1px solid rgba(34,197,94,0.25); display:flex; align-items:center; justify-content:center;">
-                  <Icon name={ICONS.check} size={14} style="color:#22C55E;" />
-                </div>
-                <div>
-                  <p style="font-size:11px; font-weight:600; color:#1C1917; line-height:1.2;">Confirmed</p>
-                  <p style="font-size:10px; color:#64748B;">GLD-2026-10142</p>
-                </div>
-              </div>
+                    /* ── Materials ── */
+                    var mOrange = new THREE.MeshPhongMaterial({ color: 0xFC6514,  shininess: 50, specular: 0xffffff });
+                    var mCream  = new THREE.MeshPhongMaterial({ color: 0xEEEAE4,  shininess: 20, specular: 0xcccccc });
+                    var mWhite  = new THREE.MeshPhongMaterial({ color: 0xFFFFFF,  shininess: 35, specular: 0xeeeeee });
+                    var eOrange = new THREE.LineBasicMaterial({ color: 0xD44D00,  opacity: 0.55, transparent: true });
+                    var eDark   = new THREE.LineBasicMaterial({ color: 0x1C1917,  opacity: 0.12, transparent: true });
 
-              {/* Floating mini badge — bottom left */}
-              <div
-                class="glass"
-                style="position:absolute; bottom:-16px; left:-24px; border-radius:12px; padding:10px 14px; display:flex; align-items:center; gap:8px; z-index:3;"
-              >
-                <div style="width:28px; height:28px; border-radius:8px; background:rgba(252,101,20,0.12); border:1px solid rgba(252,101,20,0.22); display:flex; align-items:center; justify-content:center;">
-                  <Icon name={ICONS.clock} size={14} style="color:#FC6514;" />
-                </div>
-                <div>
-                  <p style="font-size:11px; font-weight:600; color:#1C1917; line-height:1.2;">Gate time</p>
-                  <p style="font-size:10px; color:#64748B;">4 min avg.</p>
-                </div>
-              </div>
+                    /* ── Container builder ── */
+                    function box(w, h, d, mat, edge, x, y, z, rx, ry, rz) {
+                      var geo  = new THREE.BoxGeometry(w, h, d);
+                      var mesh = new THREE.Mesh(geo, mat);
+                      mesh.position.set(x, y, z);
+                      mesh.rotation.set(rx, ry, rz);
+                      mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), edge));
+                      return mesh;
+                    }
 
+                    var group = new THREE.Group();
+
+                    /* Large orange container — hero piece */
+                    group.add(box(4.2, 1.7, 1.7,  mOrange, eOrange,   0,    0,    0,     0,     0.28,  0));
+                    /* Secondary cream container — upper left */
+                    group.add(box(3.2, 1.3, 1.3,  mCream,  eDark,    -0.6,  2.1,  0.5,   0.05, -0.18,  0));
+                    /* Third white container — lower right */
+                    group.add(box(2.6, 1.1, 1.1,  mWhite,  eDark,     1.4, -1.9, -0.6,  -0.04,  0.42,  0.04));
+
+                    /* Tiny accent spheres */
+                    var sdot = new THREE.SphereGeometry(0.09, 12, 12);
+                    var mdot = new THREE.MeshPhongMaterial({ color: 0xFC6514, emissive: 0xFC6514, emissiveIntensity: 0.4 });
+                    [[-2.8, 3.0, 1.8], [3.2, -0.8, 1.2], [-1.8, -2.6, 0.6]].forEach(function(p) {
+                      var s = new THREE.Mesh(sdot, mdot);
+                      s.position.set(p[0], p[1], p[2]);
+                      group.add(s);
+                    });
+
+                    /* Connecting lines between containers */
+                    var lmat = new THREE.LineBasicMaterial({ color: 0xFC6514, opacity: 0.15, transparent: true });
+                    var lpts = new Float32Array([-0, 0, 0,  -0.6, 2.1, 0.5,  0, 0, 0,  1.4, -1.9, -0.6]);
+                    var lgeo = new THREE.BufferGeometry();
+                    lgeo.setAttribute('position', new THREE.BufferAttribute(lpts, 3));
+                    group.add(new THREE.LineSegments(lgeo, lmat));
+
+                    scene.add(group);
+
+                    /* ── Mouse parallax ── */
+                    var mouse   = { x: 0, y: 0 };
+                    var smooth  = { x: 0, y: 0 };
+                    window.addEventListener('mousemove', function(e) {
+                      mouse.x = (e.clientX / window.innerWidth  - 0.5) * 2;
+                      mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
+                    });
+
+                    /* ── Resize ── */
+                    window.addEventListener('resize', function() {
+                      var W2 = canvas.parentElement.offsetWidth || 500;
+                      camera.aspect = W2 / H;
+                      camera.updateProjectionMatrix();
+                      renderer.setSize(W2, H);
+                    });
+
+                    /* ── Render loop ── */
+                    var t0 = performance.now();
+                    (function loop() {
+                      requestAnimationFrame(loop);
+                      var t = (performance.now() - t0) * 0.001;
+
+                      smooth.x += (mouse.x * 0.32 - smooth.x) * 0.045;
+                      smooth.y += (mouse.y * 0.20 - smooth.y) * 0.045;
+
+                      group.rotation.y = t * 0.07 + smooth.x;
+                      group.rotation.x = -smooth.y * 0.35;
+                      group.position.y = Math.sin(t * 0.55) * 0.18;
+
+                      glow.intensity = 2.6 + Math.sin(t * 1.1) * 0.5;
+
+                      renderer.render(scene, camera);
+                    })();
+                  }
+                  waitAndInit();
+                })();
+              `}} />
             </div>
           </div>
         </div>

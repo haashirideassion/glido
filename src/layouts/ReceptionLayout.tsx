@@ -35,48 +35,50 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
         <script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
       </head>
-      <body style="min-height:100vh; background:#090D12; color:#F1F5F9; font-family:'Inter',ui-sans-serif,system-ui,sans-serif; display:flex; -webkit-font-smoothing:antialiased;">
+      <body style="min-height:100vh; background:#EEEAE4; color:#1C1917; font-family:'Inter',ui-sans-serif,system-ui,sans-serif; display:flex; -webkit-font-smoothing:antialiased;">
 
-        {/* ── Sidebar — Level 1 glass ──────────────────────────────────── */}
+        {/* ── Sidebar ──────────────────────────────────────────────────── */}
         <aside
-          class="w-60 flex flex-col shrink-0 sticky top-0 h-screen"
-          style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border-right:1px solid rgba(255,255,255,0.07); box-shadow:inset -1px 0 0 rgba(0,0,0,0.20), 4px 0 24px rgba(0,0,0,0.30); color:#F1F5F9;"
+          class="w-56 flex flex-col shrink-0 sticky top-0 h-screen"
+          style="background:#EEEAE4; border-right:1px solid rgba(0,0,0,0.07); color:#1C1917;"
         >
           {/* Logo */}
           <div
-            class="h-16 flex items-center px-5 gap-3"
-            style="border-bottom:1px solid rgba(255,255,255,0.07);"
+            class="h-14 flex items-center px-5 gap-3"
+            style="border-bottom:1px solid rgba(0,0,0,0.07);"
           >
-            <GlidoLogo height={18} onDark={true} />
+            <a href="/" style="text-decoration:none; display:flex; align-items:center;">
+              <GlidoLogo height={17} onDark={false} />
+            </a>
             <span
-              class="text-xs px-1.5 py-0.5 rounded font-medium"
-              style="background:rgba(252,101,20,0.18); color:#FC6514; flex-shrink:0;"
+              class="text-xs px-1.5 py-0.5 rounded font-semibold"
+              style="background:rgba(252,101,20,0.10); color:#FC6514; flex-shrink:0; letter-spacing:0.02em;"
             >
-              Reception
+              Ops
             </span>
           </div>
 
           {/* Nav */}
-          <nav class="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
+          <nav class="flex-1 py-3 px-2.5 overflow-y-auto" style="display:flex; flex-direction:column; gap:2px;">
             {navItems.map((item) => {
               const isActive = activeNav === item.href
               return (
                 <a
                   key={item.href}
                   href={item.href}
-                  class="flex items-center gap-3 px-3 py-2.5 rounded-md text-xs font-medium transition-colors"
+                  class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium"
                   style={isActive
-                    ? 'background:rgba(252,101,20,0.10); color:#F1F5F9; border-left:2px solid #FC6514; padding-left:10px; border-radius:6px;'
-                    : 'color:#64748B; border-left:2px solid transparent;'}
-                  onmouseover={!isActive ? "this.style.background='rgba(255,255,255,0.04)'; this.style.color='#94A3B8';" : undefined}
-                  onmouseout={!isActive ? "this.style.background='transparent'; this.style.color='#64748B';" : undefined}
+                    ? 'background:#FFFFFF; color:#1C1917; box-shadow:0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05); text-decoration:none;'
+                    : 'color:#78716C; text-decoration:none; transition:all 0.15s ease;'}
+                  onmouseover={!isActive ? "this.style.background='rgba(0,0,0,0.04)'; this.style.color='#1C1917';" : undefined}
+                  onmouseout={!isActive ? "this.style.background='transparent'; this.style.color='#78716C';" : undefined}
                 >
-                  <Icon name={item.icon} size={18} />
+                  <Icon name={item.icon} size={16} style={isActive ? 'color:#FC6514;' : 'opacity:0.6;'} />
                   <span class="flex-1">{item.label}</span>
                   {item.badge && (
                     <span
-                      class="text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-none"
-                      style="background:#DC2626; color:#FFFFFF;"
+                      class="text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none"
+                      style="background:#EF4444; color:#FFFFFF; font-size:10px;"
                     >
                       {item.badge}
                     </span>
@@ -87,39 +89,46 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
           </nav>
 
           {/* User footer */}
-          <div class="px-4 py-4" style="border-top:1px solid rgba(255,255,255,0.07);">
-            <div class="flex items-center gap-3">
+          <div class="px-3 py-3" style="border-top:1px solid rgba(0,0,0,0.07);">
+            <div class="flex items-center gap-2.5 px-2">
               <div
-                class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                style="background:rgba(252,101,20,0.15); color:#FC6514; border:1px solid rgba(252,101,20,0.25);"
+                class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                style="background:rgba(252,101,20,0.10); color:#FC6514; border:1px solid rgba(252,101,20,0.20);"
               >
                 RA
               </div>
-              <div>
-                <p class="text-xs font-medium" style="color:#F1F5F9;">Reception Agent</p>
-                <p class="text-xs" style="color:#64748B;">Sydney CFS Terminal 1</p>
+              <div style="min-width:0;">
+                <p class="text-xs font-semibold truncate" style="color:#1C1917;">Reception Agent</p>
+                <p class="text-xs truncate" style="color:#A8A29E;">Sydney CFS · T1</p>
               </div>
             </div>
           </div>
         </aside>
 
         {/* ── Main area ─────────────────────────────────────────────────── */}
-        <div class="flex-1 flex flex-col min-w-0">
+        <div class="flex-1 flex flex-col min-w-0" style="background:#EEEAE4;">
           {/* Top header */}
           <header
-            class="h-16 flex items-center justify-between px-6 shrink-0"
-            style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border-bottom:1px solid rgba(255,255,255,0.07); box-shadow:0 1px 0 rgba(0,0,0,0.30);"
+            class="h-14 flex items-center justify-between px-5 shrink-0"
+            style="background:#EEEAE4; border-bottom:1px solid rgba(0,0,0,0.07);"
           >
-            <h1 class="text-sm font-semibold" style="color:#F1F5F9;">{title}</h1>
-            <div class="flex items-center gap-3 text-xs" style="color:#64748B;">
+            <h1 class="text-sm font-semibold" style="color:#1C1917; letter-spacing:-0.01em;">{title}</h1>
+            <div class="flex items-center gap-3 text-xs" style="color:#78716C;">
               <span id="live-clock" x-data="{}" x-text="new Date().toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit'})"></span>
-              <span style="color:rgba(255,255,255,0.15);">|</span>
-              <a href="/" class="transition-colors text-xs" style="color:#FC6514;">Visitor Portal ↗</a>
+              <span style="color:rgba(0,0,0,0.15);">|</span>
+              <a href="/" class="transition-colors text-xs font-medium" style="color:#FC6514; text-decoration:none;">Visitor Portal ↗</a>
             </div>
           </header>
 
-          <main class="flex-1 p-6 overflow-y-auto" id="main-content">
-            {children}
+          {/* White content card */}
+          <main
+            class="flex-1 overflow-y-auto"
+            id="main-content"
+            style="padding:12px;"
+          >
+            <div style="background:#FFFFFF; border-radius:20px; min-height:100%; box-shadow:0 1px 4px rgba(0,0,0,0.04), 0 6px 28px rgba(0,0,0,0.07); overflow:hidden; padding:24px;">
+              {children}
+            </div>
           </main>
         </div>
 
@@ -127,13 +136,13 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <div
           id="slide-over-backdrop"
           class="hidden fixed inset-0 z-40"
-          style="background:rgba(9,13,18,0.75); backdrop-filter:blur(4px);"
+          style="background:rgba(28,25,23,0.35); backdrop-filter:blur(4px);"
           onclick="document.getElementById('slide-over-backdrop').classList.add('hidden'); document.getElementById('slide-over').classList.add('translate-x-full')"
         ></div>
         <div
           id="slide-over"
-          class="fixed right-0 top-0 h-full w-[480px] shadow-2xl z-50 translate-x-full transition-transform duration-300 overflow-y-auto flex flex-col"
-          style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border-left:1px solid rgba(255,255,255,0.07); box-shadow:inset 1px 0 0 rgba(255,255,255,0.06), -8px 0 40px rgba(0,0,0,0.60);"
+          class="fixed right-0 top-0 h-full w-[480px] z-50 translate-x-full transition-transform duration-300 overflow-y-auto flex flex-col"
+          style="background:#FFFFFF; border-left:1px solid rgba(0,0,0,0.08); box-shadow:-8px 0 40px rgba(0,0,0,0.12);"
         >
           <div id="slide-over-content"></div>
         </div>

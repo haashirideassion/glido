@@ -33,6 +33,8 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
         <script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
         {/* Anime.js for scroll and counter animations */}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+        {/* Three.js for hero 3D scene */}
+        <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
       </head>
       <body style="background:#EEEAE4; color:#1C1917; overflow-x:hidden;">
 
