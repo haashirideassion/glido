@@ -139,16 +139,20 @@ const Illus7 = () => (
 const ILLUS = [Illus1, Illus2, Illus3, Illus4, Illus5, Illus6, Illus7]
 
 export const BookingWizard = () => (
-  <div x-data="{}" style="display:flex; flex-direction:column; min-height:calc(100vh - 148px);">
+  /*
+    Height must be definite (not min-height) so flex:1 children can stretch.
+    PublicLayout: header 56px + main padding 12px×2 + footer 64px = 144px total chrome.
+  */
+  <div x-data="{}" style="display:flex; flex-direction:column; height:calc(100vh - 144px);">
 
     {/* ═══════════════════════════════════════════════════════════════════
         SPLIT BODY
     ═══════════════════════════════════════════════════════════════════ */}
-    <div x-show="$store.wizard.currentStep !== 8" x-cloak style="display:flex; flex:1; min-height:0;">
+    <div x-show="$store.wizard.currentStep !== 8" x-cloak style="display:flex; flex:1; min-height:0; overflow:hidden;">
 
       {/* ── LEFT CONTEXT PANEL ──────────────────────────────────────── */}
       <div
-        style="width:38%; min-width:280px; background:linear-gradient(155deg,#1A0F07 0%,#2D1A0E 55%,#1A0F07 100%); display:flex; flex-direction:column; padding:44px 38px 32px; position:relative; overflow:hidden; flex-shrink:0;"
+        style="width:38%; min-width:260px; max-width:400px; background:linear-gradient(155deg,#1A0F07 0%,#2D1A0E 55%,#1A0F07 100%); display:flex; flex-direction:column; padding:44px 38px 32px; position:relative; overflow:hidden; flex-shrink:0; align-self:stretch;"
       >
         {/* Ambient orbs */}
         <div style="position:absolute; bottom:-90px; right:-60px; width:280px; height:280px; border-radius:9999px; background:radial-gradient(circle, rgba(252,101,20,0.22) 0%, transparent 65%); pointer-events:none;" />
@@ -219,20 +223,63 @@ export const BookingWizard = () => (
       </div>
 
       {/* ── RIGHT FORM PANEL ────────────────────────────────────────── */}
-      <div
-        style="flex:1; overflow-y:auto; padding:52px 60px 36px; background:#FFFFFF;"
-        x-init={`$watch('$store.wizard.currentStep', function() {
-          $el.animate([{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'translateY(0)'}],
-            {duration:300,easing:'cubic-bezier(0.16,1,0.3,1)'});
-        })`}
-      >
-        <Step1ServiceType />
-        <Step2SlotPicker />
-        <Step3HoldConfirm />
-        <Step4ShipmentDetails />
-        <Step5Documents />
-        <Step6ContactVehicle />
-        <Step7Confirmation />
+      <div style="flex:1; overflow-y:auto; background:#FFFFFF; display:flex; flex-direction:column;">
+
+        {/* ── Sticky progress header ────────────────────────────────── */}
+        <div style="position:sticky; top:0; z-index:20; background:#FFFFFF; border-bottom:1px solid rgba(0,0,0,0.06); padding:14px 52px 12px; flex-shrink:0;">
+          {/* Step label row */}
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:9px;">
+            <span style="font-size:10.5px; font-weight:700; letter-spacing:0.09em; text-transform:uppercase; color:#A8A29E;">
+              Step <span x-text="$store.wizard.currentStep" /> of 7
+            </span>
+            {/* Step name — shows current */}
+            {STEP_CTX.map((ctx, i) => (
+              <span
+                key={i}
+                x-show={`$store.wizard.currentStep === ${i + 1}`}
+                x-cloak
+                style="font-size:11.5px; font-weight:600; color:#78716C;"
+              >
+                {ctx.label}
+              </span>
+            ))}
+          </div>
+          {/* Progress track */}
+          <div style="height:3px; background:rgba(0,0,0,0.06); border-radius:9999px; overflow:hidden;">
+            <div
+              style="height:100%; background:linear-gradient(90deg,#FF7A2A 0%,#FC6514 100%); border-radius:9999px; transition:width 0.45s cubic-bezier(0.16,1,0.3,1);"
+              x-bind:style="'width:' + Math.round(($store.wizard.currentStep / 7) * 100) + '%'"
+            />
+          </div>
+          {/* Step dots */}
+          <div style="display:flex; gap:0; margin-top:8px; position:relative;">
+            {[1,2,3,4,5,6,7].map(n => (
+              <div key={n} style="flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;">
+                <div
+                  style="width:7px; height:7px; border-radius:9999px; transition:all 0.3s ease;"
+                  x-bind:style={`$store.wizard.currentStep === ${n} ? 'background:#FC6514; box-shadow:0 0 0 3px rgba(252,101,20,0.18); transform:scale(1.2);' : $store.wizard.currentStep > ${n} ? 'background:#FC6514; opacity:0.45;' : 'background:rgba(0,0,0,0.12);'`}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Scrollable form content ───────────────────────────────── */}
+        <div
+          style="flex:1; padding:36px 52px 40px;"
+          x-init={`$watch('$store.wizard.currentStep', function() {
+            $el.animate([{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'translateY(0)'}],
+              {duration:300,easing:'cubic-bezier(0.16,1,0.3,1)'});
+          })`}
+        >
+          <Step1ServiceType />
+          <Step2SlotPicker />
+          <Step3HoldConfirm />
+          <Step4ShipmentDetails />
+          <Step5Documents />
+          <Step6ContactVehicle />
+          <Step7Confirmation />
+        </div>
       </div>
     </div>
 
