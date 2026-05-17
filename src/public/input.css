@@ -67,14 +67,14 @@
   --color-info-soft:             var(--info-soft);
   --color-overlay-scrim:         var(--overlay-scrim);
 
-  /* ── Dark elevation shadows (Bold Depth) ─────────────────────────────── */
-  --shadow-xs:      rgba(0,0,0,0.30) 0px 1px 2px 0px;
-  --shadow-sm:      rgba(0,0,0,0.40) 0px 4px 12px 0px, rgba(255,255,255,0.07) 0px 1px 0px 0px inset;
-  --shadow:         rgba(0,0,0,0.45) 0px 8px 24px -4px, rgba(255,255,255,0.07) 0px 1px 0px 0px inset;
-  --shadow-md:      rgba(0,0,0,0.55) 0px 20px 60px -10px, rgba(255,255,255,0.07) 0px 1px 0px 0px inset;
-  --shadow-lg:      rgba(0,0,0,0.65) 0px 40px 80px -20px, rgba(255,255,255,0.07) 0px 1px 0px 0px inset;
-  --shadow-primary: rgba(252,101,20,0.40) 0px 4px 14px 0px;
-  --shadow-primary-glow: rgba(252,101,20,0.50) 0px 0px 20px 0px;
+  /* ── Light elevation shadows ─────────────────────────────────────────── */
+  --shadow-xs:      rgba(0,0,0,0.06) 0px 1px 2px 0px;
+  --shadow-sm:      rgba(0,0,0,0.06) 0px 1px 3px 0px, rgba(0,0,0,0.08) 0px 4px 12px 0px;
+  --shadow:         rgba(0,0,0,0.07) 0px 2px 6px 0px, rgba(0,0,0,0.09) 0px 8px 24px -4px;
+  --shadow-md:      rgba(0,0,0,0.08) 0px 4px 12px 0px, rgba(0,0,0,0.11) 0px 20px 48px -8px;
+  --shadow-lg:      rgba(0,0,0,0.10) 0px 8px 20px 0px, rgba(0,0,0,0.13) 0px 40px 80px -16px;
+  --shadow-primary: rgba(252,101,20,0.35) 0px 4px 14px 0px;
+  --shadow-primary-glow: rgba(252,101,20,0.45) 0px 0px 20px 0px;
 
   /* ── Animation easing curves ─────────────────────────────────────────── */
   --ease-spring:  cubic-bezier(0.16, 1, 0.3, 1);
@@ -278,16 +278,12 @@
 /* ─────────────────────────────────────────────────────────────────────────── */
 @layer utilities {
 
-  /* ── Level 1 card — base elevation ────────────────────────────────────── */
+  /* ── Level 1 card — white surface on cream ──────────────────────────── */
   .gl-card {
-    background: linear-gradient(180deg, #1F2831 0%, #1A2028 100%);
-    border: 1px solid rgba(255,255,255,0.07);
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.07);
     border-radius: 16px;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.07),
-      inset 0 -1px 0 rgba(0,0,0,0.25),
-      0 4px 24px rgba(0,0,0,0.45),
-      0 1px 3px rgba(0,0,0,0.30);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.07);
     transition:
       transform 200ms cubic-bezier(0.16,1,0.3,1),
       box-shadow 200ms cubic-bezier(0.16,1,0.3,1),
@@ -295,70 +291,62 @@
   }
   .gl-card:hover {
     transform: translateY(-3px);
-    border-color: rgba(255,255,255,0.11);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.10),
-      inset 0 -1px 0 rgba(0,0,0,0.30),
-      0 8px 32px rgba(0,0,0,0.55),
-      0 2px 6px rgba(0,0,0,0.35),
-      0 0 0 1px rgba(252,101,20,0.08);
+    border-color: rgba(0,0,0,0.10);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.11), 0 0 0 1px rgba(252,101,20,0.07);
   }
 
-  /* ── Gradient border shell ─────────────────────────────────────────────── */
+  /* ── Card shell — elevated floating card (hero mockup) ───────────────── */
   .card-shell {
-    padding: 1px;
-    background: linear-gradient(145deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 40%, rgba(252,101,20,0.15) 100%);
-    border-radius: 17px;  /* radius-lg + 1 */
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 16px 48px rgba(0,0,0,0.12);
+    border: 1px solid rgba(0,0,0,0.06);
   }
   .card-shell-inner {
     border-radius: 16px;
-    background: linear-gradient(180deg, #1F2831 0%, #1A2028 100%);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+    background: #FFFFFF;
   }
   .card-shell-sm {
-    padding: 1px;
-    background: linear-gradient(145deg, rgba(255,255,255,0.10) 0%, rgba(252,101,20,0.15) 100%);
-    border-radius: 11px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10), 0 8px 24px rgba(0,0,0,0.10);
+    border: 1px solid rgba(0,0,0,0.07);
   }
   .card-shell-sm-inner {
     border-radius: 10px;
-    background: linear-gradient(180deg, #1F2831 0%, #1A2028 100%);
+    background: #FFFFFF;
   }
 
-  /* ── Dark glass surface ───────────────────────────────────────────────── */
+  /* ── Frosted glass — light version ───────────────────────────────────── */
   .glass {
-    background: rgba(28,35,44,0.75);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      0 8px 32px rgba(0,0,0,0.40);
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.09);
   }
   .glass-warm {
-    background: rgba(28,35,44,0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.07),
-      0 4px 16px rgba(0,0,0,0.40);
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0,0,0,0.07);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
   }
   .glass-dark {
-    background: rgba(9,13,18,0.90);
+    background: rgba(28,25,23,0.90);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255,255,255,0.07);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.10);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
   }
 
   /* ── Skeleton shimmer ─────────────────────────────────────────────────── */
   .gl-skeleton {
     background: linear-gradient(
       90deg,
-      rgba(255,255,255,0.03) 0%,
-      rgba(255,255,255,0.07) 50%,
-      rgba(255,255,255,0.03) 100%
+      rgba(0,0,0,0.04) 0%,
+      rgba(0,0,0,0.08) 50%,
+      rgba(0,0,0,0.04) 100%
     );
     background-size: 800px 100%;
     animation: shimmer 1.4s linear infinite;
@@ -377,9 +365,8 @@
   /* ── Gradient backgrounds ───────────────────────────────────────────────── */
   .bg-hero-gradient {
     background:
-      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(252,101,20,0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(252,101,20,0.05) 0%, transparent 60%),
-      #090D12;
+      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(252,101,20,0.07) 0%, transparent 65%),
+      #EEEAE4;
   }
   .bg-cta-gradient {
     background: linear-gradient(135deg, #FC6514 0%, #E04E06 100%);
@@ -388,7 +375,7 @@
     background: linear-gradient(180deg, #FF7A2A 0%, #E85A0A 100%);
   }
   .bg-surface {
-    background: linear-gradient(180deg, #1F2831 0%, #1A2028 100%);
+    background: #F7F4F0;
   }
   .text-shimmer {
     background: linear-gradient(90deg, #FC6514, #FDBA74, #FC6514);
@@ -547,15 +534,15 @@
     transition-duration: 60ms;
   }
 
-  /* ── Button — Dark (raised surface) ─────────────────────────────────── */
+  /* ── Button — Dark (charcoal — works on light bg) ───────────────────── */
   .btn-dark {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background: linear-gradient(180deg, #252E3B 0%, #1A2028 100%);
-    color: #F1F5F9;
-    border: 1px solid rgba(255,255,255,0.13);
+    background: linear-gradient(180deg, #2C2825 0%, #1C1917 100%);
+    color: #F7F4F0;
+    border: 1px solid rgba(0,0,0,0.30);
     border-radius: 10px;
     font-size: 13px;
     font-weight: 600;
@@ -563,20 +550,19 @@
     cursor: pointer;
     text-decoration: none;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.10),
-      inset 0 -1px 0 rgba(0,0,0,0.30),
-      0 4px 12px rgba(0,0,0,0.45),
-      0 1px 3px rgba(0,0,0,0.30);
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      inset 0 -1px 0 rgba(0,0,0,0.20),
+      0 2px 8px rgba(0,0,0,0.20),
+      0 1px 2px rgba(0,0,0,0.14);
     transition: all 120ms cubic-bezier(0.16,1,0.3,1);
   }
   .btn-dark:hover {
-    background: linear-gradient(180deg, #2D3848 0%, #222C38 100%);
-    border-color: rgba(255,255,255,0.18);
+    background: linear-gradient(180deg, #3A3633 0%, #2A2724 100%);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.12),
-      inset 0 -1px 0 rgba(0,0,0,0.30),
-      0 8px 24px rgba(0,0,0,0.55),
-      0 2px 6px rgba(0,0,0,0.35);
+      inset 0 1px 0 rgba(255,255,255,0.10),
+      inset 0 -1px 0 rgba(0,0,0,0.20),
+      0 4px 16px rgba(0,0,0,0.24),
+      0 2px 4px rgba(0,0,0,0.14);
     transform: translateY(-1px);
   }
   .btn-dark:active {
@@ -615,7 +601,7 @@
     flex: 1;
     height: 1px;
     margin: 0 3px;
-    background: rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.10);
     border-radius: 9999px;
     transition: background 0.35s ease;
   }
@@ -722,15 +708,13 @@
 
   /* ── Feature card ──────────────────────────────────────────────────────── */
   .feature-card {
-    background: linear-gradient(180deg, #1F2831 0%, #1A2028 100%);
-    border: 1px solid rgba(255,255,255,0.07);
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.07);
     border-radius: 16px;
     padding: 32px;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.07),
-      inset 0 -1px 0 rgba(0,0,0,0.25),
-      0 4px 24px rgba(0,0,0,0.45),
-      0 1px 3px rgba(0,0,0,0.30);
+      0 1px 3px rgba(0,0,0,0.04),
+      0 4px 20px rgba(0,0,0,0.07);
     transition:
       transform 250ms cubic-bezier(0.16,1,0.3,1),
       box-shadow 250ms cubic-bezier(0.16,1,0.3,1),
@@ -738,19 +722,17 @@
   }
   .feature-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(255,255,255,0.11);
+    border-color: rgba(0,0,0,0.11);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.10),
-      inset 0 -1px 0 rgba(0,0,0,0.30),
-      0 12px 40px rgba(0,0,0,0.60),
-      0 4px 12px rgba(0,0,0,0.40),
+      0 8px 32px rgba(0,0,0,0.10),
+      0 2px 8px rgba(0,0,0,0.06),
       0 0 0 1px rgba(252,101,20,0.08);
   }
   .feature-card .icon-wrap {
     width: 48px; height: 48px;
     border-radius: 10px;
-    background: rgba(252,101,20,0.10);
-    border: 1px solid rgba(252,101,20,0.20);
+    background: rgba(252,101,20,0.08);
+    border: 1px solid rgba(252,101,20,0.16);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -760,26 +742,26 @@
   }
   .feature-card:hover .icon-wrap {
     transform: scale(1.1) rotate(-2deg);
-    box-shadow: rgba(252,101,20,0.35) 0px 0px 18px 0px;
+    box-shadow: rgba(252,101,20,0.20) 0px 0px 14px 0px;
   }
 
   /* ── Step card ─────────────────────────────────────────────────────────── */
   .step-card {
-    background: linear-gradient(180deg, #1F2831 0%, #1A2028 100%);
-    border: 1px solid rgba(255,255,255,0.07);
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.07);
     border-radius: 16px;
     padding: 28px;
     position: relative;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.07),
-      0 4px 24px rgba(0,0,0,0.45);
+      0 1px 3px rgba(0,0,0,0.04),
+      0 4px 20px rgba(0,0,0,0.07);
     transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s ease;
   }
   .step-card:hover {
     transform: translateY(-3px);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.10),
-      0 10px 40px rgba(0,0,0,0.60);
+      0 6px 28px rgba(0,0,0,0.10),
+      0 1px 4px rgba(0,0,0,0.06);
   }
   .step-num {
     font-size: 11px;
@@ -793,14 +775,14 @@
 
   /* ── Stat card ─────────────────────────────────────────────────────────── */
   .stat-card {
-    background: linear-gradient(180deg, #1F2831 0%, #1A2028 100%);
-    border: 1px solid rgba(255,255,255,0.07);
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.07);
     border-radius: 16px;
     padding: 32px 24px;
     text-align: center;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.07),
-      0 4px 24px rgba(0,0,0,0.45);
+      0 1px 3px rgba(0,0,0,0.04),
+      0 4px 20px rgba(0,0,0,0.07);
     transition: transform 0.2s cubic-bezier(0.16,1,0.3,1);
   }
   .stat-card:hover { transform: translateY(-4px); }
@@ -815,42 +797,39 @@
   }
   .stat-label {
     font-size: 13px;
-    color: #94A3B8;
+    color: #78716C;
     font-weight: 400;
   }
 
   /* ── KPI tile ─────────────────────────────────────────────────────────── */
   .kpi-tile {
-    background: linear-gradient(180deg, #1F2831 0%, #1A2028 100%);
-    border: 1px solid rgba(255,255,255,0.07);
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.07);
     border-radius: 16px;
     padding: 20px 24px;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.07),
-      0 4px 24px rgba(0,0,0,0.45);
+      0 1px 3px rgba(0,0,0,0.04),
+      0 4px 20px rgba(0,0,0,0.07);
     transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s ease;
   }
   .kpi-tile:hover {
     transform: translateY(-2px);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.10),
-      0 8px 32px rgba(0,0,0,0.55);
+      0 4px 20px rgba(0,0,0,0.10),
+      0 1px 4px rgba(0,0,0,0.06);
   }
 
   /* ── Testimonial quote ──────────────────────────────────────────────────── */
   .quote-card {
-    background: linear-gradient(180deg, #252E3B 0%, #1E2730 100%);
-    border: 1px solid rgba(255,255,255,0.11);
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.07);
     border-radius: 24px;
     padding: 48px;
     position: relative;
     overflow: hidden;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.10),
-      inset 0 -1px 0 rgba(0,0,0,0.30),
-      0 8px 32px rgba(0,0,0,0.55),
-      0 2px 6px rgba(0,0,0,0.35),
-      0 0 80px rgba(252,101,20,0.06);
+      0 2px 8px rgba(0,0,0,0.06),
+      0 8px 32px rgba(0,0,0,0.09);
   }
   .quote-card::before {
     content: '"';
@@ -883,9 +862,10 @@
     border-radius: 9999px;
     font-size: 12px;
     font-weight: 500;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.13);
+    background: rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.09);
     backdrop-filter: blur(8px);
+    color: #57534E;
   }
   .status-dot {
     width: 7px; height: 7px;
@@ -909,8 +889,8 @@
   /* ── Grid / dot patterns ────────────────────────────────────────────────── */
   .bg-grid {
     background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
     background-size: 48px 48px;
   }
   .bg-dot-pattern {
@@ -970,9 +950,8 @@
 .hover-lift:hover {
   transform: translateY(-3px);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.10),
-    0 8px 32px rgba(0,0,0,0.55),
-    0 2px 6px rgba(0,0,0,0.35);
+    0 8px 32px rgba(0,0,0,0.11),
+    0 2px 6px rgba(0,0,0,0.07);
 }
 
 /* ── Number counter animation (JS-driven) ────────────────────────────────────  */
