@@ -161,20 +161,25 @@ export const BookingWizard = () => (
         ))}
       </div>
 
-      {/* 7-segment track — each segment is one step, fills when reached */}
+      {/* 7-segment track
+           current step:  30% fill → 80% when canProceed (reacts to input)
+           completed step: 100% fill, faded
+           future step:   empty
+           NOTE: avoid > and < in Alpine attr strings (Hono encodes them).
+                 Use Math.max(0, a - b) !== 0  to mean  a > b             */}
       <div style="display:flex; gap:4px; max-width:560px; margin:0 auto;">
         {[1,2,3,4,5,6,7].map(n => (
           <div
             key={n}
-            style="flex:1; height:4px; border-radius:9999px; overflow:hidden; background:rgba(0,0,0,0.08); transition:background 0.3s ease;"
+            style="flex:1; height:4px; border-radius:9999px; overflow:hidden; background:rgba(0,0,0,0.09);"
           >
             <div
-              style="height:100%; border-radius:9999px; transition:width 0.4s cubic-bezier(0.16,1,0.3,1);"
+              style="height:100%; border-radius:9999px; background:#FC6514; transition:width 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;"
               x-bind:style={`$store.wizard.currentStep === ${n}
-                ? 'width:50%; background:#FC6514;'
-                : $store.wizard.currentStep > ${n}
-                  ? 'width:100%; background:#FC6514; opacity:0.5;'
-                  : 'width:0%;'`}
+                ? ($store.wizard.canProceed ? 'width:80%; opacity:1;' : 'width:30%; opacity:1;')
+                : (Math.max(0, $store.wizard.currentStep - ${n}) !== 0
+                  ? 'width:100%; opacity:0.35;'
+                  : 'width:0%; opacity:0;')`}
             />
           </div>
         ))}
