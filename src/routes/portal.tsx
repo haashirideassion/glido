@@ -305,13 +305,13 @@ portalRoutes.get('/', (c) => {
         </div>
 
         {/* Fade to next section */}
-        <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background:linear-gradient(to bottom, transparent, #EEEAE4); pointer-events:none;" />
+        <div style="position:absolute; bottom:0; left:0; right:0; height:80px; background:linear-gradient(to bottom, transparent, #F3F2F0); pointer-events:none;" />
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════
           §2  MARQUEE — trust strip
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:24px 0; background:#EEEAE4; overflow:hidden; border-top:1px solid rgba(0,0,0,0.07); border-bottom:1px solid rgba(0,0,0,0.07);">
+      <section style="padding:24px 0; background:#F3F2F0; overflow:hidden; border-top:1px solid rgba(0,0,0,0.07); border-bottom:1px solid rgba(0,0,0,0.07);">
         <div style="display:flex; overflow:hidden; mask-image:linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%); -webkit-mask-image:linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);">
           <div class="animate-marquee" style="display:flex; gap:0; white-space:nowrap; flex-shrink:0;">
             {[
@@ -349,7 +349,7 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §4  HOW IT WORKS — numbered step cards with connector
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section id="how-it-works" style="padding:80px 24px; background:#EEEAE4; border-top:1px solid rgba(0,0,0,0.07);">
+      <section id="how-it-works" style="padding:80px 24px; background:#F3F2F0; border-top:1px solid rgba(0,0,0,0.07);">
         <div class="max-w-5xl mx-auto">
 
           {/* Header */}
@@ -401,7 +401,7 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §5  FEATURES — asymmetric bento grid
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:80px 24px; background:#EEEAE4; border-top:1px solid rgba(0,0,0,0.07);">
+      <section style="padding:80px 24px; background:#F3F2F0; border-top:1px solid rgba(0,0,0,0.07);">
         <div class="max-w-5xl mx-auto">
 
           {/* Header */}
@@ -482,7 +482,7 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §6  TESTIMONIAL / TRUST QUOTE
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:80px 24px; background:#EEEAE4; border-top:1px solid rgba(0,0,0,0.06);">
+      <section style="padding:80px 24px; background:#F3F2F0; border-top:1px solid rgba(0,0,0,0.06);">
         <div class="max-w-3xl mx-auto">
           <div
             class="reveal"
@@ -520,7 +520,7 @@ portalRoutes.get('/', (c) => {
       {/* ═══════════════════════════════════════════════════════════════════════
           §7  FINAL CTA — dark section
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:96px 24px; background:#EEEAE4; position:relative; overflow:hidden;">
+      <section style="padding:96px 24px; background:#F3F2F0; position:relative; overflow:hidden;">
 
         {/* Ambient glow */}
         <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:700px; height:400px; border-radius:9999px; background:radial-gradient(ellipse, rgba(252,101,20,0.12) 0%, transparent 65%); pointer-events:none;" />
@@ -838,7 +838,7 @@ portalRoutes.get('/booking-confirmed/:ref', async (c) => {
 
   return c.html(
     <PublicLayout title="Booking Confirmed">
-      <div style="min-height:calc(100vh - 56px); background:#EEEAE4; padding:40px 24px 64px;">
+      <div style="min-height:calc(100vh - 56px); background:#F3F2F0; padding:40px 24px 64px;">
       <div class="max-w-2xl mx-auto">
 
         {/* Success banner */}

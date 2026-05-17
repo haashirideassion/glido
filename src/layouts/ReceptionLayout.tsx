@@ -35,12 +35,12 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
         <script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
       </head>
-      <body style="min-height:100vh; background:#EEEAE4; color:#1C1917; font-family:'Inter',ui-sans-serif,system-ui,sans-serif; display:flex; -webkit-font-smoothing:antialiased;">
+      <body style="min-height:100vh; background:#F3F2F0; color:#1C1917; font-family:'Inter',ui-sans-serif,system-ui,sans-serif; display:flex; -webkit-font-smoothing:antialiased;">
 
         {/* ── Sidebar ──────────────────────────────────────────────────── */}
         <aside
           class="w-56 flex flex-col shrink-0 sticky top-0 h-screen"
-          style="background:#EEEAE4; border-right:1px solid rgba(0,0,0,0.07); color:#1C1917;"
+          style="background:#F3F2F0; border-right:1px solid rgba(0,0,0,0.07); color:#1C1917;"
         >
           {/* Logo */}
           <div
@@ -106,11 +106,11 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         </aside>
 
         {/* ── Main area ─────────────────────────────────────────────────── */}
-        <div class="flex-1 flex flex-col min-w-0" style="background:#EEEAE4;">
+        <div class="flex-1 flex flex-col min-w-0" style="background:#F3F2F0;">
           {/* Top header */}
           <header
             class="h-14 flex items-center justify-between px-5 shrink-0"
-            style="background:#EEEAE4; border-bottom:1px solid rgba(0,0,0,0.07);"
+            style="background:#F3F2F0; border-bottom:1px solid rgba(0,0,0,0.07);"
           >
             <h1 class="text-sm font-semibold" style="color:#1C1917; letter-spacing:-0.01em;">{title}</h1>
             <div class="flex items-center gap-3 text-xs" style="color:#78716C;">

@@ -36,7 +36,7 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
     </div>
 
     {/* Body */}
-    <div style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:20px; background:#F7F4F0;">
+    <div style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:20px; background:#EBEBEA;">
 
       {/* Driver / Visitor */}
       <section>

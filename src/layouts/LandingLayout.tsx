@@ -36,7 +36,7 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
         {/* Three.js for hero 3D scene */}
         <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
       </head>
-      <body style="background:#EEEAE4; color:#1C1917; overflow-x:hidden;">
+      <body style="background:#F3F2F0; color:#1C1917; overflow-x:hidden;">
 
         {/* ── Fixed nav ─────────────────────────────────────────────────── */}
         <header
@@ -89,7 +89,7 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
         </main>
 
         {/* ── Footer ────────────────────────────────────────────────────── */}
-        <footer style="border-top:1px solid rgba(0,0,0,0.07); background:#EEEAE4; padding:64px 24px 32px;">
+        <footer style="border-top:1px solid rgba(0,0,0,0.07); background:#F3F2F0; padding:64px 24px 32px;">
           <div class="max-w-6xl mx-auto">
             <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:48px; margin-bottom:48px;" class="footer-grid">
 
@@ -164,7 +164,7 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
 
             /* build overlay */
             var ov = document.createElement('div');
-            ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#EEEAE4;display:flex;align-items:center;justify-content:center;pointer-events:none;';
+            ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#F3F2F0;display:flex;align-items:center;justify-content:center;pointer-events:none;';
 
             /* clone logo at display size ~130w */
             var clone = srcSvg.cloneNode(true);

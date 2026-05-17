@@ -320,7 +320,7 @@ export const BookingWizard = () => (
           <p style="font-size:11px; color:#A8A29E;">Scan at kiosk</p>
         </div>
 
-        <div style="background:#F7F4F0; border:1px solid rgba(0,0,0,0.06); border-radius:12px; padding:16px 20px; text-align:left; margin-bottom:24px;">
+        <div style="background:#EBEBEA; border:1px solid rgba(0,0,0,0.06); border-radius:12px; padding:16px 20px; text-align:left; margin-bottom:24px;">
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px 20px;">
             {[
               { label: 'Service', expr: "$store.wizard.serviceType === 'pickup' ? 'Pick Up' : 'Drop Off'" },

@@ -12,7 +12,7 @@ interface Props {
 
 type StatusVariant = 'warning' | 'default' | 'success' | 'secondary' | 'outline' | 'destructive'
 
-const SELECT_STYLE = "font-size:13px; border-radius:8px; padding:6px 10px; outline:none; background:#F7F4F0; border:1px solid rgba(0,0,0,0.10); color:#1C1917; cursor:pointer;"
+const SELECT_STYLE = "font-size:13px; border-radius:8px; padding:6px 10px; outline:none; background:#EBEBEA; border:1px solid rgba(0,0,0,0.10); color:#1C1917; cursor:pointer;"
 
 export const BookingTable = ({ bookings, title = "Today's Bookings", showFilters = false }: Props) => (
   <div

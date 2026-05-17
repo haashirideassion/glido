@@ -1,7 +1,7 @@
 const TABS = ['General', 'Slot Configuration', 'Pricing & Charges', 'Payment', 'Users']
 
 const labelStyle = 'display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;'
-const inputStyle = 'width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F4F0; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; transition:border-color 0.15s ease, box-shadow 0.15s ease; box-sizing:border-box;'
+const inputStyle = 'width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#EBEBEA; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; transition:border-color 0.15s ease, box-shadow 0.15s ease; box-sizing:border-box;'
 const inputFocus = `onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';" onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"`
 const cardStyle = 'background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:16px; padding:24px; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07); margin-bottom:20px;'
 const saveBtn = 'display:inline-flex; align-items:center; gap:8px; padding:11px 24px; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); color:white; border:none; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 14px rgba(252,101,20,0.40), 0 1px 3px rgba(0,0,0,0.40); margin-top:20px; transition:box-shadow 0.15s ease;'

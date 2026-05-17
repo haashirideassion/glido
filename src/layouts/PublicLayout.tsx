@@ -30,7 +30,7 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', children }) => {
         <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
         <script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
       </head>
-      <body class="min-h-screen font-sans antialiased" style="background:#EEEAE4; color:#1C1917;">
+      <body class="min-h-screen font-sans antialiased" style="background:#F3F2F0; color:#1C1917;">
 
         {/* ── Header ────────────────────────────────────────────────────── */}
         <header class="sticky top-0 z-40" style="background:rgba(238,234,228,0.88); backdrop-filter:blur(16px) saturate(180%); -webkit-backdrop-filter:blur(16px) saturate(180%); border-bottom:1px solid rgba(0,0,0,0.07);">
@@ -75,7 +75,7 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', children }) => {
         </main>
 
         {/* ── Footer ────────────────────────────────────────────────────── */}
-        <footer style="border-top:1px solid rgba(0,0,0,0.07); padding:24px; margin-top:0; background:#EEEAE4;">
+        <footer style="border-top:1px solid rgba(0,0,0,0.07); padding:24px; margin-top:0; background:#F3F2F0;">
           <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3" style="font-size:12px; color:#A8A29E;">
             <span>© 2026 Glido CFS · Sydney Container Freight Station</span>
             <div style="display:flex; gap:20px;">
