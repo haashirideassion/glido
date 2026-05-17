@@ -28,7 +28,7 @@ export const BookingWizard = () => (
       {/* ═══════════════════════════════════════════════════════════════════
           HEADER — dot track + step name + progress bar
       ═══════════════════════════════════════════════════════════════════ */}
-      <div style="padding:20px 24px 16px; border-bottom:1px solid rgba(255,255,255,0.055);">
+      <div style="padding:20px 24px 16px; border-bottom:1px solid rgba(0,0,0,0.06);">
 
         {/* Dot track — 7 tiny dots connected by lines */}
         <div style="display:flex; align-items:center; width:100%; margin-bottom:12px;">
@@ -85,7 +85,7 @@ export const BookingWizard = () => (
         {/* Step name + counter */}
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
           <span
-            style="font-size:13px; font-weight:600; color:#F1F5F9; letter-spacing:-0.01em;"
+            style="font-size:13px; font-weight:600; color:#1C1917; letter-spacing:-0.01em;"
             x-text={`['','Service Type','Pick a Slot','Confirm Hold','Shipment Details','Documents','Contact & Vehicle','Review & Pay'][$store.wizard.currentStep] || ''`}
           ></span>
           <span style="font-size:11px; font-weight:500; color:#475569; font-variant-numeric:tabular-nums;">
@@ -95,7 +95,7 @@ export const BookingWizard = () => (
         </div>
 
         {/* Progress bar */}
-        <div style="height:2px; background:rgba(255,255,255,0.05); border-radius:9999px; overflow:hidden;">
+        <div style="height:2px; background:rgba(0,0,0,0.06); border-radius:9999px; overflow:hidden;">
           <div
             style="height:100%; border-radius:9999px; background:linear-gradient(90deg,#FF7A2A,#FC6514); transition:width 0.45s cubic-bezier(0.16,1,0.3,1);"
             x-bind:style="`width:${Math.round(($store.wizard.currentStep - 1) / 6 * 100)}%`"
@@ -112,7 +112,7 @@ export const BookingWizard = () => (
         style="margin:14px 24px 0; padding:9px 14px; border-radius:8px; display:flex; align-items:center; gap:9px; font-size:12px; font-weight:500;"
         x-bind:style="$store.wizard.holdExpiring
           ? 'background:rgba(239,68,68,0.10); border:1px solid rgba(239,68,68,0.18); color:#EF4444;'
-          : 'background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); color:#94A3B8;'"
+          : 'background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.08); color:#78716C;'"
       >
         <Icon name={ICONS.clock} size={12} style="flex-shrink:0;" />
         <span>
@@ -140,7 +140,7 @@ export const BookingWizard = () => (
       ═══════════════════════════════════════════════════════════════════ */}
       <div
         x-show="7 > $store.wizard.currentStep"
-        style="padding:14px 24px; border-top:1px solid rgba(255,255,255,0.055); display:flex; align-items:center; justify-content:space-between; gap:12px;"
+        style="padding:14px 24px; border-top:1px solid rgba(0,0,0,0.06); display:flex; align-items:center; justify-content:space-between; gap:12px;"
       >
         {/* Back */}
         <button
@@ -193,27 +193,27 @@ export const BookingWizard = () => (
         <p style="font-family:ui-monospace,monospace; font-size:18px; font-weight:700; color:#FC6514; letter-spacing:0.05em;" x-text="$store.wizard.confirmationRef"></p>
       </div>
 
-      <div style="width:144px; height:144px; border:1.5px dashed rgba(255,255,255,0.10); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; margin:0 auto 24px; background:rgba(255,255,255,0.025);">
-        <Icon name={ICONS.qrCode} size={42} style="color:rgba(255,255,255,0.18); margin-bottom:6px;" />
-        <p style="font-size:11px; color:rgba(255,255,255,0.25);">Scan at kiosk</p>
+      <div style="width:144px; height:144px; border:1.5px dashed rgba(0,0,0,0.12); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; margin:0 auto 24px; background:rgba(0,0,0,0.025);">
+        <Icon name={ICONS.qrCode} size={42} style="color:rgba(0,0,0,0.18); margin-bottom:6px;" />
+        <p style="font-size:11px; color:#A8A29E;">Scan at kiosk</p>
       </div>
 
-      <div style="background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:16px 20px; text-align:left; margin-bottom:24px; max-width:340px; margin-left:auto; margin-right:auto;">
+      <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.07); border-radius:12px; padding:16px 20px; text-align:left; margin-bottom:24px; max-width:340px; margin-left:auto; margin-right:auto;">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px 24px;">
           <div>
-            <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.28); margin-bottom:3px;">Service</p>
+            <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#A8A29E; margin-bottom:3px;">Service</p>
             <p style="font-size:13px; font-weight:600; color:#F1F5F9;" x-text="$store.wizard.serviceType === 'pickup' ? 'Pick Up' : 'Drop Off'"></p>
           </div>
           <div>
-            <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.28); margin-bottom:3px;">Load</p>
+            <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#A8A29E; margin-bottom:3px;">Load</p>
             <p style="font-size:13px; font-weight:600; color:#F1F5F9;" x-text="($store.wizard.loadType || '—').toUpperCase()"></p>
           </div>
           <div>
-            <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.28); margin-bottom:3px;">Slot</p>
+            <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#A8A29E; margin-bottom:3px;">Slot</p>
             <p style="font-size:13px; font-weight:600; color:#F1F5F9;" x-text="$store.wizard.selectedSlotLabel || '—'"></p>
           </div>
           <div>
-            <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.28); margin-bottom:3px;">Driver</p>
+            <p style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#A8A29E; margin-bottom:3px;">Driver</p>
             <p style="font-size:13px; font-weight:600; color:#F1F5F9;" x-text="$store.wizard.driverName || $store.wizard.guestName || '—'"></p>
           </div>
         </div>

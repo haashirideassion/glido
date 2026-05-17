@@ -1,12 +1,12 @@
 import { Icon, ICONS } from '../../lib/Icon'
 
-const FIELD_LABEL = "display:block; font-size:10px; font-weight:700; color:rgba(255,255,255,0.38); letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;"
+const FIELD_LABEL = "display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;"
 const FIELD_STYLE = "width:100%; padding:10px 14px; font-size:13px;"
-const DIVIDER = "display:grid; grid-template-columns:1fr 1fr; gap:16px; padding-top:16px; margin-top:4px; border-top:1px solid rgba(255,255,255,0.07);"
+const DIVIDER = "display:grid; grid-template-columns:1fr 1fr; gap:16px; padding-top:16px; margin-top:4px; border-top:1px solid rgba(0,0,0,0.07);"
 
 export const Step5Documents = () => (
   <div x-show="$store.wizard.currentStep === 5" x-cloak>
-    <h2 style="font-size:18px; font-weight:700; color:#F1F5F9; letter-spacing:-0.03em; margin-bottom:3px;">Shipment Details</h2>
+    <h2 style="font-size:18px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:3px;">Shipment Details</h2>
     <p style="font-size:13px; color:#64748B; margin-bottom:28px; line-height:1.5;">Enter the details of your shipment. Fields change based on your service and cargo type.</p>
 
     {/* ── LCL Pickup ─────────────────────────────────────────────── */}
@@ -55,7 +55,7 @@ export const Step5Documents = () => (
       <div x-show="$store.wizard.shipmentFetched && $store.wizard.shipmentData" style="display:flex; flex-direction:column; gap:16px;">
         {/* ICS status badge */}
         <div style="display:flex; align-items:center; gap:10px;">
-          <span style="font-size:13px; font-weight:600; color:#94A3B8;">ICS Status:</span>
+          <span style="font-size:13px; font-weight:600; color:#78716C;">ICS Status:</span>
           <span
             style="display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:3px 10px; border-radius:9999px; border:1px solid transparent;"
             {...{"x-bind:style": `$store.wizard.shipmentData?.icsStatus === 'cleared'
@@ -64,7 +64,7 @@ export const Step5Documents = () => (
               ? 'background:rgba(239,68,68,0.12); color:#EF4444; border-color:rgba(239,68,68,0.22);'
               : $store.wizard.shipmentData?.icsStatus === 'examination'
               ? 'background:rgba(251,191,36,0.10); color:#FBBF24; border-color:rgba(251,191,36,0.22);'
-              : 'background:rgba(148,163,184,0.10); color:#94A3B8; border-color:rgba(148,163,184,0.20);'`}}
+              : 'background:rgba(0,0,0,0.04); color:#78716C; border-color:rgba(0,0,0,0.10);'`}}
             x-text="{'cleared':'Cleared','held':'Held','examination':'On Hold','pending':'Pending'}[$store.wizard.shipmentData?.icsStatus] || 'Unknown'"
           ></span>
         </div>
@@ -79,7 +79,7 @@ export const Step5Documents = () => (
         </div>
 
         {/* Auto-populated fields */}
-        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.09); border-radius:10px; padding:16px;">
+        <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:16px;">
           <p style="font-size:10px; font-weight:700; color:#64748B; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Auto-populated from CFS records</p>
           <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
             {[
@@ -90,9 +90,9 @@ export const Step5Documents = () => (
               { label: 'Storage from',  xtext: `$store.wizard.shipmentData?.storageStartDate || '—'` },
               { label: 'Days in store', xtext: `$store.wizard.shipmentData?.storageDays ? $store.wizard.shipmentData.storageDays + ' days' : '—'` },
             ].map((item) => (
-              <div key={item.label} style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:8px; padding:10px 12px;">
+              <div key={item.label} style="background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.07); border-radius:8px; padding:10px 12px;">
                 <p style="font-size:10px; color:#64748B; margin-bottom:3px;">{item.label}</p>
-                <p style="font-weight:600; color:#F1F5F9; font-size:13px;" x-text={item.xtext}></p>
+                <p style="font-weight:600; color:#1C1917; font-size:13px;" x-text={item.xtext}></p>
               </div>
             ))}
           </div>
@@ -110,22 +110,22 @@ export const Step5Documents = () => (
         </div>
 
         {/* Charges breakdown */}
-        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.09); border-radius:10px; padding:16px;">
-          <p style="font-size:13px; font-weight:600; color:#F1F5F9; margin-bottom:12px;">Estimated Charges</p>
+        <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:16px;">
+          <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:12px;">Estimated Charges</p>
           <div style="display:flex; flex-direction:column; gap:8px; font-size:13px;">
-            <div style="display:flex; justify-content:space-between; color:#94A3B8;">
+            <div style="display:flex; justify-content:space-between; color:#78716C;">
               <span>Storage charge</span>
               <span style="font-weight:500;" x-text="$store.wizard.storageChargeFormatted"></span>
             </div>
-            <div style="display:flex; justify-content:space-between; color:#94A3B8;">
+            <div style="display:flex; justify-content:space-between; color:#78716C;">
               <span>Shrink wrap</span>
               <span style="font-weight:500;" x-text="$store.wizard.shrinkWrapFormatted"></span>
             </div>
-            <div style="display:flex; justify-content:space-between; color:#94A3B8;">
+            <div style="display:flex; justify-content:space-between; color:#78716C;">
               <span>Slot fee</span>
               <span style="font-weight:500;">$5.00</span>
             </div>
-            <div style="display:flex; justify-content:space-between; font-weight:600; color:#F1F5F9; padding-top:8px; border-top:1px solid rgba(255,255,255,0.07); margin-top:4px;">
+            <div style="display:flex; justify-content:space-between; font-weight:600; color:#1C1917; padding-top:8px; border-top:1px solid rgba(0,0,0,0.07); margin-top:4px;">
               <span>Subtotal</span>
               <span x-text="'$' + $store.wizard.totalCharges.toFixed(2)"></span>
             </div>
@@ -133,7 +133,7 @@ export const Step5Documents = () => (
               <span>GST (10%)</span>
               <span x-text="'$' + ($store.wizard.totalCharges * 0.10).toFixed(2)"></span>
             </div>
-            <div style="display:flex; justify-content:space-between; font-weight:700; color:#F1F5F9; padding-top:8px; border-top:1px solid rgba(255,255,255,0.07); font-size:15px;">
+            <div style="display:flex; justify-content:space-between; font-weight:700; color:#1C1917; padding-top:8px; border-top:1px solid rgba(0,0,0,0.07); font-size:15px;">
               <span>Total</span>
               <span style="color:#FC6514;" x-text="'$' + $store.wizard.totalWithGst"></span>
             </div>
@@ -148,7 +148,7 @@ export const Step5Documents = () => (
           <input type="text" x-model="$store.wizard.driverName" placeholder="Person physically visiting" class="wizard-field" style={FIELD_STYLE} />
         </div>
         <div>
-          <label style={FIELD_LABEL}>Driver Phone <span style="color:rgba(255,255,255,0.25); font-weight:400; font-size:10px;">(optional)</span></label>
+          <label style={FIELD_LABEL}>Driver Phone <span style="color:#A8A29E; font-weight:400; font-size:10px;">(optional)</span></label>
           <input type="tel" x-model="$store.wizard.driverPhone" placeholder="+61 4XX XXX XXX" class="wizard-field" style={FIELD_STYLE} />
         </div>
       </div>
@@ -180,27 +180,27 @@ export const Step5Documents = () => (
       {/* FCL fetched data */}
       <div x-show="$store.wizard.shipmentFetched && $store.wizard.shipmentData" style="display:flex; flex-direction:column; gap:16px;">
         <div style="display:flex; align-items:center; gap:10px;">
-          <span style="font-size:13px; font-weight:600; color:#94A3B8;">ICS Status:</span>
+          <span style="font-size:13px; font-weight:600; color:#78716C;">ICS Status:</span>
           <span
             style="display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:3px 10px; border-radius:9999px; border:1px solid transparent;"
             {...{"x-bind:style": `$store.wizard.shipmentData?.icsStatus === 'cleared'
               ? 'background:rgba(34,197,94,0.12); color:#22C55E; border-color:rgba(34,197,94,0.22);'
               : $store.wizard.shipmentData?.icsStatus === 'held'
               ? 'background:rgba(239,68,68,0.12); color:#EF4444; border-color:rgba(239,68,68,0.22);'
-              : 'background:rgba(148,163,184,0.10); color:#94A3B8; border-color:rgba(148,163,184,0.20);'`}}
+              : 'background:rgba(0,0,0,0.04); color:#78716C; border-color:rgba(0,0,0,0.10);'`}}
             x-text="{'cleared':'Cleared','held':'Held','examination':'On Hold','pending':'Pending'}[$store.wizard.shipmentData?.icsStatus] || 'Unknown'"
           ></span>
         </div>
-        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.09); border-radius:10px; padding:16px;">
+        <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:16px;">
           <p style="font-size:10px; font-weight:700; color:#64748B; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Container details</p>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:8px; padding:10px 12px;">
+            <div style="background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.07); border-radius:8px; padding:10px 12px;">
               <p style="font-size:10px; color:#64748B; margin-bottom:3px;">Gross Weight</p>
-              <p style="font-weight:600; color:#F1F5F9; font-size:13px;" x-text="$store.wizard.shipmentData?.weightKg ? $store.wizard.shipmentData.weightKg + ' kg' : '—'"></p>
+              <p style="font-weight:600; color:#1C1917; font-size:13px;" x-text="$store.wizard.shipmentData?.weightKg ? $store.wizard.shipmentData.weightKg + ' kg' : '—'"></p>
             </div>
-            <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:8px; padding:10px 12px;">
+            <div style="background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.07); border-radius:8px; padding:10px 12px;">
               <p style="font-size:10px; color:#64748B; margin-bottom:3px;">Volume</p>
-              <p style="font-weight:600; color:#F1F5F9; font-size:13px;" x-text="$store.wizard.shipmentData?.volumeCbm ? $store.wizard.shipmentData.volumeCbm + ' CBM' : '—'"></p>
+              <p style="font-weight:600; color:#1C1917; font-size:13px;" x-text="$store.wizard.shipmentData?.volumeCbm ? $store.wizard.shipmentData.volumeCbm + ' CBM' : '—'"></p>
             </div>
           </div>
         </div>
@@ -212,7 +212,7 @@ export const Step5Documents = () => (
           <input type="text" x-model="$store.wizard.driverName" placeholder="Person physically visiting" class="wizard-field" style={FIELD_STYLE} />
         </div>
         <div>
-          <label style={FIELD_LABEL}>Driver Phone <span style="color:rgba(255,255,255,0.25); font-weight:400; font-size:10px;">(optional)</span></label>
+          <label style={FIELD_LABEL}>Driver Phone <span style="color:#A8A29E; font-weight:400; font-size:10px;">(optional)</span></label>
           <input type="tel" x-model="$store.wizard.driverPhone" placeholder="+61 4XX XXX XXX" class="wizard-field" style={FIELD_STYLE} />
         </div>
       </div>
@@ -221,7 +221,7 @@ export const Step5Documents = () => (
     {/* ── LCL Drop-Off ─────────────────────────────────────────────── */}
     <div x-show="$store.wizard.isDropoffLcl" style="display:flex; flex-direction:column; gap:16px;">
       <div>
-        <label style={FIELD_LABEL}>House Bill Number <span style="color:rgba(255,255,255,0.25); font-weight:400; font-size:10px;">(if known)</span></label>
+        <label style={FIELD_LABEL}>House Bill Number <span style="color:#A8A29E; font-weight:400; font-size:10px;">(if known)</span></label>
         <input type="text" x-model="$store.wizard.houseBillNumber" placeholder="e.g. SYHMSCU001847" class="wizard-field" style={FIELD_STYLE + "text-transform:uppercase; letter-spacing:0.04em;"} />
       </div>
       <div>
@@ -248,7 +248,7 @@ export const Step5Documents = () => (
           <input type="text" x-model="$store.wizard.driverName" placeholder="Person physically visiting" class="wizard-field" style={FIELD_STYLE} />
         </div>
         <div>
-          <label style={FIELD_LABEL}>Driver Phone <span style="color:rgba(255,255,255,0.25); font-weight:400; font-size:10px;">(optional)</span></label>
+          <label style={FIELD_LABEL}>Driver Phone <span style="color:#A8A29E; font-weight:400; font-size:10px;">(optional)</span></label>
           <input type="tel" x-model="$store.wizard.driverPhone" placeholder="+61 4XX XXX XXX" class="wizard-field" style={FIELD_STYLE} />
         </div>
       </div>
@@ -261,7 +261,7 @@ export const Step5Documents = () => (
     {/* ── FCL Drop-Off ─────────────────────────────────────────────── */}
     <div x-show="$store.wizard.isDropoffFcl" style="display:flex; flex-direction:column; gap:16px;">
       <div>
-        <label style={FIELD_LABEL}>Container Number <span style="color:rgba(255,255,255,0.25); font-weight:400; font-size:10px;">(if known)</span></label>
+        <label style={FIELD_LABEL}>Container Number <span style="color:#A8A29E; font-weight:400; font-size:10px;">(if known)</span></label>
         <input type="text" x-model="$store.wizard.containerNumber" placeholder="e.g. MSCU1234567" class="wizard-field" style={FIELD_STYLE + "text-transform:uppercase; letter-spacing:0.04em;"} />
       </div>
       <div>
@@ -278,7 +278,7 @@ export const Step5Documents = () => (
           <input type="text" x-model="$store.wizard.driverName" placeholder="Person physically visiting" class="wizard-field" style={FIELD_STYLE} />
         </div>
         <div>
-          <label style={FIELD_LABEL}>Driver Phone <span style="color:rgba(255,255,255,0.25); font-weight:400; font-size:10px;">(optional)</span></label>
+          <label style={FIELD_LABEL}>Driver Phone <span style="color:#A8A29E; font-weight:400; font-size:10px;">(optional)</span></label>
           <input type="tel" x-model="$store.wizard.driverPhone" placeholder="+61 4XX XXX XXX" class="wizard-field" style={FIELD_STYLE} />
         </div>
       </div>

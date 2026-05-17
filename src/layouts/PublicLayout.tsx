@@ -30,10 +30,10 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', children }) => {
         <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
         <script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
       </head>
-      <body class="min-h-screen font-sans antialiased" style="background:#090D12; color:#F1F5F9;">
+      <body class="min-h-screen font-sans antialiased" style="background:#EEEAE4; color:#1C1917;">
 
         {/* ── Header ────────────────────────────────────────────────────── */}
-        <header class="sticky top-0 z-40" style="background:rgba(9,13,18,0.85); backdrop-filter:blur(16px) saturate(180%); -webkit-backdrop-filter:blur(16px) saturate(180%); border-bottom:1px solid rgba(255,255,255,0.07);">
+        <header class="sticky top-0 z-40" style="background:rgba(238,234,228,0.88); backdrop-filter:blur(16px) saturate(180%); -webkit-backdrop-filter:blur(16px) saturate(180%); border-bottom:1px solid rgba(0,0,0,0.07);">
           <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
 
             {/* Logo */}
@@ -50,9 +50,9 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', children }) => {
                 <a
                   key={l.href}
                   href={l.href}
-                  style="display:inline-flex; align-items:center; gap:5px; padding:7px 12px; border-radius:8px; font-size:13px; font-weight:500; color:#64748B; text-decoration:none; transition:all 0.15s ease;"
-                  onmouseover="this.style.color='#F1F5F9'; this.style.background='rgba(255,255,255,0.05)';"
-                  onmouseout="this.style.color='#64748B'; this.style.background='transparent';"
+                  style="display:inline-flex; align-items:center; gap:5px; padding:7px 12px; border-radius:8px; font-size:13px; font-weight:500; color:#78716C; text-decoration:none; transition:all 0.15s ease;"
+                  onmouseover="this.style.color='#1C1917'; this.style.background='rgba(0,0,0,0.05)';"
+                  onmouseout="this.style.color='#78716C'; this.style.background='transparent';"
                 >
                   <Icon name={l.icon} size={14} style="opacity:0.7;" />
                   {l.label}
@@ -72,17 +72,17 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', children }) => {
         </main>
 
         {/* ── Footer ────────────────────────────────────────────────────── */}
-        <footer style="border-top:1px solid rgba(255,255,255,0.07); padding:24px; margin-top:0; background:#090D12;">
-          <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3" style="font-size:12px; color:#64748B;">
+        <footer style="border-top:1px solid rgba(0,0,0,0.07); padding:24px; margin-top:0; background:#EEEAE4;">
+          <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3" style="font-size:12px; color:#A8A29E;">
             <span>© 2026 Glido CFS · Sydney Container Freight Station</span>
             <div style="display:flex; gap:20px;">
               {['Privacy', 'Terms', 'Contact'].map(l => (
                 <a
                   key={l}
                   href="#"
-                  style="color:#64748B; text-decoration:none; transition:color 0.15s ease;"
-                  onmouseover="this.style.color='#94A3B8';"
-                  onmouseout="this.style.color='#64748B';"
+                  style="color:#A8A29E; text-decoration:none; transition:color 0.15s ease;"
+                  onmouseover="this.style.color='#57534E';"
+                  onmouseout="this.style.color='#A8A29E';"
                 >
                   {l}
                 </a>

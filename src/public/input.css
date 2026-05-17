@@ -101,72 +101,72 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
-/* COLOR TOKENS — Bold Depth (dark-first)                                      */
-/* Floor: #090D12  Surface: #1C232C  Primary: #FC6514                         */
+/* COLOR TOKENS — Warm Light (light-first)                                     */
+/* Floor: #EEEAE4  Surface: #FFFFFF  Primary: #FC6514                         */
 /* ─────────────────────────────────────────────────────────────────────────── */
 :root {
   /* Page & surface */
-  --background:        #090D12;  /* page floor — deepest surface */
-  --background-raised: #1C232C;  /* card surface — exact logo dark */
-  --background-subtle: #1A2028;  /* subtle tinted fill */
+  --background:        #EEEAE4;  /* warm cream page floor */
+  --background-raised: #FFFFFF;  /* white card surface */
+  --background-subtle: #F7F4F0;  /* subtle warm fill */
 
   /* Text */
-  --foreground:        #F1F5F9;  /* headings, key labels */
-  --foreground-muted:  #64748B;  /* captions, placeholders */
-  --foreground-soft:   #94A3B8;  /* body, supporting copy */
+  --foreground:        #1C1917;  /* headings, key labels */
+  --foreground-muted:  #78716C;  /* captions, placeholders */
+  --foreground-soft:   #57534E;  /* body, supporting copy */
 
   /* Card surface */
-  --card:              #1C232C;
-  --card-foreground:   #F1F5F9;
-  --popover:           #232C38;
-  --popover-foreground: #F1F5F9;
+  --card:              #FFFFFF;
+  --card-foreground:   #1C1917;
+  --popover:           #FFFFFF;
+  --popover-foreground: #1C1917;
 
   /* Primary — orange #FC6514 */
   --primary:           #FC6514;
   --primary-foreground: #FFFFFF;
-  --primary-soft:      rgba(252,101,20,0.10);
+  --primary-soft:      rgba(252,101,20,0.09);
   --primary-hover:     #FF7A2A;
   --primary-active:    #E85A0A;
 
-  /* Secondary — raised surface */
-  --secondary:         #1C232C;
-  --secondary-foreground: #F1F5F9;
-  --secondary-soft:    #1A2028;
-  --secondary-hover:   #232C38;
-  --secondary-active:  #2A3442;
+  /* Secondary — surface button */
+  --secondary:         #F0ECE8;
+  --secondary-foreground: #1C1917;
+  --secondary-soft:    #E8E4DE;
+  --secondary-hover:   #E4DFD9;
+  --secondary-active:  #DDD8D2;
 
-  --muted:             #1A2028;
-  --muted-foreground:  #94A3B8;
+  --muted:             #F0ECE8;
+  --muted-foreground:  #78716C;
 
   --accent:            #FC6514;
-  --accent-foreground: #0C111A;
+  --accent-foreground: #FFFFFF;
 
   /* Semantic */
   --destructive:           #EF4444;
   --destructive-foreground: #FFFFFF;
-  --destructive-soft:      rgba(239,68,68,0.10);
+  --destructive-soft:      rgba(239,68,68,0.09);
   --destructive-hover:     #DC2626;
 
-  --success:           #22C55E;
-  --success-foreground: #052E16;
-  --success-soft:      rgba(34,197,94,0.10);
+  --success:           #16A34A;
+  --success-foreground: #FFFFFF;
+  --success-soft:      rgba(22,163,74,0.09);
 
-  --warning:           #FBBF24;
-  --warning-foreground: #451A03;
-  --warning-soft:      rgba(251,191,36,0.10);
+  --warning:           #D97706;
+  --warning-foreground: #FFFFFF;
+  --warning-soft:      rgba(217,119,6,0.09);
 
-  --info:              #38BDF8;
-  --info-foreground:   #0C4A6E;
-  --info-soft:         rgba(56,189,248,0.10);
+  --info:              #0284C7;
+  --info-foreground:   #FFFFFF;
+  --info-soft:         rgba(2,132,199,0.09);
 
   /* Borders */
-  --border:            rgba(255,255,255,0.07);
-  --border-subtle:     rgba(255,255,255,0.04);
-  --border-strong:     rgba(255,255,255,0.13);
-  --input:             rgba(255,255,255,0.09);
+  --border:            rgba(0,0,0,0.08);
+  --border-subtle:     rgba(0,0,0,0.04);
+  --border-strong:     rgba(0,0,0,0.14);
+  --input:             rgba(0,0,0,0.10);
   --ring:              #FC6514;
 
-  --overlay-scrim: rgba(9,13,18,0.80);
+  --overlay-scrim: rgba(0,0,0,0.40);
 }
 
 /* ── Base styles ──────────────────────────────────────────────────────────── */
@@ -191,12 +191,12 @@
     font-weight: 600;
     letter-spacing: -0.025em;
     line-height: 1.15;
-    color: #F1F5F9;
+    color: #1C1917;
   }
 
   ::selection {
-    background: rgba(252,101,20,0.25);
-    color: #F1F5F9;
+    background: rgba(252,101,20,0.20);
+    color: #1C1917;
   }
 }
 
@@ -517,33 +517,29 @@
     transition-duration: 60ms;
   }
 
-  /* ── Button — Ghost (dark outline) ──────────────────────────────────── */
+  /* ── Button — Ghost (light outline) ──────────────────────────────────── */
   .btn-ghost {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
     background: transparent;
-    color: #94A3B8;
-    border: 1px solid rgba(255,255,255,0.13);
+    color: #57534E;
+    border: 1px solid rgba(0,0,0,0.12);
     border-radius: 10px;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     text-decoration: none;
     letter-spacing: -0.01em;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.06),
-      0 1px 2px rgba(0,0,0,0.25);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     transition: all 150ms cubic-bezier(0.16,1,0.3,1);
   }
   .btn-ghost:hover {
-    background: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.20);
-    color: #F1F5F9;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      0 2px 8px rgba(0,0,0,0.30);
+    background: rgba(0,0,0,0.04);
+    border-color: rgba(0,0,0,0.20);
+    color: #1C1917;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     transform: translateY(-1px);
   }
   .btn-ghost:active {
@@ -605,11 +601,11 @@
     flex-shrink: 0;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .wiz-dot.idle   { background: transparent; box-shadow: 0 0 0 1.5px rgba(255,255,255,0.14); }
-  .wiz-dot.done   { background: rgba(252,101,20,0.45); box-shadow: none; }
+  .wiz-dot.idle   { background: transparent; box-shadow: 0 0 0 1.5px rgba(0,0,0,0.18); }
+  .wiz-dot.done   { background: rgba(252,101,20,0.50); box-shadow: none; }
   .wiz-dot.active {
     background: #FC6514;
-    box-shadow: 0 0 0 3px rgba(252,101,20,0.18), 0 0 8px rgba(252,101,20,0.30);
+    box-shadow: none;
     width: 10px;
     height: 10px;
   }
@@ -625,42 +621,33 @@
   }
   .wiz-line.filled { background: linear-gradient(90deg, rgba(252,101,20,0.50), rgba(252,101,20,0.25)); }
 
-  /* Card — Level 1 elevation */
+  /* Card — white surface on warm cream */
   .wizard-card {
-    background: linear-gradient(180deg, #1F2831 0%, #1A2028 100%);
-    border: 1px solid rgba(255,255,255,0.07);
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.07);
     border-radius: 16px;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.07),
-      inset 0 -1px 0 rgba(0,0,0,0.25),
-      0 4px 24px rgba(0,0,0,0.45),
-      0 1px 3px rgba(0,0,0,0.30);
+      0 1px 3px rgba(0,0,0,0.05),
+      0 4px 20px rgba(0,0,0,0.07);
   }
 
-  /* Input — inset depth (key skeuomorphic signal) */
+  /* Input — clean underline (editorial style) */
   .wizard-field {
     width: 100%;
-    background: rgba(9,13,18,0.60);
-    border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 14px;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid rgba(0,0,0,0.12);
+    border-radius: 0;
+    padding: 8px 0;
+    font-size: 15px;
     font-weight: 400;
-    color: #F1F5F9;
+    color: #1C1917;
     outline: none;
-    box-shadow:
-      inset 0 2px 6px rgba(0,0,0,0.30),
-      inset 0 1px 0 rgba(0,0,0,0.20);
-    transition: border-color 150ms ease, box-shadow 150ms cubic-bezier(0.16,1,0.3,1);
+    transition: border-color 150ms ease;
     font-family: 'Inter', ui-sans-serif, sans-serif;
   }
-  .wizard-field::placeholder { color: #64748B; font-weight: 400; }
-  .wizard-field:focus {
-    border-color: rgba(252,101,20,0.50);
-    box-shadow:
-      inset 0 2px 6px rgba(0,0,0,0.25),
-      0 0 0 3px rgba(252,101,20,0.15);
-  }
+  .wizard-field::placeholder { color: #A8A29E; font-weight: 400; }
+  .wizard-field:focus { border-bottom-color: #FC6514; }
 
   /* Stepper +/- buttons */
   .wizard-stepper-btn {
@@ -669,48 +656,43 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(180deg, #252E3B 0%, #1A2028 100%);
-    border: 1px solid rgba(255,255,255,0.13);
-    border-radius: 6px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.10);
+    border-radius: 8px;
     font-size: 20px;
     font-weight: 300;
-    color: #F1F5F9;
+    color: #1C1917;
     cursor: pointer;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      inset 0 -1px 0 rgba(0,0,0,0.25),
-      0 2px 6px rgba(0,0,0,0.35);
-    transition: all 0.1s cubic-bezier(0.16,1,0.3,1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: all 0.12s cubic-bezier(0.16,1,0.3,1);
     line-height: 1;
     flex-shrink: 0;
     user-select: none;
   }
   .wizard-stepper-btn:hover {
-    border-color: rgba(255,255,255,0.20);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.10),
-      0 4px 12px rgba(0,0,0,0.45);
+    border-color: rgba(0,0,0,0.18);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
   }
   .wizard-stepper-btn:active { transform: translateY(1px); transition-duration: 60ms; }
   .wizard-stepper-btn:disabled { opacity: 0.25; cursor: not-allowed; }
 
-  /* Selection chips */
+  /* Selection chips — dark active (like screenshot) */
   .wizard-chip {
-    padding: 4px 10px;
-    font-size: 12px;
+    padding: 5px 13px;
+    font-size: 13px;
     font-weight: 500;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    border: 1px solid rgba(255,255,255,0.13);
+    border: 1px solid rgba(0,0,0,0.11);
     background: transparent;
-    color: #94A3B8;
+    color: #57534E;
     transition: all 0.1s ease;
   }
-  .wizard-chip:hover { border-color: rgba(255,255,255,0.22); color: #F1F5F9; }
+  .wizard-chip:hover { border-color: rgba(0,0,0,0.20); color: #1C1917; }
   .wizard-chip.active {
-    background: rgba(252,101,20,0.15);
-    border-color: rgba(252,101,20,0.35);
-    color: #FC6514;
+    background: #1C1917;
+    border-color: #1C1917;
+    color: #FFFFFF;
   }
 
   /* Option select cards */
@@ -718,36 +700,24 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 18px 20px;
-    border-radius: 10px;
+    padding: 16px 18px;
+    border-radius: 12px;
     cursor: pointer;
     text-align: left;
     width: 100%;
-    background: linear-gradient(180deg, #1F2831 0%, #1A2028 100%);
-    border: 1px solid rgba(255,255,255,0.07);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.06),
-      inset 0 -1px 0 rgba(0,0,0,0.20),
-      0 2px 6px rgba(0,0,0,0.30);
+    background: rgba(0,0,0,0.025);
+    border: 1.5px solid rgba(0,0,0,0.08);
     transition: all 0.12s cubic-bezier(0.16,1,0.3,1);
   }
   .wizard-option-card:hover {
-    border-color: rgba(255,255,255,0.11);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      inset 0 -1px 0 rgba(0,0,0,0.25),
-      0 4px 16px rgba(0,0,0,0.45);
-    transform: translateY(-1px);
+    border-color: rgba(0,0,0,0.15);
+    background: rgba(0,0,0,0.035);
   }
   .wizard-option-card.selected {
-    background: rgba(252,101,20,0.08);
-    border-color: rgba(252,101,20,0.28);
+    background: rgba(252,101,20,0.05);
+    border-color: rgba(252,101,20,0.30);
     border-left: 3px solid #FC6514;
-    padding-left: 17px;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.06),
-      0 2px 8px rgba(0,0,0,0.30),
-      0 0 0 1px rgba(252,101,20,0.08);
+    padding-left: 15px;
   }
 
   /* ── Feature card ──────────────────────────────────────────────────────── */
