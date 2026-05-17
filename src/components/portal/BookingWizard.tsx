@@ -141,63 +141,43 @@ export const BookingWizard = () => (
   <div x-data="{}">
 
     {/* ═══════════════════════════════════════════════════════════════════
-        PROGRESS STRIP — constrained to same width as form
+        PROGRESS STRIP
     ═══════════════════════════════════════════════════════════════════ */}
     <div
       x-show="$store.wizard.currentStep !== 8"
       x-cloak
-      style="border-bottom:1px solid rgba(0,0,0,0.06); padding:20px 0 16px;"
+      style="padding:24px 48px 20px; border-bottom:1px solid rgba(0,0,0,0.06);"
     >
-      <div style="max-width:560px; margin:0 auto; padding:0 40px;">
-
-        {/* Label row */}
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-          <span style="font-size:10.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#A8A29E;">
-            Step <span x-text="$store.wizard.currentStep" /> of 7
+      {/* Label row */}
+      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px; max-width:560px; margin-left:auto; margin-right:auto;">
+        <span style="font-size:10.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#A8A29E;">
+          Step <span x-text="$store.wizard.currentStep" /> of 7
+        </span>
+        {STEP_CTX.map((ctx, i) => (
+          <span key={i} x-show={`$store.wizard.currentStep === ${i + 1}`} x-cloak
+            style="font-size:11.5px; font-weight:600; color:#78716C;">
+            {ctx.label}
           </span>
-          {STEP_CTX.map((ctx, i) => (
-            <span
-              key={i}
-              x-show={`$store.wizard.currentStep === ${i + 1}`}
-              x-cloak
-              style="font-size:11.5px; font-weight:600; color:#78716C;"
-            >
-              {ctx.label}
-            </span>
-          ))}
-        </div>
+        ))}
+      </div>
 
-        {/* Step nodes + connectors — compact, matches form width */}
-        <div style="display:flex; align-items:center;">
-          {[1,2,3,4,5,6,7].map((n, i) => (
-            <>
-              <div
-                key={n}
-                style="width:24px; height:24px; border-radius:9999px; display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:700; flex-shrink:0; transition:all 0.3s cubic-bezier(0.16,1,0.3,1);"
-                x-bind:style={`$store.wizard.currentStep === ${n}
-                  ? 'background:#FC6514; color:#FFFFFF; box-shadow:0 0 0 3px rgba(252,101,20,0.18);'
-                  : $store.wizard.currentStep > ${n}
-                    ? 'background:rgba(252,101,20,0.10); color:#FC6514;'
-                    : 'background:rgba(0,0,0,0.05); color:#C4BFB9;'`}
-              >
-                <span x-show={`$store.wizard.currentStep > ${n}`} x-cloak>
-                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                    <path d="M2.5 6l2.5 2.5 4.5-5" stroke="#FC6514" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </span>
-                <span x-show={`$store.wizard.currentStep <= ${n}`} x-cloak>{n}</span>
-              </div>
-              {i < 6 && (
-                <div key={`c${n}`} style="flex:1; height:1.5px; background:rgba(0,0,0,0.07); border-radius:2px; overflow:hidden; margin:0 3px;">
-                  <div
-                    style="height:100%; background:#FC6514; opacity:0.4; border-radius:2px; transition:width 0.4s cubic-bezier(0.16,1,0.3,1);"
-                    x-bind:style={`$store.wizard.currentStep > ${n} ? 'width:100%' : 'width:0%'`}
-                  />
-                </div>
-              )}
-            </>
-          ))}
-        </div>
+      {/* 7-segment track — each segment is one step, fills when reached */}
+      <div style="display:flex; gap:4px; max-width:560px; margin:0 auto;">
+        {[1,2,3,4,5,6,7].map(n => (
+          <div
+            key={n}
+            style="flex:1; height:4px; border-radius:9999px; overflow:hidden; background:rgba(0,0,0,0.08); transition:background 0.3s ease;"
+          >
+            <div
+              style="height:100%; border-radius:9999px; transition:width 0.4s cubic-bezier(0.16,1,0.3,1);"
+              x-bind:style={`$store.wizard.currentStep === ${n}
+                ? 'width:50%; background:#FC6514;'
+                : $store.wizard.currentStep > ${n}
+                  ? 'width:100%; background:#FC6514; opacity:0.5;'
+                  : 'width:0%;'`}
+            />
+          </div>
+        ))}
       </div>
     </div>
 

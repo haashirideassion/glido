@@ -4,10 +4,11 @@ import { GlidoLogo } from '../lib/GlidoLogo'
 
 interface Props {
   title?: string
+  plain?: boolean   /* skip white card — renders children directly on page bg */
   children: any
 }
 
-export const PublicLayout: FC<Props> = ({ title = 'Glido', children }) => {
+export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, children }) => {
   return (
     <html lang="en">
       <head>
@@ -67,12 +68,17 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', children }) => {
           </div>
         </header>
 
-        {/* ── White page card — cream shell visible around it ── */}
-        <main style="padding:12px; min-height:calc(100vh - 56px - 64px); box-sizing:border-box;">
-          <div style="background:#FFFFFF; border-radius:20px; min-height:calc(100vh - 56px - 64px - 24px); box-shadow:0 1px 4px rgba(0,0,0,0.04), 0 6px 28px rgba(0,0,0,0.07); overflow:hidden;">
-            {children}
-          </div>
-        </main>
+        {/* ── Main content ───────────────────────────────────────────── */}
+        {plain
+          ? <main style="min-height:calc(100vh - 56px - 64px);">{children}</main>
+          : (
+            <main style="padding:12px; min-height:calc(100vh - 56px - 64px); box-sizing:border-box;">
+              <div style="background:#FFFFFF; border-radius:20px; min-height:calc(100vh - 56px - 64px - 24px); box-shadow:0 1px 4px rgba(0,0,0,0.04), 0 6px 28px rgba(0,0,0,0.07); overflow:hidden;">
+                {children}
+              </div>
+            </main>
+          )
+        }
 
         {/* ── Footer ────────────────────────────────────────────────────── */}
         <footer style="border-top:1px solid rgba(0,0,0,0.07); padding:24px; margin-top:0; background:#F3F2F0;">

@@ -612,7 +612,7 @@ portalRoutes.get('/', (c) => {
 // ─── Booking wizard ─────────────────────────────────────────────────────────
 portalRoutes.get('/book', (c) => {
   return c.html(
-    <PublicLayout title="Book a Visit">
+    <PublicLayout title="Book a Visit" plain>
       <BookingWizard />
     </PublicLayout>
   )
