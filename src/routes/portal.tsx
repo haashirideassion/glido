@@ -173,27 +173,47 @@ portalRoutes.get('/', (c) => {
                     /* Spheres stay in group, only first 3 are containers */
                     var boxMeshes = [group.children[0], group.children[1], group.children[2]];
 
-                    /* ── Wind particles ── */
-                    var windCount  = 60;
-                    var windGeo    = new THREE.BufferGeometry();
-                    var windPos    = new Float32Array(windCount * 3);
-                    var windData   = []; /* per-particle state */
-                    function randWindParticle(i) {
-                      var x  = (Math.random() - 0.5) * 24;
-                      var y  = (Math.random() - 0.5) * 10;
-                      var z  = (Math.random() - 0.5) * 8;
-                      var sp = 1.4 + Math.random() * 2.2;
-                      var len = 0.18 + Math.random() * 0.28;
-                      windPos[i*3]   = x;
-                      windPos[i*3+1] = y;
-                      windPos[i*3+2] = z;
-                      windData[i] = { x: x, y: y, z: z, speed: sp, len: len, alpha: 0.08 + Math.random() * 0.18 };
+                    /* ── Wind streak lines ── */
+                    /* Each streak = 2 vertices (start, end) = 6 floats */
+                    var streakCount = 48;
+                    var streakGeo   = new THREE.BufferGeometry();
+                    var streakPos   = new Float32Array(streakCount * 6);
+                    var streakData  = [];
+                    function initStreak(i) {
+                      var x   = (Math.random() - 0.5) * 30;
+                      var y   = (Math.random() - 0.5) * 13;
+                      var z   = -2 + Math.random() * 7;
+                      var len = 0.25 + Math.random() * 0.85;
+                      var spd = 1.6 + Math.random() * 3.8;
+                      var op  = 0.07 + Math.random() * 0.18;
+                      streakData[i] = { x: x, y: y, z: z, len: len, spd: spd, op: op };
+                      streakPos[i*6]   = x;       streakPos[i*6+1] = y; streakPos[i*6+2] = z;
+                      streakPos[i*6+3] = x + len; streakPos[i*6+4] = y; streakPos[i*6+5] = z;
                     }
-                    for (var wi = 0; wi < windCount; wi++) randWindParticle(wi);
-                    windGeo.setAttribute('position', new THREE.BufferAttribute(windPos, 3));
-                    var windMat = new THREE.PointsMaterial({ color: 0xFC6514, size: 0.055, transparent: true, opacity: 0.22, sizeAttenuation: true });
-                    var windPoints = new THREE.Points(windGeo, windMat);
-                    scene.add(windPoints);
+                    for (var si = 0; si < streakCount; si++) initStreak(si);
+                    streakGeo.setAttribute('position', new THREE.BufferAttribute(streakPos, 3));
+                    var streakMat = new THREE.LineBasicMaterial({ color: 0xC85010, transparent: true, opacity: 0.18 });
+                    var streakLines = new THREE.LineSegments(streakGeo, streakMat);
+                    scene.add(streakLines);
+
+                    /* ── Air-cushion halos beneath containers ── */
+                    /* Flat ellipse sprite (plane geometry) under each container */
+                    var haloGeo  = new THREE.PlaneGeometry(1, 0.3);
+                    var haloMat  = new THREE.MeshBasicMaterial({ color: 0xFC6514, transparent: true, opacity: 0.07, depthWrite: false });
+                    var halos    = [];
+                    var haloBase = [
+                      { bx: 0,    bz: 0,    sx: 3.4, sz: 0.55 },
+                      { bx: -0.6, bz: 0.5,  sx: 2.6, sz: 0.44 },
+                      { bx: 1.4,  bz: -0.6, sx: 2.1, sz: 0.36 },
+                    ];
+                    for (var hi = 0; hi < 3; hi++) {
+                      var hm = new THREE.Mesh(haloGeo, haloMat.clone());
+                      hm.rotation.x = -Math.PI / 2;
+                      hm.scale.set(haloBase[hi].sx, haloBase[hi].sz, 1);
+                      hm.position.set(haloBase[hi].bx, -0.95, haloBase[hi].bz);
+                      halos.push(hm);
+                      scene.add(hm);
+                    }
 
                     /* ── Mouse parallax ── */
                     var mouse   = { x: 0, y: 0 };
@@ -240,21 +260,39 @@ portalRoutes.get('/', (c) => {
 
                       glow.intensity = 2.6 + Math.sin(t * 1.1) * 0.5;
 
-                      /* Wind particles drift left-to-right (positive x) */
-                      var wpa = windPoints.geometry.attributes.position;
-                      for (var wi2 = 0; wi2 < windCount; wi2++) {
-                        windData[wi2].x += windData[wi2].speed * 0.016;
-                        /* slight vertical drift */
-                        windData[wi2].y += Math.sin(t * 0.9 + wi2 * 0.4) * 0.003;
-                        if (windData[wi2].x > 12) {
-                          windData[wi2].x = -12;
-                          windData[wi2].y = (Math.random() - 0.5) * 10;
+                      /* Wind streaks drift left → right */
+                      var spa = streakLines.geometry.attributes.position;
+                      for (var si2 = 0; si2 < streakCount; si2++) {
+                        streakData[si2].x += streakData[si2].spd * 0.016;
+                        /* gentle vertical undulation */
+                        streakData[si2].y += Math.sin(t * 0.6 + si2 * 0.55) * 0.0018;
+                        if (streakData[si2].x > 15) {
+                          streakData[si2].x = -15 - streakData[si2].len;
+                          streakData[si2].y  = (Math.random() - 0.5) * 13;
                         }
-                        wpa.setXYZ(wi2, windData[wi2].x, windData[wi2].y, windData[wi2].z);
+                        var sx = streakData[si2].x, sy = streakData[si2].y, sz = streakData[si2].z;
+                        spa.setXYZ(si2 * 2,     sx,                    sy, sz);
+                        spa.setXYZ(si2 * 2 + 1, sx + streakData[si2].len, sy, sz);
                       }
-                      wpa.needsUpdate = true;
-                      /* Subtle pulse of wind opacity */
-                      windMat.opacity = 0.16 + Math.sin(t * 0.8) * 0.06;
+                      spa.needsUpdate = true;
+                      /* Pulse global streak opacity for breathing effect */
+                      streakMat.opacity = 0.13 + Math.sin(t * 0.7) * 0.05;
+
+                      /* Air-cushion halos pulse with each container's Y position */
+                      var haloBaseY = [-0.95, 0.18 + 2.1 - 0.65, -1.9 - 0.55 - 0.12];
+                      for (var hi2 = 0; hi2 < 3; hi2++) {
+                        var bm2 = boxMeshes[hi2];
+                        if (!bm2 || !halos[hi2]) continue;
+                        /* halo sits just below each container's current Y */
+                        halos[hi2].position.y = bm2.position.y - 0.88;
+                        halos[hi2].position.x = haloBase[hi2].bx;
+                        halos[hi2].position.z = haloBase[hi2].bz;
+                        /* opacity swells as container is highest in oscillation */
+                        var lift = (Math.sin(t * cParams[hi2].yFreq + cParams[hi2].yPhase) + 1) * 0.5;
+                        halos[hi2].material.opacity = 0.04 + lift * 0.10;
+                        /* scale x with group rotation so it tracks visually */
+                        halos[hi2].scale.x = haloBase[hi2].sx * (0.9 + lift * 0.15);
+                      }
 
                       renderer.render(scene, camera);
                     })();
