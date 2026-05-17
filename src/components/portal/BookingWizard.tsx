@@ -123,9 +123,18 @@ export const BookingWizard = () => (
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          BODY — step panels
+          BODY — step panels (slide-animates on step change)
       ═══════════════════════════════════════════════════════════════════ */}
-      <div style="padding:24px; min-height:300px;">
+      <div
+        class="wiz-step-body"
+        style="padding:24px; min-height:300px; overflow:hidden;"
+        x-init="$watch('$store.wizard.currentStep', function(n, o) {
+          var el = $el;
+          el.style.animation = 'none';
+          void el.offsetWidth;
+          el.style.animation = (n > o ? 'wiz-slide-fwd' : 'wiz-slide-bwd') + ' 0.36s cubic-bezier(0.16,1,0.3,1) both';
+        })"
+      >
         <Step1ServiceType />
         <Step2SlotPicker />
         <Step3HoldConfirm />
@@ -149,7 +158,7 @@ export const BookingWizard = () => (
           x-bind:disabled="$store.wizard.currentStep === 1"
           x-bind:style="$store.wizard.currentStep === 1 ? 'opacity:0; pointer-events:none; visibility:hidden;' : 'opacity:1;'"
           class="btn-ghost"
-          style="padding:8px 16px; font-size:13px; gap:6px;"
+          style="padding:8px 20px; font-size:13px; gap:6px; border-radius:9999px;"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;">
             <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
@@ -163,7 +172,7 @@ export const BookingWizard = () => (
           x-on:click="$store.wizard.nextStep()"
           x-bind:disabled="!$store.wizard.canProceed"
           class="btn-primary"
-          style="padding:8px 20px; font-size:13px; min-width:130px; justify-content:center; gap:6px;"
+          style="padding:8px 24px; font-size:13px; min-width:140px; justify-content:center; gap:6px; border-radius:9999px;"
           x-bind:style="!$store.wizard.canProceed ? 'opacity:0.28; cursor:not-allowed; pointer-events:none;' : ''"
         >
           <span x-text="$store.wizard.currentStep === 6 ? 'Review & Pay' : 'Continue'">Continue</span>

@@ -11,10 +11,24 @@ document.addEventListener('alpine:init', function () {
   window.Alpine.store('kiosk', kioskStore())
 })
 
+/* ── Global keyboard navigation — Enter advances the wizard ── */
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Enter') return
+  var tag = document.activeElement ? document.activeElement.tagName : ''
+  if (tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'BUTTON' || tag === 'A') return
+  /* only fire if wizard is on-page and active */
+  if (!window.Alpine) return
+  var store = window.Alpine.store('wizard')
+  if (!store) return
+  if (store.currentStep >= 8) return
+  if (store.canProceed) store.nextStep()
+})
+
 function wizardStore() {
   return {
     currentStep: 1,
     totalSteps: 7,
+    stepDirection: 1,  /* 1 = forward, -1 = backward */
 
     // Step 1
     slotCount: 1,
@@ -131,11 +145,13 @@ function wizardStore() {
       if (this.currentStep === 4 && this.selectedSlotId) {
         this.startHoldTimer()
       }
+      this.stepDirection = 1
       this.currentStep++
     },
 
     prevStep() {
       if (this.currentStep <= 1) return
+      this.stepDirection = -1
       this.currentStep--
     },
 

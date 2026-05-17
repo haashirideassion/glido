@@ -48,8 +48,8 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
             <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 
               {/* Logo */}
-              <a href="/" class="flex items-center" style="text-decoration:none;">
-                <GlidoLogo height={22} onDark={true} />
+              <a href="/" class="flex items-center glido-logo-anchor" style="text-decoration:none;">
+                <GlidoLogo height={22} onDark={false} />
               </a>
 
               {/* Center nav */}
@@ -149,6 +149,52 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
             </div>
           </div>
         </footer>
+
+        {/* ── Logo intro — fires once per session ───────────────────────── */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            if (sessionStorage.getItem('g-intro')) return;
+            sessionStorage.setItem('g-intro', '1');
+            var anchorEl = document.querySelector('.glido-logo-anchor');
+            if (!anchorEl) return;
+            var srcSvg = anchorEl.querySelector('svg');
+            if (!srcSvg) return;
+
+            /* build overlay */
+            var ov = document.createElement('div');
+            ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#EEEAE4;display:flex;align-items:center;justify-content:center;pointer-events:none;';
+
+            /* clone logo at display size ~130w */
+            var clone = srcSvg.cloneNode(true);
+            clone.setAttribute('width', '130');
+            clone.setAttribute('height', '25');
+            clone.style.cssText = 'opacity:0;transform:scale(0.72) translateY(6px);transition:opacity 0.22s ease,transform 0.42s cubic-bezier(0.16,1,0.3,1);display:block;';
+            ov.appendChild(clone);
+            document.body.prepend(ov);
+
+            /* step 1: flash in */
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+              clone.style.opacity = '1';
+              clone.style.transform = 'scale(1.04) translateY(0)';
+              setTimeout(function() { clone.style.transform = 'scale(1) translateY(0)'; }, 260);
+            }); });
+
+            /* step 2: fly to header then dissolve */
+            setTimeout(function() {
+              var hRect = srcSvg.getBoundingClientRect();
+              var cRect = clone.getBoundingClientRect();
+              var dx = (hRect.left + hRect.width  / 2) - (cRect.left + cRect.width  / 2);
+              var dy = (hRect.top  + hRect.height / 2) - (cRect.top  + cRect.height / 2);
+              var sc = hRect.width / cRect.width;
+              clone.style.transition = 'transform 0.38s cubic-bezier(0.4,0,0.2,1),opacity 0.22s ease 0.14s';
+              clone.style.transform  = 'translate('+dx+'px,'+dy+'px) scale('+sc+')';
+              clone.style.opacity    = '0';
+              ov.style.transition    = 'opacity 0.25s ease 0.08s';
+              ov.style.opacity       = '0';
+              setTimeout(function() { if (ov.parentNode) ov.parentNode.removeChild(ov); }, 580);
+            }, 780);
+          })();
+        `}} />
 
         {/* ── Animation engine ──────────────────────────────────────────── */}
         <script dangerouslySetInnerHTML={{ __html: `

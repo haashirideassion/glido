@@ -37,8 +37,8 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', children }) => {
           <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
 
             {/* Logo */}
-            <a href="/" class="flex items-center" style="text-decoration:none;">
-              <GlidoLogo height={20} onDark={true} />
+            <a href="/" class="flex items-center glido-logo-anchor" style="text-decoration:none;">
+              <GlidoLogo height={20} onDark={false} />
             </a>
 
             <nav class="hidden sm:flex items-center gap-1">
