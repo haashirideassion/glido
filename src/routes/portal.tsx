@@ -162,6 +162,39 @@ portalRoutes.get('/', (c) => {
 
                     scene.add(group);
 
+                    /* ── Extract individual containers from group ── */
+                    var containers = group.children.slice();
+                    /* Store per-container animation params */
+                    var cParams = [
+                      { yPhase: 0,    yFreq: 0.52, yAmp: 0.18, zFreq: 0.31, zAmp: 0.022 },
+                      { yPhase: 1.1,  yFreq: 0.68, yAmp: 0.13, zFreq: 0.47, zAmp: 0.018 },
+                      { yPhase: 2.4,  yFreq: 0.41, yAmp: 0.22, zFreq: 0.25, zAmp: 0.030 },
+                    ];
+                    /* Spheres stay in group, only first 3 are containers */
+                    var boxMeshes = [group.children[0], group.children[1], group.children[2]];
+
+                    /* ── Wind particles ── */
+                    var windCount  = 60;
+                    var windGeo    = new THREE.BufferGeometry();
+                    var windPos    = new Float32Array(windCount * 3);
+                    var windData   = []; /* per-particle state */
+                    function randWindParticle(i) {
+                      var x  = (Math.random() - 0.5) * 24;
+                      var y  = (Math.random() - 0.5) * 10;
+                      var z  = (Math.random() - 0.5) * 8;
+                      var sp = 1.4 + Math.random() * 2.2;
+                      var len = 0.18 + Math.random() * 0.28;
+                      windPos[i*3]   = x;
+                      windPos[i*3+1] = y;
+                      windPos[i*3+2] = z;
+                      windData[i] = { x: x, y: y, z: z, speed: sp, len: len, alpha: 0.08 + Math.random() * 0.18 };
+                    }
+                    for (var wi = 0; wi < windCount; wi++) randWindParticle(wi);
+                    windGeo.setAttribute('position', new THREE.BufferAttribute(windPos, 3));
+                    var windMat = new THREE.PointsMaterial({ color: 0xFC6514, size: 0.055, transparent: true, opacity: 0.22, sizeAttenuation: true });
+                    var windPoints = new THREE.Points(windGeo, windMat);
+                    scene.add(windPoints);
+
                     /* ── Mouse parallax ── */
                     var mouse   = { x: 0, y: 0 };
                     var smooth  = { x: 0, y: 0 };
@@ -187,11 +220,41 @@ portalRoutes.get('/', (c) => {
                       smooth.x += (mouse.x * 0.32 - smooth.x) * 0.045;
                       smooth.y += (mouse.y * 0.20 - smooth.y) * 0.045;
 
-                      group.rotation.y = t * 0.07 + smooth.x;
-                      group.rotation.x = -smooth.y * 0.35;
-                      group.position.y = Math.sin(t * 0.55) * 0.18;
+                      /* Group-level parallax only — no group y oscillation */
+                      group.rotation.y = t * 0.06 + smooth.x * 0.6;
+                      group.rotation.x = -smooth.y * 0.30;
+
+                      /* Per-container independent glide */
+                      var basePositions = [
+                        [0, 0, 0],
+                        [-0.6, 2.1, 0.5],
+                        [1.4, -1.9, -0.6]
+                      ];
+                      for (var ci = 0; ci < 3; ci++) {
+                        var cp = cParams[ci];
+                        var bm = boxMeshes[ci];
+                        if (!bm) continue;
+                        bm.position.y = basePositions[ci][1] + Math.sin(t * cp.yFreq + cp.yPhase) * cp.yAmp;
+                        bm.rotation.z = Math.sin(t * cp.zFreq + cp.yPhase * 0.7) * cp.zAmp;
+                      }
 
                       glow.intensity = 2.6 + Math.sin(t * 1.1) * 0.5;
+
+                      /* Wind particles drift left-to-right (positive x) */
+                      var wpa = windPoints.geometry.attributes.position;
+                      for (var wi2 = 0; wi2 < windCount; wi2++) {
+                        windData[wi2].x += windData[wi2].speed * 0.016;
+                        /* slight vertical drift */
+                        windData[wi2].y += Math.sin(t * 0.9 + wi2 * 0.4) * 0.003;
+                        if (windData[wi2].x > 12) {
+                          windData[wi2].x = -12;
+                          windData[wi2].y = (Math.random() - 0.5) * 10;
+                        }
+                        wpa.setXYZ(wi2, windData[wi2].x, windData[wi2].y, windData[wi2].z);
+                      }
+                      wpa.needsUpdate = true;
+                      /* Subtle pulse of wind opacity */
+                      windMat.opacity = 0.16 + Math.sin(t * 0.8) * 0.06;
 
                       renderer.render(scene, camera);
                     })();
@@ -240,48 +303,6 @@ portalRoutes.get('/', (c) => {
                 <span style="width:3px; height:3px; border-radius:9999px; background:rgba(0,0,0,0.15); display:inline-block; flex-shrink:0;" />
                 {name}
               </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════════════
-          §3  STATS — animated counters
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:80px 24px; background:#EEEAE4;">
-        <div class="max-w-5xl mx-auto">
-
-          <div class="reveal" style="text-align:center; margin-bottom:56px;">
-            <p style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#FC6514; margin-bottom:10px;">By the numbers</p>
-            <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem); font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.1;">
-              The CFS platform that actually works
-            </h2>
-          </div>
-
-          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px;" class="stats-grid">
-            {[
-              { count: 450,  suffix: '+',  label: 'movements per week',  icon: ICONS.truck,    delay: 0 },
-              { count: 4,    suffix: ' min', label: 'average gate time',  icon: ICONS.clock,    delay: 100 },
-              { count: 96,   suffix: '%',  label: 'slot utilisation',    icon: ICONS.reports,  delay: 200 },
-              { count: 0,    suffix: '',   label: 'phone calls needed',  icon: ICONS.check,    delay: 300 },
-            ].map(s => (
-              <div
-                class="reveal gl-card"
-                data-reveal-delay={String(s.delay)}
-                style="padding:28px 24px; text-align:center;"
-              >
-                <div style="width:36px; height:36px; border-radius:8px; background:rgba(252,101,20,0.10); border:1px solid rgba(252,101,20,0.18); display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
-                  <Icon name={s.icon} size={16} style="color:#FC6514;" />
-                </div>
-                <p
-                  data-count={String(s.count)}
-                  data-suffix={s.suffix}
-                  style="font-size:2.4rem; font-weight:800; color:#1C1917; letter-spacing:-0.04em; line-height:1; margin-bottom:8px;"
-                >
-                  {s.count === 0 ? 'Zero' : `${s.count}${s.suffix}`}
-                </p>
-                <p style="font-size:12px; color:#64748B; line-height:1.5;">{s.label}</p>
-              </div>
             ))}
           </div>
         </div>
@@ -554,22 +575,7 @@ portalRoutes.get('/', (c) => {
 portalRoutes.get('/book', (c) => {
   return c.html(
     <PublicLayout title="Book a Visit">
-      <div style="padding:40px 24px 64px;">
-        <div style="max-width:560px; margin:0 auto;">
-
-          {/* Page header */}
-          <div style="margin-bottom:28px;">
-            <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(252,101,20,0.08); border:1px solid rgba(252,101,20,0.16); border-radius:9999px; padding:3px 11px; margin-bottom:14px;">
-              <span style="width:5px; height:5px; border-radius:9999px; background:#FC6514; flex-shrink:0;" />
-              <span style="font-size:10.5px; font-weight:600; color:rgba(252,101,20,0.85); letter-spacing:0.06em; text-transform:uppercase;">Sydney CFS · Mon–Fri 06:00–18:00</span>
-            </div>
-            <h1 style="font-size:24px; font-weight:700; color:#1C1917; letter-spacing:-0.04em; line-height:1.1; margin-bottom:5px;">Book a Depot Visit</h1>
-            <p style="font-size:13px; color:#78716C; line-height:1.6;">Reserve your time slot, upload documents, and get a QR code — all in under 3 minutes.</p>
-          </div>
-
-          <BookingWizard />
-        </div>
-      </div>
+      <BookingWizard />
     </PublicLayout>
   )
 })
