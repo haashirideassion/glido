@@ -137,94 +137,89 @@ const Illus7 = () => (
 )
 
 export const BookingWizard = () => (
-  <div x-data="{}" style="display:flex; flex-direction:column; min-height:calc(100vh - 232px);">
+  /* Compact — no viewport-fill, just wraps content */
+  <div x-data="{}">
 
     {/* ═══════════════════════════════════════════════════════════════════
-        PROGRESS STRIP — sticky, stays at top while form scrolls
+        PROGRESS STRIP — constrained to same width as form
     ═══════════════════════════════════════════════════════════════════ */}
     <div
       x-show="$store.wizard.currentStep !== 8"
       x-cloak
-      style="flex-shrink:0; padding:24px 48px 20px; border-bottom:1px solid rgba(0,0,0,0.06);"
+      style="border-bottom:1px solid rgba(0,0,0,0.06); padding:20px 0 16px;"
     >
-      {/* Step nodes + connector */}
-      <div style="display:flex; align-items:center; gap:0; margin-bottom:14px;">
-        {[1,2,3,4,5,6,7].map((n, i) => (
-          <>
-            {/* Node */}
-            <div key={n} style="display:flex; flex-direction:column; align-items:center; gap:5px; flex-shrink:0;">
+      <div style="max-width:560px; margin:0 auto; padding:0 40px;">
+
+        {/* Label row */}
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+          <span style="font-size:10.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#A8A29E;">
+            Step <span x-text="$store.wizard.currentStep" /> of 7
+          </span>
+          {STEP_CTX.map((ctx, i) => (
+            <span
+              key={i}
+              x-show={`$store.wizard.currentStep === ${i + 1}`}
+              x-cloak
+              style="font-size:11.5px; font-weight:600; color:#78716C;"
+            >
+              {ctx.label}
+            </span>
+          ))}
+        </div>
+
+        {/* Step nodes + connectors — compact, matches form width */}
+        <div style="display:flex; align-items:center;">
+          {[1,2,3,4,5,6,7].map((n, i) => (
+            <>
               <div
-                style="width:28px; height:28px; border-radius:9999px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; transition:all 0.35s cubic-bezier(0.16,1,0.3,1);"
+                key={n}
+                style="width:24px; height:24px; border-radius:9999px; display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:700; flex-shrink:0; transition:all 0.3s cubic-bezier(0.16,1,0.3,1);"
                 x-bind:style={`$store.wizard.currentStep === ${n}
-                  ? 'background:#FC6514; color:#FFFFFF; box-shadow:0 0 0 4px rgba(252,101,20,0.15);'
+                  ? 'background:#FC6514; color:#FFFFFF; box-shadow:0 0 0 3px rgba(252,101,20,0.18);'
                   : $store.wizard.currentStep > ${n}
-                    ? 'background:rgba(252,101,20,0.12); color:#FC6514;'
-                    : 'background:rgba(0,0,0,0.05); color:#A8A29E;'`}
+                    ? 'background:rgba(252,101,20,0.10); color:#FC6514;'
+                    : 'background:rgba(0,0,0,0.05); color:#C4BFB9;'`}
               >
-                {/* Checkmark for completed, number for rest */}
                 <span x-show={`$store.wizard.currentStep > ${n}`} x-cloak>
-                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-                    <path d="M2.5 6l2.5 2.5 4.5-5" stroke="#FC6514" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                    <path d="M2.5 6l2.5 2.5 4.5-5" stroke="#FC6514" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </span>
-                <span x-show={`$store.wizard.currentStep <= ${n}`} x-cloak style="line-height:1;">{n}</span>
+                <span x-show={`$store.wizard.currentStep <= ${n}`} x-cloak>{n}</span>
               </div>
-            </div>
-            {/* Connector between nodes */}
-            {i < 6 && (
-              <div key={`c${n}`} style="flex:1; height:1.5px; position:relative; overflow:hidden; border-radius:2px; background:rgba(0,0,0,0.07);">
-                <div
-                  style="position:absolute; inset-y:0; left:0; background:#FC6514; border-radius:2px; transition:width 0.5s cubic-bezier(0.16,1,0.3,1);"
-                  x-bind:style={`$store.wizard.currentStep > ${n} ? 'width:100%; opacity:0.45;' : 'width:0%;'`}
-                />
-              </div>
-            )}
-          </>
-        ))}
-      </div>
-
-      {/* Step label row */}
-      <div style="display:flex; align-items:baseline; justify-content:space-between;">
-        <span style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#A8A29E;">
-          Step <span x-text="$store.wizard.currentStep" /> of 7
-        </span>
-        {STEP_CTX.map((ctx, i) => (
-          <span
-            key={i}
-            x-show={`$store.wizard.currentStep === ${i + 1}`}
-            x-cloak
-            style="font-size:12px; font-weight:600; color:#78716C;"
-          >
-            {ctx.label}
-          </span>
-        ))}
+              {i < 6 && (
+                <div key={`c${n}`} style="flex:1; height:1.5px; background:rgba(0,0,0,0.07); border-radius:2px; overflow:hidden; margin:0 3px;">
+                  <div
+                    style="height:100%; background:#FC6514; opacity:0.4; border-radius:2px; transition:width 0.4s cubic-bezier(0.16,1,0.3,1);"
+                    x-bind:style={`$store.wizard.currentStep > ${n} ? 'width:100%' : 'width:0%'`}
+                  />
+                </div>
+              )}
+            </>
+          ))}
+        </div>
       </div>
     </div>
 
     {/* ═══════════════════════════════════════════════════════════════════
-        FORM BODY — scrollable
+        FORM BODY
     ═══════════════════════════════════════════════════════════════════ */}
-    <div
-      x-show="$store.wizard.currentStep !== 8"
-      x-cloak
-      style="flex:1; overflow-y:auto;"
-    >
+    <div x-show="$store.wizard.currentStep !== 8" x-cloak>
       <div
-        style="max-width:600px; margin:0 auto; padding:44px 48px 52px;"
+        style="max-width:560px; margin:0 auto; padding:36px 40px 44px;"
         x-init={`$watch('$store.wizard.currentStep', function() {
           $el.animate(
-            [{opacity:0, transform:'translateY(10px)'}, {opacity:1, transform:'translateY(0)'}],
-            {duration:280, easing:'cubic-bezier(0.16,1,0.3,1)'}
+            [{opacity:0, transform:'translateY(8px)'}, {opacity:1, transform:'translateY(0)'}],
+            {duration:260, easing:'cubic-bezier(0.16,1,0.3,1)'}
           );
         })`}
       >
         {/* Step heading */}
-        <div style="margin-bottom:32px;">
+        <div style="margin-bottom:28px;">
           {STEP_CTX.map((ctx, i) => (
             <div key={i} x-show={`$store.wizard.currentStep === ${i + 1}`} x-cloak>
-              <p style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#FC6514; margin-bottom:8px;">Step {i + 1}</p>
-              <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">{ctx.label}</h2>
-              <p style="font-size:13px; color:#78716C; line-height:1.65;">{ctx.tip}</p>
+              <h2 style="font-size:20px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:5px;">{ctx.label}</h2>
+              <p style="font-size:13px; color:#78716C; line-height:1.6;">{ctx.tip}</p>
             </div>
           ))}
 
@@ -232,8 +227,8 @@ export const BookingWizard = () => (
           <div
             x-show="$store.wizard.currentStep > 4 && $store.wizard.holdActive"
             x-cloak
-            style="margin-top:14px; display:inline-flex; align-items:center; gap:7px; padding:6px 13px; border-radius:8px; font-size:11.5px; font-weight:600;"
-            x-bind:style="$store.wizard.holdExpiring ? 'background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.18); color:#EF4444;' : 'background:rgba(252,101,20,0.07); border:1px solid rgba(252,101,20,0.16); color:rgba(252,101,20,0.85);'"
+            style="margin-top:12px; display:inline-flex; align-items:center; gap:7px; padding:5px 12px; border-radius:8px; font-size:11.5px; font-weight:600;"
+            x-bind:style="$store.wizard.holdExpiring ? 'background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.18); color:#EF4444;' : 'background:rgba(252,101,20,0.07); border:1px solid rgba(252,101,20,0.14); color:rgba(252,101,20,0.85);'"
           >
             <Icon name={ICONS.clock} size={12} style="flex-shrink:0;" />
             <span>Slot held · <span style="font-family:ui-monospace,monospace; font-weight:700;" x-text="$store.wizard.holdMinutes + ':' + $store.wizard.holdSeconds" /></span>
@@ -251,13 +246,15 @@ export const BookingWizard = () => (
     </div>
 
     {/* ═══════════════════════════════════════════════════════════════════
-        FOOTER — Back (left) · counter (center) · Continue (right)
+        FOOTER — Back · counter · Continue  (constrained to form width)
     ═══════════════════════════════════════════════════════════════════ */}
     <div
       x-show="$store.wizard.currentStep !== 8"
       x-cloak
-      style="flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:16px 48px 18px; border-top:1px solid rgba(0,0,0,0.07);"
+      style="border-top:1px solid rgba(0,0,0,0.07); padding:14px 0 16px;"
     >
+      <div style="max-width:560px; margin:0 auto; padding:0 40px; display:flex; align-items:center; justify-content:space-between;">
+
       {/* Back */}
       <button
         type="button"
@@ -274,25 +271,25 @@ export const BookingWizard = () => (
       </button>
 
       {/* Counter */}
-      <span style="font-size:11.5px; font-weight:500; color:#A8A29E; font-variant-numeric:tabular-nums;">
-        <span x-text="$store.wizard.currentStep" /> <span style="opacity:0.45;">/ 7</span>
+      <span style="font-size:11px; font-weight:500; color:#A8A29E; font-variant-numeric:tabular-nums;">
+        <span x-text="$store.wizard.currentStep" /><span style="opacity:0.4;"> / 7</span>
       </span>
 
       {/* Continue */}
       <button
         type="button"
         x-on:click="$store.wizard.nextStep()"
-        style="display:inline-flex; align-items:center; gap:6px; padding:10px 26px; font-size:13px; font-weight:600; color:#FFFFFF; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border:none; border-radius:9999px; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 14px rgba(252,101,20,0.35); transition:opacity 0.15s ease, box-shadow 0.15s ease; min-width:140px; justify-content:center;"
-        x-bind:style="!$store.wizard.canProceed ? 'filter:grayscale(1) opacity(0.3); cursor:not-allowed; pointer-events:none;' : ''"
-        onmouseover="if(this.style.pointerEvents !== 'none') this.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 20px rgba(252,101,20,0.50)';"
-        onmouseout="this.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 14px rgba(252,101,20,0.35)';"
+        class="btn-primary"
+        style="padding:9px 24px; font-size:13px; min-width:130px; justify-content:center;"
+        x-bind:style="!$store.wizard.canProceed ? 'filter:grayscale(1) opacity(0.28); cursor:not-allowed; pointer-events:none;' : ''"
       >
         <span x-text="$store.wizard.currentStep === 6 ? 'Review & Submit' : 'Continue'">Continue</span>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;">
           <path d="M4.5 2l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-    </div>
+      </div>{/* end max-width wrapper */}
+    </div>{/* end footer */}
 
     {/* ═══════════════════════════════════════════════════════════════════
         STEP 8 — Booking confirmed
@@ -300,7 +297,7 @@ export const BookingWizard = () => (
     <div
       x-show="$store.wizard.currentStep === 8"
       x-cloak
-      style="flex:1; display:flex; align-items:center; justify-content:center; padding:60px 28px;"
+      style="padding:52px 40px;"
     >
       <div style="max-width:400px; width:100%; text-align:center;">
         <div style="width:52px; height:52px; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-radius:13px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 24px rgba(252,101,20,0.45);">
