@@ -28,7 +28,7 @@ export const BookingWizard = () => (
       {/* ═══════════════════════════════════════════════════════════════════
           HEADER — dot track + step name + progress bar
       ═══════════════════════════════════════════════════════════════════ */}
-      <div style="padding:20px 24px 16px; border-bottom:1px solid rgba(0,0,0,0.06);">
+      <div style="padding:20px 24px 16px;">
 
         {/* Dot track — 7 tiny dots connected by lines */}
         <div style="display:flex; align-items:center; width:100%; margin-bottom:12px;">
@@ -125,16 +125,7 @@ export const BookingWizard = () => (
       {/* ═══════════════════════════════════════════════════════════════════
           BODY — step panels (slide-animates on step change)
       ═══════════════════════════════════════════════════════════════════ */}
-      <div
-        class="wiz-step-body"
-        style="padding:24px; min-height:300px; overflow:hidden;"
-        x-init="$watch('$store.wizard.currentStep', function(n, o) {
-          var el = $el;
-          el.style.animation = 'none';
-          void el.offsetWidth;
-          el.style.animation = (n > o ? 'wiz-slide-fwd' : 'wiz-slide-bwd') + ' 0.36s cubic-bezier(0.16,1,0.3,1) both';
-        })"
-      >
+      <div class="wiz-step-body" style="padding:24px; min-height:300px;">
         <Step1ServiceType />
         <Step2SlotPicker />
         <Step3HoldConfirm />
@@ -149,7 +140,7 @@ export const BookingWizard = () => (
       ═══════════════════════════════════════════════════════════════════ */}
       <div
         x-show="7 > $store.wizard.currentStep"
-        style="padding:14px 24px; border-top:1px solid rgba(0,0,0,0.06); display:flex; align-items:center; justify-content:space-between; gap:12px;"
+        style="padding:14px 24px; display:flex; align-items:center; justify-content:space-between; gap:12px;"
       >
         {/* Back */}
         <button
@@ -173,7 +164,7 @@ export const BookingWizard = () => (
           x-bind:disabled="!$store.wizard.canProceed"
           class="btn-primary"
           style="padding:8px 24px; font-size:13px; min-width:140px; justify-content:center; gap:6px; border-radius:9999px;"
-          x-bind:style="!$store.wizard.canProceed ? 'opacity:0.28; cursor:not-allowed; pointer-events:none;' : ''"
+          x-bind:style="!$store.wizard.canProceed ? 'filter:grayscale(1) opacity(0.35); cursor:not-allowed; pointer-events:none;' : ''"
         >
           <span x-text="$store.wizard.currentStep === 6 ? 'Review & Pay' : 'Continue'">Continue</span>
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;">

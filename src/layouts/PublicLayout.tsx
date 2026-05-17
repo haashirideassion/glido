@@ -67,8 +67,11 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', children }) => {
           </div>
         </header>
 
-        <main class="min-h-[calc(100vh-56px-64px)]">
-          {children}
+        {/* ── White page card — cream shell visible around it ── */}
+        <main style="padding:12px; min-height:calc(100vh - 56px - 64px); box-sizing:border-box;">
+          <div style="background:#FFFFFF; border-radius:20px; min-height:calc(100vh - 56px - 64px - 24px); box-shadow:0 1px 4px rgba(0,0,0,0.04), 0 6px 28px rgba(0,0,0,0.07); overflow:hidden;">
+            {children}
+          </div>
         </main>
 
         {/* ── Footer ────────────────────────────────────────────────────── */}

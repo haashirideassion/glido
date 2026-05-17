@@ -626,14 +626,11 @@
   }
   .wiz-line.filled { background: linear-gradient(90deg, rgba(252,101,20,0.50), rgba(252,101,20,0.25)); }
 
-  /* Card — white surface on warm cream */
+  /* Card — sits inside the white page shell; just a subtle border for definition */
   .wizard-card {
     background: #FFFFFF;
     border: 1px solid rgba(0,0,0,0.07);
-    border-radius: 16px;
-    box-shadow:
-      0 1px 3px rgba(0,0,0,0.05),
-      0 4px 20px rgba(0,0,0,0.07);
+    border-radius: 14px;
   }
 
   /* Input — clean underline (editorial style) */

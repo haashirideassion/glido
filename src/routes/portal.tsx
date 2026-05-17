@@ -522,20 +522,17 @@ portalRoutes.get('/', (c) => {
 portalRoutes.get('/book', (c) => {
   return c.html(
     <PublicLayout title="Book a Visit">
-      {/* Ambient orb */}
-      <div style="position:fixed; top:0; left:50%; transform:translateX(-50%); width:800px; height:400px; border-radius:9999px; background:radial-gradient(ellipse, rgba(252,101,20,0.07) 0%, transparent 70%); pointer-events:none; z-index:0;" />
-
-      <div style="min-height:calc(100vh - 56px); background:#EEEAE4; padding:48px 24px 80px; position:relative; z-index:1;">
+      <div style="padding:40px 24px 64px;">
         <div style="max-width:560px; margin:0 auto;">
 
           {/* Page header */}
-          <div style="margin-bottom:32px;">
-            <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(252,101,20,0.08); border:1px solid rgba(252,101,20,0.18); border-radius:9999px; padding:4px 12px; margin-bottom:16px;">
-              <span style="width:6px; height:6px; border-radius:9999px; background:#FC6514; flex-shrink:0;" />
-              <span style="font-size:11px; font-weight:600; color:rgba(252,101,20,0.85); letter-spacing:0.05em; text-transform:uppercase;">Sydney CFS · Mon–Fri 06:00–18:00</span>
+          <div style="margin-bottom:28px;">
+            <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(252,101,20,0.08); border:1px solid rgba(252,101,20,0.16); border-radius:9999px; padding:3px 11px; margin-bottom:14px;">
+              <span style="width:5px; height:5px; border-radius:9999px; background:#FC6514; flex-shrink:0;" />
+              <span style="font-size:10.5px; font-weight:600; color:rgba(252,101,20,0.85); letter-spacing:0.06em; text-transform:uppercase;">Sydney CFS · Mon–Fri 06:00–18:00</span>
             </div>
-            <h1 style="font-size:26px; font-weight:700; color:#1C1917; letter-spacing:-0.04em; line-height:1.1; margin-bottom:6px;">Book a Depot Visit</h1>
-            <p style="font-size:13px; color:#64748B; line-height:1.6;">Reserve your time slot, upload documents, and get a QR code — all in under 3 minutes.</p>
+            <h1 style="font-size:24px; font-weight:700; color:#1C1917; letter-spacing:-0.04em; line-height:1.1; margin-bottom:5px;">Book a Depot Visit</h1>
+            <p style="font-size:13px; color:#78716C; line-height:1.6;">Reserve your time slot, upload documents, and get a QR code — all in under 3 minutes.</p>
           </div>
 
           <BookingWizard />
@@ -559,7 +556,7 @@ portalRoutes.get('/bookings', async (c) => {
 
   return c.html(
     <PublicLayout title="My Bookings">
-      <div style="min-height:calc(100vh - 56px); background:#EEEAE4; padding:40px 24px 64px;">
+      <div style="padding:40px 24px 64px;">
         <div style="max-width:640px; margin:0 auto;">
 
           {/* Page header */}
@@ -578,8 +575,8 @@ portalRoutes.get('/bookings', async (c) => {
                 placeholder="Booking reference — e.g. GLD-2026-10142"
                 class="wizard-field"
                 style="width:100%; padding:10px 14px; font-size:13.5px; border-radius:10px; outline:none; box-sizing:border-box; font-family:inherit;"
-                onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.25), 0 0 0 3px rgba(252,101,20,0.15)';"
-                onblur="this.style.borderColor='rgba(0,0,0,0.09)'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.08), inset 0 1px 0 rgba(0,0,0,0.05)';"
+                onfocus="this.style.borderColor='rgba(252,101,20,0.50)';"
+                onblur="this.style.borderColor='rgba(0,0,0,0.12)';"
               />
             </div>
             <button
