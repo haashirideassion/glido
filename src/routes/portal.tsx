@@ -245,9 +245,7 @@ portalRoutes.get('/', (c) => {
           <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;" class="persona-grid">
 
             {/* Freight Forwarders — dark navy */}
-            <div class="reveal" style="background:#192640; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden; transition:background 0.3s ease, transform 0.22s cubic-bezier(0.16,1,0.3,1);"
-              onmouseover="this.style.background='linear-gradient(145deg,#1e2d4a 0%,#0f172a 100%)'; this.style.transform='translateY(-4px)';"
-              onmouseout="this.style.background='#192640'; this.style.transform='';">
+            <div class="reveal tilt-card" style="background:#192640; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden;">
               <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
                 <Icon name={ICONS.bookings} size={22} style="color:#fff;" />
               </div>
@@ -266,9 +264,7 @@ portalRoutes.get('/', (c) => {
             </div>
 
             {/* Truck Drivers — dark teal */}
-            <div class="reveal" data-reveal-delay="80" style="background:#0d3835; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden; transition:background 0.3s ease, transform 0.22s cubic-bezier(0.16,1,0.3,1);"
-              onmouseover="this.style.background='linear-gradient(145deg,#134e4a 0%,#0c302d 100%)'; this.style.transform='translateY(-4px)';"
-              onmouseout="this.style.background='#0d3835'; this.style.transform='';">
+            <div class="reveal tilt-card" data-reveal-delay="80" style="background:#0d3835; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden;">
               <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
                 <Icon name={ICONS.walkIn} size={22} style="color:#fff;" />
               </div>
@@ -287,9 +283,7 @@ portalRoutes.get('/', (c) => {
             </div>
 
             {/* Depot Managers — warm dark */}
-            <div class="reveal" data-reveal-delay="160" style="background:#260c03; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden; transition:background 0.3s ease, transform 0.22s cubic-bezier(0.16,1,0.3,1);"
-              onmouseover="this.style.background='linear-gradient(145deg,#431407 0%,#1c0a02 100%)'; this.style.transform='translateY(-4px)';"
-              onmouseout="this.style.background='#260c03'; this.style.transform='';">
+            <div class="reveal tilt-card" data-reveal-delay="160" style="background:#260c03; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden;">
               <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
                 <Icon name={ICONS.home} size={22} style="color:#fff;" />
               </div>
@@ -460,92 +454,10 @@ portalRoutes.get('/', (c) => {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════════
-          §9  HERO PREVIEW — Version B (truck concept)
-      ══════════════════════════════════════════════════════════════════ */}
-      <section style="padding:32px 24px 44px; background:#fff; position:relative; overflow:hidden; border-top:1px solid rgba(0,0,0,0.06);">
-
-        {/* Warp bg — cyan-tinted beams on white, same first-person floor */}
-        <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
-          <div style="position:absolute; left:-70%; right:-70%; bottom:0; height:80%; transform:perspective(280px) rotateX(72deg); transform-origin:center bottom; background-image:linear-gradient(rgba(0,0,0,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.07) 1px,transparent 1px); background-size:80px 80px; mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%); -webkit-mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%);"></div>
-          {[
-            { l:'12%', dur:'3.3s', del:'0.0s', c:'rgba(6,182,212,0.48)',   h:'115px' },
-            { l:'28%', dur:'4.1s', del:'0.9s', c:'rgba(52,211,153,0.42)',  h:'130px' },
-            { l:'44%', dur:'2.8s', del:'1.6s', c:'rgba(6,182,212,0.36)',   h:'95px'  },
-            { l:'60%', dur:'3.8s', del:'0.4s', c:'rgba(99,202,255,0.44)',  h:'120px' },
-            { l:'78%', dur:'2.7s', del:'1.2s', c:'rgba(52,211,153,0.40)',  h:'108px' },
-          ].map((b, i) => (
-            <div key={i} class="warp-beam" style={`left:${b.l}; height:${b.h}; background:linear-gradient(to top,${b.c},transparent); animation-duration:${b.dur}; animation-delay:${b.del}; mix-blend-mode:multiply;`} />
-          ))}
-        </div>
-
-        {/* Preview label */}
-        <div style="position:relative; z-index:1; text-align:center; margin-bottom:20px;">
-          <span style="display:inline-flex; align-items:center; gap:8px; padding:5px 16px; border-radius:9999px; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.22); font-size:10px; font-weight:700; color:#0891b2; letter-spacing:0.10em; text-transform:uppercase;">
-            <span style="width:5px; height:5px; border-radius:9999px; background:#06b6d4; animation:pulse-dot 2s ease-in-out infinite;" />
-            Hero — Version B (preview)
-          </span>
-        </div>
-
-        {/* Two-column hero card */}
-        <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:520px; display:grid; grid-template-columns:1fr 1fr;" class="hero-v2-grid">
-
-          {/* Left — cyan/teal with copy */}
-          <div style="background:linear-gradient(160deg,#0891b2 0%,#0e7490 55%,#164e63 100%); padding:64px 48px; display:flex; flex-direction:column; justify-content:flex-end; position:relative; overflow:hidden;">
-            {/* Subtle noise overlay */}
-            <div style="position:absolute; inset:0; background-image:url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.75\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.04\'/%3E%3C/svg%3E'); pointer-events:none; opacity:0.6;"></div>
-            <div style="position:relative; z-index:1;">
-              <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); margin-bottom:28px;">
-                <span style="width:6px; height:6px; border-radius:9999px; background:#4ADE80; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
-                <span style="font-size:11px; font-weight:600; color:rgba(255,255,255,0.90); letter-spacing:0.01em;">Open today</span>
-              </div>
-              <h1 style="font-size:clamp(1.8rem,3.2vw,2.8rem); font-weight:800; color:#ffffff; letter-spacing:-0.04em; line-height:1.06; margin-bottom:16px;">
-                <span style="display:block;">Book your CFS slot.</span>
-                <span style="display:block; color:#FDE68A;">Skip the queue.</span>
-              </h1>
-              <p style="font-size:14px; color:rgba(255,255,255,0.70); line-height:1.75; margin-bottom:36px; max-width:340px;">
-                Instant slot booking for drivers, forwarders and depot teams at Sydney CFS.
-              </p>
-              <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <a href="/book" style="display:inline-flex; align-items:center; gap:8px; padding:12px 24px; font-size:13px; font-weight:700; color:#0e7490; background:#ffffff; border-radius:9999px; text-decoration:none; transition:all 0.15s ease; box-shadow:0 4px 16px rgba(0,0,0,0.20);"
-                  onmouseover="this.style.background='#f0fdfa'; this.style.transform='translateY(-1px)';"
-                  onmouseout="this.style.background='#ffffff'; this.style.transform='';"
-                >
-                  <Icon name={ICONS.calendar} size={14} />
-                  Book a Visit
-                </a>
-                <a href="/bookings" style="display:inline-flex; align-items:center; gap:8px; padding:12px 22px; font-size:13px; font-weight:600; color:rgba(255,255,255,0.85); border:1.5px solid rgba(255,255,255,0.28); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
-                  onmouseover="this.style.borderColor='rgba(255,255,255,0.55)'; this.style.color='#fff';"
-                  onmouseout="this.style.borderColor='rgba(255,255,255,0.28)'; this.style.color='rgba(255,255,255,0.85)';"
-                >
-                  <Icon name={ICONS.search} size={14} />
-                  Look Up Booking
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Right — truck image (replace URL with your truck image) */}
-          <div style="background:#b2e8f2; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center;">
-            {/* Truck image: mix-blend-mode:multiply removes its light cyan bg on this panel */}
-            <img
-              src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80&auto=format&fit=crop"
-              alt="Delivery truck"
-              style="width:100%; height:100%; object-fit:cover; object-position:center; mix-blend-mode:multiply;"
-            />
-            {/* TODO: replace with your 3D truck image:
-                src="YOUR_TRUCK_IMAGE_URL"
-                style="width:100%; height:100%; object-fit:contain; object-position:right bottom; mix-blend-mode:multiply; transform:scale(1.08) translateX(4%);"
-            */}
-          </div>
-
-        </div>
-      </section>
-
       {/* Responsive styles */}
       <style>{`
         @media (max-width:960px){
-          .hero-grid,.preview-grid,.hero-v2-grid{grid-template-columns:1fr!important;}
+          .hero-grid,.preview-grid{grid-template-columns:1fr!important;}
           .steps-grid-new{grid-template-columns:repeat(2,1fr)!important;}
           .bento-row,.persona-grid{grid-template-columns:1fr!important;}
           .bento-hero{grid-template-columns:1fr!important;}

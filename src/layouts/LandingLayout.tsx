@@ -325,6 +325,39 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
             document.querySelectorAll('.reveal:not(.revealed), .reveal-left:not(.revealed), .reveal-right:not(.revealed), .reveal-scale:not(.revealed)')
               .forEach(function(el) { io && io.observe(el); });
           });
+
+          /* ── 3D tilt cards ── */
+          (function() {
+            function initTilt(card) {
+              card.style.transition = 'transform 0.15s ease, box-shadow 0.15s ease';
+              card.addEventListener('mousemove', function(e) {
+                var r = card.getBoundingClientRect();
+                var x = (e.clientX - r.left) / r.width  - 0.5;
+                var y = (e.clientY - r.top)  / r.height - 0.5;
+                card.style.transform = 'perspective(700px) rotateY(' + (x * 10) + 'deg) rotateX(' + (-y * 10) + 'deg) translateZ(6px)';
+                card.style.boxShadow = '0 12px 40px rgba(0,0,0,0.20), ' + (-x*6) + 'px ' + (-y*6) + 'px 20px rgba(0,0,0,0.10)';
+              });
+              card.addEventListener('mouseleave', function() {
+                card.style.transform = '';
+                card.style.boxShadow = '';
+              });
+            }
+            document.querySelectorAll('.tilt-card').forEach(initTilt);
+          })();
+
+          /* ── Subtle parallax on hero section ── */
+          (function() {
+            var hero = document.getElementById('hero-section');
+            if (!hero) return;
+            var img = hero.querySelector('img');
+            if (!img) return;
+            function onScroll() {
+              var scrollY = window.scrollY;
+              var offset = scrollY * 0.25;
+              img.style.transform = 'translateY(' + offset + 'px)';
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
+          })();
         `}} />
 
         <style>{`
