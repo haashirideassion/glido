@@ -92,12 +92,12 @@ export const BookingTable = ({ bookings, title = "Today's Bookings", showFilters
       ) : (
         <Table>
           <TableHeader>
-            <TableRow style="background:rgba(0,0,0,0.02); border-bottom:1px solid rgba(0,0,0,0.07);">
+            <TableRow style="background:#F7F6F5; border-bottom:1px solid rgba(0,0,0,0.07);">
               {['Reference','Driver','Slot','Service','HBL','ICS','Status',''].map((h) => (
                 <TableHead
                   key={h}
                   class="text-left px-5 py-3"
-                  style="font-size:10px; font-weight:700; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em; white-space:nowrap;"
+                  style="font-size:10px; font-weight:700; color:#78716C; text-transform:uppercase; letter-spacing:0.08em; white-space:nowrap;"
                 >
                   {h}
                 </TableHead>
@@ -119,7 +119,7 @@ export const BookingTable = ({ bookings, title = "Today's Bookings", showFilters
                 <TableRow
                   key={b.id}
                   style={`border-bottom:1px solid rgba(0,0,0,0.06); cursor:pointer; transition:background 0.12s ease;${rowBg ? ` background:${rowBg};` : ''}`}
-                  onmouseover={`this.style.background='rgba(0,0,0,0.02)'`}
+                  onmouseover={`this.style.background='rgba(252,101,20,0.03)'`}
                   onmouseout={`this.style.background='${rowBg}'`}
                   hx-get={`/reception/bookings/${b.id}`}
                   hx-target="#slide-over-content"
@@ -157,7 +157,7 @@ export const BookingTable = ({ bookings, title = "Today's Bookings", showFilters
                       {STATUS_LABEL[b.status]}
                     </Badge>
                   </TableCell>
-                  <TableCell class="px-4 py-3.5" style="color:rgba(0,0,0,0.20);">
+                  <TableCell class="px-4 py-3.5" style="color:rgba(0,0,0,0.30);">
                     <Icon name={ICONS.arrowRight} size={16} />
                   </TableCell>
                 </TableRow>

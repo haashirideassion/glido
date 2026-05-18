@@ -6,8 +6,14 @@ export const Step6ContactVehicle = () => (
     x-cloak
     x-data="{ documents: [], dragging: false, addFile(name, size) { this.documents.push({ name, size }) }, removeFile(i) { this.documents.splice(i, 1) } }"
   >
+    {/* ── Step heading ── */}
+    <div style="margin-bottom:28px;">
+      <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">Documents</h2>
+      <p style="font-size:14px; color:#78716C; line-height:1.5;">Upload your Delivery Order and any required customs paperwork.</p>
+    </div>
+
     {/* Required docs checklist */}
-    <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:16px; margin-bottom:20px;">
+    <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:16px; margin-bottom:20px;">
       <p style="font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Required Documents</p>
       <ul style="display:flex; flex-direction:column; gap:10px; list-style:none; padding:0; margin:0;">
         <li style="display:flex; align-items:center; gap:10px; font-size:13px;">
@@ -70,7 +76,7 @@ export const Step6ContactVehicle = () => (
     <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px;" x-show="documents.length > 0">
       <p style="font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase;">Uploaded files</p>
       <template x-for="(doc, i) in documents" {...{"x-key": "i"}}>
-        <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:10px 14px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:10px 14px;">
           <div style="display:flex; align-items:center; gap:10px; min-width:0;">
             <Icon name={ICONS.document} size={18} style="color:#78716C; flex-shrink:0;" />
             <div style="min-width:0;">

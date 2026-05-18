@@ -3,6 +3,12 @@ import { Icon, ICONS } from '../../lib/Icon'
 export const Step3HoldConfirm = () => (
   <div x-show="$store.wizard.currentStep === 3" x-cloak>
 
+    {/* ── Step heading ── */}
+    <div style="margin-bottom:28px;">
+      <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">Cargo type</h2>
+      <p style="font-size:14px; color:#78716C; line-height:1.5;">Select whether your shipment is FCL or LCL — this determines which details we ask for next.</p>
+    </div>
+
     <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:24px;">
 
       {/* FCL */}

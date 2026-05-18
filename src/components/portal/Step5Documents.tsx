@@ -7,6 +7,12 @@ const DIVIDER = "display:grid; grid-template-columns:1fr 1fr; gap:16px; padding-
 export const Step5Documents = () => (
   <div x-show="$store.wizard.currentStep === 5" x-cloak>
 
+    {/* ── Step heading ── */}
+    <div style="margin-bottom:28px;">
+      <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">Shipment details</h2>
+      <p style="font-size:14px; color:#78716C; line-height:1.5;">Enter your HBL or container reference. ICS clearance status is checked automatically.</p>
+    </div>
+
     {/* ── LCL Pickup ─────────────────────────────────────────────── */}
     <div x-show="$store.wizard.isPickupLcl" style="display:flex; flex-direction:column; gap:20px;">
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
@@ -77,7 +83,7 @@ export const Step5Documents = () => (
         </div>
 
         {/* Auto-populated fields */}
-        <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:16px;">
+        <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:16px;">
           <p style="font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Auto-populated from CFS records</p>
           <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
             {[
@@ -88,7 +94,7 @@ export const Step5Documents = () => (
               { label: 'Storage from',  xtext: `$store.wizard.shipmentData?.storageStartDate || '—'` },
               { label: 'Days in store', xtext: `$store.wizard.shipmentData?.storageDays ? $store.wizard.shipmentData.storageDays + ' days' : '—'` },
             ].map((item) => (
-              <div key={item.label} style="background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.07); border-radius:8px; padding:10px 12px;">
+              <div key={item.label} style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:10px 12px;">
                 <p style="font-size:10px; color:#78716C; margin-bottom:3px;">{item.label}</p>
                 <p style="font-weight:600; color:#1C1917; font-size:13px;" x-text={item.xtext}></p>
               </div>
@@ -97,18 +103,18 @@ export const Step5Documents = () => (
         </div>
 
         {/* CHEP warning */}
-        <div x-show="$store.wizard.showChepWarning" style="background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.20); border-radius:8px; padding:12px 16px; display:flex; align-items:flex-start; gap:12px;">
-          <Icon name={ICONS.warning} size={18} style="color:#FBBF24; flex-shrink:0; margin-top:1px;" />
+        <div x-show="$store.wizard.showChepWarning" style="background:rgba(217,119,6,0.08); border:1px solid rgba(217,119,6,0.25); border-radius:10px; padding:14px 16px; display:flex; align-items:flex-start; gap:12px;">
+          <Icon name={ICONS.warning} size={18} style="color:#D97706; flex-shrink:0; margin-top:1px;" />
           <div>
-            <p style="font-weight:600; color:#FBBF24; font-size:13px; margin-bottom:3px;">CHEP Pallet Exchange Required</p>
-            <p style="font-size:12px; color:rgba(251,191,36,0.65); line-height:1.5;">
+            <p style="font-weight:600; color:#B45309; font-size:13px; margin-bottom:3px;">CHEP Pallet Exchange Required</p>
+            <p style="font-size:12px; color:#92400E; line-height:1.5;">
               Your shipment is on CHEP pallets. You must bring the same number of empty CHEP pallets to exchange when collecting.
             </p>
           </div>
         </div>
 
         {/* Charges breakdown */}
-        <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:16px;">
+        <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:16px;">
           <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:12px;">Estimated Charges</p>
           <div style="display:flex; flex-direction:column; gap:8px; font-size:13px;">
             <div style="display:flex; justify-content:space-between; color:#78716C;">
@@ -189,14 +195,14 @@ export const Step5Documents = () => (
             x-text="{'cleared':'Cleared','held':'Held','examination':'On Hold','pending':'Pending'}[$store.wizard.shipmentData?.icsStatus] || 'Unknown'"
           ></span>
         </div>
-        <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:16px;">
+        <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:16px;">
           <p style="font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Container details</p>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <div style="background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.07); border-radius:8px; padding:10px 12px;">
+            <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:10px 12px;">
               <p style="font-size:10px; color:#78716C; margin-bottom:3px;">Gross Weight</p>
               <p style="font-weight:600; color:#1C1917; font-size:13px;" x-text="$store.wizard.shipmentData?.weightKg ? $store.wizard.shipmentData.weightKg + ' kg' : '—'"></p>
             </div>
-            <div style="background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.07); border-radius:8px; padding:10px 12px;">
+            <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:10px 12px;">
               <p style="font-size:10px; color:#78716C; margin-bottom:3px;">Volume</p>
               <p style="font-weight:600; color:#1C1917; font-size:13px;" x-text="$store.wizard.shipmentData?.volumeCbm ? $store.wizard.shipmentData.volumeCbm + ' CBM' : '—'"></p>
             </div>

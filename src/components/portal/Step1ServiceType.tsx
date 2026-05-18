@@ -1,6 +1,12 @@
 export const Step1ServiceType = () => (
   <div x-show="$store.wizard.currentStep === 1" x-cloak>
 
+    {/* ── Step heading ───────────────────────────────────────────────────── */}
+    <div style="margin-bottom:28px;">
+      <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">Get started</h2>
+      <p style="font-size:14px; color:#78716C; line-height:1.5;">Tell us who's visiting and how many slots you need today.</p>
+    </div>
+
     {/* ── Slot counter ───────────────────────────────────────────────────── */}
     <div style="margin-bottom:32px;">
       <div style="display:flex; align-items:center; gap:0; margin-bottom:16px;">
@@ -81,7 +87,7 @@ export const Step1ServiceType = () => (
     {/* Multi-slot note */}
     <div
       x-show="$store.wizard.slotCount > 1"
-      style="margin-top:24px; border-left:3px solid rgba(252,101,20,0.35); padding:10px 14px; font-size:12px; line-height:1.6; background:rgba(252,101,20,0.05); color:#78716C; border-radius:0 4px 4px 0;"
+      style="margin-top:24px; padding:12px 16px; font-size:12px; line-height:1.6; background:rgba(252,101,20,0.07); border:1px solid rgba(252,101,20,0.20); color:#78716C; border-radius:10px;"
     >
       <span style="font-weight:700; color:#FC6514;" x-text="$store.wizard.slotCount"></span> slots — you'll enter shipment details for each one separately.
     </div>

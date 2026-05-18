@@ -712,12 +712,13 @@
     align-items: center;
     gap: 16px;
     padding: 16px 18px;
-    border-radius: 12px;
+    border-radius: 14px;
     cursor: pointer;
     text-align: left;
     width: 100%;
-    background: rgba(0,0,0,0.025);
-    border: 1.5px solid rgba(0,0,0,0.08);
+    background: #FFFFFF;
+    border: 1.5px solid rgba(0,0,0,0.09);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04);
     transition:
       background 0.18s cubic-bezier(0.16,1,0.3,1),
       border-color 0.18s cubic-bezier(0.16,1,0.3,1),
@@ -725,21 +726,19 @@
       box-shadow 0.18s cubic-bezier(0.16,1,0.3,1);
   }
   .wizard-option-card:hover {
-    border-color: rgba(0,0,0,0.15);
-    background: rgba(0,0,0,0.04);
+    border-color: rgba(0,0,0,0.16);
+    background: #FAFAF9;
     transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.09);
   }
   .wizard-option-card:active {
     transform: translateY(0) scale(0.99);
     transition-duration: 80ms;
   }
   .wizard-option-card.selected {
-    background: rgba(252,101,20,0.05);
-    border-color: rgba(252,101,20,0.35);
-    border-left: 3px solid #FC6514;
-    padding-left: 15px;
-    box-shadow: 0 2px 12px rgba(252,101,20,0.08);
+    background: rgba(252,101,20,0.04);
+    border-color: rgba(252,101,20,0.45);
+    box-shadow: 0 0 0 3px rgba(252,101,20,0.08), 0 2px 12px rgba(252,101,20,0.10);
     transform: none;
   }
 

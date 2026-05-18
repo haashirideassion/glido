@@ -2,6 +2,13 @@ import { Icon, ICONS } from '../../lib/Icon'
 
 export const Step7Confirmation = () => (
   <div x-show="$store.wizard.currentStep === 7" x-cloak>
+
+    {/* ── Step heading ── */}
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">Review &amp; pay</h2>
+      <p style="font-size:14px; color:#78716C; line-height:1.5;">Confirm your booking details and complete payment to secure your slot.</p>
+    </div>
+
     {/* Hold timer banner */}
     <div
       x-show="$store.wizard.holdActive"
@@ -17,7 +24,7 @@ export const Step7Confirmation = () => (
     </div>
 
     {/* Booking summary */}
-    <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:20px; margin-bottom:20px; font-size:13px;">
+    <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:14px; padding:20px; margin-bottom:20px; font-size:13px;">
       <p style="font-size:10px; font-weight:700; color:#78716C; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px;">Booking Summary</p>
       <div style="display:flex; flex-direction:column; gap:10px;">
         <div style="display:flex; justify-content:space-between;">
@@ -68,13 +75,13 @@ export const Step7Confirmation = () => (
     </div>
 
     {/* CHEP notice */}
-    <div x-show="$store.wizard.showChepWarning" style="background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.20); border-radius:10px; padding:12px 16px; margin-bottom:20px; display:flex; align-items:flex-start; gap:12px;">
-      <Icon name={ICONS.warning} size={16} style="color:#FBBF24; flex-shrink:0; margin-top:1px;" />
-      <p style="font-size:12px; color:rgba(251,191,36,0.75); font-weight:500; line-height:1.5;">Reminder: CHEP pallet exchange required at collection. Bring your CHEP pallets.</p>
+    <div x-show="$store.wizard.showChepWarning" style="background:rgba(217,119,6,0.08); border:1px solid rgba(217,119,6,0.25); border-radius:10px; padding:12px 16px; margin-bottom:20px; display:flex; align-items:flex-start; gap:12px;">
+      <Icon name={ICONS.warning} size={16} style="color:#D97706; flex-shrink:0; margin-top:1px;" />
+      <p style="font-size:12px; color:#92400E; font-weight:500; line-height:1.5;">Reminder: CHEP pallet exchange required at collection. Bring your CHEP pallets.</p>
     </div>
 
     {/* Charges breakdown */}
-    <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:20px; margin-bottom:20px;">
+    <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:14px; padding:20px; margin-bottom:20px;">
       <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:14px;">Charges</p>
       <div style="display:flex; flex-direction:column; gap:8px; font-size:13px;">
         <div style="display:flex; justify-content:space-between; color:#78716C;" x-show="$store.wizard.shipmentData?.storageCharge > 0">
@@ -110,7 +117,7 @@ export const Step7Confirmation = () => (
       <button
         type="button"
         x-on:click="$store.wizard.paymentMethod = 'card'"
-        style="text-align:left; cursor:pointer; border-radius:10px; padding:16px; transition:all 0.15s ease; background:rgba(0,0,0,0.03); border:1.5px solid rgba(0,0,0,0.09);"
+        style="text-align:left; cursor:pointer; border-radius:14px; padding:16px; transition:all 0.15s ease; background:#FFFFFF; border:1.5px solid rgba(0,0,0,0.09); box-shadow:0 1px 3px rgba(0,0,0,0.04);"
         {...{"x-bind:style": "$store.wizard.paymentMethod === 'card' ? 'background:rgba(252,101,20,0.08); border-color:rgba(252,101,20,0.40); box-shadow:0 0 0 3px rgba(252,101,20,0.08);' : ''"}}
       >
         <Icon name={ICONS.shield} size={20} style="color:#FC6514; margin-bottom:8px; display:block;" />
@@ -120,7 +127,7 @@ export const Step7Confirmation = () => (
       <button
         type="button"
         x-on:click="$store.wizard.paymentMethod = 'eft'"
-        style="text-align:left; cursor:pointer; border-radius:10px; padding:16px; transition:all 0.15s ease; background:rgba(0,0,0,0.03); border:1.5px solid rgba(0,0,0,0.09);"
+        style="text-align:left; cursor:pointer; border-radius:14px; padding:16px; transition:all 0.15s ease; background:#FFFFFF; border:1.5px solid rgba(0,0,0,0.09); box-shadow:0 1px 3px rgba(0,0,0,0.04);"
         {...{"x-bind:style": "$store.wizard.paymentMethod === 'eft' ? 'background:rgba(252,101,20,0.08); border-color:rgba(252,101,20,0.40); box-shadow:0 0 0 3px rgba(252,101,20,0.08);' : ''"}}
       >
         <Icon name={ICONS.document} size={20} style="color:#FC6514; margin-bottom:8px; display:block;" />
@@ -130,7 +137,7 @@ export const Step7Confirmation = () => (
     </div>
 
     {/* Card details panel */}
-    <div x-show="$store.wizard.paymentMethod === 'card'" style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:20px; margin-bottom:20px;">
+    <div x-show="$store.wizard.paymentMethod === 'card'" style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:14px; padding:20px; margin-bottom:20px;">
       <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
         <Icon name={ICONS.shield} size={15} style="color:#22C55E;" />
         <p style="font-size:12px; color:#78716C; font-weight:500;">Secure card payment powered by Stripe</p>

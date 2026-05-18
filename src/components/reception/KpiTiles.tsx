@@ -134,25 +134,27 @@ ${EC_THEME}
       {tiles.map((tile) => (
         <div
           key={tile.label}
-          style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:16px; padding:18px 18px 0; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07);"
+          style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:18px; padding:20px 20px 0; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07); transition:transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s ease;"
+          onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 28px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06)';"
+          onmouseout="this.style.transform=''; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07)';"
         >
           {/* Header row */}
-          <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:14px;">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px;">
             <div
-              style={`width:36px; height:36px; border-radius:10px; background:${tile.iconBg}; display:flex; align-items:center; justify-content:center; flex-shrink:0;`}
+              style={`width:40px; height:40px; border-radius:12px; background:${tile.iconBg}; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1px solid ${tile.iconFg}22;`}
             >
-              <Icon name={tile.icon} size={18} style={`color:${tile.iconFg};`} />
+              <Icon name={tile.icon} size={20} style={`color:${tile.iconFg};`} />
             </div>
           </div>
 
           {/* Value + labels */}
           <p
-            style={`font-size:30px; font-weight:700; letter-spacing:-0.03em; line-height:1; color:${tile.valueFg}; margin-bottom:4px; font-variant-numeric:tabular-nums;`}
+            style={`font-size:36px; font-weight:800; letter-spacing:-0.04em; line-height:1; color:${tile.valueFg}; margin-bottom:5px; font-variant-numeric:tabular-nums;`}
           >
             {tile.value}
           </p>
-          <p style="font-size:12px; font-weight:600; color:#78716C; margin-bottom:1px;">{tile.label}</p>
-          <p style="font-size:11px; color:#A8A29E; margin-bottom:12px;">{tile.sub}</p>
+          <p style="font-size:12px; font-weight:600; color:#57534E; margin-bottom:2px;">{tile.label}</p>
+          <p style="font-size:11px; color:#A8A29E; margin-bottom:14px;">{tile.sub}</p>
 
           {/* Sparkline */}
           <div

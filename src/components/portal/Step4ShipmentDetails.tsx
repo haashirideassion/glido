@@ -24,6 +24,12 @@ const DATES = workingDays(8)
 export const Step4ShipmentDetails = () => (
   <div x-show="$store.wizard.currentStep === 4" x-cloak>
 
+    {/* ── Step heading ── */}
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">Choose a slot</h2>
+      <p style="font-size:14px; color:#78716C; line-height:1.5;">Select your arrival window. Slots are held for 10 minutes while you complete the booking.</p>
+    </div>
+
     {/* ── Date strip ─────────────────────────────────────────────────────── */}
     <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:20px; scrollbar-width:none;">
       {DATES.map((d) => (
@@ -87,7 +93,7 @@ export const Step4ShipmentDetails = () => (
           type="button"
           x-bind:disabled="slot.busyness === 'full' || slot.busyness === 'closed'"
           x-on:click="slot.busyness !== 'full' && slot.busyness !== 'closed' && $store.wizard.selectSlot(slot.id, slot.startTime + ' – ' + slot.endTime)"
-          style="display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:10px; border:1px solid rgba(0,0,0,0.07); text-align:left; width:100%; transition:all 0.15s ease; background:rgba(0,0,0,0.03);"
+          style="display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:12px; border:1.5px solid rgba(0,0,0,0.09); text-align:left; width:100%; transition:all 0.15s ease; background:#FFFFFF; box-shadow:0 1px 3px rgba(0,0,0,0.04);"
           x-bind:style={`
             (slot.busyness === 'full' || slot.busyness === 'closed')
               ? 'opacity:0.30; cursor:not-allowed;'
@@ -153,14 +159,14 @@ export const Step4ShipmentDetails = () => (
     {/* ── Selected slot bar ────────────────────────────────────────────────── */}
     <div
       x-show="$store.wizard.selectedSlotId !== null"
-      style="display:flex; align-items:center; justify-content:space-between; border-radius:10px; padding:12px 16px; background:rgba(252,101,20,0.08); border:1px solid rgba(252,101,20,0.25);"
+      style="display:flex; align-items:center; justify-content:space-between; border-radius:12px; padding:14px 18px; background:linear-gradient(135deg,rgba(252,101,20,0.10) 0%,rgba(252,101,20,0.05) 100%); border:1.5px solid rgba(252,101,20,0.30); box-shadow:0 2px 12px rgba(252,101,20,0.10);"
     >
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span style="width:8px; height:8px; border-radius:9999px; background:#FC6514; flex-shrink:0; box-shadow:0 0 6px rgba(252,101,20,0.60);"></span>
-        <span style="font-size:13px; font-weight:500; color:#1C1917;" x-text="$store.wizard.selectedSlotLabel"></span>
-        <span style="font-size:12px; color:#78716C;">selected</span>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="width:8px; height:8px; border-radius:9999px; background:#FC6514; flex-shrink:0; animation:pulse-orange 2s ease-in-out infinite;"></span>
+        <span style="font-size:13px; font-weight:600; color:#1C1917;" x-text="$store.wizard.selectedSlotLabel"></span>
+        <span style="font-size:11px; color:#78716C; font-weight:500; background:rgba(0,0,0,0.05); border-radius:4px; padding:2px 6px;">selected</span>
       </div>
-      <span style="font-size:11px; color:#78716C; font-weight:500;">10-min hold on Next →</span>
+      <span style="font-size:11px; color:#FC6514; font-weight:600; opacity:0.75;">10-min hold on Next →</span>
     </div>
 
     {/* Prompt */}
