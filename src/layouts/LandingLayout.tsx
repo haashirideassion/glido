@@ -45,7 +45,7 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
           style="transition: background 0.3s ease, box-shadow 0.3s ease;"
         >
           <div
-            style="background:rgba(238,234,228,0.88); backdrop-filter:blur(16px) saturate(180%); -webkit-backdrop-filter:blur(16px) saturate(180%); border-bottom:1px solid rgba(0,0,0,0.07);"
+            style="background:rgba(255,255,255,0.92); backdrop-filter:blur(16px) saturate(180%); -webkit-backdrop-filter:blur(16px) saturate(180%); border-bottom:1px solid rgba(0,0,0,0.07);"
           >
             <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 
@@ -89,7 +89,7 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
         </main>
 
         {/* ── Footer ────────────────────────────────────────────────────── */}
-        <footer style="border-top:1px solid #f0f0f0; background:#fafafa; padding:64px 24px 32px;">
+        <footer style="border-top:1px solid #f0f0f0; background:#fff; padding:64px 24px 32px;">
           <div class="max-w-6xl mx-auto">
             <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:48px; margin-bottom:48px;" class="footer-grid">
 

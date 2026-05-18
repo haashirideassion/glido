@@ -27,14 +27,14 @@ portalRoutes.get('/', (c) => {
       <section style="background:#fff; overflow:hidden; position:relative;">
 
         {/* 3D canvas band */}
-        <div style="position:relative; background:#fff; padding-top:80px;">
+        <div style="position:relative; background:#fff; padding-top:16px;">
           <div style="max-width:1100px; margin:0 auto; padding:0 24px; position:relative;">
-            <canvas id="hero-3d" style="width:100%; height:480px; display:block; cursor:grab; border-radius:20px;" />
+            <canvas id="hero-3d" style="width:100%; height:320px; display:block; cursor:grab; border-radius:20px;" />
 
             {/* Drag hint */}
             <div id="drag-hint" style="position:absolute; bottom:28px; left:50%; transform:translateX(-50%); background:rgba(28,25,23,0.65); backdrop-filter:blur(10px); border-radius:9999px; padding:5px 14px; display:inline-flex; align-items:center; gap:6px; transition:opacity 0.6s ease; pointer-events:none;">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"><path d="M8 9V5a2 2 0 0 1 4 0v4M8 9a2 2 0 0 0-2 2v5a6 6 0 0 0 12 0v-5a2 2 0 0 0-2-2"/><path d="M12 9v3"/></svg>
-              <span style="font-size:10.5px; color:rgba(255,255,255,0.65); font-weight:500; white-space:nowrap;">Drag to rotate · Scroll to zoom</span>
+              <span style="font-size:10.5px; color:rgba(255,255,255,0.65); font-weight:500; white-space:nowrap;">Drag to rotate</span>
             </div>
 
             {/* Container info label */}
@@ -50,8 +50,8 @@ portalRoutes.get('/', (c) => {
     var W=canvas.parentElement.offsetWidth||480, H=460;
     canvas.width=W*window.devicePixelRatio; canvas.height=H*window.devicePixelRatio;
     var scene=new THREE.Scene();
-    var camera=new THREE.PerspectiveCamera(36,W/H,0.1,100);
-    camera.position.set(0,2,13);
+    var camera=new THREE.PerspectiveCamera(38,W/H,0.1,100);
+    camera.position.set(0,1.2,10);
     camera.lookAt(0,0,0);
     var renderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});
     renderer.setSize(W,H); renderer.setPixelRatio(Math.min(devicePixelRatio,2));
@@ -144,19 +144,21 @@ portalRoutes.get('/', (c) => {
 
     var world=new THREE.Group();
 
-    // Container 1 — 40ft Orange (brand), slightly angled, front-center
+    // Containers arranged in a loose horizontal gliding formation —
+    // spread across the width so they feel like they're moving together
+    // Container 1 — 40ft Orange (brand), leading left-center, slight angle
     var c1=mkContainer(3.8,0.96,0.82,0xFC6514,0xB54100);
-    c1.rotation.y=0.22; c1.position.set(-0.3,0,0);
+    c1.rotation.y=0.30; c1.position.set(-2.2,0,0);
     world.add(c1);
 
-    // Container 2 — 20ft Steel Blue, elevated, slightly behind
+    // Container 2 — 20ft Steel Blue, right, slightly higher and behind
     var c2=mkContainer(2.0,0.88,0.76,0x1B5FA8,0x0F3E72);
-    c2.rotation.y=-0.28; c2.position.set(0.6,1.06,-0.6);
+    c2.rotation.y=-0.18; c2.position.set(2.6,0.22,-0.7);
     world.add(c2);
 
-    // Container 3 — 20ft Shipping Green, low, partially behind
+    // Container 3 — 20ft Shipping Green, far right, lower and behind
     var c3=mkContainer(2.2,0.90,0.78,0x2D6B3E,0x1B4228);
-    c3.rotation.y=0.48; c3.position.set(-1.1,-1.08,-0.4);
+    c3.rotation.y=0.14; c3.position.set(0.8,-0.30,-1.2);
     world.add(c3);
 
     scene.add(world);
@@ -242,30 +244,17 @@ portalRoutes.get('/', (c) => {
       }
     });
 
-    // Scroll zoom
-    canvas.addEventListener('wheel',function(e){
-      e.preventDefault();
-      camera.position.z=Math.max(6,Math.min(18,camera.position.z+e.deltaY*0.014));
-    },{passive:false});
-
     // Touch
-    var tX=0,tY=0,tDist=0;
+    var tX=0,tY=0;
     canvas.addEventListener('touchstart',function(e){
       if(e.touches.length===1){tX=e.touches[0].clientX;tY=e.touches[0].clientY;}
-      if(e.touches.length===2){var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;tDist=Math.sqrt(dx*dx+dy*dy);}
     },{passive:true});
     canvas.addEventListener('touchmove',function(e){
-      e.preventDefault();
       if(e.touches.length===1){
+        e.preventDefault();
         world.rotation.y+=(e.touches[0].clientX-tX)*0.009;
         world.rotation.x=Math.max(-0.65,Math.min(0.65,world.rotation.x+(e.touches[0].clientY-tY)*0.007));
         tX=e.touches[0].clientX;tY=e.touches[0].clientY;
-      }
-      if(e.touches.length===2){
-        var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;
-        var nd=Math.sqrt(dx*dx+dy*dy);
-        camera.position.z=Math.max(6,Math.min(18,camera.position.z+(tDist-nd)*0.025));
-        tDist=nd;
       }
     },{passive:false});
 
@@ -307,8 +296,8 @@ portalRoutes.get('/', (c) => {
       if(!dragging){
         world.rotation.y+=0.004;
         c1.position.y=Math.sin(t*0.44)*0.055;
-        c2.position.y=1.06+Math.sin(t*0.57+1.2)*0.048;
-        c3.position.y=-1.08+Math.sin(t*0.39+2.5)*0.065;
+        c2.position.y=0.22+Math.sin(t*0.57+1.2)*0.048;
+        c3.position.y=-0.30+Math.sin(t*0.39+2.5)*0.065;
       }
       // Animate wind streaks — move right-to-left, wrap around
       for (var wi = 0; wi < STREAK_N; wi++) {
