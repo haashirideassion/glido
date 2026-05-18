@@ -36,7 +36,7 @@ portalRoutes.get('/', (c) => {
             <div>
               <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.09); border:1px solid rgba(34,197,94,0.22); margin-bottom:28px;">
                 <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
-                <span style="font-size:11px; font-weight:600; color:#16A34A; letter-spacing:0.01em;">Open today · Mon–Fri 06:00–18:00</span>
+                <span style="font-size:11px; font-weight:600; color:#16A34A; letter-spacing:0.01em;">Open today</span>
               </div>
 
               <h1 style="font-size:clamp(2.4rem,4.4vw,3.6rem); font-weight:800; color:#1C1917; letter-spacing:-0.045em; line-height:1.03; margin-bottom:22px;">
@@ -694,7 +694,7 @@ portalRoutes.get('/', (c) => {
         <div class="max-w-2xl mx-auto" style="text-align:center; position:relative; z-index:1;">
           <div class="reveal" style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.09); border:1px solid rgba(34,197,94,0.22); margin-bottom:28px;">
             <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; animation:pulse-dot 2s ease-in-out infinite;" />
-            <span style="font-size:11px; font-weight:600; color:#16A34A;">Open Mon–Fri 06:00–18:00</span>
+            <span style="font-size:11px; font-weight:600; color:#16A34A;">Accepting bookings now</span>
           </div>
 
           <h2 class="reveal" data-reveal-delay="80"

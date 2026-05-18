@@ -31,23 +31,20 @@ export const BookingWizard = () => (
       x-cloak
       style="padding:24px 48px 20px; border-bottom:1px solid rgba(0,0,0,0.06);"
     >
-      {/* Label row */}
-      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px; max-width:560px; margin-left:auto; margin-right:auto;">
-        <span style="font-size:10.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#A8A29E;">
-          Step <span x-text="$store.wizard.currentStep" /> of 7
-        </span>
+      {/* Label row — just the step name, no redundant "Step X of 7" */}
+      <div style="margin-bottom:10px; max-width:560px; margin-left:auto; margin-right:auto;">
         {STEP_CTX.map((ctx, i) => (
           <span key={i} x-show={`$store.wizard.currentStep === ${i + 1}`} x-cloak
-            style="font-size:11.5px; font-weight:600; color:#78716C;">
+            style="font-size:11.5px; font-weight:600; color:#57534E; letter-spacing:-0.01em;">
             {ctx.label}
           </span>
         ))}
       </div>
 
       {/* 7-segment track
-           current step:  30% fill → 80% when canProceed (reacts to input)
-           completed step: 100% fill, faded
-           future step:   empty
+           completed step: full orange, slightly muted (0.50 opacity)
+           current step:   full orange, fully vivid (1.0 opacity)
+           future step:    empty — grey track shows through
            NOTE: avoid > and < in Alpine attr strings (Hono encodes them).
                  Use Math.max(0, a - b) !== 0  to mean  a > b             */}
       <div style="display:flex; gap:4px; max-width:560px; margin:0 auto;">
@@ -57,11 +54,11 @@ export const BookingWizard = () => (
             style="flex:1; height:4px; border-radius:9999px; overflow:hidden; background:rgba(0,0,0,0.09);"
           >
             <div
-              style="height:100%; border-radius:9999px; background:#FC6514; transition:width 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;"
+              style="height:100%; border-radius:9999px; background:#FC6514; transition:width 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;"
               x-bind:style={`$store.wizard.currentStep === ${n}
-                ? ($store.wizard.canProceed ? 'width:80%; opacity:1;' : 'width:30%; opacity:1;')
+                ? 'width:100%; opacity:1;'
                 : (Math.max(0, $store.wizard.currentStep - ${n}) !== 0
-                  ? 'width:100%; opacity:0.35;'
+                  ? 'width:100%; opacity:0.50;'
                   : 'width:0%; opacity:0;')`}
             />
           </div>
@@ -128,10 +125,18 @@ export const BookingWizard = () => (
         Back
       </button>
 
-      {/* Counter */}
-      <span style="font-size:11px; font-weight:500; color:#A8A29E; font-variant-numeric:tabular-nums;">
-        <span x-text="$store.wizard.currentStep" /><span style="opacity:0.4;"> / 7</span>
-      </span>
+      {/* Step name + ordinal */}
+      <div style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:1px;">
+        {STEP_CTX.map((ctx, i) => (
+          <span key={i} x-show={`$store.wizard.currentStep === ${i + 1}`} x-cloak
+            style="font-size:12px; font-weight:600; color:#57534E; letter-spacing:-0.01em;">
+            {ctx.label}
+          </span>
+        ))}
+        <span style="font-size:10px; color:#A8A29E; font-variant-numeric:tabular-nums;">
+          <span x-text="$store.wizard.currentStep" /> of 7
+        </span>
+      </div>
 
       {/* Continue */}
       <button

@@ -322,11 +322,7 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
             style="background:#F3F2F0; border-bottom:1px solid rgba(0,0,0,0.07);"
           >
             <h1 class="text-sm font-semibold" style="color:#1C1917; letter-spacing:-0.01em;">{title}</h1>
-            <div class="flex items-center gap-3 text-xs" style="color:#78716C;">
-              <span id="live-clock" x-data="{}" x-text="new Date().toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit'})"></span>
-              <span style="color:rgba(0,0,0,0.15);">|</span>
-              <a href="/" class="transition-colors text-xs font-medium" style="color:#FC6514; text-decoration:none;">Visitor Portal ↗</a>
-            </div>
+            <a href="/" class="transition-colors text-xs font-medium" style="color:#FC6514; text-decoration:none;">Visitor Portal ↗</a>
           </header>
 
           {/* White content card */}
