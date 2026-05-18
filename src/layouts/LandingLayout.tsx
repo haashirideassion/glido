@@ -33,6 +33,20 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
             background-size: 28px 28px;
             animation: dot-drift 24s linear infinite;
           }
+          @keyframes warp-beam-fly {
+            0%   { transform: translateY(620px); opacity: 0; }
+            8%   { opacity: 1; }
+            92%  { opacity: 1; }
+            100% { transform: translateY(-420px); opacity: 0; }
+          }
+          .warp-beam {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            border-radius: 9999px;
+            pointer-events: none;
+            animation: warp-beam-fly linear infinite;
+          }
         `}</style>
 
         {/* Alpine init must be synchronous before defer */}

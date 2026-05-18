@@ -22,86 +22,69 @@ portalRoutes.get('/', (c) => {
     <LandingLayout title="Home">
 
       {/* ══════════════════════════════════════════════════════════════════
-          §1  HERO — 3D band on top, copy below centered
+          §1  HERO — contained card on warp background
       ══════════════════════════════════════════════════════════════════ */}
-      {/* ══════════════════════════════════════════════════════════════════
-          §1  HERO — full-bleed photo with dark gradient overlay
-      ══════════════════════════════════════════════════════════════════ */}
-      <section style="padding:28px 24px 0; background:#fff;">
-      <div style="max-width:1200px; margin:0 auto; position:relative; border-radius:24px; overflow:hidden; min-height:560px; display:flex; align-items:flex-end;">
+      <section id="hero-section" style="padding:32px 24px 44px; background:#080807; position:relative; overflow:hidden;">
 
-        {/* Background photo */}
-        <img
-          src="https://images.unsplash.com/photo-1601897690942-bcacbad33e55?w=1600&q=80&auto=format&fit=crop"
-          alt="Container freight yard"
-          style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 40%;"
-        />
+        {/* ── Warp: perspective floor + ceiling grids ── */}
+        <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
+          <div style="position:absolute; left:-30%; right:-30%; bottom:0; height:55%; transform:perspective(260px) rotateX(55deg); transform-origin:center bottom; background-image:linear-gradient(rgba(252,101,20,0.11) 1px,transparent 1px),linear-gradient(90deg,rgba(252,101,20,0.11) 1px,transparent 1px); background-size:60px 60px; mask-image:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 100%); -webkit-mask-image:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 100%);"></div>
+          <div style="position:absolute; left:-30%; right:-30%; top:0; height:35%; transform:perspective(260px) rotateX(-55deg); transform-origin:center top; background-image:linear-gradient(rgba(252,101,20,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(252,101,20,0.07) 1px,transparent 1px); background-size:60px 60px; mask-image:linear-gradient(to bottom,rgba(0,0,0,0.5) 0%,transparent 100%); -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,0.5) 0%,transparent 100%);"></div>
+          {/* Animated light beams */}
+          {[
+            { l:'6%',  dur:'3.1s', del:'0.0s', c:'rgba(252,101,20,0.60)', h:'120px' },
+            { l:'18%', dur:'4.4s', del:'1.2s', c:'rgba(99,130,255,0.50)', h:'140px' },
+            { l:'31%', dur:'2.9s', del:'0.5s', c:'rgba(52,211,153,0.50)', h:'100px' },
+            { l:'47%', dur:'3.7s', del:'1.9s', c:'rgba(252,101,20,0.42)', h:'130px' },
+            { l:'62%', dur:'2.6s', del:'0.3s', c:'rgba(168,85,247,0.52)', h:'110px' },
+            { l:'76%', dur:'4.0s', del:'1.5s', c:'rgba(251,191,36,0.52)', h:'125px' },
+            { l:'90%', dur:'3.4s', del:'0.8s', c:'rgba(236,72,153,0.46)', h:'105px' },
+          ].map((b, i) => (
+            <div key={i} class="warp-beam" style={`left:${b.l}; height:${b.h}; background:linear-gradient(to top,${b.c},transparent); animation-duration:${b.dur}; animation-delay:${b.del};`} />
+          ))}
+        </div>
 
-        {/* Dark gradient — dense left, dissolves right */}
-        <div style="position:absolute; inset:0; background:linear-gradient(108deg,rgba(10,8,6,0.90) 0%,rgba(10,8,6,0.76) 38%,rgba(10,8,6,0.30) 68%,transparent 100%);"></div>
-        {/* Bottom fade for text legibility */}
-        <div style="position:absolute; bottom:0; left:0; right:0; height:40%; background:linear-gradient(to top,rgba(10,8,6,0.55) 0%,transparent 100%);"></div>
+        {/* ── Hero card ── */}
+        <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:560px; display:flex; align-items:flex-end;">
+          <img
+            src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/cb754040-5ead-438c-afb6-2b74b4ef35db_3840w.jpg"
+            alt="Container freight station"
+            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 40%;"
+          />
+          <div style="position:absolute; inset:0; background:linear-gradient(108deg,rgba(10,8,6,0.90) 0%,rgba(10,8,6,0.76) 38%,rgba(10,8,6,0.30) 68%,transparent 100%);"></div>
+          <div style="position:absolute; bottom:0; left:0; right:0; height:40%; background:linear-gradient(to top,rgba(10,8,6,0.55) 0%,transparent 100%);"></div>
 
-        {/* ── Hero content ── */}
-        <div style="position:relative; z-index:1; width:100%; max-width:1200px; margin:0 auto; padding:0 40px 88px;" class="hero-content">
-          <div style="max-width:560px;">
-
-            {/* Open badge */}
-            <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.30); margin-bottom:28px;">
-              <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
-              <span style="font-size:11px; font-weight:600; color:#4ADE80; letter-spacing:0.01em;">Open today</span>
+          <div style="position:relative; z-index:1; width:100%; max-width:1200px; margin:0 auto; padding:0 40px 88px;" class="hero-content">
+            <div style="max-width:560px;">
+              <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.30); margin-bottom:28px;">
+                <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
+                <span style="font-size:11px; font-weight:600; color:#4ADE80; letter-spacing:0.01em;">Open today</span>
+              </div>
+              <h1 style="font-size:clamp(2rem,3.8vw,3.2rem); font-weight:800; color:#ffffff; letter-spacing:-0.04em; line-height:1.06; margin-bottom:20px;">
+                <span style="display:block;">Book your CFS slot.</span>
+                <span style="display:block; color:#FC6514;">Skip the queue.</span>
+              </h1>
+              <p style="font-size:15px; color:rgba(255,255,255,0.68); line-height:1.75; margin-bottom:40px; max-width:380px;">
+                Instant slot booking for drivers, forwarders and depot teams at Sydney CFS.
+              </p>
+              <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <a href="/book" class="btn-primary" style="padding:13px 28px; font-size:14px;">
+                  <Icon name={ICONS.calendar} size={15} />
+                  Book a Visit
+                  <Icon name={ICONS.arrowRight} size={14} />
+                </a>
+                <a href="/bookings" style="display:inline-flex; align-items:center; gap:8px; padding:13px 24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.85); border:1.5px solid rgba(255,255,255,0.25); border-radius:9999px; text-decoration:none; transition:all 0.15s ease; backdrop-filter:blur(8px);"
+                  onmouseover="this.style.borderColor='rgba(255,255,255,0.55)'; this.style.color='#fff';"
+                  onmouseout="this.style.borderColor='rgba(255,255,255,0.25)'; this.style.color='rgba(255,255,255,0.85)';"
+                >
+                  <Icon name={ICONS.search} size={15} />
+                  Look Up Booking
+                </a>
+              </div>
             </div>
-
-            <h1 style="font-size:clamp(2rem,3.8vw,3.2rem); font-weight:800; color:#ffffff; letter-spacing:-0.04em; line-height:1.06; margin-bottom:20px;">
-              <span style="display:block;">Book your CFS slot.</span>
-              <span style="display:block; color:#FC6514;">Skip the queue.</span>
-            </h1>
-
-            <p style="font-size:15px; color:rgba(255,255,255,0.68); line-height:1.75; margin-bottom:40px; max-width:380px;">
-              Instant slot booking for drivers, forwarders and depot teams at Sydney CFS.
-            </p>
-
-            <div style="display:flex; gap:12px; flex-wrap:wrap;">
-              <a href="/book" class="btn-primary" style="padding:13px 28px; font-size:14px;">
-                <Icon name={ICONS.calendar} size={15} />
-                Book a Visit
-                <Icon name={ICONS.arrowRight} size={14} />
-              </a>
-              <a href="/bookings" style="display:inline-flex; align-items:center; gap:8px; padding:13px 24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.85); border:1.5px solid rgba(255,255,255,0.25); border-radius:9999px; text-decoration:none; transition:all 0.15s ease; backdrop-filter:blur(8px);"
-                onmouseover="this.style.borderColor='rgba(255,255,255,0.55)'; this.style.color='#fff';"
-                onmouseout="this.style.borderColor='rgba(255,255,255,0.25)'; this.style.color='rgba(255,255,255,0.85)';"
-              >
-                <Icon name={ICONS.search} size={15} />
-                Look Up Booking
-              </a>
-            </div>
-
           </div>
         </div>
 
-
-      </div>{/* end container */}
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════
-          §2  MARQUEE
-      ══════════════════════════════════════════════════════════════════ */}
-      <section style="padding:18px 0; background:#FFFFFF; overflow:hidden; border-top:1px solid rgba(0,0,0,0.06); border-bottom:1px solid rgba(0,0,0,0.06);">
-        <div style="display:flex; overflow:hidden; mask-image:linear-gradient(to right,transparent,black 12%,black 88%,transparent); -webkit-mask-image:linear-gradient(to right,transparent,black 12%,black 88%,transparent);">
-          <div class="animate-marquee" style="display:flex; gap:0; white-space:nowrap; flex-shrink:0;">
-            {[
-              'Express Freight Co.','Pacific Logistics','Harbour Carriers','SydPort Forwarding',
-              'BlueAnchor CFS','Apex Customs','Meridian Shipping','Coastline Brokers','Trident Freight','Atlas Logistics',
-              'Express Freight Co.','Pacific Logistics','Harbour Carriers','SydPort Forwarding',
-              'BlueAnchor CFS','Apex Customs','Meridian Shipping','Coastline Brokers','Trident Freight','Atlas Logistics',
-            ].map((name, i) => (
-              <span key={i} style="display:inline-flex; align-items:center; gap:18px; padding:0 26px; font-size:11px; font-weight:600; color:rgba(0,0,0,0.22); letter-spacing:0.07em; text-transform:uppercase;">
-                <span style="width:3px; height:3px; border-radius:9999px; background:rgba(252,101,20,0.40); display:inline-block; flex-shrink:0;" />
-                {name}
-              </span>
-            ))}
-          </div>
-        </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════
@@ -477,10 +460,92 @@ portalRoutes.get('/', (c) => {
         </div>
       </section>
 
+      {/* ══════════════════════════════════════════════════════════════════
+          §9  HERO PREVIEW — Version B (truck concept)
+      ══════════════════════════════════════════════════════════════════ */}
+      <section style="padding:32px 24px 44px; background:#080807; position:relative; overflow:hidden; border-top:1px solid rgba(255,255,255,0.05);">
+
+        {/* Same warp bg */}
+        <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
+          <div style="position:absolute; left:-30%; right:-30%; bottom:0; height:55%; transform:perspective(260px) rotateX(55deg); transform-origin:center bottom; background-image:linear-gradient(rgba(6,182,212,0.10) 1px,transparent 1px),linear-gradient(90deg,rgba(6,182,212,0.10) 1px,transparent 1px); background-size:60px 60px; mask-image:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 100%); -webkit-mask-image:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 100%);"></div>
+          {[
+            { l:'12%', dur:'3.3s', del:'0.0s', c:'rgba(6,182,212,0.55)',   h:'115px' },
+            { l:'28%', dur:'4.1s', del:'0.9s', c:'rgba(52,211,153,0.50)',  h:'130px' },
+            { l:'44%', dur:'2.8s', del:'1.6s', c:'rgba(6,182,212,0.42)',   h:'95px'  },
+            { l:'60%', dur:'3.8s', del:'0.4s', c:'rgba(99,202,255,0.50)',  h:'120px' },
+            { l:'78%', dur:'2.7s', del:'1.2s', c:'rgba(52,211,153,0.46)',  h:'108px' },
+          ].map((b, i) => (
+            <div key={i} class="warp-beam" style={`left:${b.l}; height:${b.h}; background:linear-gradient(to top,${b.c},transparent); animation-duration:${b.dur}; animation-delay:${b.del};`} />
+          ))}
+        </div>
+
+        {/* Preview label */}
+        <div style="position:relative; z-index:1; text-align:center; margin-bottom:20px;">
+          <span style="display:inline-flex; align-items:center; gap:8px; padding:5px 16px; border-radius:9999px; background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.28); font-size:10px; font-weight:700; color:rgba(6,182,212,0.85); letter-spacing:0.10em; text-transform:uppercase;">
+            <span style="width:5px; height:5px; border-radius:9999px; background:#06b6d4; animation:pulse-dot 2s ease-in-out infinite;" />
+            Hero — Version B (preview)
+          </span>
+        </div>
+
+        {/* Two-column hero card */}
+        <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:520px; display:grid; grid-template-columns:1fr 1fr;" class="hero-v2-grid">
+
+          {/* Left — cyan/teal with copy */}
+          <div style="background:linear-gradient(160deg,#0891b2 0%,#0e7490 55%,#164e63 100%); padding:64px 48px; display:flex; flex-direction:column; justify-content:flex-end; position:relative; overflow:hidden;">
+            {/* Subtle noise overlay */}
+            <div style="position:absolute; inset:0; background-image:url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.75\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.04\'/%3E%3C/svg%3E'); pointer-events:none; opacity:0.6;"></div>
+            <div style="position:relative; z-index:1;">
+              <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); margin-bottom:28px;">
+                <span style="width:6px; height:6px; border-radius:9999px; background:#4ADE80; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
+                <span style="font-size:11px; font-weight:600; color:rgba(255,255,255,0.90); letter-spacing:0.01em;">Open today</span>
+              </div>
+              <h1 style="font-size:clamp(1.8rem,3.2vw,2.8rem); font-weight:800; color:#ffffff; letter-spacing:-0.04em; line-height:1.06; margin-bottom:16px;">
+                <span style="display:block;">Book your CFS slot.</span>
+                <span style="display:block; color:#FDE68A;">Skip the queue.</span>
+              </h1>
+              <p style="font-size:14px; color:rgba(255,255,255,0.70); line-height:1.75; margin-bottom:36px; max-width:340px;">
+                Instant slot booking for drivers, forwarders and depot teams at Sydney CFS.
+              </p>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a href="/book" style="display:inline-flex; align-items:center; gap:8px; padding:12px 24px; font-size:13px; font-weight:700; color:#0e7490; background:#ffffff; border-radius:9999px; text-decoration:none; transition:all 0.15s ease; box-shadow:0 4px 16px rgba(0,0,0,0.20);"
+                  onmouseover="this.style.background='#f0fdfa'; this.style.transform='translateY(-1px)';"
+                  onmouseout="this.style.background='#ffffff'; this.style.transform='';"
+                >
+                  <Icon name={ICONS.calendar} size={14} />
+                  Book a Visit
+                </a>
+                <a href="/bookings" style="display:inline-flex; align-items:center; gap:8px; padding:12px 22px; font-size:13px; font-weight:600; color:rgba(255,255,255,0.85); border:1.5px solid rgba(255,255,255,0.28); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
+                  onmouseover="this.style.borderColor='rgba(255,255,255,0.55)'; this.style.color='#fff';"
+                  onmouseout="this.style.borderColor='rgba(255,255,255,0.28)'; this.style.color='rgba(255,255,255,0.85)';"
+                >
+                  <Icon name={ICONS.search} size={14} />
+                  Look Up Booking
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Right — truck image (replace URL with your truck image) */}
+          <div style="background:#b2e8f2; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+            {/* Truck image: mix-blend-mode:multiply removes its light cyan bg on this panel */}
+            <img
+              src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80&auto=format&fit=crop"
+              alt="Delivery truck"
+              style="width:100%; height:100%; object-fit:cover; object-position:center; mix-blend-mode:multiply;"
+            />
+            {/* TODO: replace with your 3D truck image:
+                src="YOUR_TRUCK_IMAGE_URL"
+                style="width:100%; height:100%; object-fit:contain; object-position:right bottom; mix-blend-mode:multiply; transform:scale(1.08) translateX(4%);"
+            */}
+          </div>
+
+        </div>
+      </section>
+
       {/* Responsive styles */}
       <style>{`
         @media (max-width:960px){
-          .hero-grid,.preview-grid{grid-template-columns:1fr!important;}
+          .hero-grid,.preview-grid,.hero-v2-grid{grid-template-columns:1fr!important;}
           .steps-grid-new{grid-template-columns:repeat(2,1fr)!important;}
           .bento-row,.persona-grid{grid-template-columns:1fr!important;}
           .bento-hero{grid-template-columns:1fr!important;}
