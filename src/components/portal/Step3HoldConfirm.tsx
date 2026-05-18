@@ -18,15 +18,12 @@ export const Step3HoldConfirm = () => (
         class="wizard-option-card"
         x-bind:class="$store.wizard.loadType === 'fcl' ? 'selected' : ''"
       >
+        {/* color on container → Iconify inherits via currentColor */}
         <div
           style="width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1.5px solid #e5e7eb; transition:all 0.15s ease;"
-          x-bind:style="$store.wizard.loadType === 'fcl' ? 'background:#FC6514; border-color:#FC6514;' : 'background:#f9fafb;'"
+          x-bind:style="{ background: $store.wizard.loadType === 'fcl' ? '#FC6514' : '#f9fafb', borderColor: $store.wizard.loadType === 'fcl' ? '#FC6514' : '#e5e7eb', color: $store.wizard.loadType === 'fcl' ? '#fff' : '#9ca3af' }"
         >
-          <Icon
-            name={ICONS.container}
-            size={20}
-            x-bind:style="$store.wizard.loadType === 'fcl' ? 'color:#fff;' : 'color:#9ca3af;'"
-          />
+          <Icon name={ICONS.container} size={20} />
         </div>
 
         <div style="flex:1; min-width:0; text-align:left;">
@@ -39,7 +36,7 @@ export const Step3HoldConfirm = () => (
 
         <div
           style="width:20px; height:20px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1.5px solid #e5e7eb; transition:all 0.15s ease;"
-          x-bind:style="$store.wizard.loadType === 'fcl' ? 'background:#FC6514; border-color:#FC6514;' : ''"
+          x-bind:style="{ background: $store.wizard.loadType === 'fcl' ? '#FC6514' : 'transparent', borderColor: $store.wizard.loadType === 'fcl' ? '#FC6514' : '#e5e7eb' }"
         >
           <span
             x-show="$store.wizard.loadType === 'fcl'"
@@ -57,13 +54,9 @@ export const Step3HoldConfirm = () => (
       >
         <div
           style="width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1.5px solid #e5e7eb; transition:all 0.15s ease;"
-          x-bind:style="$store.wizard.loadType === 'lcl' ? 'background:#FC6514; border-color:#FC6514;' : 'background:#f9fafb;'"
+          x-bind:style="{ background: $store.wizard.loadType === 'lcl' ? '#FC6514' : '#f9fafb', borderColor: $store.wizard.loadType === 'lcl' ? '#FC6514' : '#e5e7eb', color: $store.wizard.loadType === 'lcl' ? '#fff' : '#9ca3af' }"
         >
-          <Icon
-            name={ICONS.cargo}
-            size={20}
-            x-bind:style="$store.wizard.loadType === 'lcl' ? 'color:#fff;' : 'color:#9ca3af;'"
-          />
+          <Icon name={ICONS.cargo} size={20} />
         </div>
 
         <div style="flex:1; min-width:0; text-align:left;">
@@ -76,7 +69,7 @@ export const Step3HoldConfirm = () => (
 
         <div
           style="width:20px; height:20px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1.5px solid #e5e7eb; transition:all 0.15s ease;"
-          x-bind:style="$store.wizard.loadType === 'lcl' ? 'background:#FC6514; border-color:#FC6514;' : ''"
+          x-bind:style="{ background: $store.wizard.loadType === 'lcl' ? '#FC6514' : 'transparent', borderColor: $store.wizard.loadType === 'lcl' ? '#FC6514' : '#e5e7eb' }"
         >
           <span
             x-show="$store.wizard.loadType === 'lcl'"

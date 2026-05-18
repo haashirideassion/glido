@@ -13,7 +13,7 @@ export const Step7Confirmation = () => (
     <div
       x-show="$store.wizard.holdActive"
       style="margin-bottom:20px; display:flex; align-items:center; gap:12px; border-radius:10px; padding:12px 16px; font-size:13px; font-weight:500;"
-      {...{"x-bind:style": "$store.wizard.holdExpiring ? 'background:rgba(239,68,68,0.10); border:1px solid rgba(239,68,68,0.25); color:#EF4444;' : 'background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.20); color:#FBBF24;'"}}
+      {...{"x-bind:style": "{ background: $store.wizard.holdExpiring ? 'rgba(239,68,68,0.10)' : 'rgba(251,191,36,0.08)', border: $store.wizard.holdExpiring ? '1px solid rgba(239,68,68,0.25)' : '1px solid rgba(251,191,36,0.20)', color: $store.wizard.holdExpiring ? '#EF4444' : '#FBBF24' }"}}
     >
       <Icon name={ICONS.clock} size={16} style="flex-shrink:0;" />
       <span>
@@ -63,13 +63,7 @@ export const Step7Confirmation = () => (
       <span style="color:#78716C; font-weight:500;">ICS Status:</span>
       <span
         style="display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:3px 10px; border-radius:9999px; border:1px solid transparent;"
-        {...{"x-bind:style": `$store.wizard.shipmentData?.icsStatus === 'cleared'
-          ? 'background:rgba(34,197,94,0.12); color:#22C55E; border-color:rgba(34,197,94,0.22);'
-          : $store.wizard.shipmentData?.icsStatus === 'held'
-          ? 'background:rgba(239,68,68,0.12); color:#EF4444; border-color:rgba(239,68,68,0.22);'
-          : $store.wizard.shipmentData?.icsStatus === 'examination'
-          ? 'background:rgba(251,191,36,0.10); color:#FBBF24; border-color:rgba(251,191,36,0.22);'
-          : 'background:rgba(0,0,0,0.04); color:#78716C; border-color:rgba(0,0,0,0.10);'`}}
+        {...{"x-bind:style": "{ background: $store.wizard.shipmentData?.icsStatus === 'cleared' ? 'rgba(34,197,94,0.12)' : $store.wizard.shipmentData?.icsStatus === 'held' ? 'rgba(239,68,68,0.12)' : $store.wizard.shipmentData?.icsStatus === 'examination' ? 'rgba(251,191,36,0.10)' : 'rgba(0,0,0,0.04)', color: $store.wizard.shipmentData?.icsStatus === 'cleared' ? '#22C55E' : $store.wizard.shipmentData?.icsStatus === 'held' ? '#EF4444' : $store.wizard.shipmentData?.icsStatus === 'examination' ? '#FBBF24' : '#78716C', borderColor: $store.wizard.shipmentData?.icsStatus === 'cleared' ? 'rgba(34,197,94,0.22)' : $store.wizard.shipmentData?.icsStatus === 'held' ? 'rgba(239,68,68,0.22)' : $store.wizard.shipmentData?.icsStatus === 'examination' ? 'rgba(251,191,36,0.22)' : 'rgba(0,0,0,0.10)' }"}}
         x-text="{'cleared':'Cleared','held':'Held','examination':'On Hold','pending':'Pending'}[$store.wizard.shipmentData?.icsStatus] || 'Unknown'"
       ></span>
     </div>
@@ -118,7 +112,7 @@ export const Step7Confirmation = () => (
         type="button"
         x-on:click="$store.wizard.paymentMethod = 'card'"
         style="text-align:left; cursor:pointer; border-radius:14px; padding:16px; transition:all 0.15s ease; background:#fff; border:1.5px solid #e5e7eb;"
-        {...{"x-bind:style": "$store.wizard.paymentMethod === 'card' ? 'background:rgba(252,101,20,0.03); border-color:#FC6514;' : ''"}}
+        {...{"x-bind:style": "{ background: $store.wizard.paymentMethod === 'card' ? 'rgba(252,101,20,0.03)' : '#fff', borderColor: $store.wizard.paymentMethod === 'card' ? '#FC6514' : '#e5e7eb' }"}}
       >
         <Icon name={ICONS.shield} size={20} style="color:#FC6514; margin-bottom:8px; display:block;" />
         <div style="font-weight:600; font-size:13px; color:#1C1917;">Credit / Debit Card</div>
@@ -128,7 +122,7 @@ export const Step7Confirmation = () => (
         type="button"
         x-on:click="$store.wizard.paymentMethod = 'eft'"
         style="text-align:left; cursor:pointer; border-radius:14px; padding:16px; transition:all 0.15s ease; background:#fff; border:1.5px solid #e5e7eb;"
-        {...{"x-bind:style": "$store.wizard.paymentMethod === 'eft' ? 'background:rgba(252,101,20,0.03); border-color:#FC6514;' : ''"}}
+        {...{"x-bind:style": "{ background: $store.wizard.paymentMethod === 'eft' ? 'rgba(252,101,20,0.03)' : '#fff', borderColor: $store.wizard.paymentMethod === 'eft' ? '#FC6514' : '#e5e7eb' }"}}
       >
         <Icon name={ICONS.document} size={20} style="color:#FC6514; margin-bottom:8px; display:block;" />
         <div style="font-weight:600; font-size:13px; color:#1C1917;">Bank Transfer (EFT)</div>
@@ -204,7 +198,7 @@ export const Step7Confirmation = () => (
       {...{"x-bind:disabled": `!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)`}}
       class="btn-primary"
       style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; font-weight:600; padding:14px 24px; border:none; cursor:pointer;"
-      {...{"x-bind:style": "(!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? 'opacity:0.30; cursor:not-allowed; pointer-events:none;' : ''"}}
+      {...{"x-bind:style": "{ opacity: (!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? '0.30' : '1', cursor: (!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? 'not-allowed' : 'pointer', pointerEvents: (!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? 'none' : 'auto' }"}}
     >
       <Icon name={ICONS.check} size={18} />
       <span x-text="'Confirm & Pay $' + $store.wizard.totalWithGst + ' AUD'">Confirm & Pay</span>

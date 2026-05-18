@@ -19,7 +19,7 @@ export const Step6ContactVehicle = () => (
         <li style="display:flex; align-items:center; gap:10px; font-size:13px;">
           <span
             style="width:20px; height:20px; border-radius:9999px; display:flex; align-items:center; justify-content:center; flex-shrink:0;"
-            {...{"x-bind:style": "documents.length > 0 ? 'background:rgba(34,197,94,0.14); color:#22C55E;' : 'background:rgba(0,0,0,0.05); color:#A8A29E;'"}}
+            {...{"x-bind:style": "{ background: documents.length > 0 ? 'rgba(34,197,94,0.14)' : 'rgba(0,0,0,0.05)', color: documents.length > 0 ? '#22C55E' : '#A8A29E' }"}}
           >
             <Icon name={ICONS.check} size={12} />
           </span>
@@ -49,7 +49,7 @@ export const Step6ContactVehicle = () => (
     {/* Drop zone */}
     <div
       style="border:2px dashed #e5e7eb; border-radius:12px; background:#fafafa; padding:40px 24px; text-align:center; transition:border-color 0.15s ease, background 0.15s ease; cursor:pointer;"
-      {...{"x-bind:style": "dragging ? 'border-color:#FC6514; background:rgba(252,101,20,0.03);' : ''"}}
+      {...{"x-bind:style": "{ borderColor: dragging ? '#FC6514' : '#e5e7eb', background: dragging ? 'rgba(252,101,20,0.03)' : '#fafafa' }"}}
       {...{"x-on:dragover.prevent": "dragging = true"}}
       {...{"x-on:dragleave.prevent": "dragging = false"}}
       {...{"x-on:drop.prevent": "dragging = false; const files = Array.from($event.dataTransfer.files); files.forEach(f => addFile(f.name, f.size))"}}

@@ -45,8 +45,9 @@ export const BookingWizard = () => (
            completed step: full orange, slightly muted (0.50 opacity)
            current step:   full orange, fully vivid (1.0 opacity)
            future step:    empty — grey track shows through
-           NOTE: avoid > and < in Alpine attr strings (Hono encodes them).
-                 Use Math.max(0, a - b) !== 0  to mean  a > b             */}
+           NOTE: x-bind:style uses OBJECT format so Alpine merges instead
+                 of replacing the static background/border-radius styles.
+                 Avoid > and < — use Math.max(0, a-b) !== 0 for a > b.   */}
       <div style="display:flex; gap:4px; max-width:560px; margin:0 auto;">
         {[1,2,3,4,5,6,7].map(n => (
           <div
@@ -55,11 +56,7 @@ export const BookingWizard = () => (
           >
             <div
               style="height:100%; border-radius:9999px; background:#FC6514; transition:width 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;"
-              x-bind:style={`$store.wizard.currentStep === ${n}
-                ? 'width:100%; opacity:1;'
-                : (Math.max(0, $store.wizard.currentStep - ${n}) !== 0
-                  ? 'width:100%; opacity:0.50;'
-                  : 'width:0%; opacity:0;')`}
+              x-bind:style={`{ width: $store.wizard.currentStep === ${n} ? '100%' : (Math.max(0,$store.wizard.currentStep-${n})!==0 ? '100%' : '0%'), opacity: $store.wizard.currentStep === ${n} ? 1 : (Math.max(0,$store.wizard.currentStep-${n})!==0 ? 0.5 : 0) }`}
             />
           </div>
         ))}
@@ -110,19 +107,19 @@ export const BookingWizard = () => (
     >
       <div style="max-width:560px; margin:0 auto; padding:0 40px; display:flex; align-items:center; justify-content:space-between;">
 
-      {/* Back */}
+      {/* Back — object x-bind:style so Alpine merges, not replaces */}
       <button
         type="button"
         x-on:click="$store.wizard.prevStep()"
-        x-bind:style="$store.wizard.currentStep === 1 ? 'opacity:0; pointer-events:none;' : 'opacity:1;'"
-        style="display:inline-flex; align-items:center; gap:5px; padding:9px 16px 9px 12px; font-size:13px; font-weight:500; color:#6b7280; border:1.5px solid #e5e7eb; border-radius:9999px; background:#fff; cursor:pointer; transition:all 0.15s ease; white-space:nowrap;"
-        onmouseover="this.style.borderColor='#d1d5db'; this.style.color='#111827';"
-        onmouseout="this.style.borderColor='#e5e7eb'; this.style.color='#6b7280';"
+        x-bind:style="{ opacity: $store.wizard.currentStep === 1 ? 0 : 1, pointerEvents: $store.wizard.currentStep === 1 ? 'none' : 'auto' }"
+        style="display:inline-flex; align-items:center; gap:6px; padding:9px 20px 9px 14px; font-size:13px; font-weight:600; color:#374151; border:1.5px solid #e5e7eb; border-radius:9999px; background:#fff; cursor:pointer; transition:all 0.15s ease;"
+        onmouseover="this.style.borderColor='#d1d5db'; this.style.background='#f9fafb';"
+        onmouseout="this.style.borderColor='#e5e7eb'; this.style.background='#fff';"
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0; display:block;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;">
           <path d="M8.5 2.5L4.5 7l4 4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span style="display:block;">Back</span>
+        Back
       </button>
 
       {/* Step name + ordinal */}

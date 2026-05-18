@@ -62,13 +62,7 @@ export const Step5Documents = () => (
           <span style="font-size:13px; font-weight:600; color:#78716C;">ICS Status:</span>
           <span
             style="display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:3px 10px; border-radius:9999px; border:1px solid transparent;"
-            {...{"x-bind:style": `$store.wizard.shipmentData?.icsStatus === 'cleared'
-              ? 'background:rgba(34,197,94,0.12); color:#22C55E; border-color:rgba(34,197,94,0.22);'
-              : $store.wizard.shipmentData?.icsStatus === 'held'
-              ? 'background:rgba(239,68,68,0.12); color:#EF4444; border-color:rgba(239,68,68,0.22);'
-              : $store.wizard.shipmentData?.icsStatus === 'examination'
-              ? 'background:rgba(251,191,36,0.10); color:#FBBF24; border-color:rgba(251,191,36,0.22);'
-              : 'background:rgba(0,0,0,0.04); color:#78716C; border-color:rgba(0,0,0,0.10);'`}}
+            {...{"x-bind:style": "{ background: $store.wizard.shipmentData?.icsStatus === 'cleared' ? 'rgba(34,197,94,0.12)' : $store.wizard.shipmentData?.icsStatus === 'held' ? 'rgba(239,68,68,0.12)' : $store.wizard.shipmentData?.icsStatus === 'examination' ? 'rgba(251,191,36,0.10)' : 'rgba(0,0,0,0.04)', color: $store.wizard.shipmentData?.icsStatus === 'cleared' ? '#22C55E' : $store.wizard.shipmentData?.icsStatus === 'held' ? '#EF4444' : $store.wizard.shipmentData?.icsStatus === 'examination' ? '#FBBF24' : '#78716C', borderColor: $store.wizard.shipmentData?.icsStatus === 'cleared' ? 'rgba(34,197,94,0.22)' : $store.wizard.shipmentData?.icsStatus === 'held' ? 'rgba(239,68,68,0.22)' : $store.wizard.shipmentData?.icsStatus === 'examination' ? 'rgba(251,191,36,0.22)' : 'rgba(0,0,0,0.10)' }"}}
             x-text="{'cleared':'Cleared','held':'Held','examination':'On Hold','pending':'Pending'}[$store.wizard.shipmentData?.icsStatus] || 'Unknown'"
           ></span>
         </div>
@@ -187,11 +181,7 @@ export const Step5Documents = () => (
           <span style="font-size:13px; font-weight:600; color:#78716C;">ICS Status:</span>
           <span
             style="display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:3px 10px; border-radius:9999px; border:1px solid transparent;"
-            {...{"x-bind:style": `$store.wizard.shipmentData?.icsStatus === 'cleared'
-              ? 'background:rgba(34,197,94,0.12); color:#22C55E; border-color:rgba(34,197,94,0.22);'
-              : $store.wizard.shipmentData?.icsStatus === 'held'
-              ? 'background:rgba(239,68,68,0.12); color:#EF4444; border-color:rgba(239,68,68,0.22);'
-              : 'background:rgba(0,0,0,0.04); color:#78716C; border-color:rgba(0,0,0,0.10);'`}}
+            {...{"x-bind:style": "{ background: $store.wizard.shipmentData?.icsStatus === 'cleared' ? 'rgba(34,197,94,0.12)' : $store.wizard.shipmentData?.icsStatus === 'held' ? 'rgba(239,68,68,0.12)' : 'rgba(0,0,0,0.04)', color: $store.wizard.shipmentData?.icsStatus === 'cleared' ? '#22C55E' : $store.wizard.shipmentData?.icsStatus === 'held' ? '#EF4444' : '#78716C', borderColor: $store.wizard.shipmentData?.icsStatus === 'cleared' ? 'rgba(34,197,94,0.22)' : $store.wizard.shipmentData?.icsStatus === 'held' ? 'rgba(239,68,68,0.22)' : 'rgba(0,0,0,0.10)' }"}}
             x-text="{'cleared':'Cleared','held':'Held','examination':'On Hold','pending':'Pending'}[$store.wizard.shipmentData?.icsStatus] || 'Unknown'"
           ></span>
         </div>
