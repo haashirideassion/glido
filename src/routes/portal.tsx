@@ -24,344 +24,60 @@ portalRoutes.get('/', (c) => {
       {/* ══════════════════════════════════════════════════════════════════
           §1  HERO — 3D band on top, copy below centered
       ══════════════════════════════════════════════════════════════════ */}
-      <section style="background:#fff; overflow:hidden; position:relative;">
+      {/* ══════════════════════════════════════════════════════════════════
+          §1  HERO — full-bleed photo with dark gradient overlay
+      ══════════════════════════════════════════════════════════════════ */}
+      <section style="position:relative; min-height:88vh; display:flex; align-items:flex-end; overflow:hidden;">
 
-        {/* 3D canvas band */}
-        <div style="position:relative; background:#fff; padding-top:16px;">
-          <div style="max-width:1100px; margin:0 auto; padding:0 24px; position:relative;">
-            <canvas id="hero-3d" style="width:100%; height:320px; display:block; cursor:grab; border-radius:20px;" />
+        {/* Background photo */}
+        <img
+          src="https://images.unsplash.com/photo-1601897690942-bcacbad33e55?w=1600&q=80&auto=format&fit=crop"
+          alt="Container freight yard"
+          style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 40%;"
+        />
 
-            {/* Drag hint */}
-            <div id="drag-hint" style="position:absolute; bottom:28px; left:50%; transform:translateX(-50%); background:rgba(28,25,23,0.65); backdrop-filter:blur(10px); border-radius:9999px; padding:5px 14px; display:inline-flex; align-items:center; gap:6px; transition:opacity 0.6s ease; pointer-events:none;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"><path d="M8 9V5a2 2 0 0 1 4 0v4M8 9a2 2 0 0 0-2 2v5a6 6 0 0 0 12 0v-5a2 2 0 0 0-2-2"/><path d="M12 9v3"/></svg>
-              <span style="font-size:10.5px; color:rgba(255,255,255,0.65); font-weight:500; white-space:nowrap;">Drag to rotate</span>
+        {/* Dark gradient — dense left, dissolves right */}
+        <div style="position:absolute; inset:0; background:linear-gradient(108deg,rgba(10,8,6,0.90) 0%,rgba(10,8,6,0.76) 38%,rgba(10,8,6,0.30) 68%,transparent 100%);"></div>
+        {/* Bottom fade for text legibility */}
+        <div style="position:absolute; bottom:0; left:0; right:0; height:40%; background:linear-gradient(to top,rgba(10,8,6,0.55) 0%,transparent 100%);"></div>
+
+        {/* ── Hero content ── */}
+        <div style="position:relative; z-index:1; width:100%; max-width:1200px; margin:0 auto; padding:0 40px 88px;" class="hero-content">
+          <div style="max-width:560px;">
+
+            {/* Open badge */}
+            <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.30); margin-bottom:28px;">
+              <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
+              <span style="font-size:11px; font-weight:600; color:#4ADE80; letter-spacing:0.01em;">Open today</span>
             </div>
 
-            {/* Container info label */}
-            <div id="container-label" style="position:absolute; top:28px; left:48px; background:rgba(255,255,255,0.90); backdrop-filter:blur(12px); border:1px solid rgba(0,0,0,0.09); border-radius:10px; padding:9px 14px; display:flex; align-items:center; gap:0; opacity:0; transition:opacity 0.25s ease; pointer-events:none; box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+            <h1 style="font-size:clamp(2rem,3.8vw,3.2rem); font-weight:800; color:#ffffff; letter-spacing:-0.04em; line-height:1.06; margin-bottom:20px;">
+              <span style="display:block;">Book your CFS slot.</span>
+              <span style="display:block; color:#FC6514;">Skip the queue.</span>
+            </h1>
+
+            <p style="font-size:15px; color:rgba(255,255,255,0.68); line-height:1.75; margin-bottom:40px; max-width:380px;">
+              Instant slot booking for drivers, forwarders and depot teams at Sydney CFS.
+            </p>
+
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+              <a href="/book" class="btn-primary" style="padding:13px 28px; font-size:14px;">
+                <Icon name={ICONS.calendar} size={15} />
+                Book a Visit
+                <Icon name={ICONS.arrowRight} size={14} />
+              </a>
+              <a href="/bookings" style="display:inline-flex; align-items:center; gap:8px; padding:13px 24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.85); border:1.5px solid rgba(255,255,255,0.25); border-radius:9999px; text-decoration:none; transition:all 0.15s ease; backdrop-filter:blur(8px);"
+                onmouseover="this.style.borderColor='rgba(255,255,255,0.55)'; this.style.color='#fff';"
+                onmouseout="this.style.borderColor='rgba(255,255,255,0.25)'; this.style.color='rgba(255,255,255,0.85)';"
+              >
+                <Icon name={ICONS.search} size={15} />
+                Look Up Booking
+              </a>
             </div>
 
-              <script dangerouslySetInnerHTML={{ __html: `
-(function(){
-  function init(){
-    if(typeof THREE==='undefined'){setTimeout(init,60);return;}
-    var canvas=document.getElementById('hero-3d');
-    if(!canvas)return;
-    var W=canvas.parentElement.offsetWidth||480, H=460;
-    canvas.width=W*window.devicePixelRatio; canvas.height=H*window.devicePixelRatio;
-    var scene=new THREE.Scene();
-    var camera=new THREE.PerspectiveCamera(38,W/H,0.1,100);
-    camera.position.set(0,1.2,10);
-    camera.lookAt(0,0,0);
-    var renderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});
-    renderer.setSize(W,H); renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-    renderer.setClearColor(0,0);
-
-    // Lights — bright daylight
-    scene.add(new THREE.AmbientLight(0xffffff,1.4));
-    var sun=new THREE.DirectionalLight(0xfff8f0,2.4); sun.position.set(6,12,8); scene.add(sun);
-    var fill=new THREE.DirectionalLight(0xe8f4ff,0.9); fill.position.set(-10,3,-5); scene.add(fill);
-    var under=new THREE.DirectionalLight(0xffffff,0.35); under.position.set(0,-6,0); scene.add(under);
-
-    // Helper: create mesh
-    function mk(geo,mat,x,y,z){var m=new THREE.Mesh(geo,mat); if(x!==undefined)m.position.set(x,y,z); return m;}
-
-    // Container builder
-    function mkContainer(len,h,d,mainCol,darkCol){
-      var g=new THREE.Group();
-      var mMain=new THREE.MeshPhongMaterial({color:mainCol,shininess:24,specular:0x181818});
-      var mDark=new THREE.MeshPhongMaterial({color:darkCol,shininess:44,specular:0x282828});
-      var mCast=new THREE.MeshPhongMaterial({color:0x181818,shininess:150,specular:0x444444});
-
-      // Body
-      g.add(mk(new THREE.BoxGeometry(len,h,d),mMain));
-
-      // Vertical corrugation ribs on front & back long faces
-      var nR=Math.round(len/0.34);
-      var sR=len/nR;
-      for(var i=0;i<nR;i++){
-        var rx=-len/2+(i+0.5)*sR;
-        var rw=sR*0.44;
-        var rf=mk(new THREE.BoxGeometry(rw,h*0.93,0.03),mDark,rx,0,d/2+0.011);
-        var rb=mk(new THREE.BoxGeometry(rw,h*0.93,0.03),mDark,rx,0,-d/2-0.011);
-        g.add(rf); g.add(rb);
-      }
-
-      // Horizontal ribs on short non-door end (left face)
-      var nE=3;
-      var seH=h/nE;
-      for(var j=0;j<nE;j++){
-        var ey=-h/2+(j+0.5)*seH;
-        var ew=seH*0.48;
-        var re=mk(new THREE.BoxGeometry(0.028,ew,d*0.93),mDark,-len/2-0.012,ey,0);
-        g.add(re);
-      }
-
-      // Top rail
-      g.add(mk(new THREE.BoxGeometry(len+0.06,0.065,d+0.06),mDark,0,h/2+0.024,0));
-      // Bottom rail
-      g.add(mk(new THREE.BoxGeometry(len+0.06,0.065,d+0.06),mDark,0,-h/2-0.024,0));
-      // Mid rail on long sides
-      g.add(mk(new THREE.BoxGeometry(len+0.04,0.045,0.028),mDark,0,0,d/2+0.024));
-      g.add(mk(new THREE.BoxGeometry(len+0.04,0.045,0.028),mDark,0,0,-d/2-0.024));
-
-      // Corner posts (4 vertical, full height)
-      [[-1,-1],[-1,1],[1,-1],[1,1]].forEach(function(s){
-        g.add(mk(new THREE.BoxGeometry(0.08,h+0.06,0.08),mDark,s[0]*(len/2),0,s[1]*(d/2)));
-      });
-
-      // Corner castings — all 8 (ISO corner fittings)
-      [[1,1,1],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1],[-1,-1,1],[-1,-1,-1]].forEach(function(s){
-        var cc=mk(new THREE.BoxGeometry(0.15,0.12,0.15),mCast,s[0]*(len/2+0.03),s[1]*(h/2+0.034),s[2]*(d/2+0.03));
-        g.add(cc);
-        // Oval hole in casting (approximated as darker inset box)
-        var ch=mk(new THREE.BoxGeometry(0.07,0.06,0.04),new THREE.MeshPhongMaterial({color:0x080808}),s[0]*(len/2+0.055),s[1]*(h/2+0.034),s[2]*(d/2+0.03));
-        g.add(ch);
-      });
-
-      // Door end details (positive X face)
-      var mDoor=new THREE.MeshPhongMaterial({color:darkCol,shininess:35,specular:0x222222});
-      // Two door panels
-      var dPanW=d/2-0.04;
-      var dpL=mk(new THREE.BoxGeometry(0.025,h*0.96,dPanW),mDoor,len/2+0.012,0,-d/4);
-      var dpR=mk(new THREE.BoxGeometry(0.025,h*0.96,dPanW),mDoor,len/2+0.012,0,d/4);
-      g.add(dpL); g.add(dpR);
-      // Cam-lock rods (vertical, 2 per panel)
-      [-d*0.38,-d*0.12,d*0.12,d*0.38].forEach(function(dz){
-        var rod=mk(new THREE.CylinderGeometry(0.018,0.018,h*0.82,8),mCast,len/2+0.038,0,dz);
-        g.add(rod);
-      });
-      // Center vertical gap
-      g.add(mk(new THREE.BoxGeometry(0.015,h,0.015),mCast,len/2+0.04,0,0));
-      // Hinge strips on door edge
-      [-h*0.28,0,h*0.28].forEach(function(hy){
-        g.add(mk(new THREE.BoxGeometry(0.035,0.06,0.035),mCast,len/2+0.04,hy,-d/2+0.04));
-        g.add(mk(new THREE.BoxGeometry(0.035,0.06,0.035),mCast,len/2+0.04,hy,d/2-0.04));
-      });
-
-      return g;
-    }
-
-    var world=new THREE.Group();
-
-    // Containers arranged in a loose horizontal gliding formation —
-    // spread across the width so they feel like they're moving together
-    // Container 1 — 40ft Orange (brand), leading left-center, slight angle
-    var c1=mkContainer(3.8,0.96,0.82,0xFC6514,0xB54100);
-    c1.rotation.y=0.30; c1.position.set(-2.2,0,0);
-    world.add(c1);
-
-    // Container 2 — 20ft Steel Blue, right, slightly higher and behind
-    var c2=mkContainer(2.0,0.88,0.76,0x1B5FA8,0x0F3E72);
-    c2.rotation.y=-0.18; c2.position.set(2.6,0.22,-0.7);
-    world.add(c2);
-
-    // Container 3 — 20ft Shipping Green, far right, lower and behind
-    var c3=mkContainer(2.2,0.90,0.78,0x2D6B3E,0x1B4228);
-    c3.rotation.y=0.14; c3.position.set(0.8,-0.30,-1.2);
-    world.add(c3);
-
-    scene.add(world);
-
-    // ── Wind streak particles — horizontal speed lines ──────────────────
-    var STREAK_N = 90;
-    var sPos = new Float32Array(STREAK_N * 6);  // 2 pts × 3 floats each
-    var sSpeeds = new Float32Array(STREAK_N);
-    var sLens = new Float32Array(STREAK_N);
-
-    function initStreak(i) {
-      var x = (Math.random() - 0.5) * 28;
-      var y = (Math.random() - 0.5) * 8;
-      var z = (Math.random() - 0.5) * 7 - 1;
-      var len = 0.25 + Math.random() * 1.6;
-      sLens[i] = len;
-      sSpeeds[i] = 0.035 + Math.random() * 0.07;
-      var b = i * 6;
-      sPos[b]=x; sPos[b+1]=y; sPos[b+2]=z;
-      sPos[b+3]=x+len; sPos[b+4]=y; sPos[b+5]=z;
-    }
-    for (var si = 0; si < STREAK_N; si++) initStreak(si);
-
-    var sGeo = new THREE.BufferGeometry();
-    sGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
-    var sMat = new THREE.LineBasicMaterial({ color: 0xcccccc, transparent: true, opacity: 0.18 });
-    var streaks = new THREE.LineSegments(sGeo, sMat);
-    scene.add(streaks);
-
-    // Collect all meshes for raycasting
-    var allMeshes=[];
-    world.traverse(function(obj){if(obj.isMesh)allMeshes.push(obj);});
-    var containers=[c1,c2,c3];
-    var cInfo=[
-      {ref:'MSCU·184729',type:'40ft HC',size:'12.2m',status:'ICS Cleared'},
-      {ref:'COSU·037614',type:'20ft Std',size:'6.1m',status:'Confirmed'},
-      {ref:'OOLU·295183',type:'20ft Std',size:'6.1m',status:'On Site'},
-    ];
-
-    function getContainer(obj){
-      for(var i=0;i<containers.length;i++){
-        var found=false;
-        containers[i].traverse(function(c){if(c===obj)found=true;});
-        if(found)return i;
-      }
-      return -1;
-    }
-
-    // Raycaster & hover
-    var ray=new THREE.Raycaster();
-    var m2=new THREE.Vector2();
-    var hovered=-1, selected=-1;
-    function setEmissive(idx,val){
-      containers.forEach(function(con,ci){
-        con.traverse(function(obj){
-          if(obj.isMesh&&obj.material&&obj.material.emissive){
-            obj.material.emissive.setHex(ci===idx?val:0x000000);
-            obj.material.emissiveIntensity=(ci===idx?1:0);
-          }
-        });
-      });
-    }
-
-    // Drag
-    var dragging=false, lastX=0, lastY=0, clickX=0, clickY=0;
-    canvas.addEventListener('mousedown',function(e){
-      dragging=true; lastX=e.clientX; lastY=e.clientY;
-      clickX=e.clientX; clickY=e.clientY;
-      canvas.style.cursor='grabbing';
-    });
-    window.addEventListener('mouseup',function(){
-      if(dragging){dragging=false; canvas.style.cursor=hovered>=0?'pointer':'grab';}
-    });
-    window.addEventListener('mousemove',function(e){
-      if(dragging){
-        world.rotation.y+=(e.clientX-lastX)*0.009;
-        world.rotation.x=Math.max(-0.65,Math.min(0.65,world.rotation.x+(e.clientY-lastY)*0.007));
-        lastX=e.clientX; lastY=e.clientY;
-      } else {
-        var r=canvas.getBoundingClientRect();
-        m2.x=((e.clientX-r.left)/r.width)*2-1;
-        m2.y=-((e.clientY-r.top)/r.height)*2+1;
-      }
-    });
-
-    // Touch
-    var tX=0,tY=0;
-    canvas.addEventListener('touchstart',function(e){
-      if(e.touches.length===1){tX=e.touches[0].clientX;tY=e.touches[0].clientY;}
-    },{passive:true});
-    canvas.addEventListener('touchmove',function(e){
-      if(e.touches.length===1){
-        e.preventDefault();
-        world.rotation.y+=(e.touches[0].clientX-tX)*0.009;
-        world.rotation.x=Math.max(-0.65,Math.min(0.65,world.rotation.x+(e.touches[0].clientY-tY)*0.007));
-        tX=e.touches[0].clientX;tY=e.touches[0].clientY;
-      }
-    },{passive:false});
-
-    // Click to select
-    canvas.addEventListener('click',function(e){
-      if(Math.abs(e.clientX-clickX)+Math.abs(e.clientY-clickY)>5)return;
-      ray.setFromCamera(m2,camera);
-      var hits=ray.intersectObjects(allMeshes,false);
-      var lbl=document.getElementById('container-label');
-      if(hits.length>0){
-        var ci=getContainer(hits[0].object);
-        if(ci>=0){
-          selected=ci;
-          if(lbl){
-            var inf=cInfo[ci];
-            lbl.innerHTML='<span style="font-size:11px;font-weight:700;color:#FC6514;font-family:ui-monospace,monospace;">'+inf.ref+'</span><span style="font-size:11px;color:#57534E;margin-left:8px;">'+inf.type+' · '+inf.size+'</span><span style="font-size:10px;font-weight:600;background:rgba(34,197,94,0.12);color:#16A34A;border:1px solid rgba(34,197,94,0.22);border-radius:99px;padding:2px 8px;margin-left:8px;">'+inf.status+'</span>';
-            lbl.style.opacity='1';
-          }
-        }
-      } else {
-        selected=-1;
-        if(lbl)lbl.style.opacity='0';
-      }
-    });
-
-    // Fade hint after 4s
-    var hint=document.getElementById('drag-hint');
-    if(hint)setTimeout(function(){hint.style.opacity='0';},4000);
-
-    window.addEventListener('resize',function(){
-      var W2=canvas.parentElement.offsetWidth||480;
-      camera.aspect=W2/H;camera.updateProjectionMatrix();renderer.setSize(W2,H);
-    });
-
-    var t0=performance.now();
-    (function loop(){
-      requestAnimationFrame(loop);
-      var t=(performance.now()-t0)*0.001;
-      if(!dragging){
-        world.rotation.y+=0.004;
-        c1.position.y=Math.sin(t*0.44)*0.055;
-        c2.position.y=0.22+Math.sin(t*0.57+1.2)*0.048;
-        c3.position.y=-0.30+Math.sin(t*0.39+2.5)*0.065;
-      }
-      // Animate wind streaks — move right-to-left, wrap around
-      for (var wi = 0; wi < STREAK_N; wi++) {
-        var wb = wi * 6;
-        sPos[wb]   -= sSpeeds[wi];
-        sPos[wb+3] -= sSpeeds[wi];
-        if (sPos[wb+3] < -14) {
-          var nx = 14 + Math.random() * 4;
-          var ny = (Math.random() - 0.5) * 8;
-          var nz = (Math.random() - 0.5) * 7 - 1;
-          sPos[wb]=nx; sPos[wb+1]=ny; sPos[wb+2]=nz;
-          sPos[wb+3]=nx+sLens[wi]; sPos[wb+4]=ny; sPos[wb+5]=nz;
-        }
-      }
-      streaks.geometry.attributes.position.needsUpdate = true;
-
-      // Hover detection
-      if(!dragging){
-        ray.setFromCamera(m2,camera);
-        var hits2=ray.intersectObjects(allMeshes,false);
-        var nh=hits2.length>0?getContainer(hits2[0].object):-1;
-        if(nh!==hovered){
-          hovered=nh;
-          canvas.style.cursor=nh>=0?'pointer':'grab';
-          setEmissive(nh===selected?selected:nh,0x221100);
-        }
-      }
-      renderer.render(scene,camera);
-    })();
-  }
-  init();
-})();
-              `}} />
-            </div>
-          </div>
-
-        {/* ── Heading + CTA — centered below the 3D canvas ── */}
-        <div style="max-width:680px; margin:0 auto; padding:52px 24px 88px; text-align:center;">
-          <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.09); border:1px solid rgba(34,197,94,0.22); margin-bottom:28px;">
-            <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
-            <span style="font-size:11px; font-weight:600; color:#16A34A; letter-spacing:0.01em;">Open today</span>
-          </div>
-
-          <h1 style="font-size:clamp(2.8rem,5.2vw,4.2rem); font-weight:800; color:#1C1917; letter-spacing:-0.048em; line-height:1.02; margin-bottom:20px;">
-            <span style="display:block;">Book your CFS slot.</span>
-            <span style="display:block; color:#FC6514;">Skip the queue.</span>
-          </h1>
-
-          <p style="font-size:16px; color:#6b7280; line-height:1.75; margin-bottom:40px; max-width:400px; margin-left:auto; margin-right:auto;">
-            Instant slot booking for drivers, forwarders and depot teams at Sydney CFS.
-          </p>
-
-          <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-            <a href="/book" class="btn-primary" style="padding:14px 32px; font-size:14px;">
-              <Icon name={ICONS.calendar} size={15} />
-              Book a Visit
-              <Icon name={ICONS.arrowRight} size={14} />
-            </a>
-            <a href="/bookings" class="btn-ghost" style="padding:14px 26px; font-size:14px;">
-              <Icon name={ICONS.search} size={15} />
-              Look Up Booking
-            </a>
           </div>
         </div>
+
 
       </section>
 
@@ -763,6 +479,7 @@ portalRoutes.get('/', (c) => {
         }
         @media (max-width:640px){
           .steps-grid-new{grid-template-columns:1fr!important;}
+          .hero-content{padding:0 24px 64px!important;}
         }
       `}</style>
 
