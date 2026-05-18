@@ -21,233 +21,345 @@ portalRoutes.get('/', (c) => {
   return c.html(
     <LandingLayout title="Home">
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          §1  HERO — dark full-bleed, white text, Three.js right
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="background:#1C1917; overflow:hidden; position:relative; min-height:90vh; display:flex; align-items:center;">
+      {/* ══════════════════════════════════════════════════════════════════
+          §1  HERO — all-light, interactive 3D containers
+      ══════════════════════════════════════════════════════════════════ */}
+      <section style="background:#F3F2F0; overflow:hidden; position:relative; min-height:88vh; display:flex; align-items:center;">
 
-        {/* Subtle grid overlay */}
-        <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px); background-size:48px 48px; pointer-events:none;" />
+        {/* Subtle dot grid */}
+        <div style="position:absolute; inset:0; background-image:radial-gradient(rgba(0,0,0,0.07) 1px, transparent 1px); background-size:28px 28px; pointer-events:none; opacity:0.6;" />
 
-        {/* Bottom transition to white */}
-        <div style="position:absolute; bottom:0; left:0; right:0; height:140px; background:linear-gradient(to bottom, transparent, #FFFFFF); pointer-events:none; z-index:2;" />
+        <div class="max-w-6xl mx-auto px-6 w-full" style="padding-top:5rem; padding-bottom:6rem; position:relative; z-index:1;">
+          <div style="display:grid; grid-template-columns:1fr 1.15fr; gap:64px; align-items:center;" class="hero-grid">
 
-        <div class="max-w-6xl mx-auto px-6 w-full" style="padding-top:5rem; padding-bottom:7rem; position:relative; z-index:1;">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:center;" class="hero-grid">
-
-            {/* ── Left: copy ── */}
+            {/* Left: copy */}
             <div>
-              <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.10); border:1px solid rgba(34,197,94,0.20); margin-bottom:32px;">
+              <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.09); border:1px solid rgba(34,197,94,0.22); margin-bottom:28px;">
                 <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
-                <span style="font-size:11px; font-weight:500; color:#22C55E; letter-spacing:0.01em;">Open today · Mon–Fri 06:00–18:00</span>
+                <span style="font-size:11px; font-weight:600; color:#16A34A; letter-spacing:0.01em;">Open today · Mon–Fri 06:00–18:00</span>
               </div>
 
-              <h1 class="hero-words" style="font-size:clamp(2.6rem,4.8vw,3.9rem); font-weight:700; color:#FFFFFF; letter-spacing:-0.04em; line-height:1.03; margin-bottom:24px;">
-                <span class="hero-word" style="display:block;">Schedule your</span>
-                <span class="hero-word" style="display:block;">
-                  <span id="rotating-word" style="color:#FC6514; display:inline-block; min-width:220px;">Collection</span>
-                </span>
-                <span class="hero-word" style="display:block;">at the CFS.</span>
+              <h1 style="font-size:clamp(2.4rem,4.4vw,3.6rem); font-weight:800; color:#1C1917; letter-spacing:-0.045em; line-height:1.03; margin-bottom:22px;">
+                <span style="display:block;">Book your CFS slot.</span>
+                <span style="display:block; color:#FC6514;">Skip the queue.</span>
               </h1>
 
-              <p style="font-size:15px; color:rgba(255,255,255,0.48); line-height:1.75; max-width:400px; margin-bottom:40px;">
-                Skip the queue. Book a slot online, arrive on time, scan your QR at the kiosk — no phone calls, no whiteboards.
+              <p style="font-size:15px; color:#78716C; line-height:1.8; max-width:420px; margin-bottom:36px;">
+                Schedule a pick-up or drop-off online, arrive at your window, scan your QR code at the kiosk — done. No calls, no whiteboards, no waiting.
               </p>
 
-              <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:32px;">
+              <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:40px;">
                 <a href="/book" class="btn-primary" style="padding:13px 26px; font-size:13.5px;">
                   <Icon name={ICONS.calendar} size={15} />
                   Book a Slot
                   <Icon name={ICONS.arrowRight} size={14} />
                 </a>
-                <a href="#how-it-works"
-                  style="display:inline-flex; align-items:center; gap:8px; padding:13px 22px; font-size:13.5px; font-weight:500; color:rgba(255,255,255,0.58); border:1px solid rgba(255,255,255,0.13); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
-                  onmouseover="this.style.borderColor='rgba(255,255,255,0.32)'; this.style.color='rgba(255,255,255,0.88)';"
-                  onmouseout="this.style.borderColor='rgba(255,255,255,0.13)'; this.style.color='rgba(255,255,255,0.58)';">
+                <a href="#how-it-works" class="btn-ghost" style="padding:13px 22px; font-size:13.5px;">
                   How it works
                 </a>
               </div>
 
-              {/* Mini trust row */}
-              <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+              {/* Trust row */}
+              <div style="display:flex; align-items:center; gap:0; border-top:1px solid rgba(0,0,0,0.07); padding-top:24px;">
                 {[
-                  { v: '4 min', l: 'avg gate time' },
-                  { v: '0', l: 'phone calls needed' },
-                  { v: '24/7', l: 'online booking' },
-                ].map(s => (
-                  <div key={s.v} style="display:flex; flex-direction:column;">
-                    <span style="font-size:17px; font-weight:700; color:#FFFFFF; letter-spacing:-0.03em; line-height:1;">{s.v}</span>
-                    <span style="font-size:11px; color:rgba(255,255,255,0.35); margin-top:2px;">{s.l}</span>
+                  { v: '4 min',  l: 'avg gate time'      },
+                  { v: '0',      l: 'phone calls needed'  },
+                  { v: '24/7',   l: 'online booking'      },
+                  { v: '99.2%',  l: 'on-time arrivals'    },
+                ].map((s, i) => (
+                  <div key={s.v} style={`flex:1; text-align:center; ${i > 0 ? 'border-left:1px solid rgba(0,0,0,0.07);' : ''} padding:0 16px;`}>
+                    <span style="display:block; font-size:18px; font-weight:800; color:#1C1917; letter-spacing:-0.04em; line-height:1;">{s.v}</span>
+                    <span style="display:block; font-size:10.5px; color:#A8A29E; margin-top:3px; font-weight:500;">{s.l}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* ── Right: Three.js + floating confirmation card ── */}
-            <div style="position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-              <canvas id="hero-3d" style="width:100%; height:440px; display:block; cursor:grab;" />
+            {/* Right: interactive 3D */}
+            <div style="position:relative;">
+              <canvas id="hero-3d" style="width:100%; height:460px; display:block; cursor:grab; border-radius:20px;" />
 
-              {/* Floating booking confirmation chip */}
-              <div style="position:absolute; bottom:36px; left:0; right:0; display:flex; justify-content:center; pointer-events:none;">
-                <div style="background:rgba(28,25,23,0.72); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.09); border-radius:14px; padding:14px 18px; display:inline-flex; align-items:center; gap:14px; box-shadow:0 8px 32px rgba(0,0,0,0.4);">
-                  <div style="width:34px; height:34px; border-radius:9px; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 3px 10px rgba(252,101,20,0.45);">
-                    <Icon name={ICONS.check} size={16} style="color:white;" />
-                  </div>
-                  <div>
-                    <p style="font-size:12px; font-weight:600; color:#FFFFFF; margin-bottom:2px;">Slot confirmed · MSCU1234567</p>
-                    <p style="font-size:11px; color:rgba(255,255,255,0.40);">Today · 09:00–09:30 · Bay 4</p>
-                  </div>
-                  <div style="padding:4px 10px; border-radius:9999px; background:rgba(34,197,94,0.14); border:1px solid rgba(34,197,94,0.24); flex-shrink:0;">
-                    <span style="font-size:10px; font-weight:600; color:#22C55E; letter-spacing:0.03em;">ICS Clear</span>
-                  </div>
-                </div>
+              {/* Drag hint */}
+              <div id="drag-hint" style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:rgba(28,25,23,0.65); backdrop-filter:blur(10px); border-radius:9999px; padding:5px 14px; display:inline-flex; align-items:center; gap:6px; transition:opacity 0.6s ease; pointer-events:none;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"><path d="M8 9V5a2 2 0 0 1 4 0v4M8 9a2 2 0 0 0-2 2v5a6 6 0 0 0 12 0v-5a2 2 0 0 0-2-2"/><path d="M12 9v3"/></svg>
+                <span style="font-size:10.5px; color:rgba(255,255,255,0.65); font-weight:500; white-space:nowrap;">Drag to rotate · Scroll to zoom</span>
+              </div>
+
+              {/* Container info label */}
+              <div id="container-label" style="position:absolute; top:16px; left:16px; background:rgba(255,255,255,0.90); backdrop-filter:blur(12px); border:1px solid rgba(0,0,0,0.09); border-radius:10px; padding:9px 14px; display:flex; align-items:center; gap:0; opacity:0; transition:opacity 0.25s ease; pointer-events:none; box-shadow:0 2px 12px rgba(0,0,0,0.08);">
               </div>
 
               <script dangerouslySetInnerHTML={{ __html: `
-                (function() {
-                  function waitAndInit() {
-                    if (typeof THREE === 'undefined') { setTimeout(waitAndInit, 60); return; }
-                    var canvas = document.getElementById('hero-3d');
-                    if (!canvas) return;
-                    var W = canvas.parentElement.offsetWidth || 500;
-                    var H = 440;
-                    canvas.width  = W * window.devicePixelRatio;
-                    canvas.height = H * window.devicePixelRatio;
-                    var scene    = new THREE.Scene();
-                    var camera   = new THREE.PerspectiveCamera(40, W / H, 0.1, 100);
-                    camera.position.set(0, 1.2, 14);
-                    var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-                    renderer.setSize(W, H);
-                    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-                    renderer.setClearColor(0x000000, 0);
-                    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
-                    var sun = new THREE.DirectionalLight(0xffffff, 1.6);
-                    sun.position.set(8, 12, 8); scene.add(sun);
-                    var fill = new THREE.DirectionalLight(0xfff4ec, 0.5);
-                    fill.position.set(-8, -2, 6); scene.add(fill);
-                    var glow = new THREE.PointLight(0xFC6514, 3.2, 18);
-                    glow.position.set(0, 2, 6); scene.add(glow);
-                    var mOrange = new THREE.MeshPhongMaterial({ color: 0xFC6514, shininess: 60, specular: 0xffffff });
-                    var mStone  = new THREE.MeshPhongMaterial({ color: 0xD6D0CA, shininess: 15, specular: 0xaaaaaa });
-                    var mLight  = new THREE.MeshPhongMaterial({ color: 0xF0EDE8, shininess: 30, specular: 0xdddddd });
-                    var eOrange = new THREE.LineBasicMaterial({ color: 0xD44D00, opacity: 0.55, transparent: true });
-                    var eLight  = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.18, transparent: true });
-                    function box(w, h, d, mat, edge, x, y, z, rx, ry, rz) {
-                      var geo  = new THREE.BoxGeometry(w, h, d);
-                      var mesh = new THREE.Mesh(geo, mat);
-                      mesh.position.set(x, y, z);
-                      mesh.rotation.set(rx, ry, rz);
-                      mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), edge));
-                      return mesh;
-                    }
-                    var group = new THREE.Group();
-                    group.add(box(4.2, 1.7, 1.7, mOrange, eOrange,  0,    0,    0,    0,     0.28,  0));
-                    group.add(box(3.2, 1.3, 1.3, mStone,  eLight,  -0.6,  2.1,  0.5,  0.05, -0.18,  0));
-                    group.add(box(2.6, 1.1, 1.1, mLight,  eLight,   1.4, -1.9, -0.6, -0.04,  0.42,  0.04));
-                    var sdot = new THREE.SphereGeometry(0.09, 12, 12);
-                    var mdot = new THREE.MeshPhongMaterial({ color: 0xFC6514, emissive: 0xFC6514, emissiveIntensity: 0.5 });
-                    [[-2.8, 3.0, 1.8], [3.2, -0.8, 1.2], [-1.8, -2.6, 0.6]].forEach(function(p) {
-                      var s = new THREE.Mesh(sdot, mdot); s.position.set(p[0], p[1], p[2]); group.add(s);
-                    });
-                    var lmat = new THREE.LineBasicMaterial({ color: 0xFC6514, opacity: 0.12, transparent: true });
-                    var lpts = new Float32Array([0,0,0, -0.6,2.1,0.5, 0,0,0, 1.4,-1.9,-0.6]);
-                    var lgeo = new THREE.BufferGeometry();
-                    lgeo.setAttribute('position', new THREE.BufferAttribute(lpts, 3));
-                    group.add(new THREE.LineSegments(lgeo, lmat));
-                    scene.add(group);
-                    var boxMeshes = [group.children[0], group.children[1], group.children[2]];
-                    var cParams = [
-                      { yPhase: 0,   yFreq: 0.52, yAmp: 0.18, zFreq: 0.31, zAmp: 0.022 },
-                      { yPhase: 1.1, yFreq: 0.68, yAmp: 0.13, zFreq: 0.47, zAmp: 0.018 },
-                      { yPhase: 2.4, yFreq: 0.41, yAmp: 0.22, zFreq: 0.25, zAmp: 0.030 },
-                    ];
-                    var streakCount = 48;
-                    var streakGeo = new THREE.BufferGeometry();
-                    var streakPos = new Float32Array(streakCount * 6);
-                    var streakData = [];
-                    function initStreak(i) {
-                      var x = (Math.random()-0.5)*30, y = (Math.random()-0.5)*13, z = -2+Math.random()*7;
-                      var len = 0.25+Math.random()*0.85, spd = 1.6+Math.random()*3.8;
-                      streakData[i] = {x:x, y:y, z:z, len:len, spd:spd};
-                      streakPos[i*6]=x; streakPos[i*6+1]=y; streakPos[i*6+2]=z;
-                      streakPos[i*6+3]=x+len; streakPos[i*6+4]=y; streakPos[i*6+5]=z;
-                    }
-                    for(var si=0;si<streakCount;si++) initStreak(si);
-                    streakGeo.setAttribute('position', new THREE.BufferAttribute(streakPos, 3));
-                    var streakMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.08 });
-                    var streakLines = new THREE.LineSegments(streakGeo, streakMat);
-                    scene.add(streakLines);
-                    var haloGeo = new THREE.PlaneGeometry(1, 0.3);
-                    var haloMat = new THREE.MeshBasicMaterial({ color: 0xFC6514, transparent: true, opacity: 0.08, depthWrite: false });
-                    var halos = [];
-                    var haloBase = [{bx:0,bz:0,sx:3.4,sz:0.55},{bx:-0.6,bz:0.5,sx:2.6,sz:0.44},{bx:1.4,bz:-0.6,sx:2.1,sz:0.36}];
-                    for(var hi=0;hi<3;hi++) {
-                      var hm = new THREE.Mesh(haloGeo, haloMat.clone());
-                      hm.rotation.x = -Math.PI/2;
-                      hm.scale.set(haloBase[hi].sx, haloBase[hi].sz, 1);
-                      hm.position.set(haloBase[hi].bx, -0.95, haloBase[hi].bz);
-                      halos.push(hm); scene.add(hm);
-                    }
-                    var mouse = {x:0, y:0}, smooth = {x:0, y:0};
-                    window.addEventListener('mousemove', function(e) {
-                      mouse.x = (e.clientX/window.innerWidth-0.5)*2;
-                      mouse.y = (e.clientY/window.innerHeight-0.5)*2;
-                    });
-                    window.addEventListener('resize', function() {
-                      var W2 = canvas.parentElement.offsetWidth || 500;
-                      camera.aspect = W2/H; camera.updateProjectionMatrix(); renderer.setSize(W2,H);
-                    });
-                    var t0 = performance.now();
-                    (function loop() {
-                      requestAnimationFrame(loop);
-                      var t = (performance.now()-t0)*0.001;
-                      smooth.x += (mouse.x*0.32-smooth.x)*0.045;
-                      smooth.y += (mouse.y*0.20-smooth.y)*0.045;
-                      group.rotation.y = t*0.06+smooth.x*0.6;
-                      group.rotation.x = -smooth.y*0.30;
-                      var bp = [[0,0,0],[-0.6,2.1,0.5],[1.4,-1.9,-0.6]];
-                      for(var ci=0;ci<3;ci++) {
-                        var cp = cParams[ci], bm = boxMeshes[ci]; if(!bm) continue;
-                        bm.position.y = bp[ci][1]+Math.sin(t*cp.yFreq+cp.yPhase)*cp.yAmp;
-                        bm.rotation.z = Math.sin(t*cp.zFreq+cp.yPhase*0.7)*cp.zAmp;
-                      }
-                      glow.intensity = 2.8+Math.sin(t*1.1)*0.5;
-                      var spa = streakLines.geometry.attributes.position;
-                      for(var si2=0;si2<streakCount;si2++) {
-                        streakData[si2].x += streakData[si2].spd*0.016;
-                        streakData[si2].y += Math.sin(t*0.6+si2*0.55)*0.0018;
-                        if(streakData[si2].x>15){streakData[si2].x=-15-streakData[si2].len; streakData[si2].y=(Math.random()-0.5)*13;}
-                        spa.setXYZ(si2*2, streakData[si2].x, streakData[si2].y, streakData[si2].z);
-                        spa.setXYZ(si2*2+1, streakData[si2].x+streakData[si2].len, streakData[si2].y, streakData[si2].z);
-                      }
-                      spa.needsUpdate = true;
-                      streakMat.opacity = 0.06+Math.sin(t*0.7)*0.03;
-                      for(var hi2=0;hi2<3;hi2++) {
-                        var bm2 = boxMeshes[hi2]; if(!bm2||!halos[hi2]) continue;
-                        halos[hi2].position.y = bm2.position.y-0.88;
-                        halos[hi2].position.x = haloBase[hi2].bx;
-                        halos[hi2].position.z = haloBase[hi2].bz;
-                        var lift = (Math.sin(t*cParams[hi2].yFreq+cParams[hi2].yPhase)+1)*0.5;
-                        halos[hi2].material.opacity = 0.04+lift*0.10;
-                        halos[hi2].scale.x = haloBase[hi2].sx*(0.9+lift*0.15);
-                      }
-                      renderer.render(scene, camera);
-                    })();
-                  }
-                  waitAndInit();
-                })();
+(function(){
+  function init(){
+    if(typeof THREE==='undefined'){setTimeout(init,60);return;}
+    var canvas=document.getElementById('hero-3d');
+    if(!canvas)return;
+    var W=canvas.parentElement.offsetWidth||480, H=460;
+    canvas.width=W*window.devicePixelRatio; canvas.height=H*window.devicePixelRatio;
+    var scene=new THREE.Scene();
+    var camera=new THREE.PerspectiveCamera(36,W/H,0.1,100);
+    camera.position.set(0,2,13);
+    camera.lookAt(0,0,0);
+    var renderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});
+    renderer.setSize(W,H); renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.setClearColor(0,0);
+
+    // Lights — bright daylight
+    scene.add(new THREE.AmbientLight(0xffffff,1.4));
+    var sun=new THREE.DirectionalLight(0xfff8f0,2.4); sun.position.set(6,12,8); scene.add(sun);
+    var fill=new THREE.DirectionalLight(0xe8f4ff,0.9); fill.position.set(-10,3,-5); scene.add(fill);
+    var under=new THREE.DirectionalLight(0xffffff,0.35); under.position.set(0,-6,0); scene.add(under);
+
+    // Helper: create mesh
+    function mk(geo,mat,x,y,z){var m=new THREE.Mesh(geo,mat); if(x!==undefined)m.position.set(x,y,z); return m;}
+
+    // Container builder
+    function mkContainer(len,h,d,mainCol,darkCol){
+      var g=new THREE.Group();
+      var mMain=new THREE.MeshPhongMaterial({color:mainCol,shininess:24,specular:0x181818});
+      var mDark=new THREE.MeshPhongMaterial({color:darkCol,shininess:44,specular:0x282828});
+      var mCast=new THREE.MeshPhongMaterial({color:0x181818,shininess:150,specular:0x444444});
+
+      // Body
+      g.add(mk(new THREE.BoxGeometry(len,h,d),mMain));
+
+      // Vertical corrugation ribs on front & back long faces
+      var nR=Math.round(len/0.34);
+      var sR=len/nR;
+      for(var i=0;i<nR;i++){
+        var rx=-len/2+(i+0.5)*sR;
+        var rw=sR*0.44;
+        var rf=mk(new THREE.BoxGeometry(rw,h*0.93,0.03),mDark,rx,0,d/2+0.011);
+        var rb=mk(new THREE.BoxGeometry(rw,h*0.93,0.03),mDark,rx,0,-d/2-0.011);
+        g.add(rf); g.add(rb);
+      }
+
+      // Horizontal ribs on short non-door end (left face)
+      var nE=3;
+      var seH=h/nE;
+      for(var j=0;j<nE;j++){
+        var ey=-h/2+(j+0.5)*seH;
+        var ew=seH*0.48;
+        var re=mk(new THREE.BoxGeometry(0.028,ew,d*0.93),mDark,-len/2-0.012,ey,0);
+        g.add(re);
+      }
+
+      // Top rail
+      g.add(mk(new THREE.BoxGeometry(len+0.06,0.065,d+0.06),mDark,0,h/2+0.024,0));
+      // Bottom rail
+      g.add(mk(new THREE.BoxGeometry(len+0.06,0.065,d+0.06),mDark,0,-h/2-0.024,0));
+      // Mid rail on long sides
+      g.add(mk(new THREE.BoxGeometry(len+0.04,0.045,0.028),mDark,0,0,d/2+0.024));
+      g.add(mk(new THREE.BoxGeometry(len+0.04,0.045,0.028),mDark,0,0,-d/2-0.024));
+
+      // Corner posts (4 vertical, full height)
+      [[-1,-1],[-1,1],[1,-1],[1,1]].forEach(function(s){
+        g.add(mk(new THREE.BoxGeometry(0.08,h+0.06,0.08),mDark,s[0]*(len/2),0,s[1]*(d/2)));
+      });
+
+      // Corner castings — all 8 (ISO corner fittings)
+      [[1,1,1],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1],[-1,-1,1],[-1,-1,-1]].forEach(function(s){
+        var cc=mk(new THREE.BoxGeometry(0.15,0.12,0.15),mCast,s[0]*(len/2+0.03),s[1]*(h/2+0.034),s[2]*(d/2+0.03));
+        g.add(cc);
+        // Oval hole in casting (approximated as darker inset box)
+        var ch=mk(new THREE.BoxGeometry(0.07,0.06,0.04),new THREE.MeshPhongMaterial({color:0x080808}),s[0]*(len/2+0.055),s[1]*(h/2+0.034),s[2]*(d/2+0.03));
+        g.add(ch);
+      });
+
+      // Door end details (positive X face)
+      var mDoor=new THREE.MeshPhongMaterial({color:darkCol,shininess:35,specular:0x222222});
+      // Two door panels
+      var dPanW=d/2-0.04;
+      var dpL=mk(new THREE.BoxGeometry(0.025,h*0.96,dPanW),mDoor,len/2+0.012,0,-d/4);
+      var dpR=mk(new THREE.BoxGeometry(0.025,h*0.96,dPanW),mDoor,len/2+0.012,0,d/4);
+      g.add(dpL); g.add(dpR);
+      // Cam-lock rods (vertical, 2 per panel)
+      [-d*0.38,-d*0.12,d*0.12,d*0.38].forEach(function(dz){
+        var rod=mk(new THREE.CylinderGeometry(0.018,0.018,h*0.82,8),mCast,len/2+0.038,0,dz);
+        g.add(rod);
+      });
+      // Center vertical gap
+      g.add(mk(new THREE.BoxGeometry(0.015,h,0.015),mCast,len/2+0.04,0,0));
+      // Hinge strips on door edge
+      [-h*0.28,0,h*0.28].forEach(function(hy){
+        g.add(mk(new THREE.BoxGeometry(0.035,0.06,0.035),mCast,len/2+0.04,hy,-d/2+0.04));
+        g.add(mk(new THREE.BoxGeometry(0.035,0.06,0.035),mCast,len/2+0.04,hy,d/2-0.04));
+      });
+
+      return g;
+    }
+
+    var world=new THREE.Group();
+
+    // Container 1 — 40ft Orange (brand), slightly angled, front-center
+    var c1=mkContainer(3.8,0.96,0.82,0xFC6514,0xB54100);
+    c1.rotation.y=0.22; c1.position.set(-0.3,0,0);
+    world.add(c1);
+
+    // Container 2 — 20ft Steel Blue, elevated, slightly behind
+    var c2=mkContainer(2.0,0.88,0.76,0x1B5FA8,0x0F3E72);
+    c2.rotation.y=-0.28; c2.position.set(0.6,1.06,-0.6);
+    world.add(c2);
+
+    // Container 3 — 20ft Shipping Green, low, partially behind
+    var c3=mkContainer(2.2,0.90,0.78,0x2D6B3E,0x1B4228);
+    c3.rotation.y=0.48; c3.position.set(-1.1,-1.08,-0.4);
+    world.add(c3);
+
+    scene.add(world);
+
+    // Collect all meshes for raycasting
+    var allMeshes=[];
+    world.traverse(function(obj){if(obj.isMesh)allMeshes.push(obj);});
+    var containers=[c1,c2,c3];
+    var cInfo=[
+      {ref:'MSCU·184729',type:'40ft HC',size:'12.2m',status:'ICS Cleared'},
+      {ref:'COSU·037614',type:'20ft Std',size:'6.1m',status:'Confirmed'},
+      {ref:'OOLU·295183',type:'20ft Std',size:'6.1m',status:'On Site'},
+    ];
+
+    function getContainer(obj){
+      for(var i=0;i<containers.length;i++){
+        var found=false;
+        containers[i].traverse(function(c){if(c===obj)found=true;});
+        if(found)return i;
+      }
+      return -1;
+    }
+
+    // Raycaster & hover
+    var ray=new THREE.Raycaster();
+    var m2=new THREE.Vector2();
+    var hovered=-1, selected=-1;
+    function setEmissive(idx,val){
+      containers.forEach(function(con,ci){
+        con.traverse(function(obj){
+          if(obj.isMesh&&obj.material&&obj.material.emissive){
+            obj.material.emissive.setHex(ci===idx?val:0x000000);
+            obj.material.emissiveIntensity=(ci===idx?1:0);
+          }
+        });
+      });
+    }
+
+    // Drag
+    var dragging=false, lastX=0, lastY=0, clickX=0, clickY=0;
+    canvas.addEventListener('mousedown',function(e){
+      dragging=true; lastX=e.clientX; lastY=e.clientY;
+      clickX=e.clientX; clickY=e.clientY;
+      canvas.style.cursor='grabbing';
+    });
+    window.addEventListener('mouseup',function(){
+      if(dragging){dragging=false; canvas.style.cursor=hovered>=0?'pointer':'grab';}
+    });
+    window.addEventListener('mousemove',function(e){
+      if(dragging){
+        world.rotation.y+=(e.clientX-lastX)*0.009;
+        world.rotation.x=Math.max(-0.65,Math.min(0.65,world.rotation.x+(e.clientY-lastY)*0.007));
+        lastX=e.clientX; lastY=e.clientY;
+      } else {
+        var r=canvas.getBoundingClientRect();
+        m2.x=((e.clientX-r.left)/r.width)*2-1;
+        m2.y=-((e.clientY-r.top)/r.height)*2+1;
+      }
+    });
+
+    // Scroll zoom
+    canvas.addEventListener('wheel',function(e){
+      e.preventDefault();
+      camera.position.z=Math.max(6,Math.min(18,camera.position.z+e.deltaY*0.014));
+    },{passive:false});
+
+    // Touch
+    var tX=0,tY=0,tDist=0;
+    canvas.addEventListener('touchstart',function(e){
+      if(e.touches.length===1){tX=e.touches[0].clientX;tY=e.touches[0].clientY;}
+      if(e.touches.length===2){var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;tDist=Math.sqrt(dx*dx+dy*dy);}
+    },{passive:true});
+    canvas.addEventListener('touchmove',function(e){
+      e.preventDefault();
+      if(e.touches.length===1){
+        world.rotation.y+=(e.touches[0].clientX-tX)*0.009;
+        world.rotation.x=Math.max(-0.65,Math.min(0.65,world.rotation.x+(e.touches[0].clientY-tY)*0.007));
+        tX=e.touches[0].clientX;tY=e.touches[0].clientY;
+      }
+      if(e.touches.length===2){
+        var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;
+        var nd=Math.sqrt(dx*dx+dy*dy);
+        camera.position.z=Math.max(6,Math.min(18,camera.position.z+(tDist-nd)*0.025));
+        tDist=nd;
+      }
+    },{passive:false});
+
+    // Click to select
+    canvas.addEventListener('click',function(e){
+      if(Math.abs(e.clientX-clickX)+Math.abs(e.clientY-clickY)>5)return;
+      ray.setFromCamera(m2,camera);
+      var hits=ray.intersectObjects(allMeshes,false);
+      var lbl=document.getElementById('container-label');
+      if(hits.length>0){
+        var ci=getContainer(hits[0].object);
+        if(ci>=0){
+          selected=ci;
+          if(lbl){
+            var inf=cInfo[ci];
+            lbl.innerHTML='<span style="font-size:11px;font-weight:700;color:#FC6514;font-family:ui-monospace,monospace;">'+inf.ref+'</span><span style="font-size:11px;color:#57534E;margin-left:8px;">'+inf.type+' · '+inf.size+'</span><span style="font-size:10px;font-weight:600;background:rgba(34,197,94,0.12);color:#16A34A;border:1px solid rgba(34,197,94,0.22);border-radius:99px;padding:2px 8px;margin-left:8px;">'+inf.status+'</span>';
+            lbl.style.opacity='1';
+          }
+        }
+      } else {
+        selected=-1;
+        if(lbl)lbl.style.opacity='0';
+      }
+    });
+
+    // Fade hint after 4s
+    var hint=document.getElementById('drag-hint');
+    if(hint)setTimeout(function(){hint.style.opacity='0';},4000);
+
+    window.addEventListener('resize',function(){
+      var W2=canvas.parentElement.offsetWidth||480;
+      camera.aspect=W2/H;camera.updateProjectionMatrix();renderer.setSize(W2,H);
+    });
+
+    var t0=performance.now();
+    (function loop(){
+      requestAnimationFrame(loop);
+      var t=(performance.now()-t0)*0.001;
+      if(!dragging){
+        world.rotation.y+=0.004;
+        c1.position.y=Math.sin(t*0.44)*0.055;
+        c2.position.y=1.06+Math.sin(t*0.57+1.2)*0.048;
+        c3.position.y=-1.08+Math.sin(t*0.39+2.5)*0.065;
+      }
+      // Hover detection
+      if(!dragging){
+        ray.setFromCamera(m2,camera);
+        var hits2=ray.intersectObjects(allMeshes,false);
+        var nh=hits2.length>0?getContainer(hits2[0].object):-1;
+        if(nh!==hovered){
+          hovered=nh;
+          canvas.style.cursor=nh>=0?'pointer':'grab';
+          setEmissive(nh===selected?selected:nh,0x221100);
+        }
+      }
+      renderer.render(scene,camera);
+    })();
+  }
+  init();
+})();
               `}} />
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          §2  MARQUEE — forwarder strip, white background
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:20px 0; background:#FFFFFF; overflow:hidden; border-bottom:1px solid rgba(0,0,0,0.07);">
-        <div style="display:flex; overflow:hidden; mask-image:linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%); -webkit-mask-image:linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);">
+      {/* ══════════════════════════════════════════════════════════════════
+          §2  MARQUEE
+      ══════════════════════════════════════════════════════════════════ */}
+      <section style="padding:18px 0; background:#FFFFFF; overflow:hidden; border-top:1px solid rgba(0,0,0,0.06); border-bottom:1px solid rgba(0,0,0,0.06);">
+        <div style="display:flex; overflow:hidden; mask-image:linear-gradient(to right,transparent,black 12%,black 88%,transparent); -webkit-mask-image:linear-gradient(to right,transparent,black 12%,black 88%,transparent);">
           <div class="animate-marquee" style="display:flex; gap:0; white-space:nowrap; flex-shrink:0;">
             {[
               'Express Freight Co.','Pacific Logistics','Harbour Carriers','SydPort Forwarding',
@@ -255,8 +367,8 @@ portalRoutes.get('/', (c) => {
               'Express Freight Co.','Pacific Logistics','Harbour Carriers','SydPort Forwarding',
               'BlueAnchor CFS','Apex Customs','Meridian Shipping','Coastline Brokers','Trident Freight','Atlas Logistics',
             ].map((name, i) => (
-              <span key={i} style="display:inline-flex; align-items:center; gap:20px; padding:0 28px; font-size:11px; font-weight:600; color:rgba(0,0,0,0.18); letter-spacing:0.07em; text-transform:uppercase;">
-                <span style="width:3px; height:3px; border-radius:9999px; background:rgba(0,0,0,0.12); display:inline-block; flex-shrink:0;" />
+              <span key={i} style="display:inline-flex; align-items:center; gap:18px; padding:0 26px; font-size:11px; font-weight:600; color:rgba(0,0,0,0.22); letter-spacing:0.07em; text-transform:uppercase;">
+                <span style="width:3px; height:3px; border-radius:9999px; background:rgba(252,101,20,0.40); display:inline-block; flex-shrink:0;" />
                 {name}
               </span>
             ))}
@@ -264,156 +376,137 @@ portalRoutes.get('/', (c) => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          §3  HOW IT WORKS — white section, numbered steps
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section id="how-it-works" style="padding:100px 24px; background:#FFFFFF;">
+      {/* ══════════════════════════════════════════════════════════════════
+          §3  HOW IT WORKS
+      ══════════════════════════════════════════════════════════════════ */}
+      <section id="how-it-works" style="padding:96px 24px; background:#FFFFFF;">
         <div class="max-w-5xl mx-auto">
-
-          <div class="reveal" style="margin-bottom:64px;">
-            <p style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#A8A29E; margin-bottom:12px;">How it works</p>
-            <h2 style="font-size:clamp(1.8rem,3.5vw,2.6rem); font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.1; margin-bottom:14px; max-width:480px;">
+          <div class="reveal" style="margin-bottom:56px;">
+            <p style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#FC6514; margin-bottom:10px;">How it works</p>
+            <h2 style="font-size:clamp(1.8rem,3.2vw,2.5rem); font-weight:800; color:#1C1917; letter-spacing:-0.04em; line-height:1.1; margin-bottom:12px; max-width:500px;">
               From browser to bay door in four steps
             </h2>
-            <p style="font-size:14px; color:#78716C; line-height:1.7; max-width:420px;">
-              No spreadsheets. No radio calls. The whole check-in process is online.
+            <p style="font-size:14px; color:#78716C; line-height:1.75; max-width:400px;">
+              No spreadsheets. No radio calls. The whole process is online.
             </p>
           </div>
 
-          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:2px; background:rgba(0,0,0,0.06); border-radius:18px; overflow:hidden;" class="steps-grid-new">
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:2px; background:rgba(0,0,0,0.06); border-radius:20px; overflow:hidden;" class="steps-grid-new">
             {[
-              { num: '01', icon: ICONS.users,    title: 'Your details',  desc: 'Name, service type, cargo category. 60 seconds.' },
-              { num: '02', icon: ICONS.calendar,  title: 'Pick a slot',   desc: 'Choose a window — held 10 min while you finish.' },
-              { num: '03', icon: ICONS.document,  title: 'Add shipment',  desc: 'Enter HBL or container. ICS auto-checked.' },
-              { num: '04', icon: ICONS.qrCode,    title: 'Scan & enter',  desc: 'Scan your QR at the kiosk. No counter, no wait.' },
+              { num:'01', icon:ICONS.users,    title:'Your details',  desc:'Name, service type, cargo category. Under 60 seconds.' },
+              { num:'02', icon:ICONS.calendar,  title:'Pick a slot',   desc:'Choose a window — held 10 min while you finish booking.' },
+              { num:'03', icon:ICONS.document,  title:'Add shipment',  desc:'Enter HBL or container. ICS clearance is auto-checked.' },
+              { num:'04', icon:ICONS.qrCode,    title:'Scan & enter',  desc:'Scan your QR at the kiosk. No counter. No wait.' },
             ].map((step, i) => (
-              <div
-                key={step.num}
-                class="reveal"
-                data-reveal-delay={String(i * 80)}
-                style="background:#FFFFFF; padding:32px 28px; transition:background 0.15s ease;"
-                onmouseover="this.style.background='#FAFAF9';"
-                onmouseout="this.style.background='#FFFFFF';"
-              >
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:28px;">
-                  <span style="font-size:11px; font-weight:700; color:#D6D0CA; letter-spacing:0.05em;">{step.num}</span>
-                  <div style="width:38px; height:38px; border-radius:10px; background:#F5F3F1; display:flex; align-items:center; justify-content:center;">
-                    <Icon name={step.icon} size={17} style="color:#78716C;" />
+              <div key={step.num} class="reveal" data-reveal-delay={String(i*80)}
+                style="background:#FFFFFF; padding:32px 26px; transition:background 0.15s ease;"
+                onmouseover="this.style.background='#FFFAF7';"
+                onmouseout="this.style.background='#FFFFFF';">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+                  <span style="font-size:12px; font-weight:800; color:rgba(252,101,20,0.35); letter-spacing:0.04em;">{step.num}</span>
+                  <div style="width:40px; height:40px; border-radius:11px; background:#FFF3EC; border:1px solid rgba(252,101,20,0.14); display:flex; align-items:center; justify-content:center;">
+                    <Icon name={step.icon} size={18} style="color:#FC6514;" />
                   </div>
                 </div>
-                <p style="font-size:14px; font-weight:600; color:#1C1917; margin-bottom:7px; letter-spacing:-0.015em;">{step.title}</p>
-                <p style="font-size:12.5px; color:#A8A29E; line-height:1.65;">{step.desc}</p>
+                <p style="font-size:14px; font-weight:700; color:#1C1917; margin-bottom:7px; letter-spacing:-0.02em;">{step.title}</p>
+                <p style="font-size:12.5px; color:#78716C; line-height:1.65;">{step.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          §4  PLATFORM PREVIEW — dashboard mock in dark card
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:100px 24px; background:#F3F2F0; border-top:1px solid rgba(0,0,0,0.07);">
+      {/* ══════════════════════════════════════════════════════════════════
+          §4  PLATFORM PREVIEW
+      ══════════════════════════════════════════════════════════════════ */}
+      <section style="padding:96px 24px; background:#F7F6F5; border-top:1px solid rgba(0,0,0,0.06);">
         <div class="max-w-5xl mx-auto">
-
           <div style="display:grid; grid-template-columns:1fr 1.7fr; gap:56px; align-items:center;" class="preview-grid">
 
-            {/* Left: copy */}
             <div class="reveal-left">
-              <p style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#A8A29E; margin-bottom:12px;">Operations centre</p>
-              <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.1; margin-bottom:16px;">
+              <p style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#FC6514; margin-bottom:10px;">Operations centre</p>
+              <h2 style="font-size:clamp(1.6rem,2.8vw,2.2rem); font-weight:800; color:#1C1917; letter-spacing:-0.04em; line-height:1.1; margin-bottom:14px;">
                 Everything reception needs in one view
               </h2>
-              <p style="font-size:14px; color:#78716C; line-height:1.7; margin-bottom:32px;">
-                Live bookings, walk-in queue, ICS hold flags, and gate activity — all updated in real time without refreshing.
+              <p style="font-size:14px; color:#78716C; line-height:1.75; margin-bottom:28px;">
+                Live bookings, walk-in queue, ICS hold flags, and gate activity — all updated in real time.
               </p>
-
-              <div style="display:flex; flex-direction:column; gap:14px;">
+              <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:28px;">
                 {[
-                  { icon: ICONS.userCheck, label: 'Live check-in feed',     sub: 'See who is on site right now' },
-                  { icon: ICONS.warning,   label: 'ICS hold alerts',         sub: 'Flagged before they reach the gate' },
-                  { icon: ICONS.reports,   label: 'End-of-day reports',      sub: 'PDF export in one click' },
+                  { icon:ICONS.userCheck, label:'Live check-in feed',  sub:'See who is on site right now' },
+                  { icon:ICONS.warning,   label:'ICS hold alerts',      sub:'Flagged before they reach the gate' },
+                  { icon:ICONS.reports,   label:'End-of-day reports',   sub:'PDF export in one click' },
                 ].map(item => (
-                  <div key={item.label} style="display:flex; align-items:flex-start; gap:12px;">
-                    <div style="width:34px; height:34px; border-radius:8px; background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
-                      <Icon name={item.icon} size={15} style="color:#57534E;" />
+                  <div key={item.label} style="display:flex; align-items:flex-start; gap:11px;">
+                    <div style="width:34px; height:34px; border-radius:9px; background:#FFFFFF; border:1px solid rgba(0,0,0,0.09); box-shadow:0 1px 3px rgba(0,0,0,0.04); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                      <Icon name={item.icon} size={15} style="color:#FC6514;" />
                     </div>
                     <div>
-                      <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:2px;">{item.label}</p>
+                      <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:1px;">{item.label}</p>
                       <p style="font-size:12px; color:#A8A29E;">{item.sub}</p>
                     </div>
                   </div>
                 ))}
               </div>
-
-              <a href="/reception" style="display:inline-flex; align-items:center; gap:7px; margin-top:32px; font-size:13px; font-weight:500; color:#78716C; text-decoration:none; transition:color 0.15s ease;"
-                onmouseover="this.style.color='#1C1917';" onmouseout="this.style.color='#78716C';">
-                View Reception Dashboard
-                <Icon name={ICONS.arrowRight} size={13} />
+              <a href="/reception" style="display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:#FC6514; text-decoration:none; transition:opacity 0.15s ease;"
+                onmouseover="this.style.opacity='0.75';" onmouseout="this.style.opacity='1';">
+                View Reception Dashboard <Icon name={ICONS.arrowRight} size={13} />
               </a>
             </div>
 
-            {/* Right: dashboard preview mockup */}
-            <div class="reveal-right" style="border-radius:16px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.12); border:1px solid rgba(0,0,0,0.08);">
-
-              {/* Mock title bar */}
-              <div style="background:#1C1917; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
-                <div style="display:flex; align-items:center; gap:8px;">
+            {/* Dashboard mockup — light style */}
+            <div class="reveal-right" style="border-radius:16px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.10); border:1px solid rgba(0,0,0,0.08);">
+              {/* Light title bar */}
+              <div style="background:#FFFFFF; border-bottom:1px solid rgba(0,0,0,0.07); padding:11px 16px; display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:7px;">
                   <div style="display:flex; gap:5px;">
-                    <div style="width:10px; height:10px; border-radius:9999px; background:rgba(255,255,255,0.12);" />
-                    <div style="width:10px; height:10px; border-radius:9999px; background:rgba(255,255,255,0.08);" />
-                    <div style="width:10px; height:10px; border-radius:9999px; background:rgba(255,255,255,0.06);" />
+                    <div style="width:10px; height:10px; border-radius:9999px; background:rgba(0,0,0,0.08);" />
+                    <div style="width:10px; height:10px; border-radius:9999px; background:rgba(0,0,0,0.06);" />
+                    <div style="width:10px; height:10px; border-radius:9999px; background:rgba(0,0,0,0.04);" />
                   </div>
-                  <span style="font-size:11px; font-weight:500; color:rgba(255,255,255,0.35); margin-left:4px;">Reception · Dashboard</span>
+                  <span style="font-size:11px; font-weight:500; color:#A8A29E; margin-left:4px;">Reception · Dashboard</span>
                 </div>
-                <div style="display:flex; align-items:center; gap:6px;">
-                  <span style="width:5px; height:5px; border-radius:9999px; background:#22C55E;" />
-                  <span style="font-size:10px; color:rgba(255,255,255,0.30);">Live</span>
+                <div style="display:flex; align-items:center; gap:5px;">
+                  <span style="width:5px; height:5px; border-radius:9999px; background:#22C55E; animation:pulse-dot 2s ease-in-out infinite;" />
+                  <span style="font-size:10px; color:#A8A29E; font-weight:500;">Live</span>
                 </div>
               </div>
-
-              {/* KPI tiles row */}
-              <div style="background:#F3F2F0; padding:12px; display:grid; grid-template-columns:repeat(4,1fr); gap:8px;">
+              {/* KPI row */}
+              <div style="background:#F7F6F5; padding:10px; display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
                 {[
-                  { label:'Scheduled', val:'24', color:'#1C1917' },
-                  { label:'On Site',   val:'7',  color:'#22C55E' },
-                  { label:'Completed', val:'11', color:'#78716C' },
-                  { label:'ICS Held',  val:'2',  color:'#EF4444' },
-                ].map(k => (
+                  {label:'Scheduled',val:'24',c:'#1C1917'},{label:'On Site',val:'7',c:'#22C55E'},
+                  {label:'Completed',val:'11',c:'#78716C'},{label:'ICS Held',val:'2',c:'#EF4444'},
+                ].map(k=>(
                   <div key={k.label} style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:10px; padding:10px 12px;">
-                    <p style={`font-size:20px; font-weight:700; color:${k.color}; letter-spacing:-0.03em; line-height:1; margin-bottom:3px;`}>{k.val}</p>
+                    <p style={`font-size:22px; font-weight:800; color:${k.c}; letter-spacing:-0.04em; line-height:1; margin-bottom:2px;`}>{k.val}</p>
                     <p style="font-size:10px; color:#A8A29E; font-weight:500;">{k.label}</p>
                   </div>
                 ))}
               </div>
-
-              {/* Bookings table mock */}
-              <div style="background:#FFFFFF; padding:0;">
-                {/* Table header */}
-                <div style="display:grid; grid-template-columns:1fr 80px 80px 70px; gap:0; padding:8px 16px; border-bottom:1px solid rgba(0,0,0,0.06);">
-                  {['Visitor','Slot','Status',''].map(h => (
-                    <span key={h} style="font-size:10px; font-weight:600; color:#A8A29E; letter-spacing:0.06em; text-transform:uppercase;">{h}</span>
+              {/* Table */}
+              <div style="background:#FFFFFF;">
+                <div style="display:grid; grid-template-columns:1fr 72px 80px 28px; padding:8px 14px; border-bottom:1px solid rgba(0,0,0,0.06); background:#F7F6F5;">
+                  {['Visitor','Slot','Status',''].map(h=>(
+                    <span key={h} style="font-size:9.5px; font-weight:700; color:#A8A29E; letter-spacing:0.07em; text-transform:uppercase;">{h}</span>
                   ))}
                 </div>
-                {/* Mock rows */}
                 {[
-                  { name:'A. Rahman',   ref:'MSCU123',  time:'08:30', status:'On Site',   sc:'rgba(34,197,94,0.10)',  tc:'#22C55E' },
-                  { name:'T. Nguyen',   ref:'COSU456',  time:'09:00', status:'Confirmed', sc:'rgba(251,191,36,0.10)', tc:'#FBBF24' },
-                  { name:'J. Smith',    ref:'OOLU789',  time:'09:30', status:'Confirmed', sc:'rgba(251,191,36,0.10)', tc:'#FBBF24' },
-                  { name:'M. Al-Farsi', ref:'MSCU321',  time:'10:00', status:'ICS Hold',  sc:'rgba(239,68,68,0.10)',  tc:'#EF4444' },
-                ].map((row, ri) => (
-                  <div key={ri} style={`display:grid; grid-template-columns:1fr 80px 80px 70px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(0,0,0,0.05); ${ri === 3 ? 'background:rgba(239,68,68,0.03);' : ''}`}>
+                  {name:'A. Rahman',  ref:'MSCU·184',time:'08:30',status:'On Site',  sc:'rgba(34,197,94,0.10)',tc:'#16A34A'},
+                  {name:'T. Nguyen',  ref:'COSU·456',time:'09:00',status:'Confirmed',sc:'rgba(251,191,36,0.10)',tc:'#B45309'},
+                  {name:'J. Smith',   ref:'OOLU·789',time:'09:30',status:'Confirmed',sc:'rgba(251,191,36,0.10)',tc:'#B45309'},
+                  {name:'M. Al-Farsi',ref:'MSCU·321',time:'10:00',status:'ICS Hold', sc:'rgba(239,68,68,0.10)', tc:'#DC2626'},
+                ].map((row,ri)=>(
+                  <div key={ri} style={`display:grid; grid-template-columns:1fr 72px 80px 28px; padding:9px 14px; border-bottom:1px solid rgba(0,0,0,0.05); ${ri===3?'background:rgba(239,68,68,0.025);':''}`}>
                     <div>
                       <p style="font-size:12px; font-weight:500; color:#1C1917;">{row.name}</p>
-                      <p style="font-size:10px; color:#A8A29E; font-family:ui-monospace,monospace;">{row.ref}</p>
+                      <p style="font-size:9.5px; color:#A8A29E; font-family:ui-monospace,monospace;">{row.ref}</p>
                     </div>
                     <span style="font-size:11px; color:#78716C; align-self:center; font-variant-numeric:tabular-nums;">{row.time}</span>
                     <div style="align-self:center;">
                       <span style={`font-size:10px; font-weight:600; padding:2px 7px; border-radius:9999px; background:${row.sc}; color:${row.tc};`}>{row.status}</span>
                     </div>
                     <div style="align-self:center; display:flex; justify-content:flex-end;">
-                      <div style="width:22px; height:22px; border-radius:5px; background:rgba(0,0,0,0.04); display:flex; align-items:center; justify-content:center;">
-                        <Icon name={ICONS.arrowRight} size={10} style="color:#A8A29E;" />
-                      </div>
+                      <Icon name={ICONS.arrowRight} size={11} style="color:rgba(0,0,0,0.25);" />
                     </div>
                   </div>
                 ))}
@@ -423,74 +516,137 @@ portalRoutes.get('/', (c) => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          §5  FEATURES — bento grid, white bg, one dark hero card
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:100px 24px; background:#FFFFFF; border-top:1px solid rgba(0,0,0,0.07);">
+      {/* ══════════════════════════════════════════════════════════════════
+          §5  WHO IS IT FOR — 3 personas
+      ══════════════════════════════════════════════════════════════════ */}
+      <section style="padding:96px 24px; background:#FFFFFF; border-top:1px solid rgba(0,0,0,0.06);">
         <div class="max-w-5xl mx-auto">
-
-          <div class="reveal" style="text-align:center; margin-bottom:60px;">
-            <p style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#A8A29E; margin-bottom:12px;">Built for the floor</p>
-            <h2 style="font-size:clamp(1.8rem,3.5vw,2.6rem); font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.1; margin-bottom:12px;">
-              Purpose-built for Container Freight Stations
+          <div class="reveal" style="text-align:center; margin-bottom:56px;">
+            <p style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#FC6514; margin-bottom:10px;">Who uses Glido</p>
+            <h2 style="font-size:clamp(1.8rem,3.2vw,2.5rem); font-weight:800; color:#1C1917; letter-spacing:-0.04em; line-height:1.1; margin-bottom:12px;">
+              Built for everyone in the chain
             </h2>
-            <p style="font-size:14px; color:#78716C; max-width:400px; margin:0 auto; line-height:1.7;">
-              Every feature solves a real operational headache — not a generic SaaS feature set.
+            <p style="font-size:14px; color:#78716C; max-width:380px; margin:0 auto; line-height:1.75;">
+              From the freight forwarder booking a slot to the driver scanning in — everyone benefits.
             </p>
           </div>
 
-          {/* Top row: 1 dark wide card + 2 neutral narrow */}
-          <div style="display:grid; grid-template-columns:1.55fr 1fr 1fr; gap:10px; margin-bottom:10px;" class="bento-row">
-
-            {/* Dark hero feature card */}
-            <div class="reveal-left" style="background:#1C1917; border-radius:16px; padding:36px; position:relative; overflow:hidden;">
-              <div style="position:absolute; top:-60px; right:-60px; width:240px; height:240px; border-radius:9999px; background:radial-gradient(circle, rgba(252,101,20,0.20) 0%, transparent 65%); pointer-events:none;" />
-              <div style="width:48px; height:48px; border-radius:11px; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); display:flex; align-items:center; justify-content:center; margin-bottom:24px; box-shadow:0 4px 16px rgba(252,101,20,0.45);">
-                <Icon name={ICONS.shield} size={22} style="color:white;" />
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;" class="persona-grid">
+            {[
+              {
+                emoji: '📋',
+                role: 'Freight Forwarders',
+                desc: 'Book slots on behalf of multiple clients, attach documents, track ICS status — all from one portal. No more calling the depot.',
+                bullets: ['Multi-shipment booking','HBL & container lookup','Document upload','Email confirmation'],
+              },
+              {
+                emoji: '🚛',
+                role: 'Truck Drivers',
+                desc: 'Arrive at your confirmed window, scan your QR at the kiosk, and go straight to the bay. No queue, no counter.',
+                bullets: ['QR code check-in','Slot arrival window','No account needed','Walk-in fallback'],
+              },
+              {
+                emoji: '🏗️',
+                role: 'Depot Managers',
+                desc: 'See every booking, walk-in, and ICS flag in a live dashboard. Run end-of-day reports with one click.',
+                bullets: ['Real-time live view','ICS hold alerts','Walk-in registration','PDF reports'],
+              },
+            ].map((p, i) => (
+              <div key={p.role} class="reveal" data-reveal-delay={String(i*80)}
+                style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.09); border-radius:18px; padding:32px 28px; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.06); transition:transform 0.2s cubic-bezier(0.16,1,0.3,1),box-shadow 0.2s ease,border-color 0.2s ease;"
+                onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.10)';this.style.borderColor='rgba(252,101,20,0.22)';"
+                onmouseout="this.style.transform='';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.04),0 4px 20px rgba(0,0,0,0.06)';this.style.borderColor='rgba(0,0,0,0.09)';">
+                <div style="font-size:32px; margin-bottom:16px; line-height:1;">{p.emoji}</div>
+                <p style="font-size:16px; font-weight:700; color:#1C1917; letter-spacing:-0.025em; margin-bottom:10px;">{p.role}</p>
+                <p style="font-size:13px; color:#78716C; line-height:1.7; margin-bottom:20px;">{p.desc}</p>
+                <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:7px;">
+                  {p.bullets.map(b => (
+                    <li key={b} style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#57534E;">
+                      <span style="width:16px; height:16px; border-radius:9999px; background:rgba(252,101,20,0.10); border:1px solid rgba(252,101,20,0.20); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <svg width="8" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="#FC6514" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <p style="font-size:17px; font-weight:600; color:#FFFFFF; letter-spacing:-0.02em; margin-bottom:10px; line-height:1.25;">Automatic ICS clearance check</p>
-              <p style="font-size:13px; color:rgba(255,255,255,0.45); line-height:1.7; max-width:260px; margin-bottom:28px;">
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════
+          §6  FEATURES BENTO — all-light, no dark card
+      ══════════════════════════════════════════════════════════════════ */}
+      <section style="padding:96px 24px; background:#F7F6F5; border-top:1px solid rgba(0,0,0,0.06);">
+        <div class="max-w-5xl mx-auto">
+          <div class="reveal" style="text-align:center; margin-bottom:56px;">
+            <p style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#FC6514; margin-bottom:10px;">Built for the floor</p>
+            <h2 style="font-size:clamp(1.8rem,3.2vw,2.5rem); font-weight:800; color:#1C1917; letter-spacing:-0.04em; line-height:1.1; margin-bottom:12px;">
+              Purpose-built for Container Freight Stations
+            </h2>
+            <p style="font-size:14px; color:#78716C; max-width:380px; margin:0 auto; line-height:1.75;">
+              Every feature solves a real operational headache.
+            </p>
+          </div>
+
+          {/* Wide hero feature — ICS check */}
+          <div class="reveal bento-hero" style="background:#FFFFFF; border:1px solid rgba(252,101,20,0.20); border-radius:20px; padding:40px 44px; margin-bottom:10px; display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.06), 0 0 0 1px rgba(252,101,20,0.06);">
+            <div>
+              <div style="width:50px; height:50px; border-radius:13px; background:#FFF3EC; border:1px solid rgba(252,101,20,0.20); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
+                <Icon name={ICONS.shield} size={24} style="color:#FC6514;" />
+              </div>
+              <p style="font-size:18px; font-weight:700; color:#1C1917; letter-spacing:-0.025em; margin-bottom:10px; line-height:1.25;">Automatic ICS clearance check</p>
+              <p style="font-size:13px; color:#78716C; line-height:1.75; max-width:320px;">
                 Customs status is fetched the moment you enter your shipment number — holds flagged before they reach the gate.
               </p>
-              <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.22); border-radius:9999px; padding:6px 14px;">
-                <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; animation:pulse-dot 2s ease-in-out infinite;" />
-                <span style="font-size:11px; font-weight:500; color:#22C55E;">Clearance verified · MSCU1234567</span>
-              </div>
             </div>
-
-            {/* Neutral feature cards */}
-            {[
-              { icon: ICONS.clock,  title: '10-min slot holds',  desc: 'Your preferred time is reserved while you complete the booking — zero double-bookings.' },
-              { icon: ICONS.qrCode, title: 'QR check-in kiosk',  desc: 'Scan at arrival. Skip the counter queue entirely.' },
-            ].map((feat, i) => (
-              <div key={feat.title} class="reveal" data-reveal-delay={String((i+1)*80)}
-                style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:16px; padding:32px; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
-                onmouseover="this.style.borderColor='rgba(0,0,0,0.14)'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.07)';"
-                onmouseout="this.style.borderColor='rgba(0,0,0,0.08)'; this.style.boxShadow='none';">
-                <div style="width:42px; height:42px; border-radius:10px; background:#F5F3F1; display:flex; align-items:center; justify-content:center; margin-bottom:20px;">
-                  <Icon name={feat.icon} size={19} style="color:#57534E;" />
+            <div style="background:#F7F6F5; border-radius:14px; padding:20px 24px; border:1px solid rgba(0,0,0,0.07);">
+              {[
+                {ref:'MSCU·184729',status:'Cleared',sc:'rgba(34,197,94,0.12)',tc:'#16A34A'},
+                {ref:'COSU·037614',status:'Pending',sc:'rgba(251,191,36,0.12)',tc:'#B45309'},
+                {ref:'OOLU·295183',status:'ICS Held',sc:'rgba(239,68,68,0.10)',tc:'#DC2626'},
+              ].map((row, ri) => (
+                <div key={ri} style={`display:flex; align-items:center; justify-content:space-between; padding:10px 0; ${ri < 2 ? 'border-bottom:1px solid rgba(0,0,0,0.06);' : ''}`}>
+                  <span style="font-size:12px; font-family:ui-monospace,monospace; font-weight:600; color:#57534E;">{row.ref}</span>
+                  <span style={`font-size:11px; font-weight:600; padding:3px 10px; border-radius:9999px; background:${row.sc}; color:${row.tc};`}>{row.status}</span>
                 </div>
-                <p style="font-size:14px; font-weight:600; color:#1C1917; letter-spacing:-0.015em; margin-bottom:8px;">{feat.title}</p>
+              ))}
+            </div>
+          </div>
+
+          {/* 2+3 grid */}
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;" class="bento-row">
+            {[
+              {icon:ICONS.clock,  title:'10-min slot holds',  desc:'Your preferred time is reserved while you complete the booking — zero double-bookings.'},
+              {icon:ICONS.qrCode, title:'QR check-in kiosk',  desc:'Scan at arrival. Skip the counter queue entirely. Works on any smartphone.'},
+            ].map((feat,i)=>(
+              <div key={feat.title} class="reveal" data-reveal-delay={String(i*80)}
+                style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:16px; padding:30px; transition:border-color 0.15s ease,box-shadow 0.15s ease,transform 0.2s cubic-bezier(0.16,1,0.3,1);"
+                onmouseover="this.style.borderColor='rgba(252,101,20,0.25)';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.07)';this.style.transform='translateY(-2px)';"
+                onmouseout="this.style.borderColor='rgba(0,0,0,0.08)';this.style.boxShadow='none';this.style.transform='';">
+                <div style="width:42px; height:42px; border-radius:11px; background:#FFF3EC; border:1px solid rgba(252,101,20,0.14); display:flex; align-items:center; justify-content:center; margin-bottom:18px;">
+                  <Icon name={feat.icon} size={19} style="color:#FC6514;" />
+                </div>
+                <p style="font-size:14px; font-weight:700; color:#1C1917; letter-spacing:-0.02em; margin-bottom:7px;">{feat.title}</p>
                 <p style="font-size:12.5px; color:#78716C; line-height:1.65;">{feat.desc}</p>
               </div>
             ))}
           </div>
-
-          {/* Bottom row: 3 equal */}
           <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;" class="bento-row">
             {[
-              { icon: ICONS.warning, title: 'CHEP pallet alerts',  desc: 'Pallet exchange requirements flagged before you leave for the depot.' },
-              { icon: ICONS.users,   title: 'Agent bookings',      desc: 'Freight forwarders book on behalf of drivers — no extra account needed.' },
-              { icon: ICONS.reports, title: 'Live reception view', desc: 'Staff see bookings, walk-ins, and clearance holds in a single screen.' },
-            ].map((feat, i) => (
+              {icon:ICONS.warning, title:'CHEP pallet alerts',  desc:'Pallet exchange flagged before you leave for the depot.'},
+              {icon:ICONS.users,   title:'Agent bookings',      desc:'Freight forwarders book for drivers — no extra account.'},
+              {icon:ICONS.reports, title:'Live reception view',  desc:'Staff see bookings, walk-ins, and holds in one screen.'},
+            ].map((feat,i)=>(
               <div key={feat.title} class="reveal" data-reveal-delay={String(i*70)}
-                style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:16px; padding:32px; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
-                onmouseover="this.style.borderColor='rgba(0,0,0,0.14)'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.07)';"
-                onmouseout="this.style.borderColor='rgba(0,0,0,0.08)'; this.style.boxShadow='none';">
-                <div style="width:42px; height:42px; border-radius:10px; background:#F5F3F1; display:flex; align-items:center; justify-content:center; margin-bottom:20px;">
-                  <Icon name={feat.icon} size={19} style="color:#57534E;" />
+                style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:16px; padding:28px; transition:border-color 0.15s ease,box-shadow 0.15s ease,transform 0.2s cubic-bezier(0.16,1,0.3,1);"
+                onmouseover="this.style.borderColor='rgba(252,101,20,0.25)';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.07)';this.style.transform='translateY(-2px)';"
+                onmouseout="this.style.borderColor='rgba(0,0,0,0.08)';this.style.boxShadow='none';this.style.transform='';">
+                <div style="width:40px; height:40px; border-radius:10px; background:#FFF3EC; border:1px solid rgba(252,101,20,0.14); display:flex; align-items:center; justify-content:center; margin-bottom:16px;">
+                  <Icon name={feat.icon} size={18} style="color:#FC6514;" />
                 </div>
-                <p style="font-size:14px; font-weight:600; color:#1C1917; letter-spacing:-0.015em; margin-bottom:8px;">{feat.title}</p>
+                <p style="font-size:14px; font-weight:700; color:#1C1917; letter-spacing:-0.02em; margin-bottom:6px;">{feat.title}</p>
                 <p style="font-size:12.5px; color:#78716C; line-height:1.65;">{feat.desc}</p>
               </div>
             ))}
@@ -498,30 +654,26 @@ portalRoutes.get('/', (c) => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          §6  TESTIMONIAL — clean, typographic, no orange
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:100px 24px; background:#F3F2F0; border-top:1px solid rgba(0,0,0,0.07);">
+      {/* ══════════════════════════════════════════════════════════════════
+          §7  TESTIMONIAL
+      ══════════════════════════════════════════════════════════════════ */}
+      <section style="padding:96px 24px; background:#FFFFFF; border-top:1px solid rgba(0,0,0,0.06);">
         <div class="max-w-3xl mx-auto">
-          <div class="reveal" style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:20px; padding:56px 52px; position:relative; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.07);">
-
-            {/* Large typographic quote mark */}
-            <div style="position:absolute; top:24px; left:36px; font-size:120px; font-weight:700; color:rgba(0,0,0,0.04); line-height:1; font-family:Georgia,serif; pointer-events:none; user-select:none;">"</div>
-
-            <blockquote style="position:relative; font-size:clamp(1.05rem,2.2vw,1.3rem); font-weight:400; color:#1C1917; letter-spacing:-0.02em; line-height:1.6; margin-bottom:32px; font-style:italic;">
+          <div class="reveal" style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:22px; padding:52px 48px; position:relative; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.04),0 8px 32px rgba(0,0,0,0.06);">
+            <div style="position:absolute; top:20px; left:32px; font-size:120px; font-weight:800; color:rgba(252,101,20,0.08); line-height:1; font-family:Georgia,serif; pointer-events:none; user-select:none;">"</div>
+            <blockquote style="position:relative; font-size:clamp(1rem,2vw,1.25rem); font-weight:400; color:#1C1917; letter-spacing:-0.02em; line-height:1.65; margin-bottom:28px; font-style:italic;">
               We used to spend 40 minutes every morning on phone bookings and a whiteboard. Now drivers book online, ICS checks happen automatically, and our gate time is under 4 minutes.
             </blockquote>
-
             <div style="display:flex; align-items:center; gap:14px;">
               <div style="width:42px; height:42px; border-radius:10px; background:#1C1917; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                <span style="font-size:14px; font-weight:700; color:rgba(255,255,255,0.85); letter-spacing:-0.01em;">JR</span>
+                <span style="font-size:14px; font-weight:700; color:rgba(255,255,255,0.85);">JR</span>
               </div>
               <div>
                 <p style="font-size:13px; font-weight:600; color:#1C1917;">James R.</p>
                 <p style="font-size:12px; color:#A8A29E;">Operations Manager · Sydney CFS</p>
               </div>
               <div style="margin-left:auto; display:flex; gap:2px;">
-                {[1,2,3,4,5].map(s => (
+                {[1,2,3,4,5].map(s=>(
                   <svg key={s} width="13" height="13" viewBox="0 0 24 24" fill="#FC6514">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                   </svg>
@@ -532,66 +684,57 @@ portalRoutes.get('/', (c) => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          §7  FINAL CTA — dark, full bleed
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section style="padding:110px 24px; background:#1C1917; position:relative; overflow:hidden;">
-
-        {/* Subtle grid */}
-        <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size:48px 48px; pointer-events:none;" />
-
-        {/* Orange orb */}
-        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:600px; height:300px; background:radial-gradient(ellipse, rgba(252,101,20,0.14) 0%, transparent 65%); pointer-events:none;" />
+      {/* ══════════════════════════════════════════════════════════════════
+          §8  CTA — warm light, not dark
+      ══════════════════════════════════════════════════════════════════ */}
+      <section style="padding:100px 24px; background:linear-gradient(180deg,#FFF8F4 0%,#FFF3EC 100%); border-top:1px solid rgba(252,101,20,0.12); position:relative; overflow:hidden;">
+        <div style="position:absolute; inset:0; background-image:radial-gradient(rgba(252,101,20,0.07) 1px,transparent 1px); background-size:28px 28px; pointer-events:none;" />
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:600px; height:300px; background:radial-gradient(ellipse,rgba(252,101,20,0.08) 0%,transparent 68%); pointer-events:none;" />
 
         <div class="max-w-2xl mx-auto" style="text-align:center; position:relative; z-index:1;">
-
-          <div class="reveal" style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.10); border:1px solid rgba(34,197,94,0.20); margin-bottom:32px;">
+          <div class="reveal" style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.09); border:1px solid rgba(34,197,94,0.22); margin-bottom:28px;">
             <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; animation:pulse-dot 2s ease-in-out infinite;" />
-            <span style="font-size:11px; font-weight:500; color:#22C55E;">Open Mon–Fri 06:00–18:00</span>
+            <span style="font-size:11px; font-weight:600; color:#16A34A;">Open Mon–Fri 06:00–18:00</span>
           </div>
 
           <h2 class="reveal" data-reveal-delay="80"
-            style="font-size:clamp(2.2rem,5vw,3.6rem); font-weight:700; color:#FFFFFF; letter-spacing:-0.04em; line-height:1.05; margin-bottom:20px;">
-            Ready to skip<br />the queue?
+            style="font-size:clamp(2.2rem,4.8vw,3.5rem); font-weight:800; color:#1C1917; letter-spacing:-0.045em; line-height:1.05; margin-bottom:16px;">
+            Ready to skip<br/>the queue?
           </h2>
 
           <p class="reveal" data-reveal-delay="130"
-            style="font-size:15px; color:rgba(255,255,255,0.45); line-height:1.75; margin-bottom:40px; max-width:360px; margin-left:auto; margin-right:auto;">
+            style="font-size:15px; color:#78716C; line-height:1.8; margin-bottom:36px; max-width:360px; margin-left:auto; margin-right:auto;">
             Your first booking takes under 3 minutes. No account, no calls, no paper.
           </p>
 
-          <div class="reveal" data-reveal-delay="180"
-            style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <div class="reveal" data-reveal-delay="180" style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
             <a href="/book" class="btn-primary" style="padding:14px 32px; font-size:14px;">
               <Icon name={ICONS.calendar} size={15} />
               Book a Visit
               <Icon name={ICONS.arrowRight} size={14} />
             </a>
-            <a href="/bookings"
-              style="display:inline-flex; align-items:center; gap:8px; padding:14px 26px; font-size:14px; font-weight:500; color:rgba(255,255,255,0.55); border:1px solid rgba(255,255,255,0.13); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
-              onmouseover="this.style.borderColor='rgba(255,255,255,0.32)'; this.style.color='rgba(255,255,255,0.88)';"
-              onmouseout="this.style.borderColor='rgba(255,255,255,0.13)'; this.style.color='rgba(255,255,255,0.55)';">
+            <a href="/bookings" class="btn-ghost" style="padding:14px 26px; font-size:14px;">
               <Icon name={ICONS.search} size={15} />
               Look Up Booking
             </a>
           </div>
 
-          <p class="reveal" data-reveal-delay="230" style="font-size:12px; color:rgba(255,255,255,0.22); margin-top:28px;">
+          <p class="reveal" data-reveal-delay="230" style="font-size:12px; color:#A8A29E; margin-top:28px;">
             Sydney Container Freight Station · ABN 12 345 678 901
           </p>
         </div>
       </section>
 
-      {/* Responsive + global styles */}
+      {/* Responsive styles */}
       <style>{`
-        @media (max-width: 960px) {
-          .hero-grid     { grid-template-columns: 1fr !important; }
-          .steps-grid-new{ grid-template-columns: repeat(2,1fr) !important; }
-          .bento-row     { grid-template-columns: 1fr !important; }
-          .preview-grid  { grid-template-columns: 1fr !important; }
+        @media (max-width:960px){
+          .hero-grid,.preview-grid{grid-template-columns:1fr!important;}
+          .steps-grid-new{grid-template-columns:repeat(2,1fr)!important;}
+          .bento-row,.persona-grid{grid-template-columns:1fr!important;}
+          .bento-hero{grid-template-columns:1fr!important;}
         }
-        @media (max-width: 640px) {
-          .steps-grid-new{ grid-template-columns: 1fr !important; }
+        @media (max-width:640px){
+          .steps-grid-new{grid-template-columns:1fr!important;}
         }
       `}</style>
 
