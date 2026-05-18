@@ -31,35 +31,35 @@ export const Step4ShipmentDetails = () => (
     </div>
 
     {/* Date strip */}
-    <div style="background:#fff; border:1.5px solid #e5e7eb; border-radius:14px; padding:12px; margin-bottom:16px; overflow-x:auto; scrollbar-width:none; display:flex; gap:6px;">
+    <div style="background:#fff; border:1.5px solid #e5e7eb; border-radius:16px; padding:14px; margin-bottom:20px; overflow-x:auto; scrollbar-width:none; display:flex; gap:7px;">
       {DATES.map((d) => (
         <button
           key={d.iso}
           type="button"
           x-on:click={`$store.wizard.selectDate('${d.iso}')`}
-          style="flex-shrink:0; width:52px; padding:10px 0 8px; border-radius:10px; border:1px solid transparent; cursor:pointer; text-align:center; transition:all 0.15s ease; position:relative;"
-          x-bind:style={`{ background: $store.wizard.selectedDate === '${d.iso}' ? '#FC6514' : '#f9fafb', borderColor: $store.wizard.selectedDate === '${d.iso}' ? '#FC6514' : '#e5e7eb', boxShadow: $store.wizard.selectedDate === '${d.iso}' ? '0 4px 12px rgba(252,101,20,0.30)' : 'none' }`}
+          style="flex-shrink:0; width:62px; padding:13px 0 11px; border-radius:12px; border:1.5px solid transparent; cursor:pointer; text-align:center; transition:all 0.18s ease; position:relative;"
+          x-bind:style={`{ background: $store.wizard.selectedDate === '${d.iso}' ? '#FC6514' : 'rgba(0,0,0,0.028)', borderColor: $store.wizard.selectedDate === '${d.iso}' ? '#FC6514' : 'rgba(0,0,0,0.07)', boxShadow: $store.wizard.selectedDate === '${d.iso}' ? '0 6px 16px rgba(252,101,20,0.32)' : 'none' }`}
         >
           {/* Day abbreviation */}
           <p
-            style="font-size:9px; font-weight:700; letter-spacing:0.08em; margin-bottom:5px; transition:color 0.18s ease;"
-            x-bind:style={`{ color: $store.wizard.selectedDate === '${d.iso}' ? 'rgba(255,255,255,0.75)' : '#78716C' }`}
+            style="font-size:9px; font-weight:700; letter-spacing:0.09em; margin-bottom:6px; transition:color 0.18s ease;"
+            x-bind:style={`{ color: $store.wizard.selectedDate === '${d.iso}' ? 'rgba(255,255,255,0.72)' : '#A8A29E' }`}
           >{d.day}</p>
 
           {/* Date number */}
           <p
-            style="font-size:18px; font-weight:700; line-height:1; letter-spacing:-0.02em; transition:color 0.18s ease;"
+            style="font-size:21px; font-weight:800; line-height:1; letter-spacing:-0.03em; transition:color 0.18s ease;"
             x-bind:style={`{ color: $store.wizard.selectedDate === '${d.iso}' ? 'white' : '#1C1917' }`}
           >{d.num}</p>
 
           {/* Today dot */}
           {d.isToday && (
             <div
-              style="width:4px; height:4px; border-radius:9999px; margin:5px auto 0; transition:background 0.18s ease;"
-              x-bind:style={`{ background: $store.wizard.selectedDate === '${d.iso}' ? 'rgba(255,255,255,0.65)' : '#FC6514' }`}
+              style="width:4px; height:4px; border-radius:9999px; margin:6px auto 0; transition:background 0.18s ease;"
+              x-bind:style={`{ background: $store.wizard.selectedDate === '${d.iso}' ? 'rgba(255,255,255,0.60)' : '#FC6514' }`}
             />
           )}
-          {!d.isToday && <div style="height:9px;" />}
+          {!d.isToday && <div style="height:10px;" />}
         </button>
       ))}
     </div>
@@ -81,58 +81,59 @@ export const Step4ShipmentDetails = () => (
       Loading slots…
     </div>
 
-    {/* ── Slot rows ────────────────────────────────────────────────────────── */}
+    {/* ── Slot grid (2-column cards) ───────────────────────────────────────── */}
     <div
       x-show="$store.wizard.selectedDate !== null && !$store.wizard.slotsLoading && $store.wizard.slots.length > 0"
-      style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;"
+      style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;"
     >
       <template x-for="slot in $store.wizard.slots" x-key="slot.id">
         <button
           type="button"
           x-bind:disabled="slot.busyness === 'full' || slot.busyness === 'closed'"
           x-on:click="slot.busyness !== 'full' && slot.busyness !== 'closed' && $store.wizard.selectSlot(slot.id, slot.startTime + ' – ' + slot.endTime)"
-          style="display:flex; align-items:center; gap:12px; padding:14px 18px; border-radius:12px; border:1.5px solid #e5e7eb; text-align:left; width:100%; transition:all 0.15s ease; background:#fff; cursor:pointer;"
-          x-bind:style="{ opacity: (slot.busyness === 'full' || slot.busyness === 'closed') ? '0.30' : '1', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer', background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.03)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#e5e7eb' }"
-          x-on:mouseover={`if(slot.busyness !== 'full' && $store.wizard.selectedSlotId !== slot.id){ $el.style.borderColor='#d1d5db'; }`}
-          x-on:mouseout={`if($store.wizard.selectedSlotId !== slot.id){ $el.style.borderColor='#e5e7eb'; }`}
+          style="position:relative; display:flex; flex-direction:column; justify-content:space-between; padding:16px 16px 14px; border-radius:14px; border:1.5px solid #e5e7eb; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; min-height:96px;"
+          x-bind:style="{ opacity: (slot.busyness === 'full' || slot.busyness === 'closed') ? '0.30' : '1', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer', background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.04)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#e5e7eb', boxShadow: $store.wizard.selectedSlotId === slot.id ? '0 0 0 3px rgba(252,101,20,0.10), 0 4px 14px rgba(252,101,20,0.14)' : '0 1px 3px rgba(0,0,0,0.04)' }"
+          x-on:mouseover={`if(slot.busyness !== 'full' && $store.wizard.selectedSlotId !== slot.id){ $el.style.borderColor='#d1d5db'; $el.style.boxShadow='0 2px 8px rgba(0,0,0,0.07)'; }`}
+          x-on:mouseout={`if($store.wizard.selectedSlotId !== slot.id){ $el.style.borderColor='#e5e7eb'; $el.style.boxShadow='0 1px 3px rgba(0,0,0,0.04)'; }`}
         >
-          {/* Time range */}
-          <div style="width:96px; flex-shrink:0;">
+          {/* Radio indicator — top right */}
+          <div
+            style="position:absolute; top:14px; right:14px; width:18px; height:18px; border-radius:9999px; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease; border:1.5px solid rgba(0,0,0,0.14); background:rgba(0,0,0,0.04);"
+            x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : 'rgba(0,0,0,0.04)', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : 'rgba(0,0,0,0.14)' }"
+          >
             <span
-              style="font-size:14px; font-weight:600; font-variant-numeric:tabular-nums; transition:color 0.15s ease;"
-              x-bind:style="{ color: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#1C1917' }"
-              x-text="slot.startTime"
+              x-show="$store.wizard.selectedSlotId === slot.id"
+              style="width:6px; height:6px; border-radius:9999px; background:white; display:block;"
             ></span>
-            <span style="font-size:12px; color:#78716C; margin-left:3px;" x-text="'– ' + slot.endTime"></span>
           </div>
 
-          {/* Capacity bar */}
-          <div style="flex:1; min-width:0;">
-            <div style="height:4px; background:rgba(0,0,0,0.06); border-radius:9999px; overflow:hidden;">
+          {/* Time display */}
+          <div style="padding-right:28px;">
+            <p
+              style="font-size:22px; font-weight:800; letter-spacing:-0.04em; line-height:1; margin-bottom:3px; font-variant-numeric:tabular-nums; transition:color 0.15s ease;"
+              x-bind:style="{ color: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#1C1917' }"
+              x-text="slot.startTime"
+            ></p>
+            <p
+              style="font-size:11px; font-weight:500; color:#A8A29E;"
+              x-text="'until ' + slot.endTime"
+            ></p>
+          </div>
+
+          {/* Capacity bar + spots left */}
+          <div style="margin-top:14px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;">
+              <span
+                style="font-size:10px; font-weight:600; color:#78716C;"
+                x-text="slot.busyness === 'full' ? 'Full' : (slot.capacity - slot.confirmed) + ' spots left'"
+              ></span>
+            </div>
+            <div style="height:3px; background:rgba(0,0,0,0.06); border-radius:9999px; overflow:hidden;">
               <div
                 style="height:100%; border-radius:9999px; transition:width 0.3s ease;"
                 x-bind:style="{ width: Math.round((slot.confirmed / Math.max(slot.capacity,1)) * 100) + '%', background: Math.max(0, Math.round((slot.confirmed / Math.max(slot.capacity,1)) * 100) - 80) !== 0 ? '#FC6514' : (Math.max(0, Math.round((slot.confirmed / Math.max(slot.capacity,1)) * 100) - 50) !== 0 ? '#FDBA74' : 'rgba(0,0,0,0.20)') }"
               ></div>
             </div>
-          </div>
-
-          {/* Spots left */}
-          <div style="width:68px; text-align:right; flex-shrink:0;">
-            <span
-              style="font-size:11px; font-weight:500; color:#78716C;"
-              x-text="slot.busyness === 'full' ? 'Full' : (slot.capacity - slot.confirmed) + ' left'"
-            ></span>
-          </div>
-
-          {/* Radio dot */}
-          <div
-            style="width:20px; height:20px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease; border:1.5px solid rgba(0,0,0,0.14); background:rgba(0,0,0,0.04);"
-            x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : 'rgba(0,0,0,0.04)', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : 'rgba(0,0,0,0.14)', boxShadow: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.30) 0px 2px 8px 0px' : 'none' }"
-          >
-            <span
-              x-show="$store.wizard.selectedSlotId === slot.id"
-              style="width:7px; height:7px; border-radius:9999px; background:white; display:block;"
-            ></span>
           </div>
         </button>
       </template>

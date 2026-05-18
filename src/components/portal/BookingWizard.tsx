@@ -81,7 +81,7 @@ export const BookingWizard = () => (
           x-show="Math.max(0, $store.wizard.currentStep - 4) !== 0 && $store.wizard.holdActive"
           x-cloak
           style="margin-bottom:16px; display:inline-flex; align-items:center; gap:7px; padding:5px 12px; border-radius:8px; font-size:11.5px; font-weight:600;"
-          x-bind:style="$store.wizard.holdExpiring ? 'background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.18); color:#EF4444;' : 'background:rgba(252,101,20,0.07); border:1px solid rgba(252,101,20,0.14); color:rgba(252,101,20,0.85);'"
+          x-bind:style="{ background: $store.wizard.holdExpiring ? 'rgba(239,68,68,0.08)' : 'rgba(252,101,20,0.07)', border: $store.wizard.holdExpiring ? '1px solid rgba(239,68,68,0.18)' : '1px solid rgba(252,101,20,0.14)', color: $store.wizard.holdExpiring ? '#EF4444' : 'rgba(252,101,20,0.85)' }"
         >
           <Icon name={ICONS.clock} size={12} style="flex-shrink:0;" />
           <span>Slot held · <span style="font-family:ui-monospace,monospace; font-weight:700;" x-text="$store.wizard.holdMinutes + ':' + $store.wizard.holdSeconds" /></span>
@@ -141,7 +141,7 @@ export const BookingWizard = () => (
         x-on:click="$store.wizard.nextStep()"
         class="btn-primary"
         style="padding:9px 24px; font-size:13px; min-width:130px; justify-content:center;"
-        x-bind:style="!$store.wizard.canProceed ? 'filter:grayscale(1) opacity(0.28); cursor:not-allowed; pointer-events:none;' : ''"
+        x-bind:style="{ filter: !$store.wizard.canProceed ? 'grayscale(1) opacity(0.28)' : 'none', cursor: !$store.wizard.canProceed ? 'not-allowed' : 'pointer', pointerEvents: !$store.wizard.canProceed ? 'none' : 'auto' }"
       >
         <span x-text="$store.wizard.currentStep === 6 ? 'Review & Submit' : 'Continue'">Continue</span>
         <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;">

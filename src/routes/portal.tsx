@@ -27,7 +27,8 @@ portalRoutes.get('/', (c) => {
       {/* ══════════════════════════════════════════════════════════════════
           §1  HERO — full-bleed photo with dark gradient overlay
       ══════════════════════════════════════════════════════════════════ */}
-      <section style="position:relative; min-height:88vh; display:flex; align-items:flex-end; overflow:hidden;">
+      <section style="padding:28px 24px 0; background:#fff;">
+      <div style="max-width:1200px; margin:0 auto; position:relative; border-radius:24px; overflow:hidden; min-height:560px; display:flex; align-items:flex-end;">
 
         {/* Background photo */}
         <img
@@ -79,6 +80,7 @@ portalRoutes.get('/', (c) => {
         </div>
 
 
+      </div>{/* end container */}
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════
@@ -105,7 +107,7 @@ portalRoutes.get('/', (c) => {
       {/* ══════════════════════════════════════════════════════════════════
           §3  HOW IT WORKS
       ══════════════════════════════════════════════════════════════════ */}
-      <section id="how-it-works" style="padding:96px 24px; background:#FFFFFF;">
+      <section id="how-it-works" class="section-dots" style="padding:96px 24px; background-color:#FFFFFF;">
         <div class="max-w-5xl mx-auto">
           <div class="reveal" style="margin-bottom:56px;">
             <p style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#FC6514; margin-bottom:10px;">How it works</p>
@@ -245,7 +247,7 @@ portalRoutes.get('/', (c) => {
       {/* ══════════════════════════════════════════════════════════════════
           §5  WHO IS IT FOR — 3 personas
       ══════════════════════════════════════════════════════════════════ */}
-      <section style="padding:96px 24px; background:#FFFFFF; border-top:1px solid rgba(0,0,0,0.06);">
+      <section class="section-dots" style="padding:96px 24px; background-color:#FFFFFF; border-top:1px solid rgba(0,0,0,0.06);">
         <div class="max-w-5xl mx-auto">
           <div class="reveal" style="text-align:center; margin-bottom:56px;">
             <p style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#FC6514; margin-bottom:10px;">Who uses Glido</p>
@@ -260,18 +262,20 @@ portalRoutes.get('/', (c) => {
           <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;" class="persona-grid">
 
             {/* Freight Forwarders — dark navy */}
-            <div class="reveal" style="background:linear-gradient(145deg,#1e2d4a 0%,#0f172a 100%); border-radius:22px; padding:34px 30px; position:relative; overflow:hidden; transition:transform 0.22s cubic-bezier(0.16,1,0.3,1);"
-              onmouseover="this.style.transform='translateY(-4px)';" onmouseout="this.style.transform='';">
-              <div style="position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:9999px; background:radial-gradient(circle,rgba(99,130,255,0.18) 0%,transparent 65%); pointer-events:none;" />
+            <div class="reveal" style="background:#192640; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden; transition:background 0.3s ease, transform 0.22s cubic-bezier(0.16,1,0.3,1);"
+              onmouseover="this.style.background='linear-gradient(145deg,#1e2d4a 0%,#0f172a 100%)'; this.style.transform='translateY(-4px)';"
+              onmouseout="this.style.background='#192640'; this.style.transform='';">
               <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
                 <Icon name={ICONS.bookings} size={22} style="color:#fff;" />
               </div>
               <p style="font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.03em; margin-bottom:10px;">Freight Forwarders</p>
-              <p style="font-size:13px; color:rgba(255,255,255,0.58); line-height:1.7; margin-bottom:22px;">Book slots on behalf of multiple clients, attach documents, track ICS status — all from one portal.</p>
-              <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px;">
-                {['Multi-shipment booking','HBL & container lookup','Document upload','Email confirmation'].map(b => (
-                  <li key={b} style="display:flex; align-items:center; gap:9px; font-size:12.5px; color:rgba(255,255,255,0.70);">
-                    <span style="width:4px; height:4px; border-radius:9999px; background:rgba(255,255,255,0.40); flex-shrink:0;" />
+              <p style="font-size:13px; color:rgba(255,255,255,0.55); line-height:1.7; margin-bottom:22px;">Book slots on behalf of multiple clients, attach documents, track ICS status — all from one portal.</p>
+              <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:9px;">
+                {['Multi-shipment booking','HBL & container lookup','Document upload','Email confirmation'].map((b, bi) => (
+                  <li key={b} style="display:flex; align-items:center; gap:11px; font-size:12.5px; color:rgba(255,255,255,0.70);">
+                    <span style="flex-shrink:0; width:18px; height:18px; border-radius:5px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); display:inline-flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:rgba(255,255,255,0.35); font-variant-numeric:tabular-nums; font-family:ui-monospace,monospace;">
+                      {String(bi + 1).padStart(2, '0')}
+                    </span>
                     {b}
                   </li>
                 ))}
@@ -279,18 +283,20 @@ portalRoutes.get('/', (c) => {
             </div>
 
             {/* Truck Drivers — dark teal */}
-            <div class="reveal" data-reveal-delay="80" style="background:linear-gradient(145deg,#134e4a 0%,#0c302d 100%); border-radius:22px; padding:34px 30px; position:relative; overflow:hidden; transition:transform 0.22s cubic-bezier(0.16,1,0.3,1);"
-              onmouseover="this.style.transform='translateY(-4px)';" onmouseout="this.style.transform='';">
-              <div style="position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:9999px; background:radial-gradient(circle,rgba(52,211,153,0.20) 0%,transparent 65%); pointer-events:none;" />
+            <div class="reveal" data-reveal-delay="80" style="background:#0d3835; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden; transition:background 0.3s ease, transform 0.22s cubic-bezier(0.16,1,0.3,1);"
+              onmouseover="this.style.background='linear-gradient(145deg,#134e4a 0%,#0c302d 100%)'; this.style.transform='translateY(-4px)';"
+              onmouseout="this.style.background='#0d3835'; this.style.transform='';">
               <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
                 <Icon name={ICONS.walkIn} size={22} style="color:#fff;" />
               </div>
               <p style="font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.03em; margin-bottom:10px;">Truck Drivers</p>
-              <p style="font-size:13px; color:rgba(255,255,255,0.58); line-height:1.7; margin-bottom:22px;">Arrive at your confirmed window, scan your QR at the kiosk, and go straight to the bay. No queue, no counter.</p>
-              <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px;">
-                {['QR code check-in','Confirmed arrival window','No account needed','Walk-in fallback'].map(b => (
-                  <li key={b} style="display:flex; align-items:center; gap:9px; font-size:12.5px; color:rgba(255,255,255,0.70);">
-                    <span style="width:4px; height:4px; border-radius:9999px; background:rgba(255,255,255,0.40); flex-shrink:0;" />
+              <p style="font-size:13px; color:rgba(255,255,255,0.55); line-height:1.7; margin-bottom:22px;">Arrive at your confirmed window, scan your QR at the kiosk, and go straight to the bay. No queue, no counter.</p>
+              <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:9px;">
+                {['QR code check-in','Confirmed arrival window','No account needed','Walk-in fallback'].map((b, bi) => (
+                  <li key={b} style="display:flex; align-items:center; gap:11px; font-size:12.5px; color:rgba(255,255,255,0.70);">
+                    <span style="flex-shrink:0; width:18px; height:18px; border-radius:5px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); display:inline-flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:rgba(255,255,255,0.35); font-variant-numeric:tabular-nums; font-family:ui-monospace,monospace;">
+                      {String(bi + 1).padStart(2, '0')}
+                    </span>
                     {b}
                   </li>
                 ))}
@@ -298,18 +304,20 @@ portalRoutes.get('/', (c) => {
             </div>
 
             {/* Depot Managers — warm dark */}
-            <div class="reveal" data-reveal-delay="160" style="background:linear-gradient(145deg,#431407 0%,#1c0a02 100%); border-radius:22px; padding:34px 30px; position:relative; overflow:hidden; transition:transform 0.22s cubic-bezier(0.16,1,0.3,1);"
-              onmouseover="this.style.transform='translateY(-4px)';" onmouseout="this.style.transform='';">
-              <div style="position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:9999px; background:radial-gradient(circle,rgba(252,101,20,0.30) 0%,transparent 65%); pointer-events:none;" />
+            <div class="reveal" data-reveal-delay="160" style="background:#260c03; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden; transition:background 0.3s ease, transform 0.22s cubic-bezier(0.16,1,0.3,1);"
+              onmouseover="this.style.background='linear-gradient(145deg,#431407 0%,#1c0a02 100%)'; this.style.transform='translateY(-4px)';"
+              onmouseout="this.style.background='#260c03'; this.style.transform='';">
               <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
                 <Icon name={ICONS.home} size={22} style="color:#fff;" />
               </div>
               <p style="font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.03em; margin-bottom:10px;">Depot Managers</p>
-              <p style="font-size:13px; color:rgba(255,255,255,0.58); line-height:1.7; margin-bottom:22px;">See every booking, walk-in, and ICS flag in a live dashboard. Run end-of-day reports with one click.</p>
-              <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px;">
-                {['Real-time live view','ICS hold alerts','Walk-in registration','PDF reports'].map(b => (
-                  <li key={b} style="display:flex; align-items:center; gap:9px; font-size:12.5px; color:rgba(255,255,255,0.70);">
-                    <span style="width:4px; height:4px; border-radius:9999px; background:rgba(255,255,255,0.40); flex-shrink:0;" />
+              <p style="font-size:13px; color:rgba(255,255,255,0.55); line-height:1.7; margin-bottom:22px;">See every booking, walk-in, and ICS flag in a live dashboard. Run end-of-day reports with one click.</p>
+              <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:9px;">
+                {['Real-time live view','ICS hold alerts','Walk-in registration','PDF reports'].map((b, bi) => (
+                  <li key={b} style="display:flex; align-items:center; gap:11px; font-size:12.5px; color:rgba(255,255,255,0.70);">
+                    <span style="flex-shrink:0; width:18px; height:18px; border-radius:5px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); display:inline-flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:rgba(255,255,255,0.35); font-variant-numeric:tabular-nums; font-family:ui-monospace,monospace;">
+                      {String(bi + 1).padStart(2, '0')}
+                    </span>
                     {b}
                   </li>
                 ))}

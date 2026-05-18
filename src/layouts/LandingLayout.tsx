@@ -24,6 +24,15 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
         <style>{`
           [x-cloak]{display:none!important}
           * { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+          @keyframes dot-drift {
+            from { background-position: 0 0; }
+            to   { background-position: 28px 28px; }
+          }
+          .section-dots {
+            background-image: radial-gradient(rgba(0,0,0,0.06) 1.5px, transparent 1.5px);
+            background-size: 28px 28px;
+            animation: dot-drift 24s linear infinite;
+          }
         `}</style>
 
         {/* Alpine init must be synchronous before defer */}
