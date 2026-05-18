@@ -29,7 +29,7 @@ export const BookingWizard = () => (
     <div
       x-show="$store.wizard.currentStep !== 8"
       x-cloak
-      style="padding:24px 48px 20px; border-bottom:1px solid rgba(0,0,0,0.06);"
+      style="padding:24px 48px 20px; border-bottom:1px solid #f0f0f0;"
     >
       {/* Label row — just the step name, no redundant "Step X of 7" */}
       <div style="margin-bottom:10px; max-width:560px; margin-left:auto; margin-right:auto;">
@@ -106,7 +106,7 @@ export const BookingWizard = () => (
     <div
       x-show="$store.wizard.currentStep !== 8"
       x-cloak
-      style="border-top:1px solid rgba(0,0,0,0.07); padding:14px 0 16px;"
+      style="border-top:1px solid #f0f0f0; padding:14px 0 16px;"
     >
       <div style="max-width:560px; margin:0 auto; padding:0 40px; display:flex; align-items:center; justify-content:space-between;">
 
@@ -115,14 +115,14 @@ export const BookingWizard = () => (
         type="button"
         x-on:click="$store.wizard.prevStep()"
         x-bind:style="$store.wizard.currentStep === 1 ? 'opacity:0; pointer-events:none;' : 'opacity:1;'"
-        style="display:inline-flex; align-items:center; gap:6px; padding:9px 20px; font-size:13px; font-weight:500; color:#78716C; border:1px solid rgba(0,0,0,0.10); border-radius:9999px; background:transparent; cursor:pointer; transition:border-color 0.15s ease, color 0.15s ease;"
-        onmouseover="this.style.borderColor='rgba(0,0,0,0.22)'; this.style.color='#1C1917';"
-        onmouseout="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.color='#78716C';"
+        style="display:inline-flex; align-items:center; gap:5px; padding:9px 16px 9px 12px; font-size:13px; font-weight:500; color:#6b7280; border:1.5px solid #e5e7eb; border-radius:9999px; background:#fff; cursor:pointer; transition:all 0.15s ease; white-space:nowrap;"
+        onmouseover="this.style.borderColor='#d1d5db'; this.style.color='#111827';"
+        onmouseout="this.style.borderColor='#e5e7eb'; this.style.color='#6b7280';"
       >
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;">
-          <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0; display:block;">
+          <path d="M8.5 2.5L4.5 7l4 4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        Back
+        <span style="display:block;">Back</span>
       </button>
 
       {/* Step name + ordinal */}

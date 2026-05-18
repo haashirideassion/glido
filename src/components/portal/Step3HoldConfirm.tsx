@@ -3,10 +3,10 @@ import { Icon, ICONS } from '../../lib/Icon'
 export const Step3HoldConfirm = () => (
   <div x-show="$store.wizard.currentStep === 3" x-cloak>
 
-    {/* ── Step heading ── */}
+    {/* Step heading */}
     <div style="margin-bottom:28px;">
-      <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">Cargo type</h2>
-      <p style="font-size:14px; color:#78716C; line-height:1.5;">Select whether your shipment is FCL or LCL — this determines which details we ask for next.</p>
+      <h2 style="font-size:22px; font-weight:700; color:#111827; letter-spacing:-0.03em; margin-bottom:6px;">Cargo type</h2>
+      <p style="font-size:14px; color:#6b7280; line-height:1.6;">Select whether your shipment is FCL or LCL — this determines which details we ask for next.</p>
     </div>
 
     <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:24px;">
@@ -15,42 +15,31 @@ export const Step3HoldConfirm = () => (
       <button
         type="button"
         x-on:click="$store.wizard.selectLoadType('fcl')"
-        style="display:flex; align-items:center; gap:14px; padding:16px 18px; border-radius:16px; cursor:pointer; text-align:left; width:100%; transition:all 0.18s ease; background:rgba(0,0,0,0.03); border:1.5px solid rgba(0,0,0,0.09);"
-        x-bind:style="$store.wizard.loadType === 'fcl'
-          ? 'background:rgba(252,101,20,0.08); border-color:rgba(252,101,20,0.40); box-shadow:0 0 0 3px rgba(252,101,20,0.08);'
-          : ''"
-        onmouseover="if(!this.style.borderColor.includes('252')){this.style.borderColor='rgba(0,0,0,0.15)';}"
-        onmouseout="if(!this.style.borderColor.includes('252')){this.style.borderColor='rgba(0,0,0,0.09)';}"
+        class="wizard-option-card"
+        x-bind:class="$store.wizard.loadType === 'fcl' ? 'selected' : ''"
       >
         <div
-          style="width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.18s ease; background:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.09);"
-          x-bind:style="$store.wizard.loadType === 'fcl'
-            ? 'background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-color:transparent; box-shadow:0 4px 12px rgba(252,101,20,0.35), inset 0 1px 0 rgba(255,255,255,0.22);'
-            : ''"
+          style="width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1.5px solid #e5e7eb; transition:all 0.15s ease;"
+          x-bind:style="$store.wizard.loadType === 'fcl' ? 'background:#FC6514; border-color:#FC6514;' : 'background:#f9fafb;'"
         >
           <Icon
             name={ICONS.container}
-            size={17}
-            x-bind:style="$store.wizard.loadType === 'fcl' ? 'color:white;' : 'color:rgba(0,0,0,0.28);'"
+            size={20}
+            x-bind:style="$store.wizard.loadType === 'fcl' ? 'color:#fff;' : 'color:#9ca3af;'"
           />
         </div>
 
         <div style="flex:1; min-width:0; text-align:left;">
-          <div style="display:flex; align-items:baseline; gap:7px; margin-bottom:2px;">
-            <p
-              style="font-size:14px; font-weight:700; letter-spacing:-0.01em; color:#1C1917; transition:color 0.15s ease;"
-              x-bind:style="$store.wizard.loadType === 'fcl' ? 'color:#FC6514;' : ''"
-            >FCL</p>
-            <span style="font-size:12px; color:#78716C; font-weight:400;">Full Container Load</span>
+          <div style="display:flex; align-items:baseline; gap:7px; margin-bottom:3px;">
+            <p style="font-size:15px; font-weight:600; color:#111827;">FCL</p>
+            <span style="font-size:13px; color:#6b7280; font-weight:400;">Full Container Load</span>
           </div>
-          <p style="font-size:12px; color:#78716C;">Container number required · No HBL needed</p>
+          <p style="font-size:13px; color:#6b7280; line-height:1.4;">Container number required · No HBL needed</p>
         </div>
 
         <div
-          style="width:20px; height:20px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.18s ease; border:1.5px solid rgba(0,0,0,0.14); background:rgba(0,0,0,0.04);"
-          x-bind:style="$store.wizard.loadType === 'fcl'
-            ? 'background:#FC6514; border-color:#FC6514; box-shadow:rgba(252,101,20,0.35) 0px 2px 8px 0px;'
-            : ''"
+          style="width:20px; height:20px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1.5px solid #e5e7eb; transition:all 0.15s ease;"
+          x-bind:style="$store.wizard.loadType === 'fcl' ? 'background:#FC6514; border-color:#FC6514;' : ''"
         >
           <span
             x-show="$store.wizard.loadType === 'fcl'"
@@ -63,42 +52,31 @@ export const Step3HoldConfirm = () => (
       <button
         type="button"
         x-on:click="$store.wizard.selectLoadType('lcl')"
-        style="display:flex; align-items:center; gap:14px; padding:16px 18px; border-radius:16px; cursor:pointer; text-align:left; width:100%; transition:all 0.18s ease; background:rgba(0,0,0,0.03); border:1.5px solid rgba(0,0,0,0.09);"
-        x-bind:style="$store.wizard.loadType === 'lcl'
-          ? 'background:rgba(252,101,20,0.08); border-color:rgba(252,101,20,0.40); box-shadow:0 0 0 3px rgba(252,101,20,0.08);'
-          : ''"
-        onmouseover="if(!this.style.borderColor.includes('252')){this.style.borderColor='rgba(0,0,0,0.15)';}"
-        onmouseout="if(!this.style.borderColor.includes('252')){this.style.borderColor='rgba(0,0,0,0.09)';}"
+        class="wizard-option-card"
+        x-bind:class="$store.wizard.loadType === 'lcl' ? 'selected' : ''"
       >
         <div
-          style="width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.18s ease; background:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.09);"
-          x-bind:style="$store.wizard.loadType === 'lcl'
-            ? 'background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border-color:transparent; box-shadow:0 4px 12px rgba(252,101,20,0.35), inset 0 1px 0 rgba(255,255,255,0.22);'
-            : ''"
+          style="width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1.5px solid #e5e7eb; transition:all 0.15s ease;"
+          x-bind:style="$store.wizard.loadType === 'lcl' ? 'background:#FC6514; border-color:#FC6514;' : 'background:#f9fafb;'"
         >
           <Icon
             name={ICONS.cargo}
-            size={17}
-            x-bind:style="$store.wizard.loadType === 'lcl' ? 'color:white;' : 'color:rgba(0,0,0,0.28);'"
+            size={20}
+            x-bind:style="$store.wizard.loadType === 'lcl' ? 'color:#fff;' : 'color:#9ca3af;'"
           />
         </div>
 
         <div style="flex:1; min-width:0; text-align:left;">
-          <div style="display:flex; align-items:baseline; gap:7px; margin-bottom:2px;">
-            <p
-              style="font-size:14px; font-weight:700; letter-spacing:-0.01em; color:#1C1917; transition:color 0.15s ease;"
-              x-bind:style="$store.wizard.loadType === 'lcl' ? 'color:#FC6514;' : ''"
-            >LCL</p>
-            <span style="font-size:12px; color:#78716C; font-weight:400;">Less than Container Load</span>
+          <div style="display:flex; align-items:baseline; gap:7px; margin-bottom:3px;">
+            <p style="font-size:15px; font-weight:600; color:#111827;">LCL</p>
+            <span style="font-size:13px; color:#6b7280; font-weight:400;">Less than Container Load</span>
           </div>
-          <p style="font-size:12px; color:#78716C;">Shared container · HBL + container number · ICS auto-checked</p>
+          <p style="font-size:13px; color:#6b7280; line-height:1.4;">Shared container · HBL + container number · ICS auto-checked</p>
         </div>
 
         <div
-          style="width:20px; height:20px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.18s ease; border:1.5px solid rgba(0,0,0,0.14); background:rgba(0,0,0,0.04);"
-          x-bind:style="$store.wizard.loadType === 'lcl'
-            ? 'background:#FC6514; border-color:#FC6514; box-shadow:rgba(252,101,20,0.35) 0px 2px 8px 0px;'
-            : ''"
+          style="width:20px; height:20px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1.5px solid #e5e7eb; transition:all 0.15s ease;"
+          x-bind:style="$store.wizard.loadType === 'lcl' ? 'background:#FC6514; border-color:#FC6514;' : ''"
         >
           <span
             x-show="$store.wizard.loadType === 'lcl'"
@@ -108,11 +86,9 @@ export const Step3HoldConfirm = () => (
       </button>
     </div>
 
-    <p style="font-size:12px; color:#A8A29E; text-align:center;">
+    <p style="font-size:13px; color:#9ca3af; text-align:center;">
       Not sure?{' '}
-      <a href="#" style="color:#78716C; text-decoration:underline; text-underline-offset:2px; text-decoration-color:rgba(0,0,0,0.15);">
-        FCL vs LCL explained →
-      </a>
+      <a href="#" style="color:#6b7280; text-decoration:underline; text-underline-offset:3px;">FCL vs LCL explained</a>
     </p>
   </div>
 )

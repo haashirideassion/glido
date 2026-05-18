@@ -13,7 +13,7 @@ export const Step6ContactVehicle = () => (
     </div>
 
     {/* Required docs checklist */}
-    <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:16px; margin-bottom:20px;">
+    <div style="background:#fff; border:1.5px solid #e5e7eb; border-radius:12px; padding:16px; margin-bottom:20px;">
       <p style="font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Required Documents</p>
       <ul style="display:flex; flex-direction:column; gap:10px; list-style:none; padding:0; margin:0;">
         <li style="display:flex; align-items:center; gap:10px; font-size:13px;">
@@ -48,8 +48,8 @@ export const Step6ContactVehicle = () => (
 
     {/* Drop zone */}
     <div
-      style="border:2px dashed rgba(0,0,0,0.11); border-radius:10px; padding:40px 24px; text-align:center; transition:border-color 0.15s ease, background 0.15s ease; cursor:pointer;"
-      {...{"x-bind:style": "dragging ? 'border-color:rgba(252,101,20,0.50); background:rgba(252,101,20,0.05);' : ''"}}
+      style="border:2px dashed #e5e7eb; border-radius:12px; background:#fafafa; padding:40px 24px; text-align:center; transition:border-color 0.15s ease, background 0.15s ease; cursor:pointer;"
+      {...{"x-bind:style": "dragging ? 'border-color:#FC6514; background:rgba(252,101,20,0.03);' : ''"}}
       {...{"x-on:dragover.prevent": "dragging = true"}}
       {...{"x-on:dragleave.prevent": "dragging = false"}}
       {...{"x-on:drop.prevent": "dragging = false; const files = Array.from($event.dataTransfer.files); files.forEach(f => addFile(f.name, f.size))"}}
@@ -76,7 +76,7 @@ export const Step6ContactVehicle = () => (
     <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px;" x-show="documents.length > 0">
       <p style="font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase;">Uploaded files</p>
       <template x-for="(doc, i) in documents" {...{"x-key": "i"}}>
-        <div style="display:flex; align-items:center; justify-content:space-between; background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:10px 14px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; background:#f9fafb; border:1px solid #e5e7eb; border-radius:10px; padding:10px 14px;">
           <div style="display:flex; align-items:center; gap:10px; min-width:0;">
             <Icon name={ICONS.document} size={18} style="color:#78716C; flex-shrink:0;" />
             <div style="min-width:0;">

@@ -24,7 +24,7 @@ export const Step7Confirmation = () => (
     </div>
 
     {/* Booking summary */}
-    <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:14px; padding:20px; margin-bottom:20px; font-size:13px;">
+    <div style="background:#fff; border:1.5px solid #e5e7eb; border-radius:14px; padding:20px; margin-bottom:20px; font-size:13px;">
       <p style="font-size:10px; font-weight:700; color:#78716C; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px;">Booking Summary</p>
       <div style="display:flex; flex-direction:column; gap:10px;">
         <div style="display:flex; justify-content:space-between;">
@@ -81,7 +81,7 @@ export const Step7Confirmation = () => (
     </div>
 
     {/* Charges breakdown */}
-    <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:14px; padding:20px; margin-bottom:20px;">
+    <div style="background:#fff; border:1.5px solid #e5e7eb; border-radius:14px; padding:20px; margin-bottom:20px;">
       <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:14px;">Charges</p>
       <div style="display:flex; flex-direction:column; gap:8px; font-size:13px;">
         <div style="display:flex; justify-content:space-between; color:#78716C;" x-show="$store.wizard.shipmentData?.storageCharge > 0">
@@ -117,8 +117,8 @@ export const Step7Confirmation = () => (
       <button
         type="button"
         x-on:click="$store.wizard.paymentMethod = 'card'"
-        style="text-align:left; cursor:pointer; border-radius:14px; padding:16px; transition:all 0.15s ease; background:#FFFFFF; border:1.5px solid rgba(0,0,0,0.09); box-shadow:0 1px 3px rgba(0,0,0,0.04);"
-        {...{"x-bind:style": "$store.wizard.paymentMethod === 'card' ? 'background:rgba(252,101,20,0.08); border-color:rgba(252,101,20,0.40); box-shadow:0 0 0 3px rgba(252,101,20,0.08);' : ''"}}
+        style="text-align:left; cursor:pointer; border-radius:14px; padding:16px; transition:all 0.15s ease; background:#fff; border:1.5px solid #e5e7eb;"
+        {...{"x-bind:style": "$store.wizard.paymentMethod === 'card' ? 'background:rgba(252,101,20,0.03); border-color:#FC6514;' : ''"}}
       >
         <Icon name={ICONS.shield} size={20} style="color:#FC6514; margin-bottom:8px; display:block;" />
         <div style="font-weight:600; font-size:13px; color:#1C1917;">Credit / Debit Card</div>
@@ -127,8 +127,8 @@ export const Step7Confirmation = () => (
       <button
         type="button"
         x-on:click="$store.wizard.paymentMethod = 'eft'"
-        style="text-align:left; cursor:pointer; border-radius:14px; padding:16px; transition:all 0.15s ease; background:#FFFFFF; border:1.5px solid rgba(0,0,0,0.09); box-shadow:0 1px 3px rgba(0,0,0,0.04);"
-        {...{"x-bind:style": "$store.wizard.paymentMethod === 'eft' ? 'background:rgba(252,101,20,0.08); border-color:rgba(252,101,20,0.40); box-shadow:0 0 0 3px rgba(252,101,20,0.08);' : ''"}}
+        style="text-align:left; cursor:pointer; border-radius:14px; padding:16px; transition:all 0.15s ease; background:#fff; border:1.5px solid #e5e7eb;"
+        {...{"x-bind:style": "$store.wizard.paymentMethod === 'eft' ? 'background:rgba(252,101,20,0.03); border-color:#FC6514;' : ''"}}
       >
         <Icon name={ICONS.document} size={20} style="color:#FC6514; margin-bottom:8px; display:block;" />
         <div style="font-weight:600; font-size:13px; color:#1C1917;">Bank Transfer (EFT)</div>
@@ -137,7 +137,7 @@ export const Step7Confirmation = () => (
     </div>
 
     {/* Card details panel */}
-    <div x-show="$store.wizard.paymentMethod === 'card'" style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:14px; padding:20px; margin-bottom:20px;">
+    <div x-show="$store.wizard.paymentMethod === 'card'" style="background:#fff; border:1.5px solid #e5e7eb; border-radius:14px; padding:20px; margin-bottom:20px;">
       <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
         <Icon name={ICONS.shield} size={15} style="color:#22C55E;" />
         <p style="font-size:12px; color:#78716C; font-weight:500;">Secure card payment powered by Stripe</p>

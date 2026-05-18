@@ -102,11 +102,11 @@
 
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* COLOR TOKENS — Warm Light (light-first)                                     */
-/* Floor: #F3F2F0  Surface: #FFFFFF  Primary: #FC6514                         */
+/* Floor: #ffffff  Surface: #FFFFFF  Primary: #FC6514                         */
 /* ─────────────────────────────────────────────────────────────────────────── */
 :root {
   /* Page & surface */
-  --background:        #F3F2F0;  /* near-white page floor — barely tinted */
+  --background:        #ffffff;  /* white page floor */
   --background-raised: #FFFFFF;  /* white card surface */
   --background-subtle: #EBEBEA;  /* subtle fill within white cards */
 
@@ -177,6 +177,7 @@
   html { scroll-behavior: smooth; }
 
   body {
+    background: #fff;
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
@@ -384,7 +385,7 @@
   .bg-hero-gradient {
     background:
       radial-gradient(ellipse 90% 55% at 50% -5%, rgba(252,101,20,0.06) 0%, transparent 65%),
-      #F3F2F0;
+      #ffffff;
   }
   .bg-cta-gradient {
     background: linear-gradient(135deg, #FC6514 0%, #E04E06 100%);
@@ -636,74 +637,63 @@
   /* Input — clean underline (editorial style) */
   .wizard-field {
     width: 100%;
-    background: #FFFFFF;
-    border: 1.5px solid rgba(0,0,0,0.11);
+    padding: 11px 14px;
     border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 13px;
-    font-weight: 400;
-    color: #1C1917;
-    outline: none;
-    transition: border-color 150ms ease, box-shadow 150ms ease;
+    border: 1.5px solid #e5e7eb;
+    background: #fff;
+    font-size: 14px;
+    color: #111827;
     font-family: 'Inter', ui-sans-serif, sans-serif;
+    outline: none;
+    transition: border-color 0.15s ease;
     box-sizing: border-box;
   }
-  .wizard-field::placeholder { color: #A8A29E; font-weight: 400; }
+  .wizard-field::placeholder { color: #9ca3af; }
   .wizard-field:focus {
-    border-color: rgba(252,101,20,0.50);
-    box-shadow: 0 0 0 3px rgba(252,101,20,0.08);
+    border-color: #FC6514;
   }
 
   /* Stepper +/- buttons */
   .wizard-stepper-btn {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1.5px solid #e5e7eb;
+    background: #fff;
+    font-size: 20px;
+    font-weight: 400;
+    color: #374151;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #FFFFFF;
-    border: 1px solid rgba(0,0,0,0.10);
-    border-radius: 8px;
-    font-size: 20px;
-    font-weight: 300;
-    color: #1C1917;
-    cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    transition: all 0.12s cubic-bezier(0.16,1,0.3,1);
-    line-height: 1;
+    transition: border-color 0.15s ease, background 0.15s ease;
     flex-shrink: 0;
+    line-height: 1;
     user-select: none;
   }
-  .wizard-stepper-btn:hover {
-    border-color: rgba(0,0,0,0.18);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  .wizard-stepper-btn:hover:not(:disabled) {
+    border-color: #FC6514;
+    color: #FC6514;
   }
-  .wizard-stepper-btn:active { transform: translateY(1px); transition-duration: 60ms; }
-  .wizard-stepper-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+  .wizard-stepper-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-  /* Selection chips — dark active (like screenshot) */
+  /* Selection chips — orange active */
   .wizard-chip {
-    padding: 5px 13px;
+    padding: 5px 14px;
+    border-radius: 9999px;
+    border: 1.5px solid #e5e7eb;
+    background: #fff;
     font-size: 13px;
     font-weight: 500;
-    border-radius: 8px;
+    color: #374151;
     cursor: pointer;
-    border: 1px solid rgba(0,0,0,0.11);
-    background: transparent;
-    color: #57534E;
-    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+    transition: all 0.12s ease;
   }
-  .wizard-chip:hover {
-    border-color: rgba(0,0,0,0.22);
-    color: #1C1917;
-    transform: translateY(-1px);
-  }
-  .wizard-chip:active { transform: scale(0.96); transition-duration: 60ms; }
-  .wizard-chip.active {
-    background: #1C1917;
-    border-color: #1C1917;
-    color: #FFFFFF;
-    transform: none;
+  .wizard-chip.active, .wizard-chip:hover {
+    border-color: #FC6514;
+    color: #FC6514;
+    background: rgba(252,101,20,0.04);
   }
 
   /* Option select cards */
@@ -711,35 +701,21 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 16px 18px;
+    padding: 20px 24px;
     border-radius: 14px;
+    border: 1.5px solid #e5e7eb;
+    background: #fff;
     cursor: pointer;
     text-align: left;
     width: 100%;
-    background: #FFFFFF;
-    border: 1.5px solid rgba(0,0,0,0.09);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04);
-    transition:
-      background 0.18s cubic-bezier(0.16,1,0.3,1),
-      border-color 0.18s cubic-bezier(0.16,1,0.3,1),
-      transform 0.18s cubic-bezier(0.16,1,0.3,1),
-      box-shadow 0.18s cubic-bezier(0.16,1,0.3,1);
+    transition: border-color 0.15s ease, background 0.15s ease;
   }
   .wizard-option-card:hover {
-    border-color: rgba(0,0,0,0.16);
-    background: #FAFAF9;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.09);
-  }
-  .wizard-option-card:active {
-    transform: translateY(0) scale(0.99);
-    transition-duration: 80ms;
+    border-color: #d1d5db;
   }
   .wizard-option-card.selected {
-    background: rgba(252,101,20,0.04);
-    border-color: rgba(252,101,20,0.45);
-    box-shadow: 0 0 0 3px rgba(252,101,20,0.08), 0 2px 12px rgba(252,101,20,0.10);
-    transform: none;
+    border-color: #FC6514;
+    background: rgba(252, 101, 20, 0.03);
   }
 
   /* ── Feature card ──────────────────────────────────────────────────────── */

@@ -22,72 +22,24 @@ portalRoutes.get('/', (c) => {
     <LandingLayout title="Home">
 
       {/* ══════════════════════════════════════════════════════════════════
-          §1  HERO — all-light, interactive 3D containers
+          §1  HERO — 3D band on top, copy below centered
       ══════════════════════════════════════════════════════════════════ */}
-      <section style="background:#F3F2F0; overflow:hidden; position:relative; min-height:88vh; display:flex; align-items:center;">
+      <section style="background:#fff; overflow:hidden; position:relative;">
 
-        {/* Subtle dot grid */}
-        <div style="position:absolute; inset:0; background-image:radial-gradient(rgba(0,0,0,0.07) 1px, transparent 1px); background-size:28px 28px; pointer-events:none; opacity:0.6;" />
+        {/* 3D canvas band */}
+        <div style="position:relative; background:#fff; padding-top:80px;">
+          <div style="max-width:1100px; margin:0 auto; padding:0 24px; position:relative;">
+            <canvas id="hero-3d" style="width:100%; height:480px; display:block; cursor:grab; border-radius:20px;" />
 
-        <div class="max-w-6xl mx-auto px-6 w-full" style="padding-top:5rem; padding-bottom:6rem; position:relative; z-index:1;">
-          <div style="display:grid; grid-template-columns:1fr 1.15fr; gap:64px; align-items:center;" class="hero-grid">
-
-            {/* Left: copy */}
-            <div>
-              <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.09); border:1px solid rgba(34,197,94,0.22); margin-bottom:28px;">
-                <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
-                <span style="font-size:11px; font-weight:600; color:#16A34A; letter-spacing:0.01em;">Open today</span>
-              </div>
-
-              <h1 style="font-size:clamp(2.4rem,4.4vw,3.6rem); font-weight:800; color:#1C1917; letter-spacing:-0.045em; line-height:1.03; margin-bottom:22px;">
-                <span style="display:block;">Book your CFS slot.</span>
-                <span style="display:block; color:#FC6514;">Skip the queue.</span>
-              </h1>
-
-              <p style="font-size:15px; color:#78716C; line-height:1.8; max-width:420px; margin-bottom:36px;">
-                Schedule a pick-up or drop-off online, arrive at your window, scan your QR code at the kiosk — done. No calls, no whiteboards, no waiting.
-              </p>
-
-              <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:40px;">
-                <a href="/book" class="btn-primary" style="padding:13px 26px; font-size:13.5px;">
-                  <Icon name={ICONS.calendar} size={15} />
-                  Book a Slot
-                  <Icon name={ICONS.arrowRight} size={14} />
-                </a>
-                <a href="#how-it-works" class="btn-ghost" style="padding:13px 22px; font-size:13.5px;">
-                  How it works
-                </a>
-              </div>
-
-              {/* Trust row */}
-              <div style="display:flex; align-items:center; gap:0; border-top:1px solid rgba(0,0,0,0.07); padding-top:24px;">
-                {[
-                  { v: '4 min',  l: 'avg gate time'      },
-                  { v: '0',      l: 'phone calls needed'  },
-                  { v: '24/7',   l: 'online booking'      },
-                  { v: '99.2%',  l: 'on-time arrivals'    },
-                ].map((s, i) => (
-                  <div key={s.v} style={`flex:1; text-align:center; ${i > 0 ? 'border-left:1px solid rgba(0,0,0,0.07);' : ''} padding:0 16px;`}>
-                    <span style="display:block; font-size:18px; font-weight:800; color:#1C1917; letter-spacing:-0.04em; line-height:1;">{s.v}</span>
-                    <span style="display:block; font-size:10.5px; color:#A8A29E; margin-top:3px; font-weight:500;">{s.l}</span>
-                  </div>
-                ))}
-              </div>
+            {/* Drag hint */}
+            <div id="drag-hint" style="position:absolute; bottom:28px; left:50%; transform:translateX(-50%); background:rgba(28,25,23,0.65); backdrop-filter:blur(10px); border-radius:9999px; padding:5px 14px; display:inline-flex; align-items:center; gap:6px; transition:opacity 0.6s ease; pointer-events:none;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"><path d="M8 9V5a2 2 0 0 1 4 0v4M8 9a2 2 0 0 0-2 2v5a6 6 0 0 0 12 0v-5a2 2 0 0 0-2-2"/><path d="M12 9v3"/></svg>
+              <span style="font-size:10.5px; color:rgba(255,255,255,0.65); font-weight:500; white-space:nowrap;">Drag to rotate · Scroll to zoom</span>
             </div>
 
-            {/* Right: interactive 3D */}
-            <div style="position:relative;">
-              <canvas id="hero-3d" style="width:100%; height:460px; display:block; cursor:grab; border-radius:20px;" />
-
-              {/* Drag hint */}
-              <div id="drag-hint" style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:rgba(28,25,23,0.65); backdrop-filter:blur(10px); border-radius:9999px; padding:5px 14px; display:inline-flex; align-items:center; gap:6px; transition:opacity 0.6s ease; pointer-events:none;">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"><path d="M8 9V5a2 2 0 0 1 4 0v4M8 9a2 2 0 0 0-2 2v5a6 6 0 0 0 12 0v-5a2 2 0 0 0-2-2"/><path d="M12 9v3"/></svg>
-                <span style="font-size:10.5px; color:rgba(255,255,255,0.65); font-weight:500; white-space:nowrap;">Drag to rotate · Scroll to zoom</span>
-              </div>
-
-              {/* Container info label */}
-              <div id="container-label" style="position:absolute; top:16px; left:16px; background:rgba(255,255,255,0.90); backdrop-filter:blur(12px); border:1px solid rgba(0,0,0,0.09); border-radius:10px; padding:9px 14px; display:flex; align-items:center; gap:0; opacity:0; transition:opacity 0.25s ease; pointer-events:none; box-shadow:0 2px 12px rgba(0,0,0,0.08);">
-              </div>
+            {/* Container info label */}
+            <div id="container-label" style="position:absolute; top:28px; left:48px; background:rgba(255,255,255,0.90); backdrop-filter:blur(12px); border:1px solid rgba(0,0,0,0.09); border-radius:10px; padding:9px 14px; display:flex; align-items:center; gap:0; opacity:0; transition:opacity 0.25s ease; pointer-events:none; box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+            </div>
 
               <script dangerouslySetInnerHTML={{ __html: `
 (function(){
@@ -208,6 +160,31 @@ portalRoutes.get('/', (c) => {
     world.add(c3);
 
     scene.add(world);
+
+    // ── Wind streak particles — horizontal speed lines ──────────────────
+    var STREAK_N = 90;
+    var sPos = new Float32Array(STREAK_N * 6);  // 2 pts × 3 floats each
+    var sSpeeds = new Float32Array(STREAK_N);
+    var sLens = new Float32Array(STREAK_N);
+
+    function initStreak(i) {
+      var x = (Math.random() - 0.5) * 28;
+      var y = (Math.random() - 0.5) * 8;
+      var z = (Math.random() - 0.5) * 7 - 1;
+      var len = 0.25 + Math.random() * 1.6;
+      sLens[i] = len;
+      sSpeeds[i] = 0.035 + Math.random() * 0.07;
+      var b = i * 6;
+      sPos[b]=x; sPos[b+1]=y; sPos[b+2]=z;
+      sPos[b+3]=x+len; sPos[b+4]=y; sPos[b+5]=z;
+    }
+    for (var si = 0; si < STREAK_N; si++) initStreak(si);
+
+    var sGeo = new THREE.BufferGeometry();
+    sGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
+    var sMat = new THREE.LineBasicMaterial({ color: 0xcccccc, transparent: true, opacity: 0.18 });
+    var streaks = new THREE.LineSegments(sGeo, sMat);
+    scene.add(streaks);
 
     // Collect all meshes for raycasting
     var allMeshes=[];
@@ -333,6 +310,21 @@ portalRoutes.get('/', (c) => {
         c2.position.y=1.06+Math.sin(t*0.57+1.2)*0.048;
         c3.position.y=-1.08+Math.sin(t*0.39+2.5)*0.065;
       }
+      // Animate wind streaks — move right-to-left, wrap around
+      for (var wi = 0; wi < STREAK_N; wi++) {
+        var wb = wi * 6;
+        sPos[wb]   -= sSpeeds[wi];
+        sPos[wb+3] -= sSpeeds[wi];
+        if (sPos[wb+3] < -14) {
+          var nx = 14 + Math.random() * 4;
+          var ny = (Math.random() - 0.5) * 8;
+          var nz = (Math.random() - 0.5) * 7 - 1;
+          sPos[wb]=nx; sPos[wb+1]=ny; sPos[wb+2]=nz;
+          sPos[wb+3]=nx+sLens[wi]; sPos[wb+4]=ny; sPos[wb+5]=nz;
+        }
+      }
+      streaks.geometry.attributes.position.needsUpdate = true;
+
       // Hover detection
       if(!dragging){
         ray.setFromCamera(m2,camera);
@@ -352,7 +344,36 @@ portalRoutes.get('/', (c) => {
               `}} />
             </div>
           </div>
+
+        {/* ── Heading + CTA — centered below the 3D canvas ── */}
+        <div style="max-width:680px; margin:0 auto; padding:52px 24px 88px; text-align:center;">
+          <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.09); border:1px solid rgba(34,197,94,0.22); margin-bottom:28px;">
+            <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
+            <span style="font-size:11px; font-weight:600; color:#16A34A; letter-spacing:0.01em;">Open today</span>
+          </div>
+
+          <h1 style="font-size:clamp(2.8rem,5.2vw,4.2rem); font-weight:800; color:#1C1917; letter-spacing:-0.048em; line-height:1.02; margin-bottom:20px;">
+            <span style="display:block;">Book your CFS slot.</span>
+            <span style="display:block; color:#FC6514;">Skip the queue.</span>
+          </h1>
+
+          <p style="font-size:16px; color:#6b7280; line-height:1.75; margin-bottom:40px; max-width:400px; margin-left:auto; margin-right:auto;">
+            Instant slot booking for drivers, forwarders and depot teams at Sydney CFS.
+          </p>
+
+          <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+            <a href="/book" class="btn-primary" style="padding:14px 32px; font-size:14px;">
+              <Icon name={ICONS.calendar} size={15} />
+              Book a Visit
+              <Icon name={ICONS.arrowRight} size={14} />
+            </a>
+            <a href="/bookings" class="btn-ghost" style="padding:14px 26px; font-size:14px;">
+              <Icon name={ICONS.search} size={15} />
+              Look Up Booking
+            </a>
+          </div>
         </div>
+
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════
@@ -531,46 +552,64 @@ portalRoutes.get('/', (c) => {
             </p>
           </div>
 
-          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;" class="persona-grid">
-            {[
-              {
-                emoji: '📋',
-                role: 'Freight Forwarders',
-                desc: 'Book slots on behalf of multiple clients, attach documents, track ICS status — all from one portal. No more calling the depot.',
-                bullets: ['Multi-shipment booking','HBL & container lookup','Document upload','Email confirmation'],
-              },
-              {
-                emoji: '🚛',
-                role: 'Truck Drivers',
-                desc: 'Arrive at your confirmed window, scan your QR at the kiosk, and go straight to the bay. No queue, no counter.',
-                bullets: ['QR code check-in','Slot arrival window','No account needed','Walk-in fallback'],
-              },
-              {
-                emoji: '🏗️',
-                role: 'Depot Managers',
-                desc: 'See every booking, walk-in, and ICS flag in a live dashboard. Run end-of-day reports with one click.',
-                bullets: ['Real-time live view','ICS hold alerts','Walk-in registration','PDF reports'],
-              },
-            ].map((p, i) => (
-              <div key={p.role} class="reveal" data-reveal-delay={String(i*80)}
-                style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.09); border-radius:18px; padding:32px 28px; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.06); transition:transform 0.2s cubic-bezier(0.16,1,0.3,1),box-shadow 0.2s ease,border-color 0.2s ease;"
-                onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.10)';this.style.borderColor='rgba(252,101,20,0.22)';"
-                onmouseout="this.style.transform='';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.04),0 4px 20px rgba(0,0,0,0.06)';this.style.borderColor='rgba(0,0,0,0.09)';">
-                <div style="font-size:32px; margin-bottom:16px; line-height:1;">{p.emoji}</div>
-                <p style="font-size:16px; font-weight:700; color:#1C1917; letter-spacing:-0.025em; margin-bottom:10px;">{p.role}</p>
-                <p style="font-size:13px; color:#78716C; line-height:1.7; margin-bottom:20px;">{p.desc}</p>
-                <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:7px;">
-                  {p.bullets.map(b => (
-                    <li key={b} style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#57534E;">
-                      <span style="width:16px; height:16px; border-radius:9999px; background:rgba(252,101,20,0.10); border:1px solid rgba(252,101,20,0.20); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                        <svg width="8" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="#FC6514" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                      </span>
-                      {b}
-                    </li>
-                  ))}
-                </ul>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;" class="persona-grid">
+
+            {/* Freight Forwarders — dark navy */}
+            <div class="reveal" style="background:linear-gradient(145deg,#1e2d4a 0%,#0f172a 100%); border-radius:22px; padding:34px 30px; position:relative; overflow:hidden; transition:transform 0.22s cubic-bezier(0.16,1,0.3,1);"
+              onmouseover="this.style.transform='translateY(-4px)';" onmouseout="this.style.transform='';">
+              <div style="position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:9999px; background:radial-gradient(circle,rgba(99,130,255,0.18) 0%,transparent 65%); pointer-events:none;" />
+              <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
+                <Icon name={ICONS.bookings} size={22} style="color:#fff;" />
               </div>
-            ))}
+              <p style="font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.03em; margin-bottom:10px;">Freight Forwarders</p>
+              <p style="font-size:13px; color:rgba(255,255,255,0.58); line-height:1.7; margin-bottom:22px;">Book slots on behalf of multiple clients, attach documents, track ICS status — all from one portal.</p>
+              <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px;">
+                {['Multi-shipment booking','HBL & container lookup','Document upload','Email confirmation'].map(b => (
+                  <li key={b} style="display:flex; align-items:center; gap:9px; font-size:12.5px; color:rgba(255,255,255,0.70);">
+                    <span style="width:4px; height:4px; border-radius:9999px; background:rgba(255,255,255,0.40); flex-shrink:0;" />
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Truck Drivers — dark teal */}
+            <div class="reveal" data-reveal-delay="80" style="background:linear-gradient(145deg,#134e4a 0%,#0c302d 100%); border-radius:22px; padding:34px 30px; position:relative; overflow:hidden; transition:transform 0.22s cubic-bezier(0.16,1,0.3,1);"
+              onmouseover="this.style.transform='translateY(-4px)';" onmouseout="this.style.transform='';">
+              <div style="position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:9999px; background:radial-gradient(circle,rgba(52,211,153,0.20) 0%,transparent 65%); pointer-events:none;" />
+              <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
+                <Icon name={ICONS.walkIn} size={22} style="color:#fff;" />
+              </div>
+              <p style="font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.03em; margin-bottom:10px;">Truck Drivers</p>
+              <p style="font-size:13px; color:rgba(255,255,255,0.58); line-height:1.7; margin-bottom:22px;">Arrive at your confirmed window, scan your QR at the kiosk, and go straight to the bay. No queue, no counter.</p>
+              <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px;">
+                {['QR code check-in','Confirmed arrival window','No account needed','Walk-in fallback'].map(b => (
+                  <li key={b} style="display:flex; align-items:center; gap:9px; font-size:12.5px; color:rgba(255,255,255,0.70);">
+                    <span style="width:4px; height:4px; border-radius:9999px; background:rgba(255,255,255,0.40); flex-shrink:0;" />
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Depot Managers — warm dark */}
+            <div class="reveal" data-reveal-delay="160" style="background:linear-gradient(145deg,#431407 0%,#1c0a02 100%); border-radius:22px; padding:34px 30px; position:relative; overflow:hidden; transition:transform 0.22s cubic-bezier(0.16,1,0.3,1);"
+              onmouseover="this.style.transform='translateY(-4px)';" onmouseout="this.style.transform='';">
+              <div style="position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:9999px; background:radial-gradient(circle,rgba(252,101,20,0.30) 0%,transparent 65%); pointer-events:none;" />
+              <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
+                <Icon name={ICONS.home} size={22} style="color:#fff;" />
+              </div>
+              <p style="font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.03em; margin-bottom:10px;">Depot Managers</p>
+              <p style="font-size:13px; color:rgba(255,255,255,0.58); line-height:1.7; margin-bottom:22px;">See every booking, walk-in, and ICS flag in a live dashboard. Run end-of-day reports with one click.</p>
+              <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px;">
+                {['Real-time live view','ICS hold alerts','Walk-in registration','PDF reports'].map(b => (
+                  <li key={b} style="display:flex; align-items:center; gap:9px; font-size:12.5px; color:rgba(255,255,255,0.70);">
+                    <span style="width:4px; height:4px; border-radius:9999px; background:rgba(255,255,255,0.40); flex-shrink:0;" />
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>

@@ -83,7 +83,7 @@ export const Step5Documents = () => (
         </div>
 
         {/* Auto-populated fields */}
-        <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:16px;">
+        <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:16px;">
           <p style="font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Auto-populated from CFS records</p>
           <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
             {[
@@ -94,7 +94,7 @@ export const Step5Documents = () => (
               { label: 'Storage from',  xtext: `$store.wizard.shipmentData?.storageStartDate || '—'` },
               { label: 'Days in store', xtext: `$store.wizard.shipmentData?.storageDays ? $store.wizard.shipmentData.storageDays + ' days' : '—'` },
             ].map((item) => (
-              <div key={item.label} style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:10px 12px;">
+              <div key={item.label} style="background:#FFFFFF; border:1px solid #e5e7eb; border-radius:8px; padding:10px 12px;">
                 <p style="font-size:10px; color:#78716C; margin-bottom:3px;">{item.label}</p>
                 <p style="font-weight:600; color:#1C1917; font-size:13px;" x-text={item.xtext}></p>
               </div>
@@ -114,7 +114,7 @@ export const Step5Documents = () => (
         </div>
 
         {/* Charges breakdown */}
-        <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:16px;">
+        <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:16px;">
           <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:12px;">Estimated Charges</p>
           <div style="display:flex; flex-direction:column; gap:8px; font-size:13px;">
             <div style="display:flex; justify-content:space-between; color:#78716C;">
@@ -195,14 +195,14 @@ export const Step5Documents = () => (
             x-text="{'cleared':'Cleared','held':'Held','examination':'On Hold','pending':'Pending'}[$store.wizard.shipmentData?.icsStatus] || 'Unknown'"
           ></span>
         </div>
-        <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:16px;">
+        <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:16px;">
           <p style="font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Container details</p>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:10px 12px;">
+            <div style="background:#FFFFFF; border:1px solid #e5e7eb; border-radius:8px; padding:10px 12px;">
               <p style="font-size:10px; color:#78716C; margin-bottom:3px;">Gross Weight</p>
               <p style="font-weight:600; color:#1C1917; font-size:13px;" x-text="$store.wizard.shipmentData?.weightKg ? $store.wizard.shipmentData.weightKg + ' kg' : '—'"></p>
             </div>
-            <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:10px 12px;">
+            <div style="background:#FFFFFF; border:1px solid #e5e7eb; border-radius:8px; padding:10px 12px;">
               <p style="font-size:10px; color:#78716C; margin-bottom:3px;">Volume</p>
               <p style="font-weight:600; color:#1C1917; font-size:13px;" x-text="$store.wizard.shipmentData?.volumeCbm ? $store.wizard.shipmentData.volumeCbm + ' CBM' : '—'"></p>
             </div>
