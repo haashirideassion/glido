@@ -24,23 +24,23 @@ portalRoutes.get('/', (c) => {
       {/* ══════════════════════════════════════════════════════════════════
           §1  HERO — contained card on warp background
       ══════════════════════════════════════════════════════════════════ */}
-      <section id="hero-section" style="padding:32px 24px 44px; background:#080807; position:relative; overflow:hidden;">
+      <section id="hero-section" style="padding:32px 24px 44px; background:#fff; position:relative; overflow:hidden;">
 
-        {/* ── Warp: perspective floor + ceiling grids ── */}
+        {/* ── Warp: first-person forward-looking perspective floor ── */}
         <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
-          <div style="position:absolute; left:-30%; right:-30%; bottom:0; height:55%; transform:perspective(260px) rotateX(55deg); transform-origin:center bottom; background-image:linear-gradient(rgba(252,101,20,0.11) 1px,transparent 1px),linear-gradient(90deg,rgba(252,101,20,0.11) 1px,transparent 1px); background-size:60px 60px; mask-image:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 100%); -webkit-mask-image:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 100%);"></div>
-          <div style="position:absolute; left:-30%; right:-30%; top:0; height:35%; transform:perspective(260px) rotateX(-55deg); transform-origin:center top; background-image:linear-gradient(rgba(252,101,20,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(252,101,20,0.07) 1px,transparent 1px); background-size:60px 60px; mask-image:linear-gradient(to bottom,rgba(0,0,0,0.5) 0%,transparent 100%); -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,0.5) 0%,transparent 100%);"></div>
-          {/* Animated light beams */}
+          {/* Floor grid — steep rotateX creates a road/corridor vanishing-point effect */}
+          <div style="position:absolute; left:-70%; right:-70%; bottom:0; height:80%; transform:perspective(280px) rotateX(72deg); transform-origin:center bottom; background-image:linear-gradient(rgba(0,0,0,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.08) 1px,transparent 1px); background-size:80px 80px; mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%); -webkit-mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%);"></div>
+          {/* Animated light beams — mix-blend-mode:multiply makes them visible on white */}
           {[
-            { l:'6%',  dur:'3.1s', del:'0.0s', c:'rgba(252,101,20,0.60)', h:'120px' },
-            { l:'18%', dur:'4.4s', del:'1.2s', c:'rgba(99,130,255,0.50)', h:'140px' },
-            { l:'31%', dur:'2.9s', del:'0.5s', c:'rgba(52,211,153,0.50)', h:'100px' },
-            { l:'47%', dur:'3.7s', del:'1.9s', c:'rgba(252,101,20,0.42)', h:'130px' },
-            { l:'62%', dur:'2.6s', del:'0.3s', c:'rgba(168,85,247,0.52)', h:'110px' },
-            { l:'76%', dur:'4.0s', del:'1.5s', c:'rgba(251,191,36,0.52)', h:'125px' },
-            { l:'90%', dur:'3.4s', del:'0.8s', c:'rgba(236,72,153,0.46)', h:'105px' },
+            { l:'6%',  dur:'3.1s', del:'0.0s', c:'rgba(252,101,20,0.55)', h:'120px' },
+            { l:'18%', dur:'4.4s', del:'1.2s', c:'rgba(99,130,255,0.42)', h:'140px' },
+            { l:'31%', dur:'2.9s', del:'0.5s', c:'rgba(52,211,153,0.42)', h:'100px' },
+            { l:'47%', dur:'3.7s', del:'1.9s', c:'rgba(252,101,20,0.38)', h:'130px' },
+            { l:'62%', dur:'2.6s', del:'0.3s', c:'rgba(168,85,247,0.44)', h:'110px' },
+            { l:'76%', dur:'4.0s', del:'1.5s', c:'rgba(251,191,36,0.44)', h:'125px' },
+            { l:'90%', dur:'3.4s', del:'0.8s', c:'rgba(236,72,153,0.40)', h:'105px' },
           ].map((b, i) => (
-            <div key={i} class="warp-beam" style={`left:${b.l}; height:${b.h}; background:linear-gradient(to top,${b.c},transparent); animation-duration:${b.dur}; animation-delay:${b.del};`} />
+            <div key={i} class="warp-beam" style={`left:${b.l}; height:${b.h}; background:linear-gradient(to top,${b.c},transparent); animation-duration:${b.dur}; animation-delay:${b.del}; mix-blend-mode:multiply;`} />
           ))}
         </div>
 
@@ -463,25 +463,25 @@ portalRoutes.get('/', (c) => {
       {/* ══════════════════════════════════════════════════════════════════
           §9  HERO PREVIEW — Version B (truck concept)
       ══════════════════════════════════════════════════════════════════ */}
-      <section style="padding:32px 24px 44px; background:#080807; position:relative; overflow:hidden; border-top:1px solid rgba(255,255,255,0.05);">
+      <section style="padding:32px 24px 44px; background:#fff; position:relative; overflow:hidden; border-top:1px solid rgba(0,0,0,0.06);">
 
-        {/* Same warp bg */}
+        {/* Warp bg — cyan-tinted beams on white, same first-person floor */}
         <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
-          <div style="position:absolute; left:-30%; right:-30%; bottom:0; height:55%; transform:perspective(260px) rotateX(55deg); transform-origin:center bottom; background-image:linear-gradient(rgba(6,182,212,0.10) 1px,transparent 1px),linear-gradient(90deg,rgba(6,182,212,0.10) 1px,transparent 1px); background-size:60px 60px; mask-image:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 100%); -webkit-mask-image:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 100%);"></div>
+          <div style="position:absolute; left:-70%; right:-70%; bottom:0; height:80%; transform:perspective(280px) rotateX(72deg); transform-origin:center bottom; background-image:linear-gradient(rgba(0,0,0,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.07) 1px,transparent 1px); background-size:80px 80px; mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%); -webkit-mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%);"></div>
           {[
-            { l:'12%', dur:'3.3s', del:'0.0s', c:'rgba(6,182,212,0.55)',   h:'115px' },
-            { l:'28%', dur:'4.1s', del:'0.9s', c:'rgba(52,211,153,0.50)',  h:'130px' },
-            { l:'44%', dur:'2.8s', del:'1.6s', c:'rgba(6,182,212,0.42)',   h:'95px'  },
-            { l:'60%', dur:'3.8s', del:'0.4s', c:'rgba(99,202,255,0.50)',  h:'120px' },
-            { l:'78%', dur:'2.7s', del:'1.2s', c:'rgba(52,211,153,0.46)',  h:'108px' },
+            { l:'12%', dur:'3.3s', del:'0.0s', c:'rgba(6,182,212,0.48)',   h:'115px' },
+            { l:'28%', dur:'4.1s', del:'0.9s', c:'rgba(52,211,153,0.42)',  h:'130px' },
+            { l:'44%', dur:'2.8s', del:'1.6s', c:'rgba(6,182,212,0.36)',   h:'95px'  },
+            { l:'60%', dur:'3.8s', del:'0.4s', c:'rgba(99,202,255,0.44)',  h:'120px' },
+            { l:'78%', dur:'2.7s', del:'1.2s', c:'rgba(52,211,153,0.40)',  h:'108px' },
           ].map((b, i) => (
-            <div key={i} class="warp-beam" style={`left:${b.l}; height:${b.h}; background:linear-gradient(to top,${b.c},transparent); animation-duration:${b.dur}; animation-delay:${b.del};`} />
+            <div key={i} class="warp-beam" style={`left:${b.l}; height:${b.h}; background:linear-gradient(to top,${b.c},transparent); animation-duration:${b.dur}; animation-delay:${b.del}; mix-blend-mode:multiply;`} />
           ))}
         </div>
 
         {/* Preview label */}
         <div style="position:relative; z-index:1; text-align:center; margin-bottom:20px;">
-          <span style="display:inline-flex; align-items:center; gap:8px; padding:5px 16px; border-radius:9999px; background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.28); font-size:10px; font-weight:700; color:rgba(6,182,212,0.85); letter-spacing:0.10em; text-transform:uppercase;">
+          <span style="display:inline-flex; align-items:center; gap:8px; padding:5px 16px; border-radius:9999px; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.22); font-size:10px; font-weight:700; color:#0891b2; letter-spacing:0.10em; text-transform:uppercase;">
             <span style="width:5px; height:5px; border-radius:9999px; background:#06b6d4; animation:pulse-dot 2s ease-in-out infinite;" />
             Hero — Version B (preview)
           </span>
