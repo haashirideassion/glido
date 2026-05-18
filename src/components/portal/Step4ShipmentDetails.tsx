@@ -24,13 +24,6 @@ const DATES = workingDays(8)
 export const Step4ShipmentDetails = () => (
   <div x-show="$store.wizard.currentStep === 4" x-cloak>
 
-    <h2 style="font-size:18px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:3px;">
-      Choose a time slot
-    </h2>
-    <p style="font-size:13px; color:#64748B; margin-bottom:20px; line-height:1.5;">
-      Your slot is held for 10 minutes once you proceed.
-    </p>
-
     {/* ── Date strip ─────────────────────────────────────────────────────── */}
     <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:20px; scrollbar-width:none;">
       {DATES.map((d) => (
@@ -70,7 +63,7 @@ export const Step4ShipmentDetails = () => (
     {/* ── No date selected ────────────────────────────────────────────────── */}
     <div
       x-show="$store.wizard.selectedDate === null"
-      style="text-align:center; padding:40px 0; color:#64748B;"
+      style="text-align:center; padding:40px 0; color:#78716C;"
     >
       <Icon name={ICONS.calendar} size={28} style="margin:0 auto 8px; opacity:0.4;" />
       <p style="font-size:13px;">Pick a date above to see available slots</p>
@@ -79,7 +72,7 @@ export const Step4ShipmentDetails = () => (
     {/* ── Loading ─────────────────────────────────────────────────────────── */}
     <div
       x-show="$store.wizard.selectedDate !== null && $store.wizard.slotsLoading"
-      style="text-align:center; padding:40px 0; color:#64748B; font-size:13px;"
+      style="text-align:center; padding:40px 0; color:#78716C; font-size:13px;"
     >
       Loading slots…
     </div>
@@ -112,7 +105,7 @@ export const Step4ShipmentDetails = () => (
               x-bind:style="$store.wizard.selectedSlotId === slot.id ? 'color:#FC6514;' : 'color:#1C1917;'"
               x-text="slot.startTime"
             ></span>
-            <span style="font-size:12px; color:#64748B; margin-left:3px;" x-text="'– ' + slot.endTime"></span>
+            <span style="font-size:12px; color:#78716C; margin-left:3px;" x-text="'– ' + slot.endTime"></span>
           </div>
 
           {/* Capacity bar */}
@@ -128,7 +121,7 @@ export const Step4ShipmentDetails = () => (
           {/* Spots left */}
           <div style="width:68px; text-align:right; flex-shrink:0;">
             <span
-              style="font-size:11px; font-weight:500; color:#64748B;"
+              style="font-size:11px; font-weight:500; color:#78716C;"
               x-text="slot.busyness === 'full' ? 'Full' : (slot.capacity - slot.confirmed) + ' left'"
             ></span>
           </div>
@@ -152,7 +145,7 @@ export const Step4ShipmentDetails = () => (
     {/* No slots for date */}
     <div
       x-show="$store.wizard.selectedDate !== null && !$store.wizard.slotsLoading && $store.wizard.slots.length === 0"
-      style="text-align:center; padding:32px 0; color:#64748B; font-size:13px;"
+      style="text-align:center; padding:32px 0; color:#78716C; font-size:13px;"
     >
       No slots available for this date.
     </div>
@@ -165,7 +158,7 @@ export const Step4ShipmentDetails = () => (
       <div style="display:flex; align-items:center; gap:8px;">
         <span style="width:8px; height:8px; border-radius:9999px; background:#FC6514; flex-shrink:0; box-shadow:0 0 6px rgba(252,101,20,0.60);"></span>
         <span style="font-size:13px; font-weight:500; color:#1C1917;" x-text="$store.wizard.selectedSlotLabel"></span>
-        <span style="font-size:12px; color:#64748B;">selected</span>
+        <span style="font-size:12px; color:#78716C;">selected</span>
       </div>
       <span style="font-size:11px; color:#78716C; font-weight:500;">10-min hold on Next →</span>
     </div>
@@ -180,15 +173,15 @@ export const Step4ShipmentDetails = () => (
 
     {/* Legend */}
     <div style="display:flex; align-items:center; gap:16px; margin-top:14px; padding-top:14px; border-top:1px solid rgba(0,0,0,0.07);">
-      <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#64748B;">
+      <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#78716C;">
         <span style="display:inline-block; width:20px; height:3px; border-radius:9999px; background:rgba(0,0,0,0.20);"></span>
         Available
       </span>
-      <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#64748B;">
+      <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#78716C;">
         <span style="display:inline-block; width:20px; height:3px; border-radius:9999px; background:#FDBA74;"></span>
         Filling up
       </span>
-      <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#64748B;">
+      <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#78716C;">
         <span style="display:inline-block; width:20px; height:3px; border-radius:9999px; background:#FC6514;"></span>
         Nearly full
       </span>

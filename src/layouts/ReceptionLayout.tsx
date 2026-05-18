@@ -27,8 +27,196 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="/public/styles.css" />
-        <style>{`* { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }`}</style>
-        {/* ECharts — loaded sync so inline chart scripts can reference window.echarts */}
+        <style>{`
+          * { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+
+          /* ── Sidebar pill ──────────────────────────────────────────── */
+          .sidebar-col {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 12px;
+            gap: 12px;
+            width: 72px;
+            transition: width 0.28s cubic-bezier(0.16,1,0.3,1);
+            background: #F3F2F0;
+            overflow: hidden;
+          }
+          .sidebar-col.is-open {
+            width: 200px;
+          }
+
+          /* The dark pill container */
+          .nav-pill {
+            background: #1C1917;
+            border-radius: 28px;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            box-shadow:
+              0 8px 32px rgba(0,0,0,0.22),
+              0 2px 8px rgba(0,0,0,0.12),
+              inset 0 1px 0 rgba(255,255,255,0.07);
+            width: 52px;
+            transition: width 0.28s cubic-bezier(0.16,1,0.3,1), border-radius 0.28s ease;
+          }
+          .sidebar-col.is-open .nav-pill {
+            width: 176px;
+            border-radius: 20px;
+          }
+
+          /* Nav item row */
+          .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 0;
+            border-radius: 22px;
+            text-decoration: none;
+            transition: background 0.15s ease, border-radius 0.28s ease;
+            overflow: hidden;
+            flex-shrink: 0;
+          }
+          .nav-item-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 19px;
+            transition: background 0.15s ease;
+          }
+          .nav-item-label {
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            color: rgba(255,255,255,0.55);
+            padding-right: 10px;
+            flex: 1;
+            display: none;
+            transition: color 0.15s ease;
+          }
+          .sidebar-col.is-open .nav-item-label {
+            display: block;
+          }
+          .sidebar-col.is-open .nav-item {
+            border-radius: 14px;
+          }
+
+          /* Active state */
+          .nav-item.active .nav-item-icon {
+            background: rgba(255,255,255,0.12);
+          }
+          .sidebar-col.is-open .nav-item.active {
+            background: rgba(255,255,255,0.09);
+          }
+          .nav-item.active .nav-item-label {
+            color: #ffffff;
+            font-weight: 600;
+          }
+
+          /* Hover on inactive items */
+          .nav-item:not(.active):hover .nav-item-icon {
+            background: rgba(255,255,255,0.06);
+          }
+          .sidebar-col.is-open .nav-item:not(.active):hover {
+            background: rgba(255,255,255,0.05);
+          }
+          .nav-item:not(.active):hover .nav-item-label {
+            color: rgba(255,255,255,0.80);
+          }
+
+          /* Action button */
+          .action-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 999px;
+            background: #FC6514;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            border: none;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: width 0.28s cubic-bezier(0.16,1,0.3,1), gap 0.28s ease, box-shadow 0.15s ease;
+            box-shadow: 0 4px 16px rgba(252,101,20,0.38), 0 1px 4px rgba(252,101,20,0.20);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+          }
+          .sidebar-col.is-open .action-btn {
+            width: 176px;
+            gap: 8px;
+            padding: 0 18px;
+            justify-content: center;
+          }
+          .action-btn:hover {
+            box-shadow: 0 6px 24px rgba(252,101,20,0.48), 0 2px 8px rgba(252,101,20,0.24);
+          }
+          .action-btn-label {
+            display: none;
+          }
+          .sidebar-col.is-open .action-btn-label {
+            display: block;
+          }
+
+          /* Toggle button — sits inside the pill at the bottom */
+          .nav-toggle {
+            width: 40px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: rgba(255,255,255,0.30);
+            transition: background 0.15s ease, color 0.15s ease;
+            margin-top: 2px;
+          }
+          .nav-toggle:hover {
+            background: rgba(255,255,255,0.07);
+            color: rgba(255,255,255,0.65);
+          }
+          .sidebar-col.is-open .nav-toggle {
+            width: 100%;
+          }
+
+          /* User footer */
+          .sidebar-user {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            width: 100%;
+            justify-content: center;
+            overflow: hidden;
+            transition: gap 0.28s ease;
+          }
+          .sidebar-col.is-open .sidebar-user {
+            gap: 10px;
+            justify-content: flex-start;
+            padding-left: 4px;
+          }
+          .sidebar-user-info {
+            display: none;
+            min-width: 0;
+          }
+          .sidebar-col.is-open .sidebar-user-info {
+            display: block;
+          }
+        `}</style>
         <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
         <script src="/public/alpine-init.js"></script>
         <script src="https://unpkg.com/alpinejs@3.14.3/dist/cdn.min.js" defer></script>
@@ -39,46 +227,46 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
 
         {/* ── Sidebar ──────────────────────────────────────────────────── */}
         <aside
-          class="w-56 flex flex-col shrink-0 sticky top-0 h-screen"
-          style="background:#F3F2F0; border-right:1px solid rgba(0,0,0,0.07); color:#1C1917;"
+          class="sidebar-col"
+          id="sidebar-col"
         >
-          {/* Logo */}
-          <div
-            class="h-14 flex items-center px-5 gap-3"
-            style="border-bottom:1px solid rgba(0,0,0,0.07);"
+          {/* ── Logo mark ── */}
+          <a
+            href="/"
+            style="display:flex; align-items:center; justify-content:center; width:40px; height:40px; flex-shrink:0; text-decoration:none; margin-bottom:4px;"
           >
-            <a href="/" style="text-decoration:none; display:flex; align-items:center;">
-              <GlidoLogo height={17} onDark={false} />
-            </a>
-            <span
-              class="text-xs px-1.5 py-0.5 rounded font-semibold"
-              style="background:rgba(252,101,20,0.10); color:#FC6514; flex-shrink:0; letter-spacing:0.02em;"
-            >
-              Ops
-            </span>
-          </div>
+            <GlidoLogo height={16} onDark={false} />
+          </a>
 
-          {/* Nav */}
-          <nav class="flex-1 py-3 px-2.5 overflow-y-auto" style="display:flex; flex-direction:column; gap:2px;">
+          {/* ── Pill nav ── */}
+          <nav class="nav-pill">
             {navItems.map((item) => {
               const isActive = activeNav === item.href
               return (
                 <a
                   key={item.href}
                   href={item.href}
-                  class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium"
-                  style={isActive
-                    ? 'background:#FFFFFF; color:#1C1917; box-shadow:0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05); text-decoration:none;'
-                    : 'color:#78716C; text-decoration:none; transition:all 0.15s ease;'}
-                  onmouseover={!isActive ? "this.style.background='rgba(0,0,0,0.04)'; this.style.color='#1C1917';" : undefined}
-                  onmouseout={!isActive ? "this.style.background='transparent'; this.style.color='#78716C';" : undefined}
+                  class={`nav-item${isActive ? ' active' : ''}`}
                 >
-                  <Icon name={item.icon} size={16} style={isActive ? 'color:#FC6514;' : 'opacity:0.6;'} />
-                  <span class="flex-1">{item.label}</span>
+                  {/* Icon container */}
+                  <div class="nav-item-icon">
+                    <Icon
+                      name={item.icon}
+                      size={17}
+                      style={isActive
+                        ? 'color:#FC6514;'
+                        : 'color:rgba(255,255,255,0.45);'}
+                    />
+                  </div>
+
+                  {/* Label + badge */}
+                  <span class="nav-item-label" style={isActive ? 'color:#ffffff; font-weight:600;' : ''}>
+                    {item.label}
+                  </span>
                   {item.badge && (
                     <span
-                      class="text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none"
-                      style="background:#EF4444; color:#FFFFFF; font-size:10px;"
+                      style="flex-shrink:0; margin-right:8px; min-width:18px; height:18px; border-radius:999px; background:#EF4444; color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 4px;"
+                      class="nav-item-label"
                     >
                       {item.badge}
                     </span>
@@ -86,21 +274,42 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
                 </a>
               )
             })}
+
+            {/* ── Toggle collapse ── */}
+            <button
+              class="nav-toggle"
+              type="button"
+              onclick="document.getElementById('sidebar-col').classList.toggle('is-open'); this.querySelector('span').style.transform = document.getElementById('sidebar-col').classList.contains('is-open') ? 'rotate(180deg)' : 'rotate(0deg)';"
+              title="Toggle sidebar"
+            >
+              <span style="display:inline-flex; transition:transform 0.28s ease;">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </button>
           </nav>
 
-          {/* User footer */}
-          <div class="px-3 py-3" style="border-top:1px solid rgba(0,0,0,0.07);">
-            <div class="flex items-center gap-2.5 px-2">
-              <div
-                class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                style="background:rgba(252,101,20,0.10); color:#FC6514; border:1px solid rgba(252,101,20,0.20);"
-              >
-                RA
-              </div>
-              <div style="min-width:0;">
-                <p class="text-xs font-semibold truncate" style="color:#1C1917;">Reception Agent</p>
-                <p class="text-xs truncate" style="color:#A8A29E;">Sydney CFS · T1</p>
-              </div>
+          {/* ── Action button ── */}
+          <a
+            href="/reception/walk-ins"
+            class="action-btn"
+          >
+            <Icon name={ICONS.add} size={18} style="color:#ffffff; flex-shrink:0;" />
+            <span class="action-btn-label">New Booking</span>
+          </a>
+
+          {/* ── User ── */}
+          <div class="sidebar-user">
+            <div
+              style="width:32px; height:32px; border-radius:999px; background:rgba(252,101,20,0.12); border:1px solid rgba(252,101,20,0.22); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#FC6514; flex-shrink:0; cursor:pointer;"
+              title="Reception Agent"
+            >
+              RA
+            </div>
+            <div class="sidebar-user-info">
+              <p style="font-size:12px; font-weight:600; color:#1C1917; white-space:nowrap;">Reception Agent</p>
+              <p style="font-size:11px; color:#A8A29E; white-space:nowrap;">Sydney CFS · T1</p>
             </div>
           </div>
         </aside>

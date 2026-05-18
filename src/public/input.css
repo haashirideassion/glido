@@ -636,20 +636,23 @@
   /* Input — clean underline (editorial style) */
   .wizard-field {
     width: 100%;
-    background: transparent;
-    border: none;
-    border-bottom: 1.5px solid rgba(0,0,0,0.12);
-    border-radius: 0;
-    padding: 8px 0;
-    font-size: 15px;
+    background: #FFFFFF;
+    border: 1.5px solid rgba(0,0,0,0.11);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
     font-weight: 400;
     color: #1C1917;
     outline: none;
-    transition: border-color 150ms ease;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
     font-family: 'Inter', ui-sans-serif, sans-serif;
+    box-sizing: border-box;
   }
   .wizard-field::placeholder { color: #A8A29E; font-weight: 400; }
-  .wizard-field:focus { border-bottom-color: #FC6514; }
+  .wizard-field:focus {
+    border-color: rgba(252,101,20,0.50);
+    box-shadow: 0 0 0 3px rgba(252,101,20,0.08);
+  }
 
   /* Stepper +/- buttons */
   .wizard-stepper-btn {

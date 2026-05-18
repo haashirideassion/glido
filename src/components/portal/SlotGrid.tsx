@@ -16,7 +16,7 @@ export const SlotGrid = ({ slots, date }: Props) => {
       {/* Date header */}
       <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:14px;">
         <p style="font-size:14px; font-weight:600; color:#F1F5F9;">{dayName}</p>
-        <p style="font-size:12px; color:#64748B;">{fullDate}</p>
+        <p style="font-size:12px; color:#78716C;">{fullDate}</p>
       </div>
 
       {slots.length === 0 ? (
@@ -58,7 +58,7 @@ export const SlotGrid = ({ slots, date }: Props) => {
                 <div style="width:88px; flex-shrink:0;">
                   <span
                     style="font-size:14px; font-weight:600; font-variant-numeric:tabular-nums; transition:color 0.12s ease;"
-                    x-bind:style={`$store.wizard.selectedSlotId === '${slot.id}' ? 'color:#FC6514;' : '${isFull ? 'color:#64748B;' : 'color:#F1F5F9;'}'`}
+                    x-bind:style={`$store.wizard.selectedSlotId === '${slot.id}' ? 'color:#FC6514;' : '${isFull ? 'color:#78716C;' : 'color:#F1F5F9;'}'`}
                   >
                     {slot.startTime}
                   </span>
@@ -77,7 +77,7 @@ export const SlotGrid = ({ slots, date }: Props) => {
                   {isFull ? (
                     <span style="font-size:11px; font-weight:500; color:#A8A29E;">Full</span>
                   ) : (
-                    <span style="font-size:11px; font-weight:500; color:#64748B;">
+                    <span style="font-size:11px; font-weight:500; color:#78716C;">
                       {remaining} left
                     </span>
                   )}

@@ -1,13 +1,6 @@
 export const Step1ServiceType = () => (
   <div x-show="$store.wizard.currentStep === 1" x-cloak>
 
-    <h2 style="font-size:18px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:3px;">
-      How many shipments today?
-    </h2>
-    <p style="font-size:13px; color:#64748B; margin-bottom:32px; line-height:1.5;">
-      Each HBL or container number gets its own time slot.
-    </p>
-
     {/* ── Slot counter ───────────────────────────────────────────────────── */}
     <div style="margin-bottom:32px;">
       <div style="display:flex; align-items:center; gap:0; margin-bottom:16px;">

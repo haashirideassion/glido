@@ -7,14 +7,14 @@ export const WalkInForm = () => (
     {/* Info banner */}
     <div
       class="mb-6 flex items-start gap-3"
-      style="background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.20); border-radius:12px; padding:14px 16px;"
+      style="background:rgba(252,101,20,0.06); border:1px solid rgba(252,101,20,0.18); border-radius:12px; padding:14px 16px;"
     >
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-0.5">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FC6514" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-0.5">
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
       <div>
-        <p style="font-size:13px; font-weight:600; color:#A5B4FC; margin-bottom:3px;">Walk-in Registration</p>
-        <p style="font-size:12px; color:rgba(165,180,252,0.65); line-height:1.5;">
+        <p style="font-size:13px; font-weight:600; color:#FC6514; margin-bottom:3px;">Walk-in Registration</p>
+        <p style="font-size:12px; color:#78716C; line-height:1.5;">
           Use this form for visitors who arrive without a prior booking. A booking reference will be generated on submission.
         </p>
       </div>

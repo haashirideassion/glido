@@ -9,132 +9,15 @@ import { Step7Confirmation } from './Step7Confirmation'
 
 /* ── Per-step context data ──────────────────────────────────────────────── */
 const STEP_CTX = [
-  { label: 'Get started',       tip: 'Tell us who is visiting and how many shipments you need slots for today.' },
-  { label: 'Service type',      tip: 'Are you picking up cargo from, or dropping it off at the CFS?' },
-  { label: 'Pick a slot',       tip: 'Choose your arrival window. Slots are held for 10 minutes while you finish.' },
-  { label: 'Confirm your hold', tip: 'Your slot is reserved. Complete the booking before the timer runs out.' },
-  { label: 'Shipment details',  tip: 'Enter your HBL or container reference. ICS status is checked automatically.' },
-  { label: 'Documents',         tip: 'Upload arrival notices and any customs paperwork for your shipment.' },
-  { label: 'Contact & vehicle', tip: 'Who is driving, and what is the vehicle registration plate?' },
+  { label: 'Get started',      tip: 'Tell us who is visiting and how many slots you need today.' },
+  { label: 'Service type',     tip: 'Are you picking up cargo from, or dropping it off at the CFS?' },
+  { label: 'Cargo type',       tip: 'Select whether your shipment is FCL or LCL — this determines which details we ask for.' },
+  { label: 'Choose a slot',    tip: 'Select your arrival window. Slots are held for 10 minutes while you complete the booking.' },
+  { label: 'Shipment details', tip: 'Enter your HBL or container reference. ICS status is checked automatically.' },
+  { label: 'Documents',        tip: 'Upload your Delivery Order and any required customs paperwork.' },
+  { label: 'Review & pay',     tip: 'Review your booking details and complete payment to confirm your slot.' },
 ]
 
-/* ── Per-step inline SVG illustrations ─────────────────────────────────── */
-const Illus1 = () => (
-  <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:130px;height:130px;display:block;">
-    <rect x="8"  y="82" width="104" height="28" rx="6" fill="rgba(252,101,20,0.82)"/>
-    <rect x="16" y="56" width="88"  height="27" rx="6" fill="rgba(252,101,20,0.48)"/>
-    <rect x="28" y="30" width="64"  height="27" rx="6" fill="rgba(252,101,20,0.22)"/>
-    <line x1="20" y1="93" x2="78" y2="93" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="28" y1="67" x2="72" y2="67" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-linecap="round"/>
-    <circle cx="96" cy="96" r="13" fill="rgba(252,101,20,1)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
-    <line x1="96" y1="90" x2="96" y2="102" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="90" y1="96" x2="102" y2="96" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-  </svg>
-)
-
-const Illus2 = () => (
-  <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:130px;height:130px;display:block;">
-    <rect x="35" y="42" width="50" height="38" rx="5" fill="rgba(252,101,20,0.28)" stroke="rgba(252,101,20,0.55)" stroke-width="1.5"/>
-    <line x1="60" y1="40" x2="60" y2="18" stroke="rgba(252,101,20,0.90)" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M51 27 L60 17 L69 27" fill="none" stroke="rgba(252,101,20,0.90)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <line x1="60" y1="82" x2="60" y2="104" stroke="rgba(238,234,228,0.65)" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M51 95 L60 105 L69 95" fill="none" stroke="rgba(238,234,228,0.65)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="26" cy="27" r="8" fill="rgba(252,101,20,0.18)" stroke="rgba(252,101,20,0.40)" stroke-width="1"/>
-    <circle cx="94" cy="93" r="8" fill="rgba(238,234,228,0.08)" stroke="rgba(238,234,228,0.22)" stroke-width="1"/>
-    <line x1="8" y1="60" x2="22" y2="60" stroke="rgba(252,101,20,0.25)" stroke-width="1" stroke-dasharray="2 2"/>
-    <line x1="98" y1="60" x2="112" y2="60" stroke="rgba(238,234,228,0.20)" stroke-width="1" stroke-dasharray="2 2"/>
-  </svg>
-)
-
-const Illus3 = () => (
-  <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:130px;height:130px;display:block;">
-    <rect x="10" y="20" width="100" height="88" rx="9" fill="rgba(255,255,255,0.04)" stroke="rgba(252,101,20,0.28)" stroke-width="1.5"/>
-    <rect x="10" y="20" width="100" height="25" rx="9" fill="rgba(252,101,20,0.25)"/>
-    <line x1="38" y1="13" x2="38" y2="27" stroke="rgba(252,101,20,0.80)" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="82" y1="13" x2="82" y2="27" stroke="rgba(252,101,20,0.80)" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="28" cy="59" r="5"   fill="rgba(255,255,255,0.14)"/>
-    <circle cx="47" cy="59" r="5"   fill="rgba(255,255,255,0.14)"/>
-    <circle cx="60" cy="59" r="8.5" fill="rgba(252,101,20,0.92)"/>
-    <circle cx="74" cy="59" r="5"   fill="rgba(255,255,255,0.14)"/>
-    <circle cx="93" cy="59" r="5"   fill="rgba(255,255,255,0.09)"/>
-    <circle cx="28" cy="79" r="4"   fill="rgba(255,255,255,0.08)"/>
-    <circle cx="47" cy="79" r="4"   fill="rgba(255,255,255,0.08)"/>
-    <circle cx="60" cy="79" r="4"   fill="rgba(255,255,255,0.08)"/>
-    <circle cx="74" cy="79" r="4"   fill="rgba(255,255,255,0.08)"/>
-    <circle cx="93" cy="79" r="4"   fill="rgba(255,255,255,0.08)"/>
-    <circle cx="28" cy="97" r="3.5" fill="rgba(255,255,255,0.04)"/>
-    <circle cx="47" cy="97" r="3.5" fill="rgba(255,255,255,0.04)"/>
-    <circle cx="60" cy="97" r="3.5" fill="rgba(255,255,255,0.04)"/>
-    <circle cx="74" cy="97" r="3.5" fill="rgba(255,255,255,0.04)"/>
-    <circle cx="93" cy="97" r="3.5" fill="rgba(255,255,255,0.04)"/>
-  </svg>
-)
-
-const Illus4 = () => (
-  <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:130px;height:130px;display:block;">
-    <circle cx="60" cy="60" r="50" fill="rgba(252,101,20,0.05)" stroke="rgba(252,101,20,0.16)" stroke-width="1" stroke-dasharray="5 4"/>
-    <circle cx="60" cy="60" r="37" fill="rgba(252,101,20,0.10)" stroke="rgba(252,101,20,0.35)" stroke-width="1.5"/>
-    <circle cx="60" cy="60" r="37" fill="none" stroke="rgba(252,101,20,0.82)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="160 232" transform="rotate(-90 60 60)"/>
-    <rect x="46" y="64" width="28" height="20" rx="4" fill="rgba(252,101,20,0.82)"/>
-    <path d="M51 64 L51 55 Q51 47 60 47 Q69 47 69 55 L69 64" fill="none" stroke="rgba(252,101,20,0.82)" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="60" cy="73" r="3.5" fill="rgba(255,255,255,0.38)"/>
-    <line x1="60" y1="77" x2="60" y2="80" stroke="rgba(255,255,255,0.38)" stroke-width="2.5" stroke-linecap="round"/>
-  </svg>
-)
-
-const Illus5 = () => (
-  <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:130px;height:130px;display:block;">
-    <rect x="22" y="12" width="76" height="96" rx="7" fill="rgba(255,255,255,0.04)" stroke="rgba(252,101,20,0.26)" stroke-width="1.5"/>
-    <rect x="22" y="12" width="76" height="22" rx="7" fill="rgba(252,101,20,0.26)"/>
-    <rect x="34" y="47" width="52" height="5"  rx="2.5" fill="rgba(252,101,20,0.80)"/>
-    <rect x="34" y="58" width="36" height="4"  rx="2"   fill="rgba(255,255,255,0.22)"/>
-    <rect x="34" y="68" width="48" height="4"  rx="2"   fill="rgba(255,255,255,0.15)"/>
-    <rect x="34" y="78" width="28" height="4"  rx="2"   fill="rgba(255,255,255,0.10)"/>
-    <rect x="30" y="90" width="60" height="12" rx="3"   fill="rgba(252,101,20,0.12)" stroke="rgba(252,101,20,0.28)" stroke-width="1"/>
-    <line x1="38" y1="93" x2="38" y2="99" stroke="rgba(252,101,20,0.65)" stroke-width="1.5"/>
-    <line x1="42" y1="93" x2="42" y2="99" stroke="rgba(252,101,20,0.45)" stroke-width="1"/>
-    <line x1="46" y1="93" x2="46" y2="99" stroke="rgba(252,101,20,0.65)" stroke-width="2"/>
-    <line x1="51" y1="93" x2="51" y2="99" stroke="rgba(252,101,20,0.50)" stroke-width="1"/>
-    <line x1="56" y1="93" x2="56" y2="99" stroke="rgba(252,101,20,0.65)" stroke-width="1.5"/>
-    <line x1="61" y1="93" x2="61" y2="99" stroke="rgba(252,101,20,0.40)" stroke-width="2"/>
-    <line x1="66" y1="93" x2="66" y2="99" stroke="rgba(252,101,20,0.65)" stroke-width="1"/>
-    <line x1="71" y1="93" x2="71" y2="99" stroke="rgba(252,101,20,0.50)" stroke-width="1.5"/>
-    <line x1="76" y1="93" x2="76" y2="99" stroke="rgba(252,101,20,0.65)" stroke-width="2"/>
-    <line x1="80" y1="93" x2="80" y2="99" stroke="rgba(252,101,20,0.40)" stroke-width="1"/>
-  </svg>
-)
-
-const Illus6 = () => (
-  <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:130px;height:130px;display:block;">
-    <rect x="30" y="30" width="66" height="82" rx="6" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.10)" stroke-width="1.5" transform="rotate(-7 60 70)"/>
-    <rect x="24" y="22" width="68" height="83" rx="6" fill="rgba(255,255,255,0.04)" stroke="rgba(252,101,20,0.20)" stroke-width="1.5" transform="rotate(-3 60 65)"/>
-    <rect x="18" y="14" width="70" height="86" rx="6" fill="rgba(252,101,20,0.12)" stroke="rgba(252,101,20,0.42)" stroke-width="1.5"/>
-    <rect x="30" y="33" width="46" height="5"  rx="2.5" fill="rgba(252,101,20,0.70)"/>
-    <rect x="30" y="44" width="32" height="4"  rx="2"   fill="rgba(255,255,255,0.18)"/>
-    <rect x="30" y="54" width="40" height="4"  rx="2"   fill="rgba(255,255,255,0.12)"/>
-    <circle cx="94" cy="28" r="16" fill="rgba(252,101,20,0.88)"/>
-    <line x1="94" y1="35" x2="94" y2="19" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M87 26 L94 19 L101 26" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-)
-
-const Illus7 = () => (
-  <svg viewBox="0 0 130 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:150px;height:115px;display:block;">
-    <rect x="6"  y="28" width="74" height="48" rx="5" fill="rgba(252,101,20,0.72)"/>
-    <rect x="80" y="44" width="40" height="32" rx="5" fill="rgba(252,101,20,0.52)"/>
-    <rect x="86" y="49" width="26" height="14" rx="3" fill="rgba(238,234,228,0.22)"/>
-    <path d="M80 44 Q80 36 89 36 L112 36 Q120 36 120 44" fill="rgba(252,101,20,0.36)"/>
-    <circle cx="30" cy="81" r="10" fill="#1A0F07" stroke="rgba(252,101,20,0.65)" stroke-width="2.5"/>
-    <circle cx="30" cy="81" r="4.5" fill="rgba(252,101,20,0.52)"/>
-    <circle cx="70" cy="81" r="10" fill="#1A0F07" stroke="rgba(252,101,20,0.65)" stroke-width="2.5"/>
-    <circle cx="70" cy="81" r="4.5" fill="rgba(252,101,20,0.52)"/>
-    <circle cx="104" cy="82" r="9"  fill="#1A0F07" stroke="rgba(252,101,20,0.55)" stroke-width="2.5"/>
-    <circle cx="104" cy="82" r="4"  fill="rgba(252,101,20,0.40)"/>
-    <line x1="0" y1="92" x2="130" y2="92" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
-    <circle cx="120" cy="62" r="4" fill="rgba(255,230,120,0.82)"/>
-    <line x1="0" y1="30" x2="6" y2="30" stroke="rgba(252,101,20,0.30)" stroke-width="1" stroke-dasharray="2 3"/>
-  </svg>
-)
 
 export const BookingWizard = () => (
   /* Compact — no viewport-fill, just wraps content */
@@ -199,25 +82,15 @@ export const BookingWizard = () => (
           );
         })`}
       >
-        {/* Step heading */}
-        <div style="margin-bottom:28px;">
-          {STEP_CTX.map((ctx, i) => (
-            <div key={i} x-show={`$store.wizard.currentStep === ${i + 1}`} x-cloak>
-              <h2 style="font-size:20px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:5px;">{ctx.label}</h2>
-              <p style="font-size:13px; color:#78716C; line-height:1.6;">{ctx.tip}</p>
-            </div>
-          ))}
-
-          {/* Hold timer badge — steps 5-7 */}
-          <div
-            x-show="$store.wizard.currentStep > 4 && $store.wizard.holdActive"
-            x-cloak
-            style="margin-top:12px; display:inline-flex; align-items:center; gap:7px; padding:5px 12px; border-radius:8px; font-size:11.5px; font-weight:600;"
-            x-bind:style="$store.wizard.holdExpiring ? 'background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.18); color:#EF4444;' : 'background:rgba(252,101,20,0.07); border:1px solid rgba(252,101,20,0.14); color:rgba(252,101,20,0.85);'"
-          >
-            <Icon name={ICONS.clock} size={12} style="flex-shrink:0;" />
-            <span>Slot held · <span style="font-family:ui-monospace,monospace; font-weight:700;" x-text="$store.wizard.holdMinutes + ':' + $store.wizard.holdSeconds" /></span>
-          </div>
+        {/* Hold timer badge — steps 5–7 (shown below the step's own heading) */}
+        <div
+          x-show="Math.max(0, $store.wizard.currentStep - 4) !== 0 && $store.wizard.holdActive"
+          x-cloak
+          style="margin-bottom:16px; display:inline-flex; align-items:center; gap:7px; padding:5px 12px; border-radius:8px; font-size:11.5px; font-weight:600;"
+          x-bind:style="$store.wizard.holdExpiring ? 'background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.18); color:#EF4444;' : 'background:rgba(252,101,20,0.07); border:1px solid rgba(252,101,20,0.14); color:rgba(252,101,20,0.85);'"
+        >
+          <Icon name={ICONS.clock} size={12} style="flex-shrink:0;" />
+          <span>Slot held · <span style="font-family:ui-monospace,monospace; font-weight:700;" x-text="$store.wizard.holdMinutes + ':' + $store.wizard.holdSeconds" /></span>
         </div>
 
         <Step1ServiceType />

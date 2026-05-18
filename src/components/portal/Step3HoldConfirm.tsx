@@ -3,13 +3,6 @@ import { Icon, ICONS } from '../../lib/Icon'
 export const Step3HoldConfirm = () => (
   <div x-show="$store.wizard.currentStep === 3" x-cloak>
 
-    <h2 style="font-size:18px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:3px;">
-      What type of cargo?
-    </h2>
-    <p style="font-size:13px; color:#64748B; margin-bottom:24px; line-height:1.5;">
-      This determines which details we ask for on the next screen.
-    </p>
-
     <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:24px;">
 
       {/* FCL */}
@@ -42,9 +35,9 @@ export const Step3HoldConfirm = () => (
               style="font-size:14px; font-weight:700; letter-spacing:-0.01em; color:#1C1917; transition:color 0.15s ease;"
               x-bind:style="$store.wizard.loadType === 'fcl' ? 'color:#FC6514;' : ''"
             >FCL</p>
-            <span style="font-size:12px; color:#64748B; font-weight:400;">Full Container Load</span>
+            <span style="font-size:12px; color:#78716C; font-weight:400;">Full Container Load</span>
           </div>
-          <p style="font-size:12px; color:#64748B;">Container number required · No HBL needed</p>
+          <p style="font-size:12px; color:#78716C;">Container number required · No HBL needed</p>
         </div>
 
         <div
@@ -90,9 +83,9 @@ export const Step3HoldConfirm = () => (
               style="font-size:14px; font-weight:700; letter-spacing:-0.01em; color:#1C1917; transition:color 0.15s ease;"
               x-bind:style="$store.wizard.loadType === 'lcl' ? 'color:#FC6514;' : ''"
             >LCL</p>
-            <span style="font-size:12px; color:#64748B; font-weight:400;">Less than Container Load</span>
+            <span style="font-size:12px; color:#78716C; font-weight:400;">Less than Container Load</span>
           </div>
-          <p style="font-size:12px; color:#64748B;">Shared container · HBL + container number · ICS auto-checked</p>
+          <p style="font-size:12px; color:#78716C;">Shared container · HBL + container number · ICS auto-checked</p>
         </div>
 
         <div
@@ -111,7 +104,7 @@ export const Step3HoldConfirm = () => (
 
     <p style="font-size:12px; color:#A8A29E; text-align:center;">
       Not sure?{' '}
-      <a href="#" style="color:#64748B; text-decoration:underline; text-underline-offset:2px; text-decoration-color:rgba(0,0,0,0.15);">
+      <a href="#" style="color:#78716C; text-decoration:underline; text-underline-offset:2px; text-decoration-color:rgba(0,0,0,0.15);">
         FCL vs LCL explained →
       </a>
     </p>

@@ -1,13 +1,6 @@
 export const Step2SlotPicker = () => (
   <div x-show="$store.wizard.currentStep === 2" x-cloak>
 
-    <h2 style="font-size:18px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:3px;">
-      What are you here for?
-    </h2>
-    <p style="font-size:13px; color:#64748B; margin-bottom:28px; line-height:1.5;">
-      This applies to all slots in this session.
-    </p>
-
     <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:28px;">
 
       {/* Pick Up */}
@@ -32,7 +25,7 @@ export const Step2SlotPicker = () => (
         {/* Text */}
         <div style="flex:1; min-width:0; text-align:left;">
           <p style="font-size:14px; font-weight:700; letter-spacing:-0.02em; margin-bottom:2px; color:#1C1917;">Pick Up</p>
-          <p style="font-size:12px; color:#64748B; line-height:1.4;">Collect cargo from the CFS · ICS checked automatically</p>
+          <p style="font-size:12px; color:#78716C; line-height:1.4;">Collect cargo from the CFS · ICS checked automatically</p>
         </div>
 
         {/* Selector */}
@@ -64,7 +57,7 @@ export const Step2SlotPicker = () => (
 
         <div style="flex:1; min-width:0; text-align:left;">
           <p style="font-size:14px; font-weight:700; letter-spacing:-0.02em; margin-bottom:2px; color:#1C1917;">Drop Off</p>
-          <p style="font-size:12px; color:#64748B; line-height:1.4;">Deliver cargo to the CFS · Container or HBL required</p>
+          <p style="font-size:12px; color:#78716C; line-height:1.4;">Deliver cargo to the CFS · Container or HBL required</p>
         </div>
 
         <div
@@ -78,7 +71,7 @@ export const Step2SlotPicker = () => (
 
     <p style="font-size:12px; color:#A8A29E; text-align:center;">
       Not sure?{' '}
-      <a href="#" style="color:#64748B; text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(0,0,0,0.15);">
+      <a href="#" style="color:#78716C; text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(0,0,0,0.15);">
         View depot services guide →
       </a>
     </p>

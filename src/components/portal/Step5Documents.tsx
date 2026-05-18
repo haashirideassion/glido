@@ -1,13 +1,11 @@
 import { Icon, ICONS } from '../../lib/Icon'
 
 const FIELD_LABEL = "display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;"
-const FIELD_STYLE = "width:100%; padding:10px 14px; font-size:13px;"
+const FIELD_STYLE = ""  /* wizard-field class now provides padding + font-size */
 const DIVIDER = "display:grid; grid-template-columns:1fr 1fr; gap:16px; padding-top:16px; margin-top:4px; border-top:1px solid rgba(0,0,0,0.07);"
 
 export const Step5Documents = () => (
   <div x-show="$store.wizard.currentStep === 5" x-cloak>
-    <h2 style="font-size:18px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:3px;">Shipment Details</h2>
-    <p style="font-size:13px; color:#64748B; margin-bottom:28px; line-height:1.5;">Enter the details of your shipment. Fields change based on your service and cargo type.</p>
 
     {/* ── LCL Pickup ─────────────────────────────────────────────── */}
     <div x-show="$store.wizard.isPickupLcl" style="display:flex; flex-direction:column; gap:20px;">
@@ -20,7 +18,7 @@ export const Step5Documents = () => (
             type="text"
             x-model="$store.wizard.houseBillNumber"
             placeholder="e.g. SYHMSCU001847"
-            class="wizard-field" style={FIELD_STYLE + "text-transform:uppercase; letter-spacing:0.04em;"}
+            class="wizard-field" style="text-transform:uppercase; letter-spacing:0.04em;"
           />
         </div>
         <div>
@@ -31,7 +29,7 @@ export const Step5Documents = () => (
             type="text"
             x-model="$store.wizard.containerNumber"
             placeholder="e.g. MSCU1234567"
-            class="wizard-field" style={FIELD_STYLE + "text-transform:uppercase; letter-spacing:0.04em;"}
+            class="wizard-field" style="text-transform:uppercase; letter-spacing:0.04em;"
           />
         </div>
       </div>
@@ -80,7 +78,7 @@ export const Step5Documents = () => (
 
         {/* Auto-populated fields */}
         <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:16px;">
-          <p style="font-size:10px; font-weight:700; color:#64748B; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Auto-populated from CFS records</p>
+          <p style="font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Auto-populated from CFS records</p>
           <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
             {[
               { label: 'Weight',        xtext: `$store.wizard.shipmentData?.weightKg ? $store.wizard.shipmentData.weightKg + ' kg' : '—'` },
@@ -91,7 +89,7 @@ export const Step5Documents = () => (
               { label: 'Days in store', xtext: `$store.wizard.shipmentData?.storageDays ? $store.wizard.shipmentData.storageDays + ' days' : '—'` },
             ].map((item) => (
               <div key={item.label} style="background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.07); border-radius:8px; padding:10px 12px;">
-                <p style="font-size:10px; color:#64748B; margin-bottom:3px;">{item.label}</p>
+                <p style="font-size:10px; color:#78716C; margin-bottom:3px;">{item.label}</p>
                 <p style="font-weight:600; color:#1C1917; font-size:13px;" x-text={item.xtext}></p>
               </div>
             ))}
@@ -129,7 +127,7 @@ export const Step5Documents = () => (
               <span>Subtotal</span>
               <span x-text="'$' + $store.wizard.totalCharges.toFixed(2)"></span>
             </div>
-            <div style="display:flex; justify-content:space-between; color:#64748B; font-size:12px;">
+            <div style="display:flex; justify-content:space-between; color:#78716C; font-size:12px;">
               <span>GST (10%)</span>
               <span x-text="'$' + ($store.wizard.totalCharges * 0.10).toFixed(2)"></span>
             </div>
@@ -163,7 +161,7 @@ export const Step5Documents = () => (
             type="text"
             x-model="$store.wizard.containerNumber"
             placeholder="e.g. MSCU1234567"
-            class="wizard-field" style="flex:1; padding:10px 14px; font-size:13px; text-transform:uppercase; letter-spacing:0.04em;"
+            class="wizard-field" style="flex:1; text-transform:uppercase; letter-spacing:0.04em;"
           />
           <button
             type="button"
@@ -192,14 +190,14 @@ export const Step5Documents = () => (
           ></span>
         </div>
         <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:16px;">
-          <p style="font-size:10px; font-weight:700; color:#64748B; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Container details</p>
+          <p style="font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:12px;">Container details</p>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <div style="background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.07); border-radius:8px; padding:10px 12px;">
-              <p style="font-size:10px; color:#64748B; margin-bottom:3px;">Gross Weight</p>
+              <p style="font-size:10px; color:#78716C; margin-bottom:3px;">Gross Weight</p>
               <p style="font-weight:600; color:#1C1917; font-size:13px;" x-text="$store.wizard.shipmentData?.weightKg ? $store.wizard.shipmentData.weightKg + ' kg' : '—'"></p>
             </div>
             <div style="background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.07); border-radius:8px; padding:10px 12px;">
-              <p style="font-size:10px; color:#64748B; margin-bottom:3px;">Volume</p>
+              <p style="font-size:10px; color:#78716C; margin-bottom:3px;">Volume</p>
               <p style="font-weight:600; color:#1C1917; font-size:13px;" x-text="$store.wizard.shipmentData?.volumeCbm ? $store.wizard.shipmentData.volumeCbm + ' CBM' : '—'"></p>
             </div>
           </div>
@@ -222,11 +220,11 @@ export const Step5Documents = () => (
     <div x-show="$store.wizard.isDropoffLcl" style="display:flex; flex-direction:column; gap:16px;">
       <div>
         <label style={FIELD_LABEL}>House Bill Number <span style="color:#A8A29E; font-weight:400; font-size:10px;">(if known)</span></label>
-        <input type="text" x-model="$store.wizard.houseBillNumber" placeholder="e.g. SYHMSCU001847" class="wizard-field" style={FIELD_STYLE + "text-transform:uppercase; letter-spacing:0.04em;"} />
+        <input type="text" x-model="$store.wizard.houseBillNumber" placeholder="e.g. SYHMSCU001847" class="wizard-field" style="text-transform:uppercase; letter-spacing:0.04em;" />
       </div>
       <div>
         <label style={FIELD_LABEL}>Cargo Description <span style="color:#EF4444;">*</span></label>
-        <textarea x-model="$store.wizard.cargoDescription" rows={2} placeholder="Brief description of goods, packaging, and quantities" class="wizard-field" style={FIELD_STYLE + "resize:none;"}></textarea>
+        <textarea x-model="$store.wizard.cargoDescription" rows={2} placeholder="Brief description of goods, packaging, and quantities" class="wizard-field" style="resize:none;"></textarea>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
         <div>
@@ -252,7 +250,7 @@ export const Step5Documents = () => (
           <input type="tel" x-model="$store.wizard.driverPhone" placeholder="+61 4XX XXX XXX" class="wizard-field" style={FIELD_STYLE} />
         </div>
       </div>
-      <p style="font-size:12px; color:#64748B; display:flex; align-items:center; gap:6px;">
+      <p style="font-size:12px; color:#78716C; display:flex; align-items:center; gap:6px;">
         <Icon name={ICONS.info} size={13} style="flex-shrink:0;" />
         Drop-off does not incur storage charges. No ICS check required.
       </p>
@@ -262,11 +260,11 @@ export const Step5Documents = () => (
     <div x-show="$store.wizard.isDropoffFcl" style="display:flex; flex-direction:column; gap:16px;">
       <div>
         <label style={FIELD_LABEL}>Container Number <span style="color:#A8A29E; font-weight:400; font-size:10px;">(if known)</span></label>
-        <input type="text" x-model="$store.wizard.containerNumber" placeholder="e.g. MSCU1234567" class="wizard-field" style={FIELD_STYLE + "text-transform:uppercase; letter-spacing:0.04em;"} />
+        <input type="text" x-model="$store.wizard.containerNumber" placeholder="e.g. MSCU1234567" class="wizard-field" style="text-transform:uppercase; letter-spacing:0.04em;" />
       </div>
       <div>
         <label style={FIELD_LABEL}>Cargo Description <span style="color:#EF4444;">*</span></label>
-        <textarea x-model="$store.wizard.cargoDescription" rows={2} placeholder="Brief description of goods, packaging, and quantities" class="wizard-field" style={FIELD_STYLE + "resize:none;"}></textarea>
+        <textarea x-model="$store.wizard.cargoDescription" rows={2} placeholder="Brief description of goods, packaging, and quantities" class="wizard-field" style="resize:none;"></textarea>
       </div>
       <div>
         <label style={FIELD_LABEL}>Destination Port</label>

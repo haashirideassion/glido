@@ -2,9 +2,6 @@ import { Icon, ICONS } from '../../lib/Icon'
 
 export const Step7Confirmation = () => (
   <div x-show="$store.wizard.currentStep === 7" x-cloak>
-    <h2 style="font-size:18px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:4px;">Review & Pay</h2>
-    <p style="color:#64748B; font-size:13px; margin-bottom:20px; line-height:1.5;">Review your booking and complete payment to confirm your slot hold.</p>
-
     {/* Hold timer banner */}
     <div
       x-show="$store.wizard.holdActive"
@@ -21,34 +18,34 @@ export const Step7Confirmation = () => (
 
     {/* Booking summary */}
     <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:20px; margin-bottom:20px; font-size:13px;">
-      <p style="font-size:10px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px;">Booking Summary</p>
+      <p style="font-size:10px; font-weight:700; color:#78716C; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px;">Booking Summary</p>
       <div style="display:flex; flex-direction:column; gap:10px;">
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:#64748B;">Guest Name</span>
+          <span style="color:#78716C;">Guest Name</span>
           <span style="font-weight:600; color:#1C1917;" x-text="$store.wizard.guestName || '—'"></span>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:#64748B;">Service</span>
+          <span style="color:#78716C;">Service</span>
           <span style="font-weight:600; color:#1C1917; text-transform:capitalize;" x-text="$store.wizard.serviceType === 'pickup' ? 'Pick Up' : $store.wizard.serviceType === 'dropoff' ? 'Drop Off' : '—'"></span>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:#64748B;">Load Type</span>
+          <span style="color:#78716C;">Load Type</span>
           <span style="font-weight:600; color:#1C1917; text-transform:uppercase;" x-text="$store.wizard.loadType || '—'"></span>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:#64748B;">Slot</span>
+          <span style="color:#78716C;">Slot</span>
           <span style="font-weight:600; color:#1C1917;" x-text="$store.wizard.selectedSlotLabel || '—'"></span>
         </div>
         <div style="display:flex; justify-content:space-between;" x-show="$store.wizard.houseBillNumber">
-          <span style="color:#64748B;">HBL</span>
+          <span style="color:#78716C;">HBL</span>
           <span style="font-family:ui-monospace,monospace; font-size:12px; font-weight:700; color:#78716C;" x-text="$store.wizard.houseBillNumber"></span>
         </div>
         <div style="display:flex; justify-content:space-between;" x-show="$store.wizard.containerNumber">
-          <span style="color:#64748B;">Container</span>
+          <span style="color:#78716C;">Container</span>
           <span style="font-family:ui-monospace,monospace; font-size:12px; font-weight:700; color:#78716C;" x-text="$store.wizard.containerNumber"></span>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:#64748B;">Driver</span>
+          <span style="color:#78716C;">Driver</span>
           <span style="font-weight:600; color:#1C1917;" x-text="$store.wizard.driverName || '—'"></span>
         </div>
       </div>
@@ -96,7 +93,7 @@ export const Step7Confirmation = () => (
           <span>Subtotal</span>
           <span x-text="'$' + $store.wizard.totalCharges.toFixed(2)"></span>
         </div>
-        <div style="display:flex; justify-content:space-between; color:#64748B; font-size:12px;">
+        <div style="display:flex; justify-content:space-between; color:#78716C; font-size:12px;">
           <span>GST (10%)</span>
           <span x-text="'$' + ($store.wizard.totalCharges * 0.10).toFixed(2)"></span>
         </div>
@@ -118,7 +115,7 @@ export const Step7Confirmation = () => (
       >
         <Icon name={ICONS.shield} size={20} style="color:#FC6514; margin-bottom:8px; display:block;" />
         <div style="font-weight:600; font-size:13px; color:#1C1917;">Credit / Debit Card</div>
-        <div style="font-size:12px; color:#64748B; margin-top:2px;">Visa, Mastercard, Amex</div>
+        <div style="font-size:12px; color:#78716C; margin-top:2px;">Visa, Mastercard, Amex</div>
       </button>
       <button
         type="button"
@@ -128,7 +125,7 @@ export const Step7Confirmation = () => (
       >
         <Icon name={ICONS.document} size={20} style="color:#FC6514; margin-bottom:8px; display:block;" />
         <div style="font-weight:600; font-size:13px; color:#1C1917;">Bank Transfer (EFT)</div>
-        <div style="font-size:12px; color:#64748B; margin-top:2px;">Transfer before slot date</div>
+        <div style="font-size:12px; color:#78716C; margin-top:2px;">Transfer before slot date</div>
       </button>
     </div>
 
@@ -136,7 +133,7 @@ export const Step7Confirmation = () => (
     <div x-show="$store.wizard.paymentMethod === 'card'" style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:20px; margin-bottom:20px;">
       <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
         <Icon name={ICONS.shield} size={15} style="color:#22C55E;" />
-        <p style="font-size:12px; color:#64748B; font-weight:500;">Secure card payment powered by Stripe</p>
+        <p style="font-size:12px; color:#78716C; font-weight:500;">Secure card payment powered by Stripe</p>
       </div>
       <div style="margin-bottom:14px;">
         <label style="display:block; font-size:11px; font-weight:600; color:#78716C; letter-spacing:0.07em; text-transform:uppercase; margin-bottom:6px;">Card Number</label>
