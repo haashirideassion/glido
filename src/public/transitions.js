@@ -20,54 +20,70 @@
 
   /* ══════════════════════════════════════════════════════════════════════════
      1. PRELOADER
-     The <head> inline script already created #g-pl with #g-pl-fill.
-     We inject the logo clone and handle dismiss.
+     The <head> inline script already created:
+       #g-pl-overlay  — white/grey full-screen backdrop
+       #g-pl-bar      — 3 px YouTube-style progress bar at the very top
+       #g-pl-logo-wrap — the real SVG logo centered in the viewport
+     We handle dismiss with a FLIP animation: logo flies to .glido-logo-anchor.
   ══════════════════════════════════════════════════════════════════════════ */
-  var _pl = document.getElementById('g-pl')
-
-  function _plInjectLogo () {
-    if (!_pl) return
-    var slot = document.getElementById('g-pl-logo-slot')
-    if (!slot) return
-    /* clone the nav logo */
-    var srcSvg = document.querySelector('.glido-logo-anchor svg')
-    if (srcSvg) {
-      var clone = srcSvg.cloneNode(true)
-      clone.setAttribute('width', '112')
-      clone.setAttribute('height', '22')
-      clone.style.cssText = 'display:block;'
-      slot.appendChild(clone)
-    } else {
-      slot.innerHTML = '<span style="font-size:22px;font-weight:800;letter-spacing:-0.06em;color:#1C1917;">glido</span>'
-    }
-    /* fade logo in */
-    requestAnimationFrame(function () {
-      slot.style.opacity = '1'
-      slot.style.transform = 'translateY(0)'
-    })
-  }
-
-  function _plFill (pct, ms) {
-    var fill = document.getElementById('g-pl-fill')
-    if (!fill) return
-    fill.style.transition = 'width ' + (ms || 420) + 'ms ease'
-    fill.style.width = pct + '%'
-  }
 
   function _plDismiss () {
-    if (!_pl) return
-    /* clear the safety timer so it doesn't double-fire */
     if (window.__gPlSafetyTimer) clearTimeout(window.__gPlSafetyTimer)
+
+    var bar     = document.getElementById('g-pl-bar')
+    var overlay = document.getElementById('g-pl-overlay')
+    var wrap    = document.getElementById('g-pl-logo-wrap')
+
     /* complete the bar */
-    _plFill(100, 160)
+    if (bar) { bar.style.transition = 'width 0.18s ease'; bar.style.width = '100%' }
+
     setTimeout(function () {
-      /* slide the curtain UP */
-      _pl.style.transition = 'transform 0.52s ' + SP
-      _pl.style.transform  = 'translateY(-105%)'
-      setTimeout(function () {
-        if (_pl.parentNode) _pl.parentNode.removeChild(_pl)
-      }, 560)
-    }, 160)
+      var anchor = document.querySelector('.glido-logo-anchor')
+
+      if (wrap && anchor) {
+        var aR = anchor.getBoundingClientRect()
+        var wR = wrap.getBoundingClientRect()
+        /* scale so the preloader logo matches the navbar logo height */
+        var s  = aR.height / wR.height
+        /* translate from left:50%;top:50% origin to the anchor's top-left */
+        var tx = aR.left - window.innerWidth  / 2
+        var ty = aR.top  - window.innerHeight / 2
+
+        /* hide the real nav SVG — the flying logo will "land" into its spot */
+        var navSvg = anchor.querySelector('svg')
+        if (navSvg) navSvg.style.opacity = '0'
+
+        wrap.style.transformOrigin = '0 0'
+        wrap.style.transition      = 'transform 0.42s ' + SP
+        wrap.style.transform       = 'translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px) scale(' + s.toFixed(4) + ')'
+
+        /* after the flight, swap to the real logo */
+        setTimeout(function () {
+          wrap.style.transition = 'opacity 0.10s ease'
+          wrap.style.opacity    = '0'
+          if (navSvg) { navSvg.style.transition = 'opacity 0.14s ease'; navSvg.style.opacity = '1' }
+          setTimeout(function () { if (wrap && wrap.parentNode) wrap.parentNode.removeChild(wrap) }, 130)
+        }, 440)
+      } else if (wrap) {
+        wrap.style.transition = 'opacity 0.35s ease'
+        wrap.style.opacity    = '0'
+        setTimeout(function () { if (wrap.parentNode) wrap.parentNode.removeChild(wrap) }, 380)
+      }
+
+      /* fade out the overlay and bar */
+      if (overlay) {
+        overlay.style.transition = 'opacity 0.32s ease'
+        overlay.style.opacity    = '0'
+        setTimeout(function () { if (overlay.parentNode) overlay.parentNode.removeChild(overlay) }, 360)
+      }
+      if (bar) {
+        setTimeout(function () {
+          bar.style.transition = 'opacity 0.25s ease'
+          bar.style.opacity    = '0'
+          setTimeout(function () { if (bar.parentNode) bar.parentNode.removeChild(bar) }, 280)
+        }, 100)
+      }
+    }, 180)
   }
 
   /* ══════════════════════════════════════════════════════════════════════════
@@ -438,8 +454,6 @@
      BOOT
   ══════════════════════════════════════════════════════════════════════════ */
   function _boot () {
-    _plInjectLogo()
-    _plFill(82, 300)
     _pageEnter()
     _setupReveals()
     _setupStagger()

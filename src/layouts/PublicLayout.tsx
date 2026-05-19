@@ -34,21 +34,45 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, childr
         {/* ── Instant preloader ── */}
         <script dangerouslySetInnerHTML={{ __html: `
           (function(){
+            var D='#1C232C',O='#FF6610',O2='#FC6514';
             var s=document.createElement('style');
-            s.textContent='#g-pl{position:fixed;inset:0;z-index:99999;background:#fff;display:flex;align-items:center;justify-content:center;pointer-events:none;will-change:transform}'
-              +'#g-pl-inner{display:flex;flex-direction:column;align-items:center;gap:20px}'
-              +'#g-pl-bar{width:64px;height:2px;background:rgba(0,0,0,0.07);border-radius:999px;overflow:hidden}'
-              +'#g-pl-fill{height:100%;width:0%;background:#FC6514;border-radius:999px;transition:width .5s ease}';
+            s.textContent='#g-pl-overlay{position:fixed;inset:0;z-index:99998;background:#fff;pointer-events:none}'
+              +'#g-pl-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:'+O2+';z-index:100000}'
+              +'#g-pl-logo-wrap{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:99999;pointer-events:none}';
             document.head.appendChild(s);
-            var logo='<div style="font-size:21px;font-weight:800;letter-spacing:-0.055em;font-family:system-ui,ui-sans-serif,sans-serif;"><span style="color:#1C232C;">glid</span><span style="color:#FC6514;">o</span></div>';
-            var pl=document.createElement('div');pl.id='g-pl';
-            pl.innerHTML='<div id="g-pl-inner">'+logo+'<div id="g-pl-bar"><div id="g-pl-fill"></div></div></div>';
-            document.documentElement.appendChild(pl);
-            var raf=requestAnimationFrame;raf(function(){raf(function(){var f=document.getElementById('g-pl-fill');if(f)f.style.width='60%';});});
+            var H=28,W=145;
+            var svg='<svg id="g-pl-logo-svg" viewBox="0 0 160 31" height="'+H+'" width="'+W+'" xmlns="http://www.w3.org/2000/svg" style="display:block">'
+              +'<path fill="'+D+'" d="m25.5 13c-1.2 0-2.5 0.6-3.4 1.6l-3 3.2 0.1 0.2h24.8l-0.8 3.1c-0.6 2.3-1.9 3.5-4.3 3.5h-23.6c-5.3 0-8.7-3.1-8.3-8.3s3.1-9.8 8.3-9.8h15.5c0.8 0 1.4-0.5 1.8-1.1l2-3.5-0.1-0.6h-19.3c-8.2 0-12.8 6.1-13.3 14-0.5 7.1 2.8 14.2 12.7 14.3h24.4c5.4 0 8.6-2.2 9.9-7.3l2.4-9.2-25.8-0.1z"/>'
+              +'<path fill="'+D+'" d="m60.9 1.3-6.3 21.2c-0.9 4.1 1.1 6.8 5.5 6.9h5.8l1.3-5h-4.6c-1.6 0-2.5-0.9-2-2.6l5.7-20.5h-5.4z"/>'
+              +'<path fill="'+D+'" d="m75.6 9.3-5.4 20.1h5.8l5.6-20.5h-5.5l-0.5 0.4z"/>'
+              +'<path fill="'+D+'" d="m116.5 1.4-5.3 19.1c-0.8 2.6-2.3 3.8-4.9 3.8h-12.4c-2.5 0-4.2-1.4-3.8-4.4 0.5-3.6 3-6 6.2-6h12c1 0 1.4-0.4 1.9-1.1l1.8-3.5v-0.4h-16c-5.9 0-11.2 3.9-12 10.7-0.6 5.8 2.4 9.7 9.3 9.7h13c5.6 0 9.1-1.9 10.6-7.7l5.7-20.3h-6l-0.1 0.1z"/>'
+              +'<path fill="'+D+'" d="m150.5 16c-0.4 0-0.4 0.2-0.6 0.5l-0.8 3.5c-0.6 2.7-2.6 4.4-4.7 4.4h-11.9c-2.7 0-4.6-1.5-4-4.8 0.5-3.3 2.8-5.7 6.3-5.7h12.2c0.7 0 1.2-0.3 1.6-1l1.8-3.6-0.2-0.4h-15.2c-6.3 0-11 3.4-12.2 9.8-1.1 6.1 1.4 10.6 8.7 10.7h13c5.9 0 9.1-3.1 10.2-7.8l1.3-5.5-5.5-0.1z"/>'
+              +'<path fill="'+O+'" d="m43.1 1.4c-1.5 0-2.6 0.3-3.5 1.4-0.7 0.7-2.9 3.4-2.8 3.6l0.2 0.1h13.6c1 0 1.5-0.4 2-1.1 0.6-0.8 2.4-3.7 2.3-4h-11.8z"/>'
+              +'<path fill="'+O2+'" d="m77.8 1.4-1.4 5.1h5.1c0.5 0 0.7-0.4 0.8-0.6l1.3-4.6h-5.8v0.1z"/>'
+              +'<path fill="'+O+'" d="m152.8 8.9c-0.2 0-0.2 0.1-0.3 0.2l-1.9 4.3 4 0.1c0.7 0 1-0.3 1.5-0.8 0.7-0.8 2.4-3.4 2.4-3.6l-0.1-0.2h-5.6z"/>'
+              +'</svg>';
+            var overlay=document.createElement('div');overlay.id='g-pl-overlay';
+            var bar=document.createElement('div');bar.id='g-pl-bar';
+            var wrap=document.createElement('div');wrap.id='g-pl-logo-wrap';wrap.innerHTML=svg;
+            document.documentElement.appendChild(overlay);
+            document.documentElement.appendChild(bar);
+            document.documentElement.appendChild(wrap);
+            var raf=requestAnimationFrame;raf(function(){raf(function(){
+              bar.style.transition='width 0.5s ease';bar.style.width='60%';
+            });});
             function _safetyDismiss(){
-              var p=document.getElementById('g-pl');if(!p)return;
-              var f=document.getElementById('g-pl-fill');if(f){f.style.transition='width 0.16s ease';f.style.width='100%';}
-              setTimeout(function(){p.style.transition='transform 0.52s cubic-bezier(0.16,1,0.3,1)';p.style.transform='translateY(-105%)';setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},560);},180);
+              var b=document.getElementById('g-pl-bar');
+              var o=document.getElementById('g-pl-overlay');
+              var w=document.getElementById('g-pl-logo-wrap');
+              if(b){b.style.transition='width 0.16s ease';b.style.width='100%';}
+              setTimeout(function(){
+                if(b){b.style.transition='opacity 0.3s ease';b.style.opacity='0';}
+                if(o){o.style.transition='opacity 0.4s ease';o.style.opacity='0';}
+                if(w){w.style.transition='opacity 0.4s ease';w.style.opacity='0';}
+                setTimeout(function(){
+                  [b,o,w].forEach(function(el){if(el&&el.parentNode)el.parentNode.removeChild(el);});
+                },450);
+              },200);
             }
             window.__gPlSafetyTimer=setTimeout(_safetyDismiss,5000);
           })();

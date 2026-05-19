@@ -61,13 +61,11 @@ portalRoutes.get('/', (c) => {
 
         {/* ── Hero card ── */}
         <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:560px; display:flex; align-items:flex-end;">
-          <img
-            src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/cb754040-5ead-438c-afb6-2b74b4ef35db_3840w.jpg"
-            alt="Container freight station"
-            data-parallax data-parallax-speed="0.18"
-            style="position:absolute; inset:0; width:100%; height:110%; object-fit:cover; object-position:center 40%;"
-          />
-          <div style="position:absolute; inset:0; background:linear-gradient(108deg,rgba(10,8,6,0.90) 0%,rgba(10,8,6,0.76) 38%,rgba(10,8,6,0.30) 68%,transparent 100%);"></div>
+          {/* CSS-only hero: deep charcoal + grid texture + orange radial glow */}
+          <div style="position:absolute; inset:0; background:linear-gradient(135deg,#0D1117 0%,#0F1923 45%,#101C26 100%);"></div>
+          <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.035) 1px,transparent 1px); background-size:52px 52px;"></div>
+          <div style="position:absolute; inset:0; background:radial-gradient(ellipse 90% 65% at 68% 48%,rgba(252,101,20,0.18) 0%,transparent 65%);"></div>
+          <div style="position:absolute; inset:0; background:linear-gradient(108deg,rgba(10,8,6,0.92) 0%,rgba(10,8,6,0.65) 38%,rgba(10,8,6,0.15) 68%,transparent 100%);"></div>
           <div style="position:absolute; bottom:0; left:0; right:0; height:40%; background:linear-gradient(to top,rgba(10,8,6,0.55) 0%,transparent 100%);"></div>
 
           <div style="position:relative; z-index:1; width:100%; max-width:1200px; margin:0 auto; padding:0 40px 88px;" class="hero-content">
