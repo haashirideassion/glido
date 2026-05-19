@@ -17,6 +17,8 @@ import {
   completeBooking,
   getBookings,
   cancelBooking,
+  rescheduleBooking,
+  refreshIcsStatus,
 } from '../lib/db/bookings'
 import { getActiveWalkIns, createWalkIn, dismissWalkIn } from '../lib/db/walk-ins'
 import { getTenant, updateTenant } from '../lib/db/tenants'
@@ -34,15 +36,21 @@ const WALK_IN_PURPOSE_LABEL: Record<WalkInPurpose, string> = {
 
 // ─── Dashboard ──────────────────────────────────────────────────────────────
 receptionRoutes.get('/', async (c) => {
-  const [todayBookings, stats] = await Promise.all([
+  const [todayBookings, stats, walkIns] = await Promise.all([
     getTodayBookings().catch(() => []),
     getDashboardStats().catch(() => ({ totalScheduled: 0, checkedIn: 0, completed: 0, held: 0 })),
+    getActiveWalkIns(DEFAULT_TENANT_ID).catch(() => []),
   ])
   return c.html(
-    <ReceptionLayout title="Dashboard" activeNav="/reception">
-      <KpiTiles stats={stats} />
-      <DayChart bookings={todayBookings} />
-      <BookingTable bookings={todayBookings} />
+    <ReceptionLayout title="Dashboard" activeNav="/reception" walkInCount={walkIns.length}>
+      {/* KPI + chart with auto-refresh every 30s */}
+      <div id="dashboard-stats" hx-get="/reception/api/stats" hx-trigger="every 30s" hx-swap="innerHTML">
+        <KpiTiles stats={stats} />
+        <DayChart bookings={todayBookings} />
+      </div>
+      <div id="dashboard-table" hx-get="/reception/api/today-bookings" hx-trigger="every 30s" hx-swap="outerHTML">
+        <BookingTable bookings={todayBookings} />
+      </div>
     </ReceptionLayout>
   )
 })
@@ -52,6 +60,7 @@ receptionRoutes.get('/bookings', async (c) => {
   const status  = c.req.query('status') as BookingStatus | undefined
   const service = c.req.query('service') as ServiceType | undefined
   const date    = c.req.query('date')
+  const search  = c.req.query('search')?.toLowerCase().trim()
   const isHtmx  = c.req.header('HX-Request') === 'true'
 
   let bookings = date
@@ -60,6 +69,14 @@ receptionRoutes.get('/bookings', async (c) => {
 
   if (status)  bookings = bookings.filter(b => b.status === status)
   if (service) bookings = bookings.filter(b => b.serviceType === service)
+  if (search)  bookings = bookings.filter(b =>
+    b.referenceNumber.toLowerCase().includes(search) ||
+    b.driverName.toLowerCase().includes(search) ||
+    (b.houseBillNumber  ?? '').toLowerCase().includes(search) ||
+    (b.containerNumber  ?? '').toLowerCase().includes(search) ||
+    (b.driverPhone      ?? '').toLowerCase().includes(search) ||
+    (b.guestName        ?? '').toLowerCase().includes(search)
+  )
 
   if (isHtmx) {
     return c.html(<BookingTable bookings={bookings} title="All Bookings" showFilters />)
@@ -129,6 +146,40 @@ receptionRoutes.post('/bookings/:id/cancel', async (c) => {
   if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
   return c.html(
     <div data-toast={`Booking ${booking.referenceNumber} cancelled`} data-toast-type="info">
+      <BookingSlideOver booking={booking} />
+    </div>
+  )
+})
+
+// ─── Reschedule action ───────────────────────────────────────────────────────
+receptionRoutes.post('/bookings/:id/reschedule', async (c) => {
+  const body     = await c.req.parseBody()
+  const newDate  = (body.newDate as string) || ''
+  const newStart = (body.newStart as string) || ''
+  if (!newDate || !newStart) {
+    return c.html(<div style="padding:16px; color:#EF4444;">Date and time are required</div>)
+  }
+  // Compute end time from slot duration (default 60 min)
+  const tenant = await getTenant(DEFAULT_TENANT_ID).catch(() => null)
+  const dur = tenant?.slot_duration_min ?? 60
+  const [h, m] = newStart.split(':').map(Number)
+  const endMin = h * 60 + m + dur
+  const newEnd = `${String(Math.floor(endMin / 60)).padStart(2, '0')}:${String(endMin % 60).padStart(2, '0')}`
+  const booking = await rescheduleBooking(c.req.param('id'), newDate, newStart, newEnd)
+  if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
+  return c.html(
+    <div data-toast={`Rescheduled to ${newDate} at ${newStart}`} data-toast-type="success">
+      <BookingSlideOver booking={booking} />
+    </div>
+  )
+})
+
+// ─── ICS Refresh action ──────────────────────────────────────────────────────
+receptionRoutes.post('/bookings/:id/refresh-ics', async (c) => {
+  const booking = await refreshIcsStatus(c.req.param('id'))
+  if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
+  return c.html(
+    <div data-toast="ICS status refreshed" data-toast-type="info">
       <BookingSlideOver booking={booking} />
     </div>
   )
@@ -234,6 +285,34 @@ receptionRoutes.post('/walk-ins/:id/dismiss', async (c) => {
   return c.redirect('/reception/walk-ins')
 })
 
+// ─── Auto-refresh API partials ────────────────────────────────────────────────
+receptionRoutes.get('/api/stats', async (c) => {
+  const [stats, todayBookings] = await Promise.all([
+    getDashboardStats().catch(() => ({ totalScheduled: 0, checkedIn: 0, completed: 0, held: 0 })),
+    getTodayBookings().catch(() => []),
+  ])
+  return c.html(
+    <>
+      <KpiTiles stats={stats} />
+      <DayChart bookings={todayBookings} />
+    </>
+  )
+})
+
+receptionRoutes.get('/api/today-bookings', async (c) => {
+  const bookings = await getTodayBookings().catch(() => [])
+  return c.html(
+    <div id="dashboard-table" hx-get="/reception/api/today-bookings" hx-trigger="every 30s" hx-swap="outerHTML">
+      <BookingTable bookings={bookings} />
+    </div>
+  )
+})
+
+receptionRoutes.get('/api/walk-in-count', async (c) => {
+  const walkIns = await getActiveWalkIns(DEFAULT_TENANT_ID).catch(() => [])
+  return c.json({ count: walkIns.length })
+})
+
 // ─── Walk-in registration form ────────────────────────────────────────────────
 receptionRoutes.get('/walk-in', (c) => {
   return c.html(
@@ -299,43 +378,49 @@ receptionRoutes.get('/settings', async (c) => {
 // ─── Settings POST ────────────────────────────────────────────────────────────
 receptionRoutes.post('/settings', async (c) => {
   const body = await c.req.parseBody()
-  const {
-    name, address, contact_email, contact_phone, timezone, currency,
-    slot_duration_min, max_bookings_per_slot, advance_booking_days,
-    slot_hold_duration_min, same_day_cutoff_time,
-    storage_rate_per_cbm, storage_free_days, shrink_wrap_rate_per_pallet,
-    slot_fee_pickup, slot_fee_dropoff,
-    gst_enabled, gst_rate,
-    stripe_public_key, eft_bank_name, eft_bsb, eft_account_number, eft_account_name,
-    require_payment_to_confirm,
-  } = body as Record<string, string>
+  const b = body as Record<string, string>
+
+  // Build working hours JSON from checkbox/time fields
+  const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+  const workingHours: Record<string, { enabled: boolean; open: string; close: string }> = {}
+  for (const day of DAYS) {
+    workingHours[day] = {
+      enabled: b[`${day}_enabled`] === 'on',
+      open:    b[`${day}_open`]    || '06:00',
+      close:   b[`${day}_close`]   || '18:00',
+    }
+  }
+
+  // Only update working_hours when the Working Hours tab is submitted
+  const isWorkingHoursTab = (b.tab || '') === 'Working Hours'
 
   await updateTenant(DEFAULT_TENANT_ID, {
-    name,
-    address,
-    contact_email,
-    contact_phone,
-    timezone,
-    currency,
-    slot_duration_min:            Number(slot_duration_min),
-    max_bookings_per_slot:        Number(max_bookings_per_slot),
-    advance_booking_days:         Number(advance_booking_days),
-    slot_hold_duration_min:       Number(slot_hold_duration_min),
-    same_day_cutoff_time,
-    storage_rate_per_cbm:         Number(storage_rate_per_cbm),
-    storage_free_days:            Number(storage_free_days),
-    shrink_wrap_rate_per_pallet:  Number(shrink_wrap_rate_per_pallet),
-    slot_fee_pickup:              Number(slot_fee_pickup),
-    slot_fee_dropoff:             Number(slot_fee_dropoff),
-    gst_enabled:                  gst_enabled === 'on',
-    gst_rate:                     Number(gst_rate) || 10,
-    stripe_public_key:            stripe_public_key || null,
-    eft_bank_name:                eft_bank_name || null,
-    eft_bsb:                      eft_bsb || null,
-    eft_account_number:           eft_account_number || null,
-    eft_account_name:             eft_account_name || null,
-    require_payment_to_confirm:   require_payment_to_confirm === 'on',
+    name:                         b.name,
+    address:                      b.address,
+    contact_email:                b.contact_email,
+    contact_phone:                b.contact_phone,
+    timezone:                     b.timezone,
+    currency:                     b.currency,
+    slot_duration_min:            Number(b.slot_duration_min),
+    max_bookings_per_slot:        Number(b.max_bookings_per_slot),
+    advance_booking_days:         Number(b.advance_booking_days),
+    slot_hold_duration_min:       Number(b.slot_hold_duration_min),
+    same_day_cutoff_time:         b.same_day_cutoff_time,
+    storage_rate_per_cbm:         Number(b.storage_rate_per_cbm),
+    storage_free_days:            Number(b.storage_free_days),
+    shrink_wrap_rate_per_pallet:  Number(b.shrink_wrap_rate_per_pallet),
+    slot_fee_pickup:              Number(b.slot_fee_pickup),
+    slot_fee_dropoff:             Number(b.slot_fee_dropoff),
+    gst_enabled:                  b.gst_enabled === 'on',
+    gst_rate:                     Number(b.gst_rate) || 10,
+    stripe_public_key:            b.stripe_public_key || null,
+    eft_bank_name:                b.eft_bank_name || null,
+    eft_bsb:                      b.eft_bsb || null,
+    eft_account_number:           b.eft_account_number || null,
+    eft_account_name:             b.eft_account_name || null,
+    require_payment_to_confirm:   b.require_payment_to_confirm === 'on',
+    ...(isWorkingHoursTab ? { working_hours: workingHours } : {}),
   })
 
-  return c.redirect(`/reception/settings?tab=${encodeURIComponent(body.tab as string || 'General')}&saved=1`)
+  return c.redirect(`/reception/settings?tab=${encodeURIComponent(b.tab || 'General')}&saved=1`)
 })

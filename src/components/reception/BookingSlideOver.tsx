@@ -16,7 +16,7 @@ const ROW_LABEL    = "display:flex; align-items:center; gap:6px; font-size:12px;
 const ROW_VALUE    = "font-size:12px; font-weight:600; color:#1C1917;"
 
 export const BookingSlideOver = ({ booking: b }: Props) => (
-  <div style="display:flex; flex-direction:column; height:100%;" x-data="{ confirmModal: false, cancelModal: false, completionNotes: '', guestEmail: '' }">
+  <div style="display:flex; flex-direction:column; height:100%;" x-data="{ confirmModal: false, cancelModal: false, rescheduleModal: false, completionNotes: '', guestEmail: '', newDate: '', newStart: '' }">
     {/* Header */}
     <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(0,0,0,0.07); background:#FFFFFF; flex-shrink:0;">
       <div>
@@ -156,7 +156,13 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
               {ICS_LABEL[b.icsStatus]}
             </span>
             <div style="display:flex; align-items:center; gap:10px;">
-              <button type="button" style="font-size:11px; color:#FC6514; background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:4px;">
+              <button
+                type="button"
+                style="font-size:11px; color:#FC6514; background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:4px;"
+                hx-post={`/reception/bookings/${b.id}/refresh-ics`}
+                hx-target="#slide-over-content"
+                hx-swap="innerHTML"
+              >
                 <Icon name={ICONS.refresh} size={12} />
                 Refresh ICS
               </button>
@@ -301,6 +307,18 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
         </button>
       )}
 
+      {b.status === 'scheduled' && (
+        <button
+          type="button"
+          style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; font-weight:500; padding:10px 20px; border-radius:10px; border:1px solid rgba(252,101,20,0.25); cursor:pointer; background:rgba(252,101,20,0.06); color:#EA580C;"
+          x-on:click="rescheduleModal = true"
+          onmouseover="this.style.background='rgba(252,101,20,0.12)'"
+          onmouseout="this.style.background='rgba(252,101,20,0.06)'"
+        >
+          <Icon name={ICONS.calendar} size={15} style="color:#EA580C;" />
+          Reschedule
+        </button>
+      )}
       {(b.status === 'scheduled' || b.status === 'checked_in') && (
         <button
           type="button"
@@ -313,6 +331,69 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
           Cancel Booking
         </button>
       )}
+    </div>
+
+    {/* Reschedule modal */}
+    <div
+      style="position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px);"
+      x-show="rescheduleModal"
+      x-cloak
+    >
+      <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.09); border-radius:16px; box-shadow:0 24px 64px rgba(0,0,0,0.20); max-width:400px; width:100%; padding:24px;">
+        <h3 style="font-size:17px; font-weight:700; color:#1C1917; margin-bottom:6px;">Reschedule Booking</h3>
+        <p style="font-size:13px; color:#78716C; margin-bottom:20px; line-height:1.5;">
+          Change the slot for <strong style="color:#1C1917;">{b.referenceNumber}</strong>. The visitor will need to be notified separately.
+        </p>
+        <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:20px;">
+          <div>
+            <label style="display:block; font-size:11px; font-weight:700; color:#78716C; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">New Date</label>
+            <input
+              type="date"
+              id={`reschedule-date-${b.id}`}
+              name="newDate"
+              x-model="newDate"
+              style="width:100%; padding:10px 14px; font-size:14px; color:#1C1917; background:#EBEBEA; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box;"
+              onfocus="this.style.borderColor='rgba(252,101,20,0.50)'"
+              onblur="this.style.borderColor='rgba(0,0,0,0.10)'"
+            />
+          </div>
+          <div>
+            <label style="display:block; font-size:11px; font-weight:700; color:#78716C; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">New Start Time</label>
+            <input
+              type="time"
+              id={`reschedule-time-${b.id}`}
+              name="newStart"
+              x-model="newStart"
+              style="width:100%; padding:10px 14px; font-size:14px; color:#1C1917; background:#EBEBEA; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box;"
+              onfocus="this.style.borderColor='rgba(252,101,20,0.50)'"
+              onblur="this.style.borderColor='rgba(0,0,0,0.10)'"
+            />
+          </div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button
+            type="button"
+            class="btn-ghost"
+            style="flex:1; padding:10px 16px; font-size:13px; cursor:pointer;"
+            x-on:click="rescheduleModal = false"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            id={`reschedule-btn-${b.id}`}
+            style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 16px; font-size:13px; font-weight:600; border:none; cursor:pointer; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); color:#fff; border-radius:10px; box-shadow:0 4px 14px rgba(252,101,20,0.35);"
+            hx-post={`/reception/bookings/${b.id}/reschedule`}
+            hx-target="#slide-over-content"
+            hx-swap="innerHTML"
+            hx-include={`#reschedule-date-${b.id},#reschedule-time-${b.id}`}
+            x-on:click="rescheduleModal = false"
+          >
+            <Icon name={ICONS.calendar} size={14} />
+            Confirm Reschedule
+          </button>
+        </div>
+      </div>
     </div>
 
     {/* Cancel confirmation modal */}

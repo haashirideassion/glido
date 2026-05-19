@@ -165,7 +165,7 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
           <p style="font-size:15px; font-weight:600; color:#1C1917; margin-bottom:4px; letter-spacing:-0.01em;">Working Hours</p>
           <p style="font-size:12px; color:#A8A29E; margin-bottom:20px;">Visitors can only book slots within these hours. Changes take effect immediately.</p>
           <div style="display:flex; flex-direction:column; gap:0;">
-            {[
+            {([
               { label: 'Monday',    name: 'mon' },
               { label: 'Tuesday',   name: 'tue' },
               { label: 'Wednesday', name: 'wed' },
@@ -173,16 +173,23 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
               { label: 'Friday',    name: 'fri' },
               { label: 'Saturday',  name: 'sat' },
               { label: 'Sunday',    name: 'sun' },
-            ].map((day, i) => (
+            ] as { label: string; name: string }[]).map((day, i) => {
+              const wh = (tenant?.working_hours as any)?.[day.name]
+              const isWeekday = ['mon','tue','wed','thu','fri'].includes(day.name)
+              const savedEnabled = wh ? wh.enabled : isWeekday
+              const savedOpen    = wh?.open  || (isWeekday ? '06:00' : '08:00')
+              const savedClose   = wh?.close || '18:00'
+              return (
               <div key={day.name}
                 style={`display:grid; grid-template-columns:110px 1fr 1fr auto; align-items:center; gap:16px; padding:12px 0; ${i < 6 ? 'border-bottom:1px solid rgba(0,0,0,0.06);' : ''}`}
-                x-data={`{ enabled_${day.name}: ${['mon','tue','wed','thu','fri'].includes(day.name) ? 'true' : 'false'} }`}
+                x-data={`{ enabled_${day.name}: ${savedEnabled ? 'true' : 'false'} }`}
               >
                 <div style="display:flex; align-items:center; gap:9px;">
                   <label style="position:relative; display:inline-flex; align-items:center; cursor:pointer;">
                     <input type="checkbox" name={`${day.name}_enabled`}
                       x-model={`enabled_${day.name}`}
                       style="position:absolute; opacity:0; width:0; height:0;"
+                      checked={savedEnabled}
                     />
                     <div
                       style="width:34px; height:20px; border-radius:9999px; transition:background 0.2s ease; cursor:pointer; position:relative;"
@@ -200,7 +207,7 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
                 <div x-show={`enabled_${day.name}`}>
                   <label style={labelStyle}>Open</label>
                   <input type="time" name={`${day.name}_open`}
-                    value={['mon','tue','wed','thu','fri'].includes(day.name) ? '06:00' : '08:00'}
+                    value={savedOpen}
                     style={`${inputStyle} padding:8px 12px;`}
                     onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
                     onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
@@ -209,7 +216,7 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
                 <div x-show={`enabled_${day.name}`}>
                   <label style={labelStyle}>Close</label>
                   <input type="time" name={`${day.name}_close`}
-                    value="18:00"
+                    value={savedClose}
                     style={`${inputStyle} padding:8px 12px;`}
                     onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
                     onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
@@ -219,7 +226,8 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
                   <span style="font-size:12px; color:#A8A29E; font-style:italic;">Closed</span>
                 </div>
               </div>
-            ))}
+              )
+            })}
           </div>
           <button type="submit" style={saveBtn}>Save Working Hours</button>
         </div>

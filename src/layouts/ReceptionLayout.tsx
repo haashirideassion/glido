@@ -5,18 +5,19 @@ import { GlidoLogo } from '../lib/GlidoLogo'
 interface Props {
   title?: string
   activeNav?: string
+  walkInCount?: number
   children: any
 }
 
 const navItems = [
-  { href: '/reception',           label: 'Dashboard',  icon: ICONS.home,     badge: null },
-  { href: '/reception/bookings',  label: 'Bookings',   icon: ICONS.bookings, badge: null },
-  { href: '/reception/walk-ins',  label: 'Walk-Ins',   icon: ICONS.walkIn,   badge: '3' },
-  { href: '/reception/reports',   label: 'Reports',    icon: ICONS.reports,  badge: null },
-  { href: '/reception/settings',  label: 'Settings',   icon: ICONS.settings, badge: null },
+  { href: '/reception',           label: 'Dashboard',  icon: ICONS.home,     badge: false },
+  { href: '/reception/bookings',  label: 'Bookings',   icon: ICONS.bookings, badge: false },
+  { href: '/reception/walk-ins',  label: 'Walk-Ins',   icon: ICONS.walkIn,   badge: true  },
+  { href: '/reception/reports',   label: 'Reports',    icon: ICONS.reports,  badge: false },
+  { href: '/reception/settings',  label: 'Settings',   icon: ICONS.settings, badge: false },
 ]
 
-export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/reception', children }) => {
+export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/reception', walkInCount, children }) => {
   return (
     <html lang="en">
       <head>
@@ -228,15 +229,21 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
           (function(){
             var s=document.createElement('style');
             s.textContent='#g-pl{position:fixed;inset:0;z-index:99999;background:#f9f9f9;display:flex;align-items:center;justify-content:center;pointer-events:none;will-change:transform}'
-              +'#g-pl-inner{display:flex;flex-direction:column;align-items:center;gap:22px}'
-              +'#g-pl-logo-slot{opacity:0;min-height:24px;transform:translateY(8px);transition:opacity 0.35s ease,transform 0.45s cubic-bezier(0.16,1,0.3,1)}'
-              +'#g-pl-bar{width:60px;height:2px;background:rgba(0,0,0,0.10);border-radius:999px;overflow:hidden}'
+              +'#g-pl-inner{display:flex;flex-direction:column;align-items:center;gap:20px}'
+              +'#g-pl-bar{width:64px;height:2px;background:rgba(0,0,0,0.10);border-radius:999px;overflow:hidden}'
               +'#g-pl-fill{height:100%;width:0%;background:#FC6514;border-radius:999px;transition:width .5s ease}';
             document.head.appendChild(s);
+            var logo='<div style="font-size:21px;font-weight:800;letter-spacing:-0.055em;font-family:system-ui,ui-sans-serif,sans-serif;"><span style="color:#1C232C;">glid</span><span style="color:#FC6514;">o</span></div>';
             var pl=document.createElement('div');pl.id='g-pl';
-            pl.innerHTML='<div id="g-pl-inner"><div id="g-pl-logo-slot"></div><div id="g-pl-bar"><div id="g-pl-fill"></div></div></div>';
+            pl.innerHTML='<div id="g-pl-inner">'+logo+'<div id="g-pl-bar"><div id="g-pl-fill"></div></div></div>';
             document.documentElement.appendChild(pl);
-            var raf=requestAnimationFrame;raf(function(){raf(function(){var f=document.getElementById('g-pl-fill');if(f)f.style.width='55%';});});
+            var raf=requestAnimationFrame;raf(function(){raf(function(){var f=document.getElementById('g-pl-fill');if(f)f.style.width='60%';});});
+            function _safetyDismiss(){
+              var p=document.getElementById('g-pl');if(!p)return;
+              var f=document.getElementById('g-pl-fill');if(f){f.style.transition='width 0.16s ease';f.style.width='100%';}
+              setTimeout(function(){p.style.transition='transform 0.52s cubic-bezier(0.16,1,0.3,1)';p.style.transform='translateY(-105%)';setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},560);},180);
+            }
+            window.__gPlSafetyTimer=setTimeout(_safetyDismiss,5000);
           })();
         `}} />
       </head>
@@ -282,10 +289,11 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
                   </span>
                   {item.badge && (
                     <span
-                      style="flex-shrink:0; margin-right:8px; min-width:18px; height:18px; border-radius:999px; background:#EF4444; color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 4px;"
+                      id="walk-in-badge"
+                      style={`flex-shrink:0; margin-right:8px; min-width:18px; height:18px; border-radius:999px; background:#EF4444; color:#fff; font-size:10px; font-weight:700; display:${walkInCount && walkInCount > 0 ? 'flex' : 'none'}; align-items:center; justify-content:center; padding:0 4px;`}
                       class="nav-item-label"
                     >
-                      {item.badge}
+                      {walkInCount ?? 0}
                     </span>
                   )}
                 </a>
@@ -370,6 +378,22 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         </div>
 
         <script src="/public/transitions.js"></script>
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function(){
+            function refreshBadge(){
+              fetch('/reception/api/walk-in-count')
+                .then(function(r){return r.json();})
+                .then(function(d){
+                  var badge=document.getElementById('walk-in-badge');
+                  if(!badge)return;
+                  badge.textContent=d.count;
+                  badge.style.display=d.count>0?'flex':'none';
+                }).catch(function(){});
+            }
+            refreshBadge();
+            setInterval(refreshBadge,30000);
+          })();
+        `}} />
       </body>
     </html>
   )

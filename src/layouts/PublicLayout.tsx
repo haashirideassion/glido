@@ -36,15 +36,21 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, childr
           (function(){
             var s=document.createElement('style');
             s.textContent='#g-pl{position:fixed;inset:0;z-index:99999;background:#fff;display:flex;align-items:center;justify-content:center;pointer-events:none;will-change:transform}'
-              +'#g-pl-inner{display:flex;flex-direction:column;align-items:center;gap:22px}'
-              +'#g-pl-logo-slot{opacity:0;min-height:24px;transform:translateY(8px);transition:opacity 0.35s ease,transform 0.45s cubic-bezier(0.16,1,0.3,1)}'
-              +'#g-pl-bar{width:60px;height:2px;background:rgba(0,0,0,0.07);border-radius:999px;overflow:hidden}'
+              +'#g-pl-inner{display:flex;flex-direction:column;align-items:center;gap:20px}'
+              +'#g-pl-bar{width:64px;height:2px;background:rgba(0,0,0,0.07);border-radius:999px;overflow:hidden}'
               +'#g-pl-fill{height:100%;width:0%;background:#FC6514;border-radius:999px;transition:width .5s ease}';
             document.head.appendChild(s);
+            var logo='<div style="font-size:21px;font-weight:800;letter-spacing:-0.055em;font-family:system-ui,ui-sans-serif,sans-serif;"><span style="color:#1C232C;">glid</span><span style="color:#FC6514;">o</span></div>';
             var pl=document.createElement('div');pl.id='g-pl';
-            pl.innerHTML='<div id="g-pl-inner"><div id="g-pl-logo-slot"></div><div id="g-pl-bar"><div id="g-pl-fill"></div></div></div>';
+            pl.innerHTML='<div id="g-pl-inner">'+logo+'<div id="g-pl-bar"><div id="g-pl-fill"></div></div></div>';
             document.documentElement.appendChild(pl);
-            var raf=requestAnimationFrame;raf(function(){raf(function(){var f=document.getElementById('g-pl-fill');if(f)f.style.width='55%';});});
+            var raf=requestAnimationFrame;raf(function(){raf(function(){var f=document.getElementById('g-pl-fill');if(f)f.style.width='60%';});});
+            function _safetyDismiss(){
+              var p=document.getElementById('g-pl');if(!p)return;
+              var f=document.getElementById('g-pl-fill');if(f){f.style.transition='width 0.16s ease';f.style.width='100%';}
+              setTimeout(function(){p.style.transition='transform 0.52s cubic-bezier(0.16,1,0.3,1)';p.style.transform='translateY(-105%)';setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},560);},180);
+            }
+            window.__gPlSafetyTimer=setTimeout(_safetyDismiss,5000);
           })();
         `}} />
       </head>

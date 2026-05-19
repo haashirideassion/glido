@@ -161,6 +161,33 @@ export async function getBookingsByUserId(userId: string): Promise<Booking[]> {
   return data.map(rowToBooking)
 }
 
+export async function rescheduleBooking(
+  id: string,
+  newDate: string,
+  newStart: string,
+  newEnd: string,
+): Promise<Booking | undefined> {
+  const { data, error } = await supabase
+    .from('bookings')
+    .update({ slot_date: newDate, slot_start_time: newStart, slot_end_time: newEnd })
+    .eq('id', id)
+    .select()
+    .maybeSingle()
+  if (error) throw error
+  return data ? rowToBooking(data) : undefined
+}
+
+export async function refreshIcsStatus(id: string): Promise<Booking | undefined> {
+  const { data, error } = await supabase
+    .from('bookings')
+    .update({ ics_last_checked_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .maybeSingle()
+  if (error) throw error
+  return data ? rowToBooking(data) : undefined
+}
+
 export async function cancelBooking(id: string): Promise<Booking | undefined> {
   const { data, error } = await supabase
     .from('bookings')

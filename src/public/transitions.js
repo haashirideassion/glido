@@ -56,6 +56,8 @@
 
   function _plDismiss () {
     if (!_pl) return
+    /* clear the safety timer so it doesn't double-fire */
+    if (window.__gPlSafetyTimer) clearTimeout(window.__gPlSafetyTimer)
     /* complete the bar */
     _plFill(100, 160)
     setTimeout(function () {

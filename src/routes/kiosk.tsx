@@ -10,7 +10,9 @@ import { WalkInScreen } from '../components/kiosk/WalkInScreen'
 import { Icon, ICONS } from '../lib/Icon'
 import { checkInBooking, getBookingByRef } from '../lib/db/bookings'
 import { createCheckinRecord } from '../lib/db/checkin-records'
+import { createWalkIn } from '../lib/db/walk-ins'
 import { DEFAULT_TENANT_ID } from '../lib/supabase'
+import type { WalkInPurpose } from '../data/types'
 
 export const kioskRoutes = new Hono()
 
@@ -89,6 +91,23 @@ kioskRoutes.get('/lookup/:ref', async (c) => {
     })
   } catch {
     return c.json({ found: false, error: 'lookup failed' }, 500)
+  }
+})
+
+// Register a kiosk walk-in visitor
+kioskRoutes.post('/walk-in', async (c) => {
+  try {
+    const body = await c.req.json<{ purpose?: string; visitorName?: string }>()
+    const purpose = (body.purpose as WalkInPurpose) || 'visit_person'
+    await createWalkIn({
+      tenantId:    DEFAULT_TENANT_ID,
+      purpose,
+      visitorName: body.visitorName || 'Kiosk Walk-In',
+      licenceCaptured: false,
+    })
+    return c.json({ success: true })
+  } catch (err) {
+    return c.json({ success: false }, 500)
   }
 })
 

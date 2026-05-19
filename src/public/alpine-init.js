@@ -452,8 +452,15 @@ function kioskStore() {
     },
 
     submitWalkIn() {
-      this.goTo('arrived')
       var self = this
+      // POST walk-in record to server (non-blocking)
+      fetch('/kiosk/walk-in', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ purpose: self.walkInPurpose || 'visit_person' }),
+      }).catch(function(err) { console.warn('[kiosk] walk-in POST failed:', err) })
+
+      self.goTo('arrived')
       setTimeout(function () {
         self.goTo('welcome')
         self.walkInPurpose = null

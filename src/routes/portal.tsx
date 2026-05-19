@@ -949,6 +949,178 @@ portalRoutes.get('/bookings', async (c) => {
   )
 })
 
+// ─── Visitor booking detail page ─────────────────────────────────────────────
+portalRoutes.get('/bookings/:ref', async (c) => {
+  const ref     = c.req.param('ref').toUpperCase()
+  const booking = await getBookingByRef(ref).catch(() => null)
+  if (!booking) {
+    return c.html(
+      <PublicLayout title="Booking Not Found">
+        <div style="padding:64px 24px; text-align:center;">
+          <p style="font-size:48px; margin-bottom:12px;">🔍</p>
+          <h1 style="font-size:22px; font-weight:700; color:#1C1917; margin-bottom:8px;">Booking Not Found</h1>
+          <p style="font-size:14px; color:#78716C; margin-bottom:24px;">We couldn't find a booking with reference <strong>{ref}</strong>.</p>
+          <a href="/bookings" class="btn-primary" style="display:inline-flex; align-items:center; gap:8px; padding:11px 24px; text-decoration:none;">← Search Bookings</a>
+        </div>
+      </PublicLayout>
+    )
+  }
+
+  const qrDataUrl = await generateQRDataURL(booking.referenceNumber).catch(() => '')
+
+  const STATUS_COLOR: Record<string, string> = {
+    scheduled:  '#2563EB',
+    checked_in: '#16A34A',
+    completed:  '#78716C',
+    cancelled:  '#DC2626',
+    held:       '#D97706',
+  }
+  const statusColor = STATUS_COLOR[booking.status] ?? '#78716C'
+
+  const SERVICE_NAMES: Record<string, string> = { pickup: 'Pick Up', dropoff: 'Drop Off' }
+  const LOAD_NAMES: Record<string, string>    = { lcl: 'LCL', fcl: 'FCL' }
+
+  return c.html(
+    <PublicLayout title={`Booking ${booking.referenceNumber}`}>
+      <div style="padding:40px 24px 80px;">
+        <div style="max-width:560px; margin:0 auto;">
+
+          {/* Back */}
+          <a href="/bookings" style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:#78716C; text-decoration:none; margin-bottom:24px; transition:color 0.15s ease;"
+            onmouseover="this.style.color='#1C1917'" onmouseout="this.style.color='#78716C'">
+            ← Back to Bookings
+          </a>
+
+          {/* Header card */}
+          <div style="background:#1C1917; border-radius:20px; padding:28px; margin-bottom:16px; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:9999px; background:rgba(252,101,20,0.10); pointer-events:none;"></div>
+            <div style="position:absolute; bottom:-60px; right:20px; width:120px; height:120px; border-radius:9999px; background:rgba(252,101,20,0.06); pointer-events:none;"></div>
+
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+              <div>
+                <p style="font-size:11px; font-weight:600; color:rgba(255,255,255,0.40); letter-spacing:0.10em; text-transform:uppercase; margin-bottom:8px;">Booking Reference</p>
+                <p style="font-family:ui-monospace,monospace; font-size:22px; font-weight:800; color:#FC6514; letter-spacing:-0.01em; margin-bottom:12px;">{booking.referenceNumber}</p>
+                <span style={`display:inline-flex; align-items:center; padding:4px 12px; border-radius:9999px; font-size:12px; font-weight:600; background:${statusColor}22; color:${statusColor}; border:1px solid ${statusColor}44;`}>
+                  {booking.status.charAt(0).toUpperCase() + booking.status.slice(1).replace('_', ' ')}
+                </span>
+              </div>
+              {qrDataUrl && (
+                <div style="background:#fff; border-radius:12px; padding:10px; flex-shrink:0;">
+                  <img src={qrDataUrl} alt="QR Code" width="96" height="96" style="display:block;" />
+                  <p style="font-size:9px; color:#78716C; text-align:center; margin-top:4px; font-weight:500;">Show at kiosk</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Details card */}
+          <div style="background:#fff; border:1px solid rgba(0,0,0,0.08); border-radius:16px; padding:24px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);">
+            <p style="font-size:10px; font-weight:700; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Slot Details</p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              {[
+                { label: 'Date',     value: booking.slotDate },
+                { label: 'Time',     value: `${booking.slotStartTime} – ${booking.slotEndTime}` },
+                { label: 'Service',  value: SERVICE_NAMES[booking.serviceType] ?? booking.serviceType },
+                { label: 'Load',     value: LOAD_NAMES[booking.loadType] ?? booking.loadType },
+                ...(booking.houseBillNumber  ? [{ label: 'HBL',       value: booking.houseBillNumber  }] : []),
+                ...(booking.containerNumber  ? [{ label: 'Container',  value: booking.containerNumber  }] : []),
+                ...(booking.driverName       ? [{ label: 'Driver',     value: booking.driverName       }] : []),
+                ...(booking.driverPhone      ? [{ label: 'Phone',      value: booking.driverPhone      }] : []),
+              ].map(row => (
+                <div key={row.label}>
+                  <p style="font-size:10px; font-weight:600; color:#A8A29E; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:4px;">{row.label}</p>
+                  <p style="font-size:14px; font-weight:600; color:#1C1917; font-family:${row.label === 'HBL' || row.label === 'Container' ? 'ui-monospace,monospace' : 'inherit'};">{row.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Charges card */}
+          {booking.totalAmount && (
+            <div style="background:#fff; border:1px solid rgba(0,0,0,0.08); border-radius:16px; padding:24px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);">
+              <p style="font-size:10px; font-weight:700; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Charges</p>
+              <div style="display:flex; flex-direction:column; gap:8px; font-size:13px;">
+                {booking.storageCharge !== undefined && booking.storageCharge > 0 && (
+                  <div style="display:flex; justify-content:space-between; color:#78716C;">
+                    <span>Storage ({booking.storageDays} days)</span><span>${booking.storageCharge.toFixed(2)}</span>
+                  </div>
+                )}
+                {booking.shrinkWrapCharge !== undefined && booking.shrinkWrapCharge > 0 && (
+                  <div style="display:flex; justify-content:space-between; color:#78716C;">
+                    <span>Shrink wrap</span><span>${booking.shrinkWrapCharge.toFixed(2)}</span>
+                  </div>
+                )}
+                {booking.slotFee !== undefined && (
+                  <div style="display:flex; justify-content:space-between; color:#78716C;">
+                    <span>Slot fee</span><span>${booking.slotFee.toFixed(2)}</span>
+                  </div>
+                )}
+                <div style="display:flex; justify-content:space-between; font-weight:700; color:#1C1917; padding-top:8px; border-top:1px solid rgba(0,0,0,0.08);">
+                  <span>Total</span><span style="color:#FC6514;">${booking.totalAmount.toFixed(2)}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; color:#A8A29E;">
+                  <span>{(booking.paymentMethod ?? '—').toUpperCase()}</span>
+                  <span style={booking.paymentStatus === 'paid' ? 'color:#22C55E;font-weight:500;' : 'color:#FBBF24;font-weight:500;'}>
+                    {booking.paymentStatus === 'paid' ? 'Paid' : booking.paymentStatus === 'pending_eft' ? 'EFT Pending' : booking.paymentStatus}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Completion notes if done */}
+          {booking.completionNotes && (
+            <div style="background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.18); border-radius:12px; padding:16px; margin-bottom:16px;">
+              <p style="font-size:11px; font-weight:700; color:#16A34A; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:6px;">Completion Notes</p>
+              <p style="font-size:13px; color:#1C1917; line-height:1.6;">{booking.completionNotes}</p>
+            </div>
+          )}
+
+          {/* Cancel action */}
+          {booking.status === 'scheduled' && (
+            <div x-data="{ cancelModal: false }" style="position:relative;">
+              <button
+                type="button"
+                style="width:100%; padding:12px; font-size:13px; font-weight:500; color:#DC2626; background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.22); border-radius:12px; cursor:pointer; transition:all 0.15s ease;"
+                x-on:click="cancelModal = true"
+                onmouseover="this.style.background='rgba(239,68,68,0.10)'"
+                onmouseout="this.style.background='rgba(239,68,68,0.06)'"
+              >
+                Cancel this Booking
+              </button>
+              <div
+                style="position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.55); backdrop-filter:blur(4px);"
+                x-show="cancelModal"
+                x-cloak
+              >
+                <div style="background:#fff; border-radius:16px; box-shadow:0 24px 64px rgba(0,0,0,0.18); max-width:360px; width:100%; padding:24px;">
+                  <h3 style="font-size:17px; font-weight:700; color:#1C1917; margin-bottom:8px;">Cancel booking?</h3>
+                  <p style="font-size:13px; color:#78716C; line-height:1.55; margin-bottom:20px;">
+                    You are about to cancel <strong style="font-family:ui-monospace,monospace; color:#FC6514;">{booking.referenceNumber}</strong>. This cannot be undone.
+                  </p>
+                  <div style="display:flex; gap:10px;">
+                    <button type="button" x-on:click="cancelModal=false"
+                      style="flex:1; padding:10px 16px; font-size:13px; font-weight:500; background:#EBEBEA; border:none; border-radius:10px; cursor:pointer; color:#1C1917;">
+                      Keep Booking
+                    </button>
+                    <form method="post" action={`/bookings/${booking.referenceNumber}/cancel`} style="flex:1;">
+                      <button type="submit"
+                        style="width:100%; padding:10px 16px; font-size:13px; font-weight:600; background:rgba(239,68,68,0.10); border:1px solid rgba(239,68,68,0.28); border-radius:10px; cursor:pointer; color:#DC2626;">
+                        Confirm Cancel
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      </div>
+    </PublicLayout>
+  )
+})
+
 // ─── Visitor booking cancel ───────────────────────────────────────────────────
 portalRoutes.post('/bookings/:ref/cancel', async (c) => {
   const user = await getSessionUser(c)
