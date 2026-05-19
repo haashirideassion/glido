@@ -11,6 +11,7 @@ import { getBookings, findBooking, createBooking, getBookingsByUserId, cancelBoo
 import { getSlotsByDate } from '../lib/db/slots'
 import { getTenant } from '../lib/db/tenants'
 import { lookupShipment, lookupShipmentByContainer } from '../lib/db/cfs-shipments'
+import { checkIcsStatus } from '../lib/ics'
 import { calculateCharges } from '../lib/charges'
 import { generateQRDataURL } from '../lib/qr'
 import { DEFAULT_TENANT_ID } from '../lib/supabase'
@@ -1170,6 +1171,20 @@ portalRoutes.post('/api/shipments/lookup', async (c) => {
       tenant,
     })
 
+    // ICS status — live check if CargoWise configured, else use cached value
+    let icsStatus = 'unavailable'
+    if (shipment) {
+      const ics = await checkIcsStatus({
+        shipmentId:      shipment.id,
+        hbl:             shipment.hbl,
+        containerNumber: shipment.containerNumber,
+        cachedStatus:    shipment.icsStatus,
+        apiUrl:          tenant.cargowise_api_url,
+        apiKey:          tenant.cargowise_api_key,
+      })
+      icsStatus = ics.status
+    }
+
     return c.json({
       found:              !!shipment,
       hbl:                shipment?.hbl,
@@ -1181,7 +1196,7 @@ portalRoutes.post('/api/shipments/lookup', async (c) => {
       palletType:         shipment?.palletType,
       storageStartDate:   shipment?.storageStartDate,
       readyForCollection: shipment?.readyForCollection,
-      icsStatus:          'unavailable', // real ICS API pending OQ-01
+      icsStatus,
       ...charges,
     })
   } catch (err) {

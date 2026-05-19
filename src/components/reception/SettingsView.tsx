@@ -1,4 +1,4 @@
-const TABS = ['General', 'Working Hours', 'Slot Configuration', 'Pricing & Charges', 'Payment', 'Users', 'Staff Permissions']
+const TABS = ['General', 'Working Hours', 'Slot Configuration', 'Pricing & Charges', 'Payment', 'Integrations', 'Users', 'Staff Permissions']
 
 const labelStyle = 'display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;'
 const inputStyle = 'width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#EBEBEA; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; transition:border-color 0.15s ease, box-shadow 0.15s ease; box-sizing:border-box;'
@@ -387,6 +387,73 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
           </div>
         </form>
       </div>
+    </div>
+
+    {/* ── Integrations tab ── */}
+    <div x-show={`tab === 'Integrations'`} style="max-width:640px;">
+      <form method="post" action="/reception/settings">
+        <input type="hidden" name="tab" value="Integrations" />
+
+        {/* CargoWise */}
+        <div style={cardStyle}>
+          <p style="font-size:13px; font-weight:700; color:#1C1917; margin-bottom:4px;">CargoWise Integration</p>
+          <p style="font-size:12.5px; color:#78716C; line-height:1.5; margin-bottom:20px;">
+            Connect your CargoWise (WiseCloud) account to enable live HBL lookups and automatic ICS clearance status checks when creating bookings. Leave blank to use cached values from CFS records only.
+          </p>
+
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div>
+              <label style={labelStyle}>CargoWise API URL</label>
+              <input
+                type="url"
+                name="cargowise_api_url"
+                placeholder="https://your-tenant.cargowise.com"
+                value={(tenant as any)?.cargowise_api_url ?? ''}
+                style={inputStyle}
+                {...{[inputFocus.split('=')[0].replace('on', 'on')]: true}}
+                onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
+              />
+              <p style="font-size:11.5px; color:#A8A29E; margin-top:5px;">The base URL of your WiseCloud REST endpoint, e.g. <code>https://api.cargowise.com</code></p>
+            </div>
+            <div>
+              <label style={labelStyle}>API Key / Bearer Token</label>
+              <input
+                type="password"
+                name="cargowise_api_key"
+                placeholder={(tenant as any)?.cargowise_api_key ? '••••••••' : 'Paste your API key'}
+                style={inputStyle}
+                onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
+              />
+              <p style="font-size:11.5px; color:#A8A29E; margin-top:5px;">Leave blank to keep the existing key. Stored encrypted at rest.</p>
+            </div>
+          </div>
+
+          {/* Status indicator */}
+          {(tenant as any)?.cargowise_api_key ? (
+            <div style="display:flex; align-items:center; gap:8px; margin-top:16px; padding:10px 14px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.22); border-radius:10px;">
+              <span style="width:8px; height:8px; border-radius:50%; background:#22C55E; flex-shrink:0;"></span>
+              <span style="font-size:12.5px; color:#16A34A; font-weight:500;">API key configured — live ICS checks enabled</span>
+            </div>
+          ) : (
+            <div style="display:flex; align-items:center; gap:8px; margin-top:16px; padding:10px 14px; background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.08); border-radius:10px;">
+              <span style="width:8px; height:8px; border-radius:50%; background:#A8A29E; flex-shrink:0;"></span>
+              <span style="font-size:12.5px; color:#78716C;">No API key — using cached CFS records only</span>
+            </div>
+          )}
+        </div>
+
+        {/* ICS info box */}
+        <div style="background:rgba(252,101,20,0.04); border:1px solid rgba(252,101,20,0.14); border-radius:14px; padding:18px 20px; margin-bottom:20px;">
+          <p style="font-size:12.5px; font-weight:600; color:#C2410C; margin-bottom:6px;">About ICS Status</p>
+          <p style="font-size:12px; color:#78716C; line-height:1.6; margin:0;">
+            ICS (Integrated Cargo System) status is provided by Australian Border Force and indicates whether a shipment has been cleared for collection. When CargoWise is connected, status is fetched live on each HBL lookup and cached to the shipment record. Without a connection, status shows as <em>Not Checked</em> unless manually updated in the CFS records.
+          </p>
+        </div>
+
+        <button type="submit" style={saveBtn}>Save Integration Settings</button>
+      </form>
     </div>
 
   </div>

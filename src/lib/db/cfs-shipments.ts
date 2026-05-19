@@ -1,19 +1,22 @@
-import { supabase } from '../supabase'
+import { supabaseAdmin as supabase, DEFAULT_TENANT_ID } from '../supabase'
 import type { Database } from './types'
 
 export type ShipmentRow = Database['public']['Tables']['cfs_shipments']['Row']
 
 export interface ShipmentLookupResult {
-  hbl: string
-  containerNumber?: string
-  weightKg?: number
-  volumeCbm?: number
-  packageCount?: number
-  palletCount?: number
-  palletType?: string
-  storageStartDate?: string
+  id:                 string
+  hbl:                string
+  containerNumber?:   string
+  weightKg?:          number
+  volumeCbm?:         number
+  packageCount?:      number
+  palletCount?:       number
+  palletType?:        string
+  storageStartDate?:  string
   readyForCollection: boolean
-  description?: string
+  description?:       string
+  icsStatus?:         string
+  icsLastCheckedAt?:  string
 }
 
 export async function lookupShipment(
@@ -46,8 +49,19 @@ export async function lookupShipmentByContainer(
   return rowToResult(data)
 }
 
+export async function updateShipmentIcsStatus(
+  id: string,
+  icsStatus: string,
+): Promise<void> {
+  await supabase
+    .from('cfs_shipments')
+    .update({ ics_status: icsStatus, ics_last_checked_at: new Date().toISOString() })
+    .eq('id', id)
+}
+
 function rowToResult(row: ShipmentRow): ShipmentLookupResult {
   return {
+    id:                 row.id,
     hbl:                row.house_bill_number,
     containerNumber:    row.container_number ?? undefined,
     weightKg:           row.weight_kg ?? undefined,
@@ -58,5 +72,7 @@ function rowToResult(row: ShipmentRow): ShipmentLookupResult {
     storageStartDate:   row.storage_start_date ?? undefined,
     readyForCollection: row.ready_for_collection,
     description:        row.description ?? undefined,
+    icsStatus:          row.ics_status ?? undefined,
+    icsLastCheckedAt:   row.ics_last_checked_at ?? undefined,
   }
 }

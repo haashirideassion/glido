@@ -316,6 +316,69 @@ receptionRoutes.get('/api/walk-in-count', async (c) => {
   return c.json({ count: walkIns.length })
 })
 
+// ─── HBL / shipment lookup API (used by ManualBookingForm) ───────────────────
+receptionRoutes.post('/api/hbl-lookup', async (c) => {
+  try {
+    const body = await c.req.json<{ hbl?: string; container?: string; serviceType?: string; loadType?: string; slotDate?: string }>()
+    const tenant = await getTenant(DEFAULT_TENANT_ID)
+    if (!tenant) return c.json({ found: false })
+
+    const { lookupShipment, lookupShipmentByContainer } = await import('../lib/db/cfs-shipments')
+    const { checkIcsStatus } = await import('../lib/ics')
+    const { calculateCharges } = await import('../lib/charges')
+
+    let shipment = body.hbl?.trim()
+      ? await lookupShipment(DEFAULT_TENANT_ID, body.hbl.trim())
+      : undefined
+    if (!shipment && body.container?.trim()) {
+      shipment = await lookupShipmentByContainer(DEFAULT_TENANT_ID, body.container.trim())
+    }
+    if (!shipment) return c.json({ found: false })
+
+    const slotDate = body.slotDate || new Date().toISOString().split('T')[0]
+    const charges = calculateCharges({
+      serviceType:      (body.serviceType as 'pickup' | 'dropoff') || 'pickup',
+      loadType:         (body.loadType as 'fcl' | 'lcl') || 'lcl',
+      weightKg:         shipment.weightKg,
+      volumeCbm:        shipment.volumeCbm,
+      palletCount:      shipment.palletCount,
+      palletType:       shipment.palletType,
+      storageStartDate: shipment.storageStartDate,
+      slotDate,
+      tenant,
+    })
+
+    const ics = await checkIcsStatus({
+      shipmentId:      shipment.id,
+      hbl:             shipment.hbl,
+      containerNumber: shipment.containerNumber,
+      cachedStatus:    shipment.icsStatus,
+      apiUrl:          tenant.cargowise_api_url,
+      apiKey:          tenant.cargowise_api_key,
+    })
+
+    return c.json({
+      found:              true,
+      hbl:                shipment.hbl,
+      containerNumber:    shipment.containerNumber,
+      weightKg:           shipment.weightKg,
+      volumeCbm:          shipment.volumeCbm,
+      packageCount:       shipment.packageCount,
+      palletCount:        shipment.palletCount,
+      palletType:         shipment.palletType,
+      storageStartDate:   shipment.storageStartDate,
+      readyForCollection: shipment.readyForCollection,
+      icsStatus:          ics.status,
+      icsSource:          ics.source,
+      description:        shipment.description,
+      ...charges,
+    })
+  } catch (err) {
+    console.error('[reception] hbl-lookup error:', err)
+    return c.json({ found: false })
+  }
+})
+
 // ─── Walk-in registration form ────────────────────────────────────────────────
 receptionRoutes.get('/walk-in', (c) => {
   return c.html(
@@ -457,8 +520,16 @@ receptionRoutes.post('/settings', async (c) => {
     }
   }
 
-  // Only update working_hours when the Working Hours tab is submitted
-  const isWorkingHoursTab = (b.tab || '') === 'Working Hours'
+  const tab = (b.tab || 'General')
+  const isWorkingHoursTab  = tab === 'Working Hours'
+  const isIntegrationsTab  = tab === 'Integrations'
+
+  // For the Integrations tab only save integration fields; other tabs ignore them
+  const integrationUpdates = isIntegrationsTab ? {
+    cargowise_api_url: b.cargowise_api_url?.trim() || null,
+    // Only overwrite the key if the field was actually submitted (not the masked placeholder)
+    ...(b.cargowise_api_key && b.cargowise_api_key !== '••••••••' ? { cargowise_api_key: b.cargowise_api_key.trim() || null } : {}),
+  } : {}
 
   await updateTenant(DEFAULT_TENANT_ID, {
     name:                         b.name,
@@ -486,7 +557,8 @@ receptionRoutes.post('/settings', async (c) => {
     eft_account_name:             b.eft_account_name || null,
     require_payment_to_confirm:   b.require_payment_to_confirm === 'on',
     ...(isWorkingHoursTab ? { working_hours: workingHours } : {}),
+    ...integrationUpdates,
   })
 
-  return c.redirect(`/reception/settings?tab=${encodeURIComponent(b.tab || 'General')}&saved=1`)
+  return c.redirect(`/reception/settings?tab=${encodeURIComponent(tab)}&saved=1`)
 })

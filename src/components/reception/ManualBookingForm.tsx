@@ -2,7 +2,6 @@ import { Icon, ICONS } from '../../lib/Icon'
 
 const inputStyle = 'width:100%; padding:10px 14px; font-size:13.5px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; transition:border-color 0.15s ease, box-shadow 0.15s ease; box-sizing:border-box; font-family:inherit;'
 const labelStyle = 'display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;'
-const focus = 'onfocus="this.style.borderColor=\'rgba(252,101,20,0.50)\';this.style.boxShadow=\'0 0 0 3px rgba(252,101,20,0.12)\';" onblur="this.style.borderColor=\'rgba(0,0,0,0.10)\';this.style.boxShadow=\'none\';"'
 
 interface Props {
   savedFlash?: boolean
@@ -100,15 +99,90 @@ export const ManualBookingForm = ({ savedFlash, error }: Props) => {
 
         {/* ── Shipment ── */}
         <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:16px; padding:22px; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);">
-          <p style="font-size:12px; font-weight:700; color:#A8A29E; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:16px;">Shipment (optional)</p>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <p style="font-size:12px; font-weight:700; color:#A8A29E; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px;">Shipment</p>
+          <p style="font-size:11.5px; color:#A8A29E; margin-bottom:16px;">Enter an HBL or container number and click <strong>Look Up</strong> to auto-fill cargo details from CFS records.</p>
+
+          {/* HBL with live lookup */}
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
             <div>
               <label style={labelStyle}>House Bill Number</label>
-              <input type="text" name="houseBillNumber" placeholder="ABCD12345678" style={`${inputStyle} font-family:ui-monospace,monospace;`} onfocus="this.style.borderColor='rgba(252,101,20,0.50)'" onblur="this.style.borderColor='rgba(0,0,0,0.10)'" />
+              <div style="display:flex; gap:8px; align-items:stretch;">
+                <input
+                  type="text"
+                  id="mbf-hbl"
+                  name="houseBillNumber"
+                  placeholder="ABCD12345678"
+                  style={`${inputStyle} font-family:ui-monospace,monospace; text-transform:uppercase; flex:1; min-width:0;`}
+                  onfocus="this.style.borderColor='rgba(252,101,20,0.50)'"
+                  onblur="this.style.borderColor='rgba(0,0,0,0.10)'"
+                />
+                <button
+                  type="button"
+                  id="mbf-lookup-btn"
+                  onclick="mbfLookup()"
+                  style="flex-shrink:0; padding:0 14px; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); color:#fff; border:none; border-radius:10px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; box-shadow:0 2px 8px rgba(252,101,20,0.35);"
+                  title="Look up shipment from CFS records"
+                >
+                  Look Up
+                </button>
+              </div>
             </div>
             <div>
               <label style={labelStyle}>Container Number</label>
-              <input type="text" name="containerNumber" placeholder="ABCU1234567" style={`${inputStyle} font-family:ui-monospace,monospace;`} onfocus="this.style.borderColor='rgba(252,101,20,0.50)'" onblur="this.style.borderColor='rgba(0,0,0,0.10)'" />
+              <input
+                type="text"
+                id="mbf-container"
+                name="containerNumber"
+                placeholder="ABCU1234567"
+                style={`${inputStyle} font-family:ui-monospace,monospace; text-transform:uppercase;`}
+                onfocus="this.style.borderColor='rgba(252,101,20,0.50)'"
+                onblur="this.style.borderColor='rgba(0,0,0,0.10)'"
+              />
+            </div>
+          </div>
+
+          {/* ICS status badge — shown after lookup */}
+          <div id="mbf-ics-badge" style="display:none; margin-bottom:14px;">
+            <span id="mbf-ics-text" style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600; padding:4px 12px; border-radius:9999px; border:1px solid transparent;"></span>
+          </div>
+
+          {/* Auto-filled cargo fields */}
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+            <div>
+              <label style={labelStyle}>Weight (kg)</label>
+              <input type="number" id="mbf-weight" name="weightKg" placeholder="0" min="0" step="0.1"
+                style={inputStyle} onfocus="this.style.borderColor='rgba(252,101,20,0.50)'" onblur="this.style.borderColor='rgba(0,0,0,0.10)'" />
+            </div>
+            <div>
+              <label style={labelStyle}>Volume (CBM)</label>
+              <input type="number" id="mbf-volume" name="volumeCbm" placeholder="0.0" min="0" step="0.1"
+                style={inputStyle} onfocus="this.style.borderColor='rgba(252,101,20,0.50)'" onblur="this.style.borderColor='rgba(0,0,0,0.10)'" />
+            </div>
+            <div>
+              <label style={labelStyle}>Packages</label>
+              <input type="number" id="mbf-packages" name="packageCount" placeholder="0" min="0"
+                style={inputStyle} onfocus="this.style.borderColor='rgba(252,101,20,0.50)'" onblur="this.style.borderColor='rgba(0,0,0,0.10)'" />
+            </div>
+            <div>
+              <label style={labelStyle}>Pallets</label>
+              <input type="number" id="mbf-pallets" name="palletCount" placeholder="0" min="0"
+                style={inputStyle} onfocus="this.style.borderColor='rgba(252,101,20,0.50)'" onblur="this.style.borderColor='rgba(0,0,0,0.10)'" />
+            </div>
+            <div>
+              <label style={labelStyle}>Pallet Type</label>
+              <select id="mbf-pallet-type" name="palletType" style={inputStyle}
+                onfocus="this.style.borderColor='rgba(252,101,20,0.50)'" onblur="this.style.borderColor='rgba(0,0,0,0.10)'">
+                <option value="">None / unknown</option>
+                <option value="chep">CHEP</option>
+                <option value="plain">Plain</option>
+                <option value="other">Other</option>
+                <option value="none">None</option>
+              </select>
+            </div>
+            <div>
+              <label style={labelStyle}>Storage Start</label>
+              <input type="date" id="mbf-storage-start" name="storageStartDate"
+                style={inputStyle} onfocus="this.style.borderColor='rgba(252,101,20,0.50)'" onblur="this.style.borderColor='rgba(0,0,0,0.10)'" />
             </div>
           </div>
         </div>
@@ -154,6 +228,75 @@ export const ManualBookingForm = ({ savedFlash, error }: Props) => {
           </a>
         </div>
       </form>
+
+      {/* ── HBL lookup script ── */}
+      <script dangerouslySetInnerHTML={{ __html: `
+        var _mbfFetching = false;
+        function mbfLookup() {
+          var hbl = (document.getElementById('mbf-hbl').value || '').trim().toUpperCase();
+          var cont = (document.getElementById('mbf-container').value || '').trim().toUpperCase();
+          if (!hbl && !cont) { alert('Enter an HBL or container number first.'); return; }
+          if (_mbfFetching) return;
+          _mbfFetching = true;
+          var btn = document.getElementById('mbf-lookup-btn');
+          btn.textContent = 'Looking…';
+          btn.disabled = true;
+          var slotDate    = (document.querySelector('input[name="slotDate"]')     || {}).value || '';
+          var serviceType = (document.querySelector('select[name="serviceType"]') || {}).value || 'pickup';
+          var loadType    = (document.querySelector('select[name="loadType"]')    || {}).value || 'lcl';
+          fetch('/reception/api/hbl-lookup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ hbl: hbl, container: cont, slotDate: slotDate, serviceType: serviceType, loadType: loadType }),
+          })
+          .then(function(r) { return r.json(); })
+          .then(function(d) {
+            _mbfFetching = false; btn.textContent = 'Look Up'; btn.disabled = false;
+            if (!d.found) {
+              mbfShowIcs('unavailable');
+              alert('No matching shipment found in CFS records for "' + (hbl || cont) + '".');
+              return;
+            }
+            if (d.containerNumber) document.getElementById('mbf-container').value      = d.containerNumber;
+            if (d.weightKg        != null) document.getElementById('mbf-weight').value   = d.weightKg;
+            if (d.volumeCbm       != null) document.getElementById('mbf-volume').value   = d.volumeCbm;
+            if (d.packageCount    != null) document.getElementById('mbf-packages').value = d.packageCount;
+            if (d.palletCount     != null) document.getElementById('mbf-pallets').value  = d.palletCount;
+            if (d.palletType) {
+              var pt = document.getElementById('mbf-pallet-type');
+              for (var i = 0; i < pt.options.length; i++) { if (pt.options[i].value === d.palletType) { pt.selectedIndex = i; break; } }
+            }
+            if (d.storageStartDate) document.getElementById('mbf-storage-start').value = d.storageStartDate;
+            mbfShowIcs(d.icsStatus || 'unavailable');
+          })
+          .catch(function(err) {
+            _mbfFetching = false; btn.textContent = 'Look Up'; btn.disabled = false;
+            console.error('[mbf] lookup failed', err);
+            alert('Lookup failed. Check your connection and try again.');
+          });
+        }
+        function mbfShowIcs(status) {
+          var badge = document.getElementById('mbf-ics-badge');
+          var text  = document.getElementById('mbf-ics-text');
+          var cfg = {
+            cleared:     { label: 'ICS Cleared',      bg: 'rgba(34,197,94,0.12)',  color: '#16A34A', border: 'rgba(34,197,94,0.25)' },
+            held:        { label: 'ICS Hold',          bg: 'rgba(239,68,68,0.12)',  color: '#DC2626', border: 'rgba(239,68,68,0.25)' },
+            examination: { label: 'Under Examination', bg: 'rgba(251,191,36,0.12)', color: '#B45309', border: 'rgba(251,191,36,0.35)' },
+            pending:     { label: 'ICS Pending',       bg: 'rgba(148,163,184,0.12)',color: '#64748B', border: 'rgba(148,163,184,0.25)' },
+            unavailable: { label: 'ICS Not Checked',   bg: 'rgba(0,0,0,0.04)',      color: '#78716C', border: 'rgba(0,0,0,0.10)' },
+          };
+          var c = cfg[status] || cfg.unavailable;
+          text.textContent = c.label;
+          text.style.background  = c.bg;
+          text.style.color       = c.color;
+          text.style.borderColor = c.border;
+          badge.style.display = 'block';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+          var hblInput = document.getElementById('mbf-hbl');
+          if (hblInput) { hblInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); mbfLookup(); } }); }
+        });
+      `}} />
     </div>
   )
 }
