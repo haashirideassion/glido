@@ -150,6 +150,17 @@ export async function completeBooking(id: string, notes?: string): Promise<Booki
   return data ? rowToBooking(data) : undefined
 }
 
+export async function getBookingsByUserId(userId: string): Promise<Booking[]> {
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .eq('user_id', userId)
+    .order('slot_date', { ascending: false })
+    .order('slot_start_time', { ascending: false })
+  if (error) throw error
+  return data.map(rowToBooking)
+}
+
 export async function cancelBooking(id: string): Promise<Booking | undefined> {
   const { data, error } = await supabase
     .from('bookings')

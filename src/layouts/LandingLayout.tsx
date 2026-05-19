@@ -78,9 +78,10 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
               {/* Center nav */}
               <nav class="hidden sm:flex items-center gap-1">
                 {[
-                  { href: '#how-it-works', label: 'How it works', icon: 'solar:info-circle-bold-duotone'    },
-                  { href: '/book',         label: 'Book a Slot',  icon: ICONS.calendar                      },
-                  { href: '/bookings',     label: 'My Bookings',  icon: ICONS.bookings                      },
+                  { href: '#how-it-works', label: 'How it works', icon: 'solar:info-circle-bold-duotone' },
+                  { href: '/book',         label: 'Book a Slot',  icon: ICONS.calendar                   },
+                  { href: '/bookings',     label: 'My Bookings',  icon: ICONS.bookings                   },
+                  { href: '/dashboard',    label: 'Dashboard',    icon: ICONS.home                       },
                 ].map(l => (
                   <a
                     key={l.href}

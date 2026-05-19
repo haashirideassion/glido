@@ -16,7 +16,7 @@ const ROW_LABEL    = "display:flex; align-items:center; gap:6px; font-size:12px;
 const ROW_VALUE    = "font-size:12px; font-weight:600; color:#1C1917;"
 
 export const BookingSlideOver = ({ booking: b }: Props) => (
-  <div style="display:flex; flex-direction:column; height:100%;" x-data="{ confirmModal: false, completionNotes: '' }">
+  <div style="display:flex; flex-direction:column; height:100%;" x-data="{ confirmModal: false, completionNotes: '', guestEmail: '' }">
     {/* Header */}
     <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(0,0,0,0.07); background:#FFFFFF; flex-shrink:0;">
       <div>
@@ -321,15 +321,31 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
           ))}
         </div>
 
-        <div style="margin-bottom:20px;">
-          <label style="display:block; font-size:11px; font-weight:600; color:rgba(0,0,0,0.40); letter-spacing:0.07em; text-transform:uppercase; margin-bottom:6px;">Completion Notes (optional)</label>
-          <textarea
-            rows={2}
-            x-model="completionNotes"
-            placeholder="Any notes for records..."
-            class="wizard-field"
-            style="width:100%; padding:10px 14px; font-size:13px; resize:none; box-sizing:border-box;"
-          ></textarea>
+        <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
+          <div>
+            <label style="display:block; font-size:11px; font-weight:600; color:rgba(0,0,0,0.40); letter-spacing:0.07em; text-transform:uppercase; margin-bottom:6px;">Completion Notes (optional)</label>
+            <textarea
+              id={`complete-notes-${b.id}`}
+              name="completionNotes"
+              rows={2}
+              x-model="completionNotes"
+              placeholder="Any notes for records..."
+              class="wizard-field"
+              style="width:100%; padding:10px 14px; font-size:13px; resize:none; box-sizing:border-box;"
+            ></textarea>
+          </div>
+          <div>
+            <label style="display:block; font-size:11px; font-weight:600; color:rgba(0,0,0,0.40); letter-spacing:0.07em; text-transform:uppercase; margin-bottom:6px;">Notify Guest by Email (optional)</label>
+            <input
+              id={`complete-email-${b.id}`}
+              name="guestEmail"
+              type="email"
+              x-model="guestEmail"
+              placeholder="guest@example.com"
+              class="wizard-field"
+              style="width:100%; box-sizing:border-box;"
+            />
+          </div>
         </div>
 
         <div style="display:flex; gap:10px;">
@@ -348,6 +364,7 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
             hx-post={`/reception/bookings/${b.id}/complete`}
             hx-target="#slide-over-content"
             hx-swap="innerHTML"
+            hx-include={`#complete-notes-${b.id},#complete-email-${b.id}`}
             x-on:click="confirmModal = false"
           >
             <Icon name={ICONS.check} size={16} />

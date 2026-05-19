@@ -83,6 +83,19 @@ export const Step1ServiceType = () => (
           placeholder="+61 4XX XXX XXX"
         />
       </div>
+
+      <div>
+        <label style="font-size:12px; font-weight:600; color:#374151; margin-bottom:8px; display:block;">
+          Email Address
+          <span style="font-weight:400; margin-left:6px; color:#9ca3af; font-size:11px;">(optional — for booking confirmation)</span>
+        </label>
+        <input
+          type="email"
+          class="wizard-field"
+          x-model="$store.wizard.guestEmail"
+          placeholder="you@example.com"
+        />
+      </div>
     </div>
 
     {/* Multi-slot note */}

@@ -34,6 +34,7 @@ function wizardStore() {
     slotCount: 1,
     guestName: '',
     guestPhone: '',
+    guestEmail: '',
 
     // Step 2
     serviceType: null,   // 'pickup' | 'dropoff'
@@ -264,6 +265,7 @@ function wizardStore() {
         driverPhone: this.driverPhone,
         guestName: this.guestName,
         guestPhone: this.guestPhone,
+        guestEmail: this.guestEmail,
         houseBillNumber: this.houseBillNumber,
         containerNumber: this.containerNumber,
         weightKg: this.shipmentData ? (this.shipmentData.weightKg || '') : '',
@@ -299,6 +301,7 @@ function wizardStore() {
       this.slotCount = 1
       this.guestName = ''
       this.guestPhone = ''
+      this.guestEmail = ''
       this.serviceType = null
       this.loadType = null
       this.selectedDate = null

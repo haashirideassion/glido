@@ -20,6 +20,7 @@ import {
 import { getActiveWalkIns, createWalkIn, dismissWalkIn } from '../lib/db/walk-ins'
 import { getTenant, updateTenant } from '../lib/db/tenants'
 import { DEFAULT_TENANT_ID } from '../lib/supabase'
+import { sendBookingCompleted } from '../lib/email'
 import type { BookingStatus, ServiceType, WalkInPurpose } from '../data/types'
 
 export const receptionRoutes = new Hono()
@@ -101,6 +102,15 @@ receptionRoutes.post('/bookings/:id/complete', async (c) => {
   const notes   = typeof body.completionNotes === 'string' ? body.completionNotes : undefined
   const booking = await completeBooking(c.req.param('id'), notes)
   if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
+
+  // Non-blocking completion email to guest if email on record
+  const guestEmail = typeof body.guestEmail === 'string' ? body.guestEmail.trim() : undefined
+  if (guestEmail) {
+    getTenant(DEFAULT_TENANT_ID)
+      .then(tenant => sendBookingCompleted({ to: guestEmail, booking, tenantName: tenant?.name ?? 'Glido CFS' }))
+      .catch(err => console.error('[email] completion failed:', err))
+  }
+
   return c.html(<BookingSlideOver booking={booking} />)
 })
 

@@ -5,14 +5,28 @@ import { Icon, ICONS } from '../lib/Icon'
 import { Button } from '../components/ui/button'
 import { BookingWizard } from '../components/portal/BookingWizard'
 import { MyBookingsList } from '../components/portal/MyBookingsList'
+import { VisitorDashboard } from '../components/portal/VisitorDashboard'
 import { Input } from '../components/ui/input'
-import { getBookings, findBooking, createBooking } from '../lib/db/bookings'
+import { getBookings, findBooking, createBooking, getBookingsByUserId } from '../lib/db/bookings'
 import { getSlotsByDate } from '../lib/db/slots'
 import { getTenant } from '../lib/db/tenants'
 import { lookupShipment, lookupShipmentByContainer } from '../lib/db/cfs-shipments'
 import { calculateCharges } from '../lib/charges'
 import { generateQRDataURL } from '../lib/qr'
 import { DEFAULT_TENANT_ID } from '../lib/supabase'
+import {
+  signInWithPassword,
+  signUpVisitor,
+  getSessionUser,
+  setSessionCookie,
+  clearSessionCookie,
+  isReceptionRole,
+} from '../lib/auth'
+import {
+  sendBookingConfirmation,
+  sendEftReminder,
+  sendIcsHoldAlert,
+} from '../lib/email'
 
 export const portalRoutes = new Hono()
 
@@ -473,8 +487,15 @@ portalRoutes.get('/', (c) => {
 })
 
 // ─── Login ───────────────────────────────────────────────────────────────────
-portalRoutes.get('/login', (c) => {
-  const next = c.req.query('next') || ''
+portalRoutes.get('/login', async (c) => {
+  // Redirect already-logged-in users
+  const existingUser = await getSessionUser(c)
+  if (existingUser) {
+    return isReceptionRole(existingUser.role) ? c.redirect('/reception') : c.redirect('/dashboard')
+  }
+  const next     = c.req.query('next') || ''
+  const error    = c.req.query('error') || ''
+  const verified = c.req.query('verified') || ''
   return c.html(
     <PublicLayout title="Sign In" plain>
       <div style="min-height:calc(100vh - 56px - 64px); display:flex; align-items:center; justify-content:center; padding:40px 24px; background:linear-gradient(160deg,#FAFAF9 0%,#F7F6F5 100%);">
@@ -495,6 +516,23 @@ portalRoutes.get('/login', (c) => {
               <h1 style="font-size:20px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:6px;">Sign in to Glido</h1>
               <p style="font-size:13px; color:#78716C; line-height:1.6;">Access the reception dashboard or your visitor account.</p>
             </div>
+
+            {/* Error / verified banners */}
+            {error === 'invalid' && (
+              <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.22); border-radius:10px; padding:10px 14px; margin-bottom:20px; font-size:12.5px; color:#DC2626; text-align:center;">
+                Incorrect email or password. Please try again.
+              </div>
+            )}
+            {error === 'missing' && (
+              <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.22); border-radius:10px; padding:10px 14px; margin-bottom:20px; font-size:12.5px; color:#DC2626; text-align:center;">
+                Please enter your email and password.
+              </div>
+            )}
+            {verified === 'pending' && (
+              <div style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.22); border-radius:10px; padding:10px 14px; margin-bottom:20px; font-size:12.5px; color:#16A34A; text-align:center;">
+                Account created! Check your email to verify, then sign in.
+              </div>
+            )}
 
             {/* Role selector */}
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:28px;" x-data="{ role: 'staff' }">
@@ -563,7 +601,7 @@ portalRoutes.get('/login', (c) => {
               <div style="margin-top:20px; padding-top:20px; border-top:1px solid rgba(0,0,0,0.07);">
                 <p style="font-size:12px; color:#A8A29E; text-align:center; line-height:1.6;">
                   No account needed to book a visit.<br />
-                  <a href="#" style="color:#FC6514; text-decoration:none; font-weight:500;">Create an account</a> to save your booking history.
+                  <a href="/signup" style="color:#FC6514; text-decoration:none; font-weight:500;">Create an account</a> to save your booking history.
                 </p>
               </div>
             </div>
@@ -584,10 +622,168 @@ portalRoutes.get('/login', (c) => {
   )
 })
 
-// ─── Login POST — redirect to reception (Supabase auth wired in next phase) ──
+// ─── Login POST ───────────────────────────────────────────────────────────────
 portalRoutes.post('/login', async (c) => {
-  // Phase 1: redirect to reception dashboard. Real Supabase JWT auth wired in Phase 1.5.
-  return c.redirect('/reception')
+  const body = await c.req.parseBody()
+  const email    = String(body.email    ?? '').trim().toLowerCase()
+  const password = String(body.password ?? '')
+  const next     = String(body.next     ?? '')
+
+  if (!email || !password) return c.redirect('/login?error=missing')
+
+  try {
+    const { session, user } = await signInWithPassword(email, password)
+    if (!session || !user) return c.redirect('/login?error=invalid')
+
+    setSessionCookie(c, session.access_token)
+
+    // Pull role from users table to route correctly
+    const { supabaseAdmin } = await import('../lib/supabase')
+    const { data: userRow } = await supabaseAdmin
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+    const role = userRow?.role ?? 'visitor_registered'
+
+    if (isReceptionRole(role)) return c.redirect('/reception')
+    if (next) return c.redirect(decodeURIComponent(next))
+    return c.redirect('/dashboard')
+  } catch {
+    return c.redirect('/login?error=invalid')
+  }
+})
+
+// ─── Sign-up GET ─────────────────────────────────────────────────────────────
+portalRoutes.get('/signup', (c) => {
+  const error = c.req.query('error')
+  return c.html(
+    <PublicLayout title="Create Account" plain>
+      <div style="min-height:calc(100vh - 56px - 64px); display:flex; align-items:center; justify-content:center; padding:40px 24px; background:linear-gradient(160deg,#FAFAF9 0%,#F7F6F5 100%);">
+        <div style="position:fixed; inset:0; background-image:radial-gradient(rgba(0,0,0,0.05) 1px,transparent 1px); background-size:28px 28px; pointer-events:none; z-index:0;" />
+        <div style="position:relative; z-index:1; width:100%; max-width:420px;">
+          <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:24px; padding:44px 40px; box-shadow:0 2px 8px rgba(0,0,0,0.04), 0 16px 48px rgba(0,0,0,0.09);">
+            <div style="text-align:center; margin-bottom:32px;">
+              <div style="width:52px; height:52px; border-radius:14px; background:linear-gradient(135deg,#FF7A2A 0%,#E85A0A 100%); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; box-shadow:0 4px 14px rgba(252,101,20,0.38);">
+                <Icon name={ICONS.users} size={24} style="color:#fff;" />
+              </div>
+              <h1 style="font-size:20px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:6px;">Create an account</h1>
+              <p style="font-size:13px; color:#78716C; line-height:1.6;">Save your booking history and get reminders.</p>
+            </div>
+
+            {error && (
+              <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.22); border-radius:10px; padding:10px 14px; margin-bottom:20px; font-size:12.5px; color:#DC2626;">
+                {error === 'exists' ? 'An account with that email already exists.' : 'Registration failed. Please try again.'}
+              </div>
+            )}
+
+            <form method="post" action="/signup" style="display:flex; flex-direction:column; gap:14px;">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                  <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;">First Name</label>
+                  <input type="text" name="first_name" required placeholder="Raj"
+                    style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                    onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                    onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                </div>
+                <div>
+                  <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;">Last Name</label>
+                  <input type="text" name="last_name" required placeholder="Sharma"
+                    style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                    onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                    onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                </div>
+              </div>
+              <div>
+                <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;">Email</label>
+                <input type="email" name="email" required placeholder="raj@example.com"
+                  style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                  onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                  onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+              </div>
+              <div>
+                <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;">Phone (optional)</label>
+                <input type="tel" name="phone" placeholder="+61 4XX XXX XXX"
+                  style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                  onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                  onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+              </div>
+              <div>
+                <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;">Password</label>
+                <input type="password" name="password" required placeholder="Min 8 characters"
+                  style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                  onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                  onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+              </div>
+              <button type="submit" class="btn-primary" style="width:100%; padding:13px 20px; font-size:14px; border:none; cursor:pointer; justify-content:center; margin-top:4px;">
+                Create Account
+                <Icon name={ICONS.arrowRight} size={14} />
+              </button>
+            </form>
+            <p style="text-align:center; font-size:12px; color:#A8A29E; margin-top:16px;">
+              Already have an account? <a href="/login" style="color:#FC6514; text-decoration:none; font-weight:500;">Sign in</a>
+            </p>
+          </div>
+          <p style="text-align:center; margin-top:20px; font-size:12px; color:#A8A29E;">
+            <a href="/" style="color:#78716C; text-decoration:none; font-weight:500;" onmouseover="this.style.color='#1C1917'" onmouseout="this.style.color='#78716C'">← Back to home</a>
+          </p>
+        </div>
+      </div>
+    </PublicLayout>
+  )
+})
+
+// ─── Sign-up POST ─────────────────────────────────────────────────────────────
+portalRoutes.post('/signup', async (c) => {
+  const body = await c.req.parseBody()
+  const email     = String(body.email      ?? '').trim().toLowerCase()
+  const password  = String(body.password   ?? '')
+  const firstName = String(body.first_name ?? '').trim()
+  const lastName  = String(body.last_name  ?? '').trim()
+  const phone     = String(body.phone      ?? '').trim() || undefined
+
+  if (!email || !password || !firstName || !lastName) return c.redirect('/signup?error=missing')
+
+  try {
+    const { session } = await signUpVisitor({ email, password, firstName, lastName, phone })
+    if (session) {
+      setSessionCookie(c, session.access_token)
+      return c.redirect('/dashboard')
+    }
+    // Supabase may require email confirmation — redirect to login with a note
+    return c.redirect('/login?verified=pending')
+  } catch (err: any) {
+    const code = err?.message?.includes('already registered') ? 'exists' : 'failed'
+    return c.redirect(`/signup?error=${code}`)
+  }
+})
+
+// ─── Visitor Dashboard ────────────────────────────────────────────────────────
+portalRoutes.get('/dashboard', async (c) => {
+  const user = await getSessionUser(c)
+  if (!user) return c.redirect('/login?next=%2Fdashboard')
+
+  // Fetch this visitor's bookings
+  const allBookings = await getBookingsByUserId(user.id).catch(() => [] as any[])
+  const today = new Date().toISOString().split('T')[0]
+  const upcoming = allBookings.filter((b: any) =>
+    b.slotDate >= today && b.status !== 'cancelled' && b.status !== 'completed'
+  )
+  const past = allBookings.filter((b: any) =>
+    b.slotDate < today || b.status === 'completed' || b.status === 'cancelled'
+  )
+
+  return c.html(
+    <PublicLayout title="My Dashboard" plain>
+      <VisitorDashboard user={user} upcoming={upcoming} past={past} />
+    </PublicLayout>
+  )
+})
+
+// ─── Logout ───────────────────────────────────────────────────────────────────
+portalRoutes.get('/logout', (c) => {
+  clearSessionCookie(c)
+  return c.redirect('/')
 })
 
 // ─── Booking wizard ─────────────────────────────────────────────────────────
@@ -793,6 +989,43 @@ portalRoutes.post('/bookings', async (c) => {
       paymentStatus:    (body.paymentStatus as any) || 'pending',
       tenantId:         DEFAULT_TENANT_ID,
     })
+    // ── Fire transactional emails (non-blocking) ──────────────────────────────
+    const emailAddress = (body.guestEmail as string | undefined) || (body.driverEmail as string | undefined)
+    const tenant = await getTenant(DEFAULT_TENANT_ID).catch(() => null)
+    const qrDataUrl = await generateQRDataURL(booking.referenceNumber, 160).catch(() => '')
+
+    if (emailAddress) {
+      // 1. Booking confirmation
+      sendBookingConfirmation({
+        to:           emailAddress,
+        booking,
+        tenantName:   tenant?.name ?? 'Glido CFS',
+        tenantAddress: tenant?.address ?? undefined,
+        qrDataUrl,
+      }).catch(err => console.error('[email] confirmation failed:', err))
+
+      // 2. EFT reminder if payment method is EFT
+      if (booking.paymentMethod === 'eft' && tenant) {
+        sendEftReminder({
+          to:            emailAddress,
+          booking,
+          bankName:      tenant.eft_bank_name   ?? '',
+          bsb:           tenant.eft_bsb          ?? '',
+          accountNumber: tenant.eft_account_number ?? '',
+          accountName:   tenant.eft_account_name  ?? '',
+        }).catch(err => console.error('[email] EFT reminder failed:', err))
+      }
+    }
+
+    // 3. ICS held alert to reception admin
+    if (booking.icsStatus === 'held' && tenant?.contact_email) {
+      sendIcsHoldAlert({
+        to:         tenant.contact_email,
+        booking,
+        tenantName: tenant.name,
+      }).catch(err => console.error('[email] ICS alert failed:', err))
+    }
+
     return c.redirect(`/booking-confirmed/${booking.referenceNumber}`)
   } catch (err) {
     console.error('[portal] createBooking error:', err)
