@@ -7,6 +7,7 @@ import { BookingSlideOver } from '../components/reception/BookingSlideOver'
 import { WalkInForm } from '../components/reception/WalkInForm'
 import { ReportsView } from '../components/reception/ReportsView'
 import { SettingsView } from '../components/reception/SettingsView'
+import { ManualBookingForm } from '../components/reception/ManualBookingForm'
 import { Icon, ICONS } from '../lib/Icon'
 import {
   findBooking,
@@ -16,9 +17,11 @@ import {
   checkInBooking,
   completeBooking,
   getBookings,
+  getBookingsByDateRange,
   cancelBooking,
   rescheduleBooking,
   refreshIcsStatus,
+  createBooking,
 } from '../lib/db/bookings'
 import { getActiveWalkIns, createWalkIn, dismissWalkIn } from '../lib/db/walk-ins'
 import { getTenant, updateTenant } from '../lib/db/tenants'
@@ -354,12 +357,75 @@ receptionRoutes.post('/walk-in', async (c) => {
   )
 })
 
+// ─── Manual Booking (staff creates booking) ───────────────────────────────────
+receptionRoutes.get('/bookings/new', (c) => {
+  const saved = c.req.query('saved') === '1'
+  return c.html(
+    <ReceptionLayout title="New Booking" activeNav="/reception/bookings">
+      <div style="margin-bottom:20px;">
+        <a href="/reception/bookings" style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:#78716C; text-decoration:none; margin-bottom:14px; transition:color 0.15s ease;"
+          onmouseover="this.style.color='#1C1917'" onmouseout="this.style.color='#78716C'"
+        >
+          ← Back to Bookings
+        </a>
+        <h2 style="font-size:17px; font-weight:600; color:#1C1917; letter-spacing:-0.015em; margin:0 0 2px;">Create Booking</h2>
+        <p style="font-size:12.5px; color:#78716C; margin:0;">Manually create a booking for a walk-in or phone caller.</p>
+      </div>
+      <ManualBookingForm savedFlash={saved} />
+    </ReceptionLayout>
+  )
+})
+
+receptionRoutes.post('/bookings/new', async (c) => {
+  const body = await c.req.parseBody()
+  const b    = body as Record<string, string>
+
+  if (!b.driverName?.trim() || !b.slotDate || !b.slotStartTime || !b.slotEndTime || !b.serviceType || !b.loadType) {
+    return c.html(
+      <ReceptionLayout title="New Booking" activeNav="/reception/bookings">
+        <div style="margin-bottom:20px;">
+          <a href="/reception/bookings" style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:#78716C; text-decoration:none; margin-bottom:14px;">← Back to Bookings</a>
+          <h2 style="font-size:17px; font-weight:600; color:#1C1917; margin:0 0 2px;">Create Booking</h2>
+          <p style="font-size:12.5px; color:#78716C; margin:0;">Manually create a booking for a walk-in or phone caller.</p>
+        </div>
+        <ManualBookingForm error="Please fill in all required fields: driver name, service type, load type, date and time." />
+      </ReceptionLayout>
+    )
+  }
+
+  await createBooking({
+    tenantId:       DEFAULT_TENANT_ID,
+    serviceType:    b.serviceType as 'pickup' | 'dropoff',
+    loadType:       b.loadType as 'lcl' | 'fcl',
+    slotDate:       b.slotDate,
+    slotStartTime:  b.slotStartTime,
+    slotEndTime:    b.slotEndTime,
+    driverName:     b.driverName.trim(),
+    driverPhone:    b.driverPhone?.trim() || undefined,
+    guestName:      b.guestName?.trim() || undefined,
+    guestPhone:     b.guestPhone?.trim() || undefined,
+    houseBillNumber: b.houseBillNumber?.trim() || undefined,
+    containerNumber: b.containerNumber?.trim() || undefined,
+    paymentMethod:  b.paymentMethod as 'eft' | 'card' | undefined || undefined,
+    paymentStatus:  (b.paymentStatus as any) || 'pending',
+  })
+
+  return c.redirect('/reception/bookings/new?saved=1')
+})
+
 // ─── Reports ──────────────────────────────────────────────────────────────────
 receptionRoutes.get('/reports', async (c) => {
-  const bookings = await getBookings().catch(() => [])
+  const from = c.req.query('from')
+  const to   = c.req.query('to')
+  const page = Math.max(1, parseInt(c.req.query('page') || '1', 10))
+
+  const bookings = (from && to)
+    ? await getBookingsByDateRange(from, to).catch(() => [])
+    : await getBookings().catch(() => [])
+
   return c.html(
     <ReceptionLayout title="Reports" activeNav="/reception/reports">
-      <ReportsView bookings={bookings} />
+      <ReportsView bookings={bookings} page={page} from={from} to={to} />
     </ReceptionLayout>
   )
 })

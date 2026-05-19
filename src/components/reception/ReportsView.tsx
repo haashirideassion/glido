@@ -2,8 +2,13 @@ import { STATUS_LABEL, SERVICE_LABEL, LOAD_LABEL } from '../../lib/constants'
 import { Icon, ICONS } from '../../lib/Icon'
 import type { Booking, BookingStatus } from '../../data/types'
 
+const PAGE_SIZE = 50
+
 interface Props {
   bookings: Booking[]
+  page?: number
+  from?: string
+  to?: string
 }
 
 // Last 7 calendar days
@@ -52,7 +57,11 @@ const EC_THEME = `
   var TOOLTIP_TEXT = '#FCFBF8';
 `
 
-export const ReportsView = ({ bookings }: Props) => {
+export const ReportsView = ({ bookings, page = 1, from, to }: Props) => {
+  const totalPages  = Math.max(1, Math.ceil(bookings.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const pageBookings = bookings.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+  const rangeQuery  = from && to ? `&from=${from}&to=${to}` : ''
   const DAYS_7 = last7Days()
   const countByDay = DAYS_7.map(d => bookings.filter(b => b.slotDate === d).length)
   const dayLabels  = DAYS_7.map(d => {
@@ -95,20 +104,54 @@ export const ReportsView = ({ bookings }: Props) => {
     <div style="display:flex; flex-direction:column; gap:20px;">
 
       {/* ── Page header ────────────────────────────────────────────────────── */}
-      <div style="display:flex; align-items:center; justify-content:space-between;">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:12px;">
         <div>
           <h2 style="font-size:17px; font-weight:600; color:#1C1917; letter-spacing:-0.015em; margin-bottom:2px;">Reports</h2>
-          <p style="font-size:12.5px; color:#78716C;">Activity analytics across all bookings</p>
+          <p style="font-size:12.5px; color:#78716C;">
+            {from && to
+              ? `${bookings.length} bookings from ${from} to ${to}`
+              : `Activity analytics · ${bookings.length} total bookings`}
+          </p>
         </div>
-        <button
-          type="button"
-          class="btn-ghost"
-          style="padding:8px 16px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;"
-  onclick="window._gExportCsv && window._gExportCsv()"
-        >
-          <Icon name={ICONS.download} size={13} />
-          Export CSV
-        </button>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          {/* Date range filter */}
+          <form method="get" action="/reception/reports" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <input
+              type="date"
+              name="from"
+              value={from || ''}
+              placeholder="From"
+              style="font-size:12px; padding:7px 10px; border:1px solid rgba(0,0,0,0.10); border-radius:8px; background:#F7F6F5; color:#1C1917; outline:none; cursor:pointer;"
+              onfocus="this.style.borderColor='rgba(252,101,20,0.50)'" onblur="this.style.borderColor='rgba(0,0,0,0.10)'"
+            />
+            <span style="font-size:11px; color:#A8A29E;">→</span>
+            <input
+              type="date"
+              name="to"
+              value={to || ''}
+              placeholder="To"
+              style="font-size:12px; padding:7px 10px; border:1px solid rgba(0,0,0,0.10); border-radius:8px; background:#F7F6F5; color:#1C1917; outline:none; cursor:pointer;"
+              onfocus="this.style.borderColor='rgba(252,101,20,0.50)'" onblur="this.style.borderColor='rgba(0,0,0,0.10)'"
+            />
+            <button type="submit" style="padding:7px 14px; font-size:12px; font-weight:600; background:#1C1917; color:#fff; border:none; border-radius:8px; cursor:pointer; transition:opacity 0.15s ease;"
+              onmouseover="this.style.opacity='0.80'" onmouseout="this.style.opacity='1'"
+            >Filter</button>
+            {(from || to) && (
+              <a href="/reception/reports" style="font-size:12px; color:#78716C; text-decoration:none; font-weight:500; padding:7px 10px; border-radius:8px; transition:all 0.15s ease;"
+                onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='transparent'"
+              >Clear</a>
+            )}
+          </form>
+          <button
+            type="button"
+            class="btn-ghost"
+            style="padding:8px 16px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;"
+            onclick="window._gExportCsv && window._gExportCsv()"
+          >
+            <Icon name={ICONS.download} size={13} />
+            Export CSV
+          </button>
+        </div>
       </div>
 
       {/* ── KPI summary strip ──────────────────────────────────────────────── */}
@@ -159,15 +202,18 @@ export const ReportsView = ({ bookings }: Props) => {
 
       {/* ── Booking table ──────────────────────────────────────────────────── */}
       <div id="reports-table" style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:16px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07);">
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:18px 24px; border-bottom:1px solid rgba(0,0,0,0.07);">
-          <p style="font-size:13px; font-weight:600; color:#1C1917;">All Bookings</p>
-          <span style="font-size:12px; color:#78716C;">{bookings.length} records</span>
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:18px 24px; border-bottom:1px solid rgba(0,0,0,0.07); flex-wrap:wrap; gap:8px;">
+          <p style="font-size:13px; font-weight:600; color:#1C1917;">
+            All Bookings
+            {totalPages > 1 && <span style="font-size:11px; font-weight:400; color:#A8A29E; margin-left:8px;">Page {currentPage} of {totalPages}</span>}
+          </p>
+          <span style="font-size:12px; color:#78716C;">{bookings.length} records · showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, bookings.length)}</span>
         </div>
         <div style="overflow-x:auto;">
           <table style="width:100%; border-collapse:collapse;">
             <thead>
               <tr style="background:rgba(0,0,0,0.02); border-bottom:1px solid rgba(0,0,0,0.07);">
-                {['Reference', 'Date', 'Time', 'Driver', 'Service', 'Status'].map(h => (
+                {['Reference', 'Date', 'Time', 'Driver', 'Service', 'HBL', 'Amount', 'Status'].map(h => (
                   <th
                     key={h}
                     style="padding:10px 20px; text-align:left; font-size:10px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#A8A29E; white-space:nowrap;"
@@ -176,17 +222,26 @@ export const ReportsView = ({ bookings }: Props) => {
               </tr>
             </thead>
             <tbody>
-              {bookings.slice(0, 50).map((b, i) => (
+              {pageBookings.map((b, i) => (
                 <tr
                   key={b.id}
-                  style={`border-top:1px solid rgba(0,0,0,0.05); ${i % 2 !== 0 ? 'background:rgba(0,0,0,0.01);' : ''}`}
+                  style={`border-top:1px solid rgba(0,0,0,0.05); ${i % 2 !== 0 ? 'background:rgba(0,0,0,0.01);' : ''} cursor:pointer; transition:background 0.1s ease;`}
+                  onmouseover="this.style.background='rgba(252,101,20,0.03)'"
+                  onmouseout={`this.style.background='${i % 2 !== 0 ? 'rgba(0,0,0,0.01)' : 'transparent'}'`}
+                  onclick={`window.location.href='/reception/bookings/${b.id}'`}
                 >
                   <td style="padding:11px 20px; font-family:ui-monospace,monospace; font-size:12px; font-weight:700; color:#FC6514; white-space:nowrap;">{b.referenceNumber}</td>
                   <td style="padding:11px 20px; font-size:12.5px; color:#78716C; white-space:nowrap;">{b.slotDate}</td>
                   <td style="padding:11px 20px; font-size:12.5px; color:#78716C; white-space:nowrap;">{b.slotStartTime} – {b.slotEndTime}</td>
-                  <td style="padding:11px 20px; font-size:12.5px; color:#1C1917;">{b.driverName}</td>
+                  <td style="padding:11px 20px; font-size:12.5px; color:#1C1917; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{b.driverName}</td>
                   <td style="padding:11px 20px; font-size:12px; color:#78716C; white-space:nowrap;">
                     {SERVICE_LABEL[b.serviceType]} · {LOAD_LABEL[b.loadType]}
+                  </td>
+                  <td style="padding:11px 20px; font-family:ui-monospace,monospace; font-size:11.5px; color:#A8A29E; white-space:nowrap;">
+                    {b.houseBillNumber || b.containerNumber || '—'}
+                  </td>
+                  <td style="padding:11px 20px; font-size:12.5px; font-weight:600; color:#1C1917; white-space:nowrap;">
+                    {b.totalAmount ? `$${b.totalAmount.toFixed(2)}` : '—'}
                   </td>
                   <td style="padding:11px 20px;">
                     <span style={`display:inline-block; padding:3px 10px; border-radius:9999px; font-size:11px; font-weight:600; ${STATUS_STYLE[b.status] || STATUS_STYLE.scheduled}`}>
@@ -197,14 +252,69 @@ export const ReportsView = ({ bookings }: Props) => {
               ))}
               {bookings.length === 0 && (
                 <tr>
-                  <td colspan={6} style="padding:40px 20px; text-align:center; font-size:13px; color:#A8A29E;">
-                    No booking data yet.
+                  <td colspan={8} style="padding:48px 20px; text-align:center;">
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+                      <div style="width:44px; height:44px; border-radius:12px; background:#F7F6F5; border:1px solid rgba(0,0,0,0.07); display:flex; align-items:center; justify-content:center;">
+                        <Icon name={ICONS.reports} size={20} style="color:#A8A29E;" />
+                      </div>
+                      <p style="font-size:13px; font-weight:500; color:#78716C; margin:0;">No bookings in this range</p>
+                      <p style="font-size:12px; color:#A8A29E; margin:0;">Try adjusting the date filter or <a href="/reception/reports" style="color:#FC6514; text-decoration:none;">clear filters</a></p>
+                    </div>
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-top:1px solid rgba(0,0,0,0.07); background:rgba(0,0,0,0.01);">
+            <span style="font-size:12px; color:#78716C;">
+              Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, bookings.length)} of {bookings.length}
+            </span>
+            <div style="display:flex; align-items:center; gap:6px;">
+              {currentPage > 1 && (
+                <a
+                  href={`/reception/reports?page=${currentPage - 1}${rangeQuery}`}
+                  style="padding:6px 14px; font-size:12px; font-weight:500; color:#1C1917; background:#fff; border:1px solid rgba(0,0,0,0.10); border-radius:8px; text-decoration:none; transition:all 0.15s ease;"
+                  onmouseover="this.style.background='#F7F6F5'" onmouseout="this.style.background='#fff'"
+                >
+                  ← Prev
+                </a>
+              )}
+              {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                const pg = totalPages <= 7
+                  ? i + 1
+                  : currentPage <= 4
+                    ? i + 1
+                    : currentPage >= totalPages - 3
+                      ? totalPages - 6 + i
+                      : currentPage - 3 + i
+                return (
+                  <a
+                    key={pg}
+                    href={`/reception/reports?page=${pg}${rangeQuery}`}
+                    style={`padding:6px 11px; font-size:12px; font-weight:${pg === currentPage ? '700' : '500'}; border-radius:8px; text-decoration:none; transition:all 0.15s ease; ${pg === currentPage ? 'background:#1C1917; color:#fff; border:1px solid #1C1917;' : 'color:#78716C; background:#fff; border:1px solid rgba(0,0,0,0.10);'}`}
+                    onmouseover={pg !== currentPage ? "this.style.background='#F7F6F5'" : ''}
+                    onmouseout={pg !== currentPage ? "this.style.background='#fff'" : ''}
+                  >
+                    {pg}
+                  </a>
+                )
+              })}
+              {currentPage < totalPages && (
+                <a
+                  href={`/reception/reports?page=${currentPage + 1}${rangeQuery}`}
+                  style="padding:6px 14px; font-size:12px; font-weight:500; color:#1C1917; background:#fff; border:1px solid rgba(0,0,0,0.10); border-radius:8px; text-decoration:none; transition:all 0.15s ease;"
+                  onmouseover="this.style.background='#F7F6F5'" onmouseout="this.style.background='#fff'"
+                >
+                  Next →
+                </a>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── ECharts init ────────────────────────────────────────────────────── */}

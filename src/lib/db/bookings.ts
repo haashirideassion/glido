@@ -58,7 +58,19 @@ export async function getBookings(): Promise<Booking[]> {
   const { data, error } = await supabase
     .from('bookings')
     .select('*')
-    .order('slot_date', { ascending: true })
+    .order('slot_date', { ascending: false })
+    .order('slot_start_time', { ascending: true })
+  if (error) throw error
+  return data.map(rowToBooking)
+}
+
+export async function getBookingsByDateRange(from: string, to: string): Promise<Booking[]> {
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .gte('slot_date', from)
+    .lte('slot_date', to)
+    .order('slot_date', { ascending: false })
     .order('slot_start_time', { ascending: true })
   if (error) throw error
   return data.map(rowToBooking)

@@ -317,7 +317,7 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
 
           {/* ── Action button ── */}
           <a
-            href="/reception/walk-ins"
+            href="/reception/bookings/new"
             class="action-btn"
           >
             <Icon name={ICONS.add} size={18} style="color:#ffffff; flex-shrink:0;" />

@@ -80,7 +80,7 @@ function BookingCard({ b, compact = false }: { b: Booking; compact?: boolean }) 
           {b.totalAmount && (
             <span style="font-size:13px; font-weight:700; color:#1C1917;">${b.totalAmount.toFixed(2)}</span>
           )}
-          <a href={`/bookings?ref=${b.referenceNumber}`}
+          <a href={`/bookings/${b.referenceNumber}`}
             style="display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600; color:#FC6514; text-decoration:none;"
             onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'"
           >
