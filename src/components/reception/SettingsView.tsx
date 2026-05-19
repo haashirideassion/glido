@@ -1,4 +1,4 @@
-const TABS = ['General', 'Slot Configuration', 'Pricing & Charges', 'Payment', 'Users']
+const TABS = ['General', 'Working Hours', 'Slot Configuration', 'Pricing & Charges', 'Payment', 'Users', 'Staff Permissions']
 
 const labelStyle = 'display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;'
 const inputStyle = 'width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#EBEBEA; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; transition:border-color 0.15s ease, box-shadow 0.15s ease; box-sizing:border-box;'
@@ -157,6 +157,75 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
       </form>
     </div>
 
+    {/* ── Working Hours ── */}
+    <div x-show={`tab === 'Working Hours'`} style="max-width:640px;">
+      <form method="post" action="/reception/settings">
+        <input type="hidden" name="tab" value="Working Hours" />
+        <div style={cardStyle}>
+          <p style="font-size:15px; font-weight:600; color:#1C1917; margin-bottom:4px; letter-spacing:-0.01em;">Working Hours</p>
+          <p style="font-size:12px; color:#A8A29E; margin-bottom:20px;">Visitors can only book slots within these hours. Changes take effect immediately.</p>
+          <div style="display:flex; flex-direction:column; gap:0;">
+            {[
+              { label: 'Monday',    name: 'mon' },
+              { label: 'Tuesday',   name: 'tue' },
+              { label: 'Wednesday', name: 'wed' },
+              { label: 'Thursday',  name: 'thu' },
+              { label: 'Friday',    name: 'fri' },
+              { label: 'Saturday',  name: 'sat' },
+              { label: 'Sunday',    name: 'sun' },
+            ].map((day, i) => (
+              <div key={day.name}
+                style={`display:grid; grid-template-columns:110px 1fr 1fr auto; align-items:center; gap:16px; padding:12px 0; ${i < 6 ? 'border-bottom:1px solid rgba(0,0,0,0.06);' : ''}`}
+                x-data={`{ enabled_${day.name}: ${['mon','tue','wed','thu','fri'].includes(day.name) ? 'true' : 'false'} }`}
+              >
+                <div style="display:flex; align-items:center; gap:9px;">
+                  <label style="position:relative; display:inline-flex; align-items:center; cursor:pointer;">
+                    <input type="checkbox" name={`${day.name}_enabled`}
+                      x-model={`enabled_${day.name}`}
+                      style="position:absolute; opacity:0; width:0; height:0;"
+                    />
+                    <div
+                      style="width:34px; height:20px; border-radius:9999px; transition:background 0.2s ease; cursor:pointer; position:relative;"
+                      x-bind:style={`enabled_${day.name} ? 'background:#FC6514;' : 'background:rgba(0,0,0,0.14);'`}
+                      x-on:click={`enabled_${day.name} = !enabled_${day.name}`}
+                    >
+                      <div
+                        style="position:absolute; top:3px; width:14px; height:14px; border-radius:9999px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.2); transition:left 0.2s ease;"
+                        x-bind:style={`enabled_${day.name} ? 'left:17px;' : 'left:3px;'`}
+                      />
+                    </div>
+                  </label>
+                  <span style="font-size:13px; font-weight:500; color:#1C1917;">{day.label}</span>
+                </div>
+                <div x-show={`enabled_${day.name}`}>
+                  <label style={labelStyle}>Open</label>
+                  <input type="time" name={`${day.name}_open`}
+                    value={['mon','tue','wed','thu','fri'].includes(day.name) ? '06:00' : '08:00'}
+                    style={`${inputStyle} padding:8px 12px;`}
+                    onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                    onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
+                  />
+                </div>
+                <div x-show={`enabled_${day.name}`}>
+                  <label style={labelStyle}>Close</label>
+                  <input type="time" name={`${day.name}_close`}
+                    value="18:00"
+                    style={`${inputStyle} padding:8px 12px;`}
+                    onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                    onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
+                  />
+                </div>
+                <div x-show={`!enabled_${day.name}`} style="grid-column:span 2; padding-top:18px;">
+                  <span style="font-size:12px; color:#A8A29E; font-style:italic;">Closed</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button type="submit" style={saveBtn}>Save Working Hours</button>
+        </div>
+      </form>
+    </div>
+
     {/* ── Users ── */}
     <div x-show={`tab === 'Users'`} style="max-width:640px;">
       <div style={cardStyle}>
@@ -203,5 +272,114 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
         </table>
       </div>
     </div>
+
+    {/* ── Staff Permissions ── */}
+    <div x-show={`tab === 'Staff Permissions'`} style="max-width:640px;"
+      x-data="{ editing: false, dirty: false }">
+      <div style={cardStyle}>
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:6px; flex-wrap:wrap; gap:8px;">
+          <div>
+            <p style="font-size:15px; font-weight:600; color:#1C1917; letter-spacing:-0.01em; margin-bottom:2px;">Reception Staff Permissions</p>
+            <p style="font-size:12px; color:#A8A29E;">Control what your front-desk staff can see and do. Changes apply on next staff login.</p>
+          </div>
+          <button type="button" x-show="!editing"
+            style="padding:8px 16px; font-size:12px; font-weight:600; color:#FC6514; background:rgba(252,101,20,0.08); border:1px solid rgba(252,101,20,0.18); border-radius:8px; cursor:pointer; transition:all 0.15s ease; white-space:nowrap;"
+            x-on:click="editing = true"
+            onmouseover="this.style.background='rgba(252,101,20,0.14)'"
+            onmouseout="this.style.background='rgba(252,101,20,0.08)'"
+          >
+            Edit Permissions
+          </button>
+        </div>
+
+        {/* Dirty state banner */}
+        <div x-show="dirty && editing" x-cloak
+          style="display:flex; align-items:center; gap:8px; padding:10px 14px; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.22); border-radius:9px; margin-bottom:16px; font-size:12px; font-weight:500; color:#B45309;">
+          <span>⚠</span>
+          <span>You have unsaved changes.</span>
+        </div>
+
+        <form method="post" action="/reception/settings/staff-permissions" x-on:submit="editing = false; dirty = false;">
+          <input type="hidden" name="tab" value="Staff Permissions" />
+
+          {[
+            { group: 'Bookings', perms: [
+              { key: 'perm_mark_complete',      label: 'Mark job complete',         sub: 'Allow staff to mark bookings as completed',           def: true  },
+              { key: 'perm_override_status',    label: 'Override booking status',   sub: 'Manually set status with a note (admin-only by default)', def: false },
+              { key: 'perm_create_manual',      label: 'Create manual booking',     sub: 'Book a slot on behalf of a walk-in or phone caller',   def: false },
+            ]},
+            { group: 'ICS & Documents', perms: [
+              { key: 'perm_refresh_ics',        label: 'Manual ICS refresh',        sub: 'Re-fetch customs status from the booking detail panel', def: true  },
+              { key: 'perm_view_ics',           label: 'View ICS status',           sub: 'See ICS badge and status in the booking list and detail', def: true },
+            ]},
+            { group: 'Reports & Exports', perms: [
+              { key: 'perm_export_csv',         label: 'Export CSV / PDF',          sub: 'Download booking list and report exports',             def: true  },
+              { key: 'perm_view_charges',       label: 'View charge details',       sub: 'See full charge breakdown in the booking detail panel', def: true  },
+            ]},
+            { group: 'Visitor Data', perms: [
+              { key: 'perm_view_id_scan',       label: 'View ID scan data',         sub: 'See licence name, DOB, and licence number after check-in', def: false },
+              { key: 'perm_confirm_eft',        label: 'Confirm EFT payment',       sub: 'Mark bank-transfer bookings as paid',                  def: false },
+            ]},
+          ].map((section) => (
+            <div key={section.group} style="margin-bottom:24px;">
+              <p style="font-size:10px; font-weight:700; color:#A8A29E; letter-spacing:0.10em; text-transform:uppercase; margin-bottom:12px;">{section.group}</p>
+              <div style="display:flex; flex-direction:column; gap:0;">
+                {section.perms.map((p, pi) => (
+                  <div key={p.key}
+                    style={`display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; ${pi < section.perms.length - 1 ? 'border-bottom:1px solid rgba(0,0,0,0.06);' : ''}`}
+                    x-data={`{ val_${p.key}: ${p.def} }`}
+                  >
+                    <div>
+                      <p style="font-size:13px; font-weight:500; color:#1C1917; margin-bottom:2px;">{p.label}</p>
+                      <p style="font-size:11.5px; color:#A8A29E; line-height:1.5;">{p.sub}</p>
+                    </div>
+                    <label style="position:relative; display:inline-flex; align-items:center; cursor:pointer; flex-shrink:0;">
+                      <input type="checkbox" name={p.key}
+                        x-model={`val_${p.key}`}
+                        x-bind:disabled="!editing"
+                        x-on:change="dirty = true"
+                        style="position:absolute; opacity:0; width:0; height:0;"
+                      />
+                      <div
+                        style="width:40px; height:22px; border-radius:9999px; transition:background 0.2s ease; position:relative;"
+                        x-bind:style={`(val_${p.key} ? 'background:#FC6514;' : 'background:rgba(0,0,0,0.14);') + (!editing ? 'opacity:0.5; cursor:not-allowed;' : 'cursor:pointer;')`}
+                        x-on:click="if(editing){ $data['val_' + '${p.key}'] = !$data['val_' + '${p.key}']; dirty = true; }"
+                      >
+                        <div
+                          style="position:absolute; top:4px; width:14px; height:14px; border-radius:9999px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.2); transition:left 0.2s ease;"
+                          x-bind:style={`val_${p.key} ? 'left:22px;' : 'left:4px;'`}
+                        />
+                      </div>
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {/* Save / Cancel row */}
+          <div x-show="editing" style="display:flex; gap:10px; margin-top:4px; padding-top:20px; border-top:1px solid rgba(0,0,0,0.07); flex-wrap:wrap;">
+            <button type="submit" style={saveBtn + ' margin-top:0;'}>Save Permissions</button>
+            <button type="button"
+              style="padding:11px 20px; font-size:13px; font-weight:600; color:#78716C; background:transparent; border:1px solid rgba(0,0,0,0.12); border-radius:10px; cursor:pointer; transition:all 0.15s ease;"
+              x-on:click="editing = false; dirty = false;"
+              onmouseover="this.style.borderColor='rgba(0,0,0,0.22)'"
+              onmouseout="this.style.borderColor='rgba(0,0,0,0.12)'"
+            >
+              Cancel
+            </button>
+            <button type="button"
+              style="padding:11px 20px; font-size:13px; font-weight:500; color:#EF4444; background:transparent; border:1px solid rgba(239,68,68,0.20); border-radius:10px; cursor:pointer; margin-left:auto; transition:all 0.15s ease;"
+              x-on:click="if(confirm('Reset all permissions to system defaults? This cannot be undone.')){ editing = false; dirty = false; }"
+              onmouseover="this.style.background='rgba(239,68,68,0.06)'"
+              onmouseout="this.style.background='transparent'"
+            >
+              Reset to defaults
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </div>
 )

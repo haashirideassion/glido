@@ -472,6 +472,124 @@ portalRoutes.get('/', (c) => {
   )
 })
 
+// ─── Login ───────────────────────────────────────────────────────────────────
+portalRoutes.get('/login', (c) => {
+  const next = c.req.query('next') || ''
+  return c.html(
+    <PublicLayout title="Sign In" plain>
+      <div style="min-height:calc(100vh - 56px - 64px); display:flex; align-items:center; justify-content:center; padding:40px 24px; background:linear-gradient(160deg,#FAFAF9 0%,#F7F6F5 100%);">
+
+        {/* Decorative dot grid */}
+        <div style="position:fixed; inset:0; background-image:radial-gradient(rgba(0,0,0,0.05) 1px,transparent 1px); background-size:28px 28px; pointer-events:none; z-index:0;" />
+
+        <div style="position:relative; z-index:1; width:100%; max-width:400px;">
+
+          {/* Card */}
+          <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:24px; padding:44px 40px; box-shadow:0 2px 8px rgba(0,0,0,0.04), 0 16px 48px rgba(0,0,0,0.09);">
+
+            {/* Logo / heading */}
+            <div style="text-align:center; margin-bottom:36px;">
+              <div style="width:52px; height:52px; border-radius:14px; background:linear-gradient(135deg,#FF7A2A 0%,#E85A0A 100%); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; box-shadow:0 4px 14px rgba(252,101,20,0.38);">
+                <Icon name={ICONS.users} size={24} style="color:#fff;" />
+              </div>
+              <h1 style="font-size:20px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:6px;">Sign in to Glido</h1>
+              <p style="font-size:13px; color:#78716C; line-height:1.6;">Access the reception dashboard or your visitor account.</p>
+            </div>
+
+            {/* Role selector */}
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:28px;" x-data="{ role: 'staff' }">
+              <button type="button"
+                x-on:click="role = 'staff'"
+                style="padding:11px 8px; font-size:12.5px; font-weight:600; border-radius:10px; cursor:pointer; border:1.5px solid rgba(0,0,0,0.10); transition:all 0.15s ease; text-align:center;"
+                x-bind:style="role === 'staff' ? 'background:rgba(252,101,20,0.08); border-color:rgba(252,101,20,0.35); color:#FC6514;' : 'background:transparent; border-color:rgba(0,0,0,0.10); color:#78716C;'"
+              >
+                <div style="margin-bottom:3px;">🏢</div>
+                Reception Staff
+              </button>
+              <button type="button"
+                x-on:click="role = 'visitor'"
+                style="padding:11px 8px; font-size:12.5px; font-weight:600; border-radius:10px; cursor:pointer; border:1.5px solid rgba(0,0,0,0.10); transition:all 0.15s ease; text-align:center;"
+                x-bind:style="role === 'visitor' ? 'background:rgba(252,101,20,0.08); border-color:rgba(252,101,20,0.35); color:#FC6514;' : 'background:transparent; border-color:rgba(0,0,0,0.10); color:#78716C;'"
+              >
+                <div style="margin-bottom:3px;">🚛</div>
+                Visitor / Driver
+              </button>
+            </div>
+
+            {/* ── Staff login form ── */}
+            <div x-show="role === 'staff'" x-cloak>
+              <form method="post" action="/login" style="display:flex; flex-direction:column; gap:16px;">
+                <input type="hidden" name="role" value="staff" />
+                {next && <input type="hidden" name="next" value={next} />}
+                <div>
+                  <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;">Email</label>
+                  <input type="email" name="email" placeholder="you@cfs.com.au" required
+                    style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                    onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                    onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
+                  />
+                </div>
+                <div>
+                  <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;">Password</label>
+                  <input type="password" name="password" placeholder="••••••••" required
+                    style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                    onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                    onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
+                  />
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%; padding:13px 20px; font-size:14px; border:none; cursor:pointer; justify-content:center;">
+                  Sign in to Reception
+                  <Icon name={ICONS.arrowRight} size={14} />
+                </button>
+              </form>
+              <p style="text-align:center; font-size:12px; color:#A8A29E; margin-top:16px;">
+                Forgot your password? Contact your Reception Admin.
+              </p>
+            </div>
+
+            {/* ── Visitor login / options ── */}
+            <div x-show="role === 'visitor'" x-cloak>
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <a href="/book" class="btn-primary" style="padding:13px 20px; font-size:14px; border:none; cursor:pointer; justify-content:center; text-align:center;">
+                  <Icon name={ICONS.calendar} size={14} />
+                  Book a New Visit
+                  <Icon name={ICONS.arrowRight} size={14} />
+                </a>
+                <a href="/bookings" class="btn-ghost" style="padding:12px 20px; font-size:14px; cursor:pointer; justify-content:center; text-align:center;">
+                  <Icon name={ICONS.search} size={14} />
+                  Look Up My Booking
+                </a>
+              </div>
+              <div style="margin-top:20px; padding-top:20px; border-top:1px solid rgba(0,0,0,0.07);">
+                <p style="font-size:12px; color:#A8A29E; text-align:center; line-height:1.6;">
+                  No account needed to book a visit.<br />
+                  <a href="#" style="color:#FC6514; text-decoration:none; font-weight:500;">Create an account</a> to save your booking history.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Back link */}
+          <p style="text-align:center; margin-top:20px; font-size:12px; color:#A8A29E;">
+            <a href="/" style="color:#78716C; text-decoration:none; font-weight:500; transition:color 0.15s ease;"
+              onmouseover="this.style.color='#1C1917'" onmouseout="this.style.color='#78716C'"
+            >
+              ← Back to home
+            </a>
+          </p>
+        </div>
+      </div>
+    </PublicLayout>
+  )
+})
+
+// ─── Login POST — redirect to reception (Supabase auth wired in next phase) ──
+portalRoutes.post('/login', async (c) => {
+  // Phase 1: redirect to reception dashboard. Real Supabase JWT auth wired in Phase 1.5.
+  return c.redirect('/reception')
+})
+
 // ─── Booking wizard ─────────────────────────────────────────────────────────
 portalRoutes.get('/book', (c) => {
   return c.html(

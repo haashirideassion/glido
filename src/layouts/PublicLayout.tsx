@@ -61,9 +61,12 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, childr
               ))}
             </nav>
 
-            <a href="/book" class="btn-primary" style="padding:8px 16px; font-size:12px; gap:6px;">
-              <Icon name={ICONS.calendar} size={13} />
-              Book a Slot
+            <a href="/login" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; font-size:12px; font-weight:600; color:#1C1917; background:#F5F4F3; border:1px solid rgba(0,0,0,0.10); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
+              onmouseover="this.style.background='#EBEBEA'; this.style.borderColor='rgba(0,0,0,0.18)';"
+              onmouseout="this.style.background='#F5F4F3'; this.style.borderColor='rgba(0,0,0,0.10)';"
+            >
+              <Icon name={ICONS.users} size={13} style="opacity:0.6;" />
+              Login
             </a>
           </div>
         </header>
