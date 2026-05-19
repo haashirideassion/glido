@@ -34,8 +34,14 @@
     var overlay = document.getElementById('g-pl-overlay')
     var wrap    = document.getElementById('g-pl-logo-wrap')
 
-    /* complete the bar */
-    if (bar) { bar.style.transition = 'width 0.18s ease'; bar.style.width = '100%' }
+    /* complete the bar — also upgrade height/glow if head script used 3px */
+    if (bar) {
+      bar.style.height     = '4px'
+      bar.style.background = 'linear-gradient(90deg,#FC6514 0%,#FF9500 100%)'
+      bar.style.boxShadow  = '0 0 10px rgba(252,101,20,0.55)'
+      bar.style.transition = 'width 0.18s ease'
+      bar.style.width      = '100%'
+    }
 
     setTimeout(function () {
       var anchor = document.querySelector('.glido-logo-anchor')
@@ -178,28 +184,37 @@
     if (_exiting) return
     _exiting = true
 
-    /* white flash overlay */
-    var ov = document.createElement('div')
-    ov.style.cssText = [
-      'position:fixed', 'inset:0', 'z-index:9998',
-      'background:#ffffff', 'opacity:0', 'pointer-events:none',
-      'transition:opacity 0.22s ease',
+    /* ── Orange progress bar exit (much more visible than a white overlay) ── */
+    var exitBar = document.createElement('div')
+    exitBar.style.cssText = [
+      'position:fixed', 'top:0', 'left:0', 'height:4px', 'width:0%',
+      'background:linear-gradient(90deg,#FC6514 0%,#FF9500 100%)',
+      'z-index:100001', 'border-radius:0 2px 2px 0',
+      'box-shadow:0 0 10px rgba(252,101,20,0.55)',
+      'pointer-events:none',
     ].join(';')
-    document.body.appendChild(ov)
+    document.body.appendChild(exitBar)
 
-    /* slide content up */
+    /* ── Content fades down — feels like the page "gives way" ── */
     var main = document.querySelector('main') || document.querySelector('#main-content')
     if (main) {
-      main.style.transition = 'opacity 0.18s ease, transform 0.24s ' + EO
+      main.style.transition = 'opacity 0.18s ease, transform 0.22s ' + EO
       main.style.opacity    = '0'
-      main.style.transform  = 'translateY(-12px)'
+      main.style.transform  = 'translateY(8px)'
     }
 
+    /* Fill bar quickly to 85%, then snap to 100% and navigate */
     requestAnimationFrame(function () {
-      requestAnimationFrame(function () { ov.style.opacity = '1' })
+      requestAnimationFrame(function () {
+        exitBar.style.transition = 'width 0.18s cubic-bezier(0.4,0,0.2,1)'
+        exitBar.style.width      = '85%'
+        setTimeout(function () {
+          exitBar.style.transition = 'width 0.07s ease'
+          exitBar.style.width      = '100%'
+          setTimeout(function () { window.location.href = href }, 80)
+        }, 180)
+      })
     })
-
-    setTimeout(function () { window.location.href = href }, 220)
   }
 
   function _interceptLinks () {

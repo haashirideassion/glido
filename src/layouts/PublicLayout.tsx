@@ -39,7 +39,7 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, childr
             if (firstVisit) sessionStorage.setItem('g-visited','1');
             var s=document.createElement('style');
             s.textContent='#g-pl-overlay{position:fixed;inset:0;z-index:99998;background:#fff;pointer-events:none}'
-              +'#g-pl-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:'+O2+';z-index:100000}'
+              +'#g-pl-bar{position:fixed;top:0;left:0;height:4px;width:0%;background:linear-gradient(90deg,'+O2+',#FF9500);box-shadow:0 0 10px rgba(252,101,20,0.5);z-index:100000}'
               +(firstVisit ? '#g-pl-logo-wrap{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:99999;pointer-events:none}' : '');
             document.head.appendChild(s);
             if (!firstVisit) {
