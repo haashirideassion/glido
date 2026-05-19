@@ -49,6 +49,70 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
           @media (max-width: 640px) {
             .hero-content { padding: 40px 28px 48px !important; }
           }
+
+          /* ── Nav ─────────────────────────────── */
+          #nav-pill {
+            transition: max-width 0.5s cubic-bezier(0.16,1,0.3,1),
+                        margin   0.5s cubic-bezier(0.16,1,0.3,1),
+                        border-radius 0.5s cubic-bezier(0.16,1,0.3,1),
+                        box-shadow 0.5s cubic-bezier(0.16,1,0.3,1),
+                        border-color 0.5s ease;
+          }
+          #main-nav { transition: padding 0.5s cubic-bezier(0.16,1,0.3,1); }
+
+          .nav-link {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 13px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #78716C;
+            text-decoration: none;
+            transition: color 0.15s ease, transform 0.22s cubic-bezier(0.16,1,0.3,1);
+            user-select: none;
+          }
+          .nav-link:hover  { color: #1C1917; transform: translateY(-1.5px); }
+          .nav-link:active { color: #1C1917; transform: translateY(0px) scale(0.96); }
+
+          #nav-hl {
+            position: absolute;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.06);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0;
+            transition: opacity 0.2s ease, width 0.25s cubic-bezier(0.16,1,0.3,1),
+                        height 0.25s cubic-bezier(0.16,1,0.3,1),
+                        left 0.25s cubic-bezier(0.16,1,0.3,1),
+                        top 0.25s cubic-bezier(0.16,1,0.3,1);
+          }
+
+          /* Login shimmer */
+          #nav-login {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.22s cubic-bezier(0.16,1,0.3,1),
+                        box-shadow 0.22s ease,
+                        background 0.22s ease;
+          }
+          #nav-login::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%);
+            transform: translateX(-120%);
+            transition: transform 0.5s ease;
+            pointer-events: none;
+          }
+          #nav-login:hover::after  { transform: translateX(120%); }
+          #nav-login:hover         { transform: translateY(-2px); }
+          #nav-login:active        { transform: translateY(0) scale(0.97); }
         `}</style>
 
         {/* Alpine init must be synchronous before defer */}
@@ -122,57 +186,55 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
       </head>
       <body style="background:#fff; color:#1C1917; overflow-x:hidden;">
 
-        {/* ── Fixed nav ─────────────────────────────────────────────────── */}
-        <header
-          id="main-nav"
-          class="fixed top-0 inset-x-0 z-50"
-          style="transition: background 0.3s ease, box-shadow 0.3s ease;"
-        >
+        {/* ── Nav ─────────────────────────────────────────────────────────── */}
+        <header id="main-nav" style="position:fixed; top:0; left:0; right:0; z-index:50; padding:0; pointer-events:none;">
           <div
-            style="background:rgba(255,255,255,0.92); backdrop-filter:blur(16px) saturate(180%); -webkit-backdrop-filter:blur(16px) saturate(180%); border-bottom:1px solid rgba(0,0,0,0.07);"
+            id="nav-pill"
+            style="pointer-events:all; max-width:100%; margin:0; background:rgba(255,255,255,0.88); backdrop-filter:blur(20px) saturate(200%); -webkit-backdrop-filter:blur(20px) saturate(200%); border:1px solid rgba(0,0,0,0.07); border-radius:0; box-shadow:none;"
           >
-            <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div style="max-width:1200px; margin:0 auto; padding:0 24px; height:60px; display:flex; align-items:center; justify-content:space-between;">
 
               {/* Logo */}
-              <a href="/" class="flex items-center glido-logo-anchor" style="text-decoration:none;">
-                <GlidoLogo height={22} onDark={false} />
+              <a href="/" style="display:flex; align-items:center; text-decoration:none; flex-shrink:0; transition:opacity 0.15s ease;"
+                onmouseover="this.style.opacity='0.75'"
+                onmouseout="this.style.opacity='1'"
+              >
+                <GlidoLogo height={21} onDark={false} />
               </a>
 
-              {/* Center nav */}
-              <nav class="hidden sm:flex items-center gap-1">
+              {/* Center nav — pill track */}
+              <nav id="nav-wrap" style="position:relative; display:flex; align-items:center; gap:2px; padding:4px; background:rgba(0,0,0,0.045); border-radius:12px;">
+                {/* Liquid highlight blob */}
+                <div id="nav-hl"></div>
+
                 {[
-                  { href: '#how-it-works', label: 'How it works', icon: 'solar:info-circle-bold-duotone' },
-                  { href: '/book',         label: 'Book a Slot',  icon: ICONS.calendar                   },
-                  { href: '/bookings',     label: 'My Bookings',  icon: ICONS.bookings                   },
-                  { href: '/dashboard',    label: 'Dashboard',    icon: ICONS.home                       },
+                  { href: '/',         label: 'Home',        icon: ICONS.home     },
+                  { href: '/book',     label: 'Book a Slot', icon: ICONS.calendar },
+                  { href: '/bookings', label: 'My Bookings', icon: ICONS.bookings },
                 ].map(l => (
-                  <a
-                    key={l.href}
-                    href={l.href}
-                    style="display:inline-flex; align-items:center; gap:5px; padding:7px 13px; border-radius:8px; font-size:13px; font-weight:500; color:#78716C; text-decoration:none; transition:all 0.15s ease;"
-                    onmouseover="this.style.color='#1C1917'; this.style.background='rgba(0,0,0,0.05)';"
-                    onmouseout="this.style.color='#78716C'; this.style.background='transparent';"
-                  >
-                    <Icon name={l.icon} size={14} style="opacity:0.7;" />
+                  <a key={l.href} href={l.href} class="nav-link">
+                    <Icon name={l.icon} size={14} style="opacity:0.65; transition:opacity 0.15s ease;" />
                     {l.label}
                   </a>
                 ))}
               </nav>
 
-              {/* CTA */}
-              <a href="/login" style="display:inline-flex; align-items:center; gap:6px; padding:9px 18px; font-size:13px; font-weight:600; color:#1C1917; background:#F5F4F3; border:1px solid rgba(0,0,0,0.10); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
-                onmouseover="this.style.background='#EBEBEA'; this.style.borderColor='rgba(0,0,0,0.18)';"
-                onmouseout="this.style.background='#F5F4F3'; this.style.borderColor='rgba(0,0,0,0.10)';"
+              {/* Login CTA */}
+              <a
+                id="nav-login"
+                href="/login"
+                style="display:inline-flex; align-items:center; gap:6px; padding:9px 20px; font-size:13px; font-weight:600; color:#1C1917; background:linear-gradient(160deg,#F9F8F7 0%,#EEEDEC 100%); border:1px solid rgba(0,0,0,0.10); border-radius:9999px; text-decoration:none; box-shadow:0 1px 3px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.85); flex-shrink:0;"
               >
-                <Icon name={ICONS.users} size={13} style="opacity:0.6;" />
+                <Icon name={ICONS.users} size={13} style="opacity:0.55;" />
                 Login
               </a>
+
             </div>
           </div>
         </header>
 
         {/* ── Main content ────────────────────────────────────────────── */}
-        <main style="padding-top:64px;">
+        <main style="padding-top:60px;">
           {children}
         </main>
 
@@ -298,6 +360,89 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
 
         {/* ── Global animation engine ───────────────────────────────────── */}
         <script src="/public/transitions.js"></script>
+
+        {/* ── Nav: floating pill + 3D interactions ─────────────────────── */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            var nav    = document.getElementById('main-nav');
+            var pill   = document.getElementById('nav-pill');
+            var wrap   = document.getElementById('nav-wrap');
+            var hl     = document.getElementById('nav-hl');
+            var links  = document.querySelectorAll('.nav-link');
+            var login  = document.getElementById('nav-login');
+            var pinned = false;
+
+            /* ── Scroll → floating pill ── */
+            function applyScroll() {
+              var s = window.scrollY > 28;
+              if (s === pinned) return;
+              pinned = s;
+              if (s) {
+                nav.style.padding = '10px 20px';
+                pill.style.maxWidth = '860px';
+                pill.style.margin = '0 auto';
+                pill.style.borderRadius = '20px';
+                pill.style.borderColor = 'rgba(255,255,255,0.28)';
+                pill.style.boxShadow =
+                  '0 1px 0 rgba(255,255,255,0.9) inset,' +
+                  '0 4px 8px rgba(0,0,0,0.04),' +
+                  '0 14px 36px rgba(0,0,0,0.11),' +
+                  '0 0 0 1px rgba(0,0,0,0.05)';
+              } else {
+                nav.style.padding = '0';
+                pill.style.maxWidth = '100%';
+                pill.style.margin = '0';
+                pill.style.borderRadius = '0';
+                pill.style.borderColor = 'rgba(0,0,0,0.07)';
+                pill.style.boxShadow = 'none';
+              }
+            }
+            window.addEventListener('scroll', applyScroll, { passive: true });
+            applyScroll();
+
+            /* ── Liquid highlight ── */
+            links.forEach(function(link) {
+              link.addEventListener('mouseenter', function() {
+                var lr = this.getBoundingClientRect();
+                var wr = wrap.getBoundingClientRect();
+                hl.style.opacity = '1';
+                hl.style.width  = lr.width  + 'px';
+                hl.style.height = lr.height + 'px';
+                hl.style.left   = (lr.left - wr.left) + 'px';
+                hl.style.top    = (lr.top  - wr.top)  + 'px';
+              });
+              link.addEventListener('mouseleave', function() {
+                hl.style.opacity = '0';
+              });
+            });
+
+            /* ── Login button shadow depth ── */
+            if (login) {
+              login.addEventListener('mouseenter', function() {
+                this.style.boxShadow =
+                  '0 2px 6px rgba(0,0,0,0.07),' +
+                  '0 8px 22px rgba(0,0,0,0.11),' +
+                  'inset 0 1px 0 rgba(255,255,255,0.95)';
+              });
+              login.addEventListener('mouseleave', function() {
+                this.style.boxShadow =
+                  '0 1px 3px rgba(0,0,0,0.06),' +
+                  'inset 0 1px 0 rgba(255,255,255,0.85)';
+              });
+              login.addEventListener('mousedown', function() {
+                this.style.boxShadow =
+                  '0 1px 2px rgba(0,0,0,0.05),' +
+                  'inset 0 1px 0 rgba(255,255,255,0.7)';
+              });
+              login.addEventListener('mouseup', function() {
+                this.style.boxShadow =
+                  '0 2px 6px rgba(0,0,0,0.07),' +
+                  '0 8px 22px rgba(0,0,0,0.11),' +
+                  'inset 0 1px 0 rgba(255,255,255,0.95)';
+              });
+            }
+          })();
+        `}} />
 
         <style>{`
           @media (max-width: 768px) {
