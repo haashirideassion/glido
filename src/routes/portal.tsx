@@ -39,83 +39,37 @@ portalRoutes.get('/', (c) => {
       {/* ══════════════════════════════════════════════════════════════════
           §1  HERO — contained card on warp background
       ══════════════════════════════════════════════════════════════════ */}
-      <section id="hero-section" style="padding:56px 40px 72px; background:#fff; position:relative; overflow:hidden;">
+      <section id="hero-section" style="padding:56px 40px 72px; background:#F7F6F5; position:relative;">
 
-        {/* ── Warp beams ── */}
-        <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
-          <div style="position:absolute; left:-70%; right:-70%; bottom:0; height:80%; transform:perspective(280px) rotateX(72deg); transform-origin:center bottom; background-image:linear-gradient(rgba(0,0,0,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.07) 1px,transparent 1px); background-size:80px 80px; mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%); -webkit-mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%);"></div>
-          {[
-            { l:'6%',  dur:'3.1s', del:'0.0s', c:'rgba(252,101,20,0.50)', h:'120px' },
-            { l:'18%', dur:'4.4s', del:'1.2s', c:'rgba(99,130,255,0.38)', h:'140px' },
-            { l:'31%', dur:'2.9s', del:'0.5s', c:'rgba(52,211,153,0.38)', h:'100px' },
-            { l:'47%', dur:'3.7s', del:'1.9s', c:'rgba(252,101,20,0.34)', h:'130px' },
-            { l:'62%', dur:'2.6s', del:'0.3s', c:'rgba(168,85,247,0.40)', h:'110px' },
-            { l:'76%', dur:'4.0s', del:'1.5s', c:'rgba(251,191,36,0.40)', h:'125px' },
-            { l:'90%', dur:'3.4s', del:'0.8s', c:'rgba(236,72,153,0.36)', h:'105px' },
-          ].map((b, i) => (
-            <div key={i} class="warp-beam" style={`left:${b.l}; height:${b.h}; background:linear-gradient(to top,${b.c},transparent); animation-duration:${b.dur}; animation-delay:${b.del}; mix-blend-mode:multiply;`} />
-          ))}
-        </div>
-
-        {/* ── Hero card — full-width, photo as card background ── */}
+        {/* ── Hero card ── */}
         <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:520px; display:flex; align-items:center;">
 
-          {/* Photo background — right 55% visible, left blacked out for text */}
-          <div style="position:absolute; inset:0; background-image:url('https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/bf7f2d26-7889-4678-868d-8cde754846e9_3840w.jpg'); background-size:cover; background-position:center right;"></div>
+          {/* Full-bleed photo */}
+          <div style="position:absolute; inset:0; background-image:url('https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/bf7f2d26-7889-4678-868d-8cde754846e9_3840w.jpg'); background-size:cover; background-position:center;"></div>
 
-          {/* Dark base — left to right: opaque → transparent */}
-          <div style="position:absolute; inset:0; background:linear-gradient(to right, #0A0E14 0%, #0A0E14 30%, rgba(10,14,20,0.92) 48%, rgba(10,14,20,0.55) 65%, rgba(10,14,20,0.20) 82%, rgba(10,14,20,0.08) 100%);"></div>
-
-          {/* Grid texture over dark portion */}
-          <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px); background-size:52px 52px; mask-image:linear-gradient(to right,black 0%,black 35%,transparent 60%); -webkit-mask-image:linear-gradient(to right,black 0%,black 35%,transparent 60%);"></div>
-
-          {/* Orange bloom behind text */}
-          <div style="position:absolute; top:0; left:0; width:55%; height:100%; background:radial-gradient(ellipse 80% 70% at 60% 55%,rgba(252,101,20,0.16) 0%,transparent 65%); pointer-events:none;"></div>
-
-          {/* Bottom vignette */}
-          <div style="position:absolute; bottom:0; left:0; right:0; height:30%; background:linear-gradient(to top,rgba(6,4,2,0.50) 0%,transparent 100%);"></div>
+          {/* Dark scrim — heavier on left for text, softens across the card */}
+          <div style="position:absolute; inset:0; background:linear-gradient(105deg, rgba(8,10,14,0.88) 0%, rgba(8,10,14,0.75) 45%, rgba(8,10,14,0.45) 70%, rgba(8,10,14,0.25) 100%);"></div>
 
           {/* Content */}
-          <div style="position:relative; z-index:1; padding:60px 64px;" class="hero-content">
+          <div style="position:relative; z-index:1; padding:64px 72px; max-width:640px;" class="hero-content">
 
-            {/* Live badge */}
-            <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.13); border:1px solid rgba(34,197,94,0.28); margin-bottom:36px;">
-              <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
-              <span style="font-size:11px; font-weight:600; color:#4ADE80; letter-spacing:0.01em;">Open today · Sydney CFS</span>
-            </div>
-
-            {/* Monospace eyebrow */}
-            <p style="font-family:ui-monospace,monospace; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.18); margin-bottom:14px;">── slot booking system</p>
-
-            {/* Stat anchor */}
-            <div style="margin-bottom:22px; padding-bottom:22px; border-bottom:1px solid rgba(255,255,255,0.07);">
-              <span style="display:block; font-size:clamp(3.2rem,5.8vw,5.8rem); font-weight:800; letter-spacing:-0.07em; line-height:0.82; color:#FC6514;">4 min</span>
-              <span style="display:block; font-size:clamp(0.78rem,1.15vw,0.96rem); font-weight:400; letter-spacing:0.02em; color:rgba(255,255,255,0.36); margin-top:10px; font-style:italic;">average gate time with Glido</span>
-            </div>
-
-            {/* Main headline */}
-            <h1 style="font-size:clamp(1.45rem,2.5vw,2.3rem); font-weight:800; letter-spacing:-0.048em; line-height:0.97; color:#ffffff; margin-bottom:18px;">
-              <span style="display:block;">Book your CFS slot.</span>
-              <span style="display:block; color:#FC6514; margin-top:3px;">Skip the queue.</span>
+            <h1 style="font-size:clamp(2rem,3.8vw,3.6rem); font-weight:800; letter-spacing:-0.05em; line-height:1.0; color:#ffffff; margin-bottom:14px;">
+              Book your CFS slot.<br/>
+              <span style="color:#FC6514;">Skip the queue.</span>
             </h1>
 
-            {/* Subtext */}
-            <p style="font-size:13px; color:rgba(255,255,255,0.42); line-height:1.80; margin-bottom:34px; max-width:300px;">
+            <p style="font-size:15px; color:rgba(255,255,255,0.58); line-height:1.78; margin-bottom:36px; max-width:420px;">
               Instant booking for drivers, forwarders, and depot teams. Scan your QR at the kiosk — straight to the bay.
             </p>
 
-            {/* CTAs */}
             <div style="display:flex; gap:12px; flex-wrap:wrap;">
               <a href="/book" class="btn-primary" style="padding:13px 28px; font-size:14px;">
-                <Icon name={ICONS.calendar} size={15} />
                 Book a Visit
-                <Icon name={ICONS.arrowRight} size={14} />
               </a>
-              <a href="/bookings" style="display:inline-flex; align-items:center; gap:8px; padding:13px 24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.72); border:1.5px solid rgba(255,255,255,0.16); border-radius:9999px; text-decoration:none; transition:all 0.15s ease; backdrop-filter:blur(8px);"
-                onmouseover="this.style.borderColor='rgba(255,255,255,0.42)'; this.style.color='#fff';"
-                onmouseout="this.style.borderColor='rgba(255,255,255,0.16)'; this.style.color='rgba(255,255,255,0.72)';"
+              <a href="/bookings" style="display:inline-flex; align-items:center; padding:13px 24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.80); border:1.5px solid rgba(255,255,255,0.22); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
+                onmouseover="this.style.borderColor='rgba(255,255,255,0.50)'; this.style.color='#fff';"
+                onmouseout="this.style.borderColor='rgba(255,255,255,0.22)'; this.style.color='rgba(255,255,255,0.80)';"
               >
-                <Icon name={ICONS.search} size={15} />
                 Look Up Booking
               </a>
             </div>
