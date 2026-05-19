@@ -39,7 +39,23 @@ portalRoutes.get('/', (c) => {
       {/* ══════════════════════════════════════════════════════════════════
           §1  HERO — contained card on warp background
       ══════════════════════════════════════════════════════════════════ */}
-      <section id="hero-section" style="padding:56px 40px 72px; background:#F7F6F5; position:relative;">
+      <section id="hero-section" style="padding:56px 40px 72px; background:#F7F6F5; position:relative; overflow:hidden;">
+
+        {/* ── Warp beams ── */}
+        <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
+          <div style="position:absolute; left:-70%; right:-70%; bottom:0; height:80%; transform:perspective(280px) rotateX(72deg); transform-origin:center bottom; background-image:linear-gradient(rgba(0,0,0,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.06) 1px,transparent 1px); background-size:80px 80px; mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%); -webkit-mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%);"></div>
+          {[
+            { l:'6%',  dur:'3.1s', del:'0.0s', c:'rgba(252,101,20,0.45)', h:'120px' },
+            { l:'18%', dur:'4.4s', del:'1.2s', c:'rgba(99,130,255,0.35)',  h:'140px' },
+            { l:'31%', dur:'2.9s', del:'0.5s', c:'rgba(52,211,153,0.35)',  h:'100px' },
+            { l:'47%', dur:'3.7s', del:'1.9s', c:'rgba(252,101,20,0.30)',  h:'130px' },
+            { l:'62%', dur:'2.6s', del:'0.3s', c:'rgba(168,85,247,0.38)',  h:'110px' },
+            { l:'76%', dur:'4.0s', del:'1.5s', c:'rgba(251,191,36,0.38)',  h:'125px' },
+            { l:'90%', dur:'3.4s', del:'0.8s', c:'rgba(236,72,153,0.34)',  h:'105px' },
+          ].map((b, i) => (
+            <div key={i} class="warp-beam" style={`left:${b.l}; height:${b.h}; background:linear-gradient(to top,${b.c},transparent); animation-duration:${b.dur}; animation-delay:${b.del}; mix-blend-mode:multiply;`} />
+          ))}
+        </div>
 
         {/* ── Hero card ── */}
         <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:520px; display:flex; align-items:center;">
@@ -64,12 +80,15 @@ portalRoutes.get('/', (c) => {
 
             <div style="display:flex; gap:12px; flex-wrap:wrap;">
               <a href="/book" class="btn-primary" style="padding:13px 28px; font-size:14px;">
+                <Icon name={ICONS.calendar} size={15} />
                 Book a Visit
+                <Icon name={ICONS.arrowRight} size={14} />
               </a>
-              <a href="/bookings" style="display:inline-flex; align-items:center; padding:13px 24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.80); border:1.5px solid rgba(255,255,255,0.22); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
+              <a href="/bookings" style="display:inline-flex; align-items:center; gap:8px; padding:13px 24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.80); border:1.5px solid rgba(255,255,255,0.22); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
                 onmouseover="this.style.borderColor='rgba(255,255,255,0.50)'; this.style.color='#fff';"
                 onmouseout="this.style.borderColor='rgba(255,255,255,0.22)'; this.style.color='rgba(255,255,255,0.80)';"
               >
+                <Icon name={ICONS.search} size={15} />
                 Look Up Booking
               </a>
             </div>
