@@ -392,6 +392,47 @@
   }
 
   /* ══════════════════════════════════════════════════════════════════════════
+     TOAST SYSTEM
+     Usage: window.gToast('Your message', 'success' | 'error' | 'info')
+  ══════════════════════════════════════════════════════════════════════════ */
+  function _setupToast () {
+    // Create toast container once
+    if (document.getElementById('g-toast-container')) return
+    var ct = document.createElement('div')
+    ct.id = 'g-toast-container'
+    ct.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:99998;display:flex;flex-direction:column;gap:8px;pointer-events:none;'
+    document.body.appendChild(ct)
+
+    window.gToast = function (msg, type) {
+      var t = document.createElement('div')
+      var bg = type === 'error' ? '#DC2626' : type === 'success' ? '#16A34A' : '#1C1917'
+      t.style.cssText = 'background:' + bg + ';color:#fff;padding:11px 18px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,0.22);pointer-events:all;opacity:0;transform:translateY(8px);transition:opacity 0.25s ease,transform 0.28s ' + SP + ';white-space:nowrap;max-width:340px;'
+      t.textContent = msg
+      ct.appendChild(t)
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          t.style.opacity   = '1'
+          t.style.transform = 'translateY(0)'
+        })
+      })
+      setTimeout(function () {
+        t.style.opacity   = '0'
+        t.style.transform = 'translateY(8px)'
+        setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t) }, 300)
+      }, 3200)
+    }
+
+    // Auto-toast on HTMX after-request events — look for data-toast attributes on swapped content
+    document.body.addEventListener('htmx:afterSwap', function (e) {
+      var target = e.detail && e.detail.target
+      if (!target) return
+      var msg  = target.getAttribute('data-toast')
+      var type = target.getAttribute('data-toast-type') || 'success'
+      if (msg) window.gToast(msg, type)
+    })
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════
      BOOT
   ══════════════════════════════════════════════════════════════════════════ */
   function _boot () {
@@ -405,6 +446,7 @@
     _setupParallax()
     _setupHtmxSwapAnim()
     _interceptLinks()
+    _setupToast()
     /* dismiss preloader — slight delay so logo has time to appear */
     setTimeout(_plDismiss, 220)
   }

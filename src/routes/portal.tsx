@@ -7,7 +7,7 @@ import { BookingWizard } from '../components/portal/BookingWizard'
 import { MyBookingsList } from '../components/portal/MyBookingsList'
 import { VisitorDashboard } from '../components/portal/VisitorDashboard'
 import { Input } from '../components/ui/input'
-import { getBookings, findBooking, createBooking, getBookingsByUserId } from '../lib/db/bookings'
+import { getBookings, findBooking, createBooking, getBookingsByUserId, cancelBooking, getBookingByRef } from '../lib/db/bookings'
 import { getSlotsByDate } from '../lib/db/slots'
 import { getTenant } from '../lib/db/tenants'
 import { lookupShipment, lookupShipmentByContainer } from '../lib/db/cfs-shipments'
@@ -582,7 +582,7 @@ portalRoutes.get('/login', async (c) => {
                 </button>
               </form>
               <p style="text-align:center; font-size:12px; color:#A8A29E; margin-top:16px;">
-                Forgot your password? Contact your Reception Admin.
+                <a href="/forgot-password" style="color:#FC6514; text-decoration:none; font-weight:500;">Forgot your password?</a>
               </p>
             </div>
 
@@ -759,6 +759,93 @@ portalRoutes.post('/signup', async (c) => {
   }
 })
 
+// ─── Forgot Password GET ──────────────────────────────────────────────────────
+portalRoutes.get('/forgot-password', (c) => {
+  const sent = c.req.query('sent')
+  return c.html(
+    <PublicLayout title="Forgot Password" plain>
+      <div style="min-height:calc(100vh - 56px - 64px); display:flex; align-items:center; justify-content:center; padding:40px 24px; background:linear-gradient(160deg,#FAFAF9 0%,#F7F6F5 100%);">
+        <div style="position:fixed; inset:0; background-image:radial-gradient(rgba(0,0,0,0.05) 1px,transparent 1px); background-size:28px 28px; pointer-events:none; z-index:0;" />
+        <div style="position:relative; z-index:1; width:100%; max-width:400px;">
+          <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:24px; padding:44px 40px; box-shadow:0 2px 8px rgba(0,0,0,0.04), 0 16px 48px rgba(0,0,0,0.09);">
+            <div style="text-align:center; margin-bottom:32px;">
+              <div style="width:52px; height:52px; border-radius:14px; background:linear-gradient(135deg,#FF7A2A 0%,#E85A0A 100%); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; box-shadow:0 4px 14px rgba(252,101,20,0.38);">
+                <Icon name={ICONS.users} size={24} style="color:#fff;" />
+              </div>
+              <h1 style="font-size:20px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:6px;">Reset your password</h1>
+              <p style="font-size:13px; color:#78716C; line-height:1.6;">Enter your email and we'll send you a reset link.</p>
+            </div>
+            {sent === '1' ? (
+              <div style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.22); border-radius:10px; padding:14px 16px; font-size:13px; color:#16A34A; text-align:center; line-height:1.5;">
+                Check your inbox — a password reset link is on its way. It may take a minute or two.
+              </div>
+            ) : (
+              <form method="post" action="/forgot-password" style="display:flex; flex-direction:column; gap:16px;">
+                <div>
+                  <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;">Email Address</label>
+                  <input type="email" name="email" required placeholder="you@example.com"
+                    style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                    onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                    onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%; padding:13px 20px; font-size:14px; border:none; cursor:pointer; justify-content:center;">
+                  Send Reset Link
+                  <Icon name={ICONS.arrowRight} size={14} />
+                </button>
+              </form>
+            )}
+            <p style="text-align:center; font-size:12px; color:#A8A29E; margin-top:20px;">
+              <a href="/login" style="color:#FC6514; text-decoration:none; font-weight:500;">← Back to sign in</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </PublicLayout>
+  )
+})
+
+// ─── Forgot Password POST ─────────────────────────────────────────────────────
+portalRoutes.post('/forgot-password', async (c) => {
+  const body = await c.req.parseBody()
+  const email = String(body.email ?? '').trim().toLowerCase()
+  if (email) {
+    const { supabase } = await import('../lib/supabase')
+    // Fire and forget — always redirect so we don't leak whether email exists
+    supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${c.req.header('origin') ?? 'https://glido.com'}/reset-password`,
+    }).catch(console.error)
+  }
+  return c.redirect('/forgot-password?sent=1')
+})
+
+// ─── Reset Password GET ───────────────────────────────────────────────────────
+portalRoutes.get('/reset-password', (c) => {
+  return c.html(
+    <PublicLayout title="Reset Password" plain>
+      <div style="min-height:calc(100vh - 56px - 64px); display:flex; align-items:center; justify-content:center; padding:40px 24px; background:linear-gradient(160deg,#FAFAF9 0%,#F7F6F5 100%);">
+        <div style="position:fixed; inset:0; background-image:radial-gradient(rgba(0,0,0,0.05) 1px,transparent 1px); background-size:28px 28px; pointer-events:none; z-index:0;" />
+        <div style="position:relative; z-index:1; width:100%; max-width:400px;">
+          <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:24px; padding:44px 40px; box-shadow:0 2px 8px rgba(0,0,0,0.04), 0 16px 48px rgba(0,0,0,0.09);">
+            <div style="text-align:center; margin-bottom:32px;">
+              <div style="width:52px; height:52px; border-radius:14px; background:linear-gradient(135deg,#FF7A2A 0%,#E85A0A 100%); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; box-shadow:0 4px 14px rgba(252,101,20,0.38);">
+                <Icon name={ICONS.users} size={24} style="color:#fff;" />
+              </div>
+              <h1 style="font-size:20px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:6px;">Set a new password</h1>
+              <p style="font-size:13px; color:#78716C; line-height:1.6;">This link was sent to your email. Choose a new password below.</p>
+            </div>
+            <div style="background:rgba(252,101,20,0.08); border:1px solid rgba(252,101,20,0.22); border-radius:10px; padding:14px 16px; font-size:13px; color:#FC6514; text-align:center; line-height:1.5;">
+              Password reset via email link is handled by Supabase Auth. Use the link in your email to set a new password through the Supabase-hosted reset page.
+            </div>
+            <p style="text-align:center; font-size:12px; color:#A8A29E; margin-top:20px;">
+              <a href="/login" style="color:#FC6514; text-decoration:none; font-weight:500;">← Back to sign in</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </PublicLayout>
+  )
+})
+
 // ─── Visitor Dashboard ────────────────────────────────────────────────────────
 portalRoutes.get('/dashboard', async (c) => {
   const user = await getSessionUser(c)
@@ -862,6 +949,27 @@ portalRoutes.get('/bookings', async (c) => {
   )
 })
 
+// ─── Visitor booking cancel ───────────────────────────────────────────────────
+portalRoutes.post('/bookings/:ref/cancel', async (c) => {
+  const user = await getSessionUser(c)
+  if (!user) return c.redirect('/login?next=%2Fdashboard')
+
+  const ref = c.req.param('ref').toUpperCase()
+  const booking = await getBookingByRef(ref).catch(() => null)
+  if (!booking) return c.redirect('/dashboard')
+
+  // Only allow cancellation of future scheduled bookings owned by this user
+  const today = new Date().toISOString().split('T')[0]
+  const isOwner = (booking as any).userId === user.id || (booking as any).user_id === user.id
+  const isCancellable = booking.status === 'scheduled' && booking.slotDate >= today
+
+  if (isCancellable) {
+    await cancelBooking(booking.id).catch(console.error)
+  }
+
+  return c.redirect('/dashboard')
+})
+
 // ─── Shipment lookup API (called by Alpine wizard) ────────────────────────────
 portalRoutes.post('/api/shipments/lookup', async (c) => {
   try {
@@ -959,6 +1067,8 @@ portalRoutes.get('/api/slots', async (c) => {
 // ─── Create booking (POST from wizard) ───────────────────────────────────────
 portalRoutes.post('/bookings', async (c) => {
   const body = await c.req.parseBody()
+  // Attach user_id if visitor is logged in
+  const sessionUser = await getSessionUser(c).catch(() => null)
 
   try {
     const booking = await createBooking({
@@ -989,6 +1099,7 @@ portalRoutes.post('/bookings', async (c) => {
       paymentMethod:    (body.paymentMethod as any) || 'card',
       paymentStatus:    (body.paymentStatus as any) || 'pending',
       tenantId:         DEFAULT_TENANT_ID,
+      userId:           sessionUser?.id ?? undefined,
     })
     // ── Fire transactional emails (non-blocking) ──────────────────────────────
     const emailAddress = (body.guestEmail as string | undefined) || (body.driverEmail as string | undefined)
@@ -1068,7 +1179,11 @@ portalRoutes.get('/booking-confirmed/:ref', async (c) => {
           </div>
           <div>
             <p style="font-size:13px; font-weight:600; color:#22C55E;">Booking Confirmed!</p>
-            <p style="font-size:12px; font-family:ui-monospace,monospace; font-weight:700; color:#78716C; margin-top:2px;">{ref}</p>
+            <p
+              style="font-size:12px; font-family:ui-monospace,monospace; font-weight:700; color:#78716C; margin-top:2px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;"
+              title="Click to copy"
+              onclick={`navigator.clipboard.writeText('${ref}').then(function(){this.style.color='#22C55E';setTimeout(()=>{this.style.color='#78716C'},1500)}.bind(this))`}
+            >{ref}</p>
           </div>
         </div>
 

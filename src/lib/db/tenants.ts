@@ -1,4 +1,4 @@
-import { supabase } from '../supabase'
+import { supabaseAdmin as supabase } from '../supabase'
 import type { Database } from './types'
 
 export type TenantRow = Database['public']['Tables']['tenants']['Row']

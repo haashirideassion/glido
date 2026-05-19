@@ -1,4 +1,4 @@
-import { supabase } from '../supabase'
+import { supabaseAdmin as supabase } from '../supabase'
 import type { WalkIn, WalkInPurpose } from '../../data/types'
 import type { Database } from './types'
 

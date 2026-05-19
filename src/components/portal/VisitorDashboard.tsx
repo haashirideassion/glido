@@ -36,16 +36,26 @@ function IcsBadge({ status }: { status?: string }) {
 function BookingCard({ b, compact = false }: { b: Booking; compact?: boolean }) {
   const statusStyle = STATUS_BADGE[b.status] ?? STATUS_BADGE.scheduled
   const isUpcoming = b.status === 'scheduled' || b.status === 'checked_in'
+  const today = new Date().toISOString().split('T')[0]
+  const canCancel = b.status === 'scheduled' && b.slotDate >= today
 
   return (
-    <div style={`background:#FFFFFF; border:1px solid ${isUpcoming ? 'rgba(252,101,20,0.16)' : 'rgba(0,0,0,0.07)'}; border-radius:16px; padding:${compact ? '16px 18px' : '20px 22px'}; transition:box-shadow 0.15s ease;`}
+    <div
+      x-data="{ cancelModal: false }"
+      style={`background:#FFFFFF; border:1px solid ${isUpcoming ? 'rgba(252,101,20,0.16)' : 'rgba(0,0,0,0.07)'}; border-radius:16px; padding:${compact ? '16px 18px' : '20px 22px'}; transition:box-shadow 0.15s ease; position:relative;`}
       onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,0.07)'"
       onmouseout="this.style.boxShadow='none'"
     >
       <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;">
         <div style="flex:1; min-width:0;">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px;">
-            <span style="font-size:11px; font-family:ui-monospace,monospace; font-weight:700; color:#78716C; letter-spacing:0.04em;">{b.referenceNumber}</span>
+            <span
+              style="cursor:pointer; font-size:11px; font-family:ui-monospace,monospace; font-weight:700; color:#78716C; letter-spacing:0.04em;"
+              title="Click to copy reference"
+              onclick="var t=this;navigator.clipboard.writeText(t.textContent.trim()).then(function(){t.style.color='#22C55E';setTimeout(function(){t.style.color='#78716C'},1200)});"
+            >
+              {b.referenceNumber}
+            </span>
             <span style={`font-size:10px; font-weight:600; padding:2px 7px; border-radius:9999px; ${statusStyle}`}>{b.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
             {b.icsStatus && b.icsStatus !== 'unavailable' && <IcsBadge status={b.icsStatus} />}
           </div>
@@ -76,8 +86,47 @@ function BookingCard({ b, compact = false }: { b: Booking; compact?: boolean }) 
           >
             View <Icon name={ICONS.arrowRight} size={11} />
           </a>
+          {canCancel && (
+            <button
+              type="button"
+              {...{"x-on:click.stop": "cancelModal = true"}}
+              style="font-size:11px; font-weight:500; color:#DC2626; background:none; border:none; cursor:pointer; padding:0; opacity:0.75; transition:opacity 0.15s ease;"
+              onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'"
+            >
+              Cancel
+            </button>
+          )}
         </div>
       </div>
+
+      {/* Cancel confirm modal */}
+      {canCancel && (
+        <div
+          x-show="cancelModal"
+          x-cloak
+          style="position:fixed; inset:0; z-index:999; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.50); backdrop-filter:blur(4px);"
+        >
+          <div style="background:#FFFFFF; border-radius:16px; padding:28px; max-width:380px; width:100%; box-shadow:0 16px 48px rgba(0,0,0,0.20);">
+            <h3 style="font-size:16px; font-weight:700; color:#1C1917; margin-bottom:6px;">Cancel this booking?</h3>
+            <p style="font-size:13px; color:#78716C; margin-bottom:6px; line-height:1.5;">
+              You're cancelling booking <strong style="font-family:ui-monospace,monospace; color:#1C1917;">{b.referenceNumber}</strong> on {b.slotDate}.
+            </p>
+            <p style="font-size:12px; color:#A8A29E; margin-bottom:24px;">This cannot be undone.</p>
+            <div style="display:flex; gap:10px;">
+              <button type="button" x-on:click="cancelModal = false"
+                style="flex:1; padding:10px 16px; font-size:13px; font-weight:500; background:#F5F4F3; border:1px solid rgba(0,0,0,0.10); border-radius:9px; cursor:pointer; color:#1C1917;">
+                Keep Booking
+              </button>
+              <form method="post" action={`/bookings/${b.referenceNumber}/cancel`} style="flex:1;">
+                <button type="submit"
+                  style="width:100%; padding:10px 16px; font-size:13px; font-weight:600; background:rgba(239,68,68,0.10); border:1px solid rgba(239,68,68,0.28); border-radius:9px; cursor:pointer; color:#DC2626;">
+                  Yes, Cancel
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
       {/* ICS held warning */}
       {b.icsStatus === 'held' && (
         <div style="display:flex; align-items:flex-start; gap:8px; margin-top:12px; padding:10px 12px; background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.16); border-radius:9px;">

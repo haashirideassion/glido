@@ -16,6 +16,7 @@ import {
   checkInBooking,
   completeBooking,
   getBookings,
+  cancelBooking,
 } from '../lib/db/bookings'
 import { getActiveWalkIns, createWalkIn, dismissWalkIn } from '../lib/db/walk-ins'
 import { getTenant, updateTenant } from '../lib/db/tenants'
@@ -93,7 +94,11 @@ receptionRoutes.get('/bookings/:id', async (c) => {
 receptionRoutes.post('/bookings/:id/check-in', async (c) => {
   const booking = await checkInBooking(c.req.param('id'))
   if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
-  return c.html(<BookingSlideOver booking={booking} />)
+  return c.html(
+    <div data-toast={`✓ ${booking.driverName} checked in`} data-toast-type="success">
+      <BookingSlideOver booking={booking} />
+    </div>
+  )
 })
 
 // ─── Complete action ─────────────────────────────────────────────────────────
@@ -111,15 +116,29 @@ receptionRoutes.post('/bookings/:id/complete', async (c) => {
       .catch(err => console.error('[email] completion failed:', err))
   }
 
-  return c.html(<BookingSlideOver booking={booking} />)
+  return c.html(
+    <div data-toast={`✓ ${booking.driverName}'s visit completed`} data-toast-type="success">
+      <BookingSlideOver booking={booking} />
+    </div>
+  )
+})
+
+// ─── Cancel action ───────────────────────────────────────────────────────────
+receptionRoutes.post('/bookings/:id/cancel', async (c) => {
+  const booking = await cancelBooking(c.req.param('id'))
+  if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
+  return c.html(
+    <div data-toast={`Booking ${booking.referenceNumber} cancelled`} data-toast-type="info">
+      <BookingSlideOver booking={booking} />
+    </div>
+  )
 })
 
 // ─── Mark EFT Paid ───────────────────────────────────────────────────────────
 receptionRoutes.post('/bookings/:id/mark-eft-paid', async (c) => {
-  const { supabase } = await import('../lib/supabase')
+  const { supabaseAdmin } = await import('../lib/supabase')
   const id = c.req.param('id')
-  const db = supabase as any
-  await db
+  await supabaseAdmin
     .from('bookings')
     .update({ payment_status: 'paid' })
     .eq('id', id)
@@ -257,10 +276,11 @@ receptionRoutes.post('/walk-in', async (c) => {
 })
 
 // ─── Reports ──────────────────────────────────────────────────────────────────
-receptionRoutes.get('/reports', (c) => {
+receptionRoutes.get('/reports', async (c) => {
+  const bookings = await getBookings().catch(() => [])
   return c.html(
     <ReceptionLayout title="Reports" activeNav="/reception/reports">
-      <ReportsView />
+      <ReportsView bookings={bookings} />
     </ReceptionLayout>
   )
 })

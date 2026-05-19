@@ -420,8 +420,23 @@ function kioskStore() {
     },
 
     completeCheckIn() {
-      this.goTo('arrived')
       var self = this
+      var bookingId = self.lookupResult ? self.lookupResult.bookingId : null
+      var licenceName   = self.licenceData ? self.licenceData.name         : ''
+      var licenceNumber = self.licenceData ? self.licenceData.licenceNo    : ''
+      var nameMatched   = self.licenceData ? self.licenceData.nameMatched  : false
+      var nameMatchResult = nameMatched ? 'matched' : 'not_checked'
+
+      // POST to server for real check-in
+      if (bookingId) {
+        fetch('/kiosk/checkin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bookingId: bookingId, licenceName: licenceName, licenceNumber: licenceNumber, nameMatchResult: nameMatchResult }),
+        }).catch(function (err) { console.warn('[kiosk] check-in POST failed:', err) })
+      }
+
+      self.goTo('arrived')
       var countdown = 5
       var timer = setInterval(function () {
         countdown--

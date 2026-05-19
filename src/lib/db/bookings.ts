@@ -1,4 +1,4 @@
-import { supabase, DEFAULT_TENANT_ID } from '../supabase'
+import { supabaseAdmin as supabase, DEFAULT_TENANT_ID } from '../supabase'
 import type {
   Booking, BookingStatus, ServiceType, LoadType,
   PalletType, IcsStatus, DashboardStats,
@@ -182,6 +182,7 @@ export interface CreateBookingInput {
   driverPhone?:      string
   guestName?:        string
   guestPhone?:       string
+  userId?:           string
   houseBillNumber?:  string
   containerNumber?:  string
   weightKg?:         number
@@ -241,6 +242,7 @@ export async function createBooking(input: CreateBookingInput): Promise<Booking>
       payment_status:     input.paymentStatus ?? 'pending',
       ics_status:         input.icsStatus ?? null,
       tenant_id:          input.tenantId,
+      user_id:            input.userId ?? null,
     })
     .select()
     .single()

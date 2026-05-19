@@ -1,4 +1,4 @@
-import { supabase } from '../supabase'
+import { supabaseAdmin as supabase } from '../supabase'
 import type { TimeSlot, SlotBusyness } from '../../data/types'
 import type { Database } from './types'
 

@@ -16,11 +16,15 @@ const ROW_LABEL    = "display:flex; align-items:center; gap:6px; font-size:12px;
 const ROW_VALUE    = "font-size:12px; font-weight:600; color:#1C1917;"
 
 export const BookingSlideOver = ({ booking: b }: Props) => (
-  <div style="display:flex; flex-direction:column; height:100%;" x-data="{ confirmModal: false, completionNotes: '', guestEmail: '' }">
+  <div style="display:flex; flex-direction:column; height:100%;" x-data="{ confirmModal: false, cancelModal: false, completionNotes: '', guestEmail: '' }">
     {/* Header */}
     <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(0,0,0,0.07); background:#FFFFFF; flex-shrink:0;">
       <div>
-        <p style="font-family:ui-monospace,monospace; font-size:13px; font-weight:700; color:#FC6514; margin-bottom:4px;">{b.referenceNumber}</p>
+        <p
+          style="font-family:ui-monospace,monospace; font-size:13px; font-weight:700; color:#FC6514; margin-bottom:4px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;"
+          title="Click to copy reference"
+          onclick={`navigator.clipboard.writeText('${b.referenceNumber}').then(function(){window.gToast&&window.gToast('Reference copied','info');});`}
+        >{b.referenceNumber} <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.45;"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></p>
         <Badge variant={STATUS_BADGE_VARIANT[b.status] as StatusVariant}>
           {STATUS_LABEL[b.status]}
         </Badge>
@@ -296,6 +300,54 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
           Mark Complete
         </button>
       )}
+
+      {(b.status === 'scheduled' || b.status === 'checked_in') && (
+        <button
+          type="button"
+          style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; font-weight:500; padding:10px 20px; border-radius:10px; border:1px solid rgba(239,68,68,0.25); cursor:pointer; background:rgba(239,68,68,0.06); color:#DC2626;"
+          x-on:click="cancelModal = true"
+          onmouseover="this.style.background='rgba(239,68,68,0.10)'"
+          onmouseout="this.style.background='rgba(239,68,68,0.06)'"
+        >
+          <Icon name={ICONS.close} size={15} style="color:#DC2626;" />
+          Cancel Booking
+        </button>
+      )}
+    </div>
+
+    {/* Cancel confirmation modal */}
+    <div
+      style="position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px);"
+      x-show="cancelModal"
+      x-cloak
+    >
+      <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.09); border-radius:16px; box-shadow:0 24px 64px rgba(0,0,0,0.20); max-width:380px; width:100%; padding:24px;">
+        <h3 style="font-size:17px; font-weight:700; color:#1C1917; margin-bottom:6px;">Cancel this booking?</h3>
+        <p style="font-size:13px; color:#78716C; margin-bottom:20px; line-height:1.5;">
+          You are cancelling <strong style="color:#1C1917; font-family:ui-monospace,monospace;">{b.referenceNumber}</strong> for <strong style="color:#1C1917;">{b.driverName}</strong>. This cannot be undone.
+        </p>
+        <div style="display:flex; gap:10px;">
+          <button
+            type="button"
+            class="btn-ghost"
+            style="flex:1; padding:10px 16px; font-size:13px; cursor:pointer;"
+            x-on:click="cancelModal = false"
+          >
+            Keep Booking
+          </button>
+          <button
+            type="button"
+            style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 16px; font-size:13px; font-weight:600; border:none; cursor:pointer; background:rgba(239,68,68,0.10); border:1px solid rgba(239,68,68,0.28); border-radius:10px; color:#DC2626;"
+            hx-post={`/reception/bookings/${b.id}/cancel`}
+            hx-target="#slide-over-content"
+            hx-swap="innerHTML"
+            x-on:click="cancelModal = false"
+          >
+            <Icon name={ICONS.close} size={14} style="color:#DC2626;" />
+            Confirm Cancel
+          </button>
+        </div>
+      </div>
     </div>
 
     {/* Mark Complete confirmation modal */}
