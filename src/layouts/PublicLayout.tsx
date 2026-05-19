@@ -35,11 +35,24 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, childr
         <script dangerouslySetInnerHTML={{ __html: `
           (function(){
             var D='#1C232C',O='#FF6610',O2='#FC6514';
+            var firstVisit = !sessionStorage.getItem('g-visited');
+            if (firstVisit) sessionStorage.setItem('g-visited','1');
             var s=document.createElement('style');
             s.textContent='#g-pl-overlay{position:fixed;inset:0;z-index:99998;background:#fff;pointer-events:none}'
               +'#g-pl-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:'+O2+';z-index:100000}'
-              +'#g-pl-logo-wrap{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:99999;pointer-events:none}';
+              +(firstVisit ? '#g-pl-logo-wrap{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:99999;pointer-events:none}' : '');
             document.head.appendChild(s);
+            if (!firstVisit) {
+              var bar=document.createElement('div');bar.id='g-pl-bar';
+              document.documentElement.appendChild(bar);
+              var raf=requestAnimationFrame;raf(function(){raf(function(){
+                bar.style.transition='width 0.3s ease';bar.style.width='80%';
+              });});
+              window.__gPlSafetyTimer=setTimeout(function(){
+                var b=document.getElementById('g-pl-bar');
+                if(b){b.style.transition='width 0.1s ease';b.style.width='100%';setTimeout(function(){b.style.transition='opacity 0.2s ease';b.style.opacity='0';setTimeout(function(){if(b&&b.parentNode)b.parentNode.removeChild(b);},220);},120);}
+              },4000);
+            } else {
             var H=28,W=145;
             var svg='<svg id="g-pl-logo-svg" viewBox="0 0 160 31" height="'+H+'" width="'+W+'" xmlns="http://www.w3.org/2000/svg" style="display:block">'
               +'<path fill="'+D+'" d="m25.5 13c-1.2 0-2.5 0.6-3.4 1.6l-3 3.2 0.1 0.2h24.8l-0.8 3.1c-0.6 2.3-1.9 3.5-4.3 3.5h-23.6c-5.3 0-8.7-3.1-8.3-8.3s3.1-9.8 8.3-9.8h15.5c0.8 0 1.4-0.5 1.8-1.1l2-3.5-0.1-0.6h-19.3c-8.2 0-12.8 6.1-13.3 14-0.5 7.1 2.8 14.2 12.7 14.3h24.4c5.4 0 8.6-2.2 9.9-7.3l2.4-9.2-25.8-0.1z"/>'
@@ -75,6 +88,7 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, childr
               },200);
             }
             window.__gPlSafetyTimer=setTimeout(_safetyDismiss,5000);
+            }
           })();
         `}} />
       </head>

@@ -5,8 +5,12 @@ export const Step7Confirmation = () => (
 
     {/* ── Step heading ── */}
     <div style="margin-bottom:24px;">
-      <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">Review &amp; pay</h2>
-      <p style="font-size:14px; color:#78716C; line-height:1.5;">Confirm your booking details and complete payment to secure your slot.</p>
+      <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;"
+        x-text="$store.wizard.paymentMethod === 'eft' ? 'Review &amp; Confirm' : 'Review &amp; Pay'"
+      >Review &amp; Confirm</h2>
+      <p style="font-size:14px; color:#78716C; line-height:1.5;"
+        x-text="$store.wizard.paymentMethod === 'eft' ? 'Confirm your booking details. You will receive bank transfer instructions by email.' : 'Confirm your booking details and complete payment to secure your slot.'"
+      >Confirm your booking details to secure your slot.</p>
     </div>
 
     {/* Hold timer banner */}
@@ -19,7 +23,7 @@ export const Step7Confirmation = () => (
       <span>
         Your slot is held for{' '}
         <span style="font-weight:700; font-family:ui-monospace,monospace;" x-text="`${$store.wizard.holdMinutes}:${$store.wizard.holdSeconds}`"></span>.
-        Complete payment to secure it.
+        <span x-text="$store.wizard.paymentMethod === 'eft' ? 'Confirm your booking to secure it.' : 'Complete payment to secure it.'">Confirm your booking to secure it.</span>
       </span>
     </div>
 
@@ -201,7 +205,7 @@ export const Step7Confirmation = () => (
       {...{"x-bind:style": "{ opacity: (!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? '0.30' : '1', cursor: (!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? 'not-allowed' : 'pointer', pointerEvents: (!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? 'none' : 'auto' }"}}
     >
       <Icon name={ICONS.check} size={18} />
-      <span x-text="'Confirm & Pay $' + $store.wizard.totalWithGst + ' AUD'">Confirm & Pay</span>
+      <span x-text="$store.wizard.paymentMethod === 'eft' ? 'Confirm Booking' : ('Confirm & Pay $' + $store.wizard.totalWithGst + ' AUD')">Confirm Booking</span>
     </button>
   </div>
 )

@@ -88,22 +88,27 @@
 
   /* ══════════════════════════════════════════════════════════════════════════
      2. PAGE ENTER
-     Content slides up from 20 px and fades in — starts while curtain lifts.
+     Full animation only on first visit. Subsequent navigations: simple fade.
   ══════════════════════════════════════════════════════════════════════════ */
+  var _isFirstVisit = !sessionStorage.getItem('g-anim-visited')
+  if (_isFirstVisit) sessionStorage.setItem('g-anim-visited', '1')
+
   function _pageEnter () {
     var isLanding = !!document.getElementById('hero-section')
 
-    /* ── Header slides down ── */
-    var header = document.querySelector('header')
-    if (header) {
-      header.style.opacity    = '0'
-      header.style.transform  = 'translateY(-10px)'
-      header.style.transition = 'none'
-      setTimeout(function () {
-        header.style.transition = 'opacity 0.45s ease, transform 0.5s ' + SP
-        header.style.opacity    = '1'
-        header.style.transform  = 'translateY(0)'
-      }, 40)
+    /* ── Header slides down (first visit only) ── */
+    if (_isFirstVisit) {
+      var header = document.querySelector('header')
+      if (header) {
+        header.style.opacity    = '0'
+        header.style.transform  = 'translateY(-10px)'
+        header.style.transition = 'none'
+        setTimeout(function () {
+          header.style.transition = 'opacity 0.45s ease, transform 0.5s ' + SP
+          header.style.opacity    = '1'
+          header.style.transform  = 'translateY(0)'
+        }, 40)
+      }
     }
 
     /* ── Reception sidebar slides in from left ── */
@@ -125,16 +130,16 @@
       var main = document.querySelector('main')
       if (main) {
         main.style.opacity    = '0'
-        main.style.transform  = 'translateY(22px)'
+        main.style.transform  = 'translateY(14px)'
         main.style.transition = 'none'
         setTimeout(function () {
-          main.style.transition = 'opacity 0.55s ' + SP + ', transform 0.65s ' + SP
+          main.style.transition = 'opacity 0.35s ease, transform 0.4s ' + SP
           main.style.opacity    = '1'
           main.style.transform  = 'translateY(0)'
-        }, 80)
+        }, _isFirstVisit ? 80 : 20)
       }
-    } else {
-      /* Landing: stagger top-level sections (hero has own word animation) */
+    } else if (_isFirstVisit) {
+      /* Landing first visit: stagger top-level sections */
       var sections = document.querySelectorAll('main > section, main > div[id]')
       Array.from(sections).forEach(function (el, i) {
         el.style.opacity    = '0'
@@ -148,18 +153,20 @@
       })
     }
 
-    /* ── Nav item stagger ── */
-    var navLinks = document.querySelectorAll('header nav a, header .nav-pill a')
-    Array.from(navLinks).forEach(function (el, i) {
-      el.style.opacity    = '0'
-      el.style.transform  = 'translateY(-5px)'
-      el.style.transition = 'none'
-      setTimeout(function () {
-        el.style.transition = 'opacity 0.38s ease, transform 0.42s ' + SP
-        el.style.opacity    = '1'
-        el.style.transform  = 'translateY(0)'
-      }, 110 + i * 28)
-    })
+    /* ── Nav item stagger (first visit only) ── */
+    if (_isFirstVisit) {
+      var navLinks = document.querySelectorAll('header nav a, header .nav-pill a')
+      Array.from(navLinks).forEach(function (el, i) {
+        el.style.opacity    = '0'
+        el.style.transform  = 'translateY(-5px)'
+        el.style.transition = 'none'
+        setTimeout(function () {
+          el.style.transition = 'opacity 0.38s ease, transform 0.42s ' + SP
+          el.style.opacity    = '1'
+          el.style.transform  = 'translateY(0)'
+        }, 110 + i * 28)
+      })
+    }
   }
 
   /* ══════════════════════════════════════════════════════════════════════════
@@ -248,12 +255,13 @@
         setTimeout(function () { el.classList.add('revealed') }, delay)
         _io.unobserve(el)
       })
-    }, { threshold: 0.07, rootMargin: '0px 0px -24px 0px' })
+    }, { threshold: 0.05, rootMargin: '0px 0px 0px 0px' })
 
     function _observe () {
       document.querySelectorAll(sel).forEach(function (el) {
         var r = el.getBoundingClientRect()
-        if (r.top < window.innerHeight * 0.94) {
+        /* Reveal immediately if already in (or near) the viewport */
+        if (r.top < window.innerHeight * 1.05) {
           var delay = parseInt(el.getAttribute('data-reveal-delay') || '0', 10)
           setTimeout(function () { el.classList.add('revealed') }, delay)
         } else {
@@ -262,7 +270,19 @@
       })
     }
 
-    _observe()
+    /* On subsequent visits, reveal all in-viewport elements immediately (no stagger delay) */
+    if (!_isFirstVisit) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        var r = el.getBoundingClientRect()
+        if (r.top < window.innerHeight * 1.05) {
+          el.classList.add('revealed')
+        } else {
+          _io.observe(el)
+        }
+      })
+    } else {
+      _observe()
+    }
     /* re-observe after HTMX partial swaps */
     document.addEventListener('htmx:afterSwap', _observe)
   }

@@ -60,25 +60,23 @@ portalRoutes.get('/', (c) => {
         </div>
 
         {/* ── Hero card ── */}
-        <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:560px; display:flex; align-items:flex-end;">
-          {/* CSS-only hero: deep charcoal + grid texture + orange radial glow */}
-          <div style="position:absolute; inset:0; background:linear-gradient(135deg,#0D1117 0%,#0F1923 45%,#101C26 100%);"></div>
-          <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.035) 1px,transparent 1px); background-size:52px 52px;"></div>
-          <div style="position:absolute; inset:0; background:radial-gradient(ellipse 90% 65% at 68% 48%,rgba(252,101,20,0.18) 0%,transparent 65%);"></div>
-          <div style="position:absolute; inset:0; background:linear-gradient(108deg,rgba(10,8,6,0.92) 0%,rgba(10,8,6,0.65) 38%,rgba(10,8,6,0.15) 68%,transparent 100%);"></div>
-          <div style="position:absolute; bottom:0; left:0; right:0; height:40%; background:linear-gradient(to top,rgba(10,8,6,0.55) 0%,transparent 100%);"></div>
-
-          <div style="position:relative; z-index:1; width:100%; max-width:1200px; margin:0 auto; padding:0 40px 88px;" class="hero-content">
-            <div style="max-width:560px;">
+        <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:520px; display:flex;">
+          {/* Dark left panel */}
+          <div class="hero-left-panel" style="position:relative; flex:0 0 55%; display:flex; align-items:flex-end; overflow:hidden;">
+            <div style="position:absolute; inset:0; background:linear-gradient(135deg,#0D1117 0%,#0F1923 45%,#101C26 100%);"></div>
+            <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.035) 1px,transparent 1px); background-size:52px 52px;"></div>
+            <div style="position:absolute; inset:0; background:radial-gradient(ellipse 120% 80% at 100% 50%,rgba(252,101,20,0.22) 0%,transparent 60%);"></div>
+            <div style="position:absolute; bottom:0; left:0; right:0; height:40%; background:linear-gradient(to top,rgba(10,8,6,0.6) 0%,transparent 100%);"></div>
+            <div style="position:relative; z-index:1; padding:0 48px 72px;" class="hero-content">
               <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.30); margin-bottom:28px;">
                 <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
                 <span style="font-size:11px; font-weight:600; color:#4ADE80; letter-spacing:0.01em;">Open today</span>
               </div>
-              <h1 style="font-size:clamp(2rem,3.8vw,3.2rem); font-weight:800; color:#ffffff; letter-spacing:-0.04em; line-height:1.06; margin-bottom:20px;">
+              <h1 style="font-size:clamp(1.8rem,3.2vw,3rem); font-weight:800; color:#ffffff; letter-spacing:-0.04em; line-height:1.06; margin-bottom:20px;">
                 <span style="display:block;">Book your CFS slot.</span>
                 <span style="display:block; color:#FC6514;">Skip the queue.</span>
               </h1>
-              <p style="font-size:15px; color:rgba(255,255,255,0.68); line-height:1.75; margin-bottom:40px; max-width:380px;">
+              <p style="font-size:14px; color:rgba(255,255,255,0.65); line-height:1.75; margin-bottom:36px; max-width:340px;">
                 Instant slot booking for drivers, forwarders and depot teams at Sydney CFS.
               </p>
               <div style="display:flex; gap:12px; flex-wrap:wrap;">
@@ -96,6 +94,20 @@ portalRoutes.get('/', (c) => {
                 </a>
               </div>
             </div>
+          </div>
+
+          {/* Right image panel — swap src to /public/hero-van.webp once file is placed */}
+          <div class="hero-img-panel" style="flex:0 0 45%; position:relative; overflow:hidden; background:#F5EFE6;">
+            <img
+              src="/public/hero-van.webp"
+              alt="Delivery van at CFS"
+              style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center bottom;"
+              onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(145deg,#F5EFE6 0%,#EDE3D5 100%)';"
+            />
+            {/* Gradient fade into the dark left panel */}
+            <div style="position:absolute; inset:0; background:linear-gradient(to right,rgba(13,17,23,0.55) 0%,transparent 35%);"></div>
+            {/* Bottom vignette */}
+            <div style="position:absolute; bottom:0; left:0; right:0; height:30%; background:linear-gradient(to top,rgba(13,17,23,0.35) 0%,transparent 100%);"></div>
           </div>
         </div>
 
@@ -541,7 +553,9 @@ portalRoutes.get('/login', async (c) => {
                 style="padding:11px 8px; font-size:12.5px; font-weight:600; border-radius:10px; cursor:pointer; border:1.5px solid rgba(0,0,0,0.10); transition:all 0.15s ease; text-align:center;"
                 x-bind:style="role === 'staff' ? 'background:rgba(252,101,20,0.08); border-color:rgba(252,101,20,0.35); color:#FC6514;' : 'background:transparent; border-color:rgba(0,0,0,0.10); color:#78716C;'"
               >
-                <div style="margin-bottom:3px;">🏢</div>
+                <div style="margin-bottom:6px; display:flex; justify-content:center;">
+                  <Icon name="solar:buildings-bold-duotone" size={22} style="color:inherit;" />
+                </div>
                 Reception Staff
               </button>
               <button type="button"
@@ -549,7 +563,9 @@ portalRoutes.get('/login', async (c) => {
                 style="padding:11px 8px; font-size:12.5px; font-weight:600; border-radius:10px; cursor:pointer; border:1.5px solid rgba(0,0,0,0.10); transition:all 0.15s ease; text-align:center;"
                 x-bind:style="role === 'visitor' ? 'background:rgba(252,101,20,0.08); border-color:rgba(252,101,20,0.35); color:#FC6514;' : 'background:transparent; border-color:rgba(0,0,0,0.10); color:#78716C;'"
               >
-                <div style="margin-bottom:3px;">🚛</div>
+                <div style="margin-bottom:6px; display:flex; justify-content:center;">
+                  <Icon name={ICONS.truck} size={22} style="color:inherit;" />
+                </div>
                 Visitor / Driver
               </button>
             </div>
@@ -884,14 +900,66 @@ portalRoutes.get('/book', (c) => {
 
 // ─── My Bookings ─────────────────────────────────────────────────────────────
 portalRoutes.get('/bookings', async (c) => {
-  const ref = c.req.query('ref')?.trim().toUpperCase()
-  let bookings = ref ? [] : (await getBookings().catch(() => []))
-  let heading  = 'My Bookings'
+  const ref  = c.req.query('ref')?.trim().toUpperCase()
+  const user = await getSessionUser(c)
+
+  // If no search ref and not logged in, show login prompt
+  if (!ref && !user) {
+    return c.html(
+      <PublicLayout title="My Bookings">
+        <div style="min-height:calc(100vh - 120px); display:flex; align-items:center; justify-content:center; padding:40px 24px;">
+          <div style="max-width:440px; width:100%; text-align:center;">
+            <div style="width:52px; height:52px; border-radius:14px; background:#FFF3EC; border:1px solid rgba(252,101,20,0.18); display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+              <Icon name={ICONS.bookings} size={24} style="color:#FC6514;" />
+            </div>
+            <h1 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:8px;">Sign in to view your bookings</h1>
+            <p style="font-size:14px; color:#78716C; line-height:1.65; margin-bottom:28px; max-width:320px; margin-left:auto; margin-right:auto;">
+              Log in to see your full booking history, or search by reference number below.
+            </p>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:32px;">
+              <a href="/login" class="btn-primary" style="padding:13px 24px; font-size:14px; justify-content:center;">
+                <Icon name={ICONS.user} size={15} />
+                Sign In
+                <Icon name={ICONS.arrowRight} size={14} />
+              </a>
+              <a href="/book" class="btn-ghost" style="padding:12px 24px; font-size:14px; justify-content:center;">
+                <Icon name={ICONS.calendar} size={14} />
+                Book a New Visit
+              </a>
+            </div>
+            <div style="border-top:1px solid rgba(0,0,0,0.07); padding-top:24px;">
+              <p style="font-size:12px; color:#A8A29E; margin-bottom:12px;">Have a reference number? Look it up directly:</p>
+              <form method="get" action="/bookings" style="display:flex; gap:8px;">
+                <input
+                  type="text"
+                  name="ref"
+                  placeholder="GLD-2026-10142"
+                  class="wizard-field"
+                  style="flex:1; padding:10px 14px; font-size:13px; border-radius:10px; outline:none; box-sizing:border-box; font-family:inherit;"
+                  onfocus="this.style.borderColor='rgba(252,101,20,0.50)';"
+                  onblur="this.style.borderColor='rgba(0,0,0,0.12)';"
+                />
+                <button type="submit" class="btn-primary" style="padding:10px 18px; font-size:13px; border:none; cursor:pointer; white-space:nowrap;">
+                  <Icon name={ICONS.search} size={14} />
+                  Search
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </PublicLayout>
+    )
+  }
+
+  let bookings: any[] = []
+  let heading = 'My Bookings'
 
   if (ref) {
     const found = await findBooking(ref).catch(() => null)
     bookings = found ? [found] : []
     heading  = `Results for "${ref}"`
+  } else if (user) {
+    bookings = await getBookingsByUserId(user.id).catch(() => [])
   }
 
   return c.html(
@@ -956,7 +1024,7 @@ portalRoutes.get('/bookings/:ref', async (c) => {
     return c.html(
       <PublicLayout title="Booking Not Found">
         <div style="padding:64px 24px; text-align:center;">
-          <p style="font-size:48px; margin-bottom:12px;">🔍</p>
+          <div style="display:flex; justify-content:center; margin-bottom:12px;"><Icon name={ICONS.search} size={48} style="color:#A8A29E;" /></div>
           <h1 style="font-size:22px; font-weight:700; color:#1C1917; margin-bottom:8px;">Booking Not Found</h1>
           <p style="font-size:14px; color:#78716C; margin-bottom:24px;">We couldn't find a booking with reference <strong>{ref}</strong>.</p>
           <a href="/bookings" class="btn-primary" style="display:inline-flex; align-items:center; gap:8px; padding:11px 24px; text-decoration:none;">← Search Bookings</a>

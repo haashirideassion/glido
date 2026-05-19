@@ -24,95 +24,99 @@ export const SlotGrid = ({ slots, date }: Props) => {
           No slots available for this date.
         </div>
       ) : (
-        <div style="display:flex; flex-direction:column; gap:4px;">
-          {slots.map((slot) => {
-            const canSelect = slot.busyness === 'available' || slot.busyness === 'busy'
-            const isFull    = slot.busyness === 'full' || slot.busyness === 'closed'
-            const remaining = Math.max(0, slot.capacity - slot.confirmed - slot.held)
-            const pct       = Math.round((slot.confirmed / Math.max(slot.capacity, 1)) * 100)
+        <>
+          <style>{`
+            .slot-grid-wrap {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 6px;
+            }
+            @media (max-width: 560px) {
+              .slot-grid-wrap { grid-template-columns: repeat(3, 1fr); }
+            }
+            @media (max-width: 380px) {
+              .slot-grid-wrap { grid-template-columns: repeat(2, 1fr); }
+            }
+          `}</style>
+          <div class="slot-grid-wrap">
+            {slots.map((slot) => {
+              const canSelect = slot.busyness === 'available' || slot.busyness === 'busy'
+              const isFull    = slot.busyness === 'full' || slot.busyness === 'closed'
+              const remaining = Math.max(0, slot.capacity - slot.confirmed - slot.held)
+              const pct       = Math.round((slot.confirmed / Math.max(slot.capacity, 1)) * 100)
 
-            return (
-              <button
-                key={slot.id}
-                type="button"
-                disabled={!canSelect}
-                x-on:click={canSelect ? `$store.wizard.selectSlot('${slot.id}', '${slot.startTime} – ${slot.endTime}')` : ''}
-                style={`
-                  display:flex; align-items:center; gap:12px;
-                  padding:11px 14px;
-                  border-radius:11px;
-                  border:1.5px solid;
-                  cursor:${canSelect ? 'pointer' : 'default'};
-                  text-align:left;
-                  width:100%;
-                  transition:background 0.12s ease, border-color 0.12s ease;
-                  ${isFull ? 'opacity:0.4; pointer-events:none;' : ''}
-                `}
-                x-bind:style={`$store.wizard.selectedSlotId === '${slot.id}'
-                  ? 'background:rgba(252,101,20,0.08); border-color:#FC6514;'
-                  : '${isFull ? '' : 'border-color:rgba(240,197,137,0.35); background:transparent;'}'`}
-                onmouseover={canSelect ? `if($store.wizard.selectedSlotId !== '${slot.id}'){this.style.background='rgba(252,101,20,0.04)'; this.style.borderColor='rgba(252,101,20,0.4)';}` : ''}
-                onmouseout={canSelect ? `if($store.wizard.selectedSlotId !== '${slot.id}'){this.style.background='transparent'; this.style.borderColor='rgba(240,197,137,0.35)';}` : ''}
-              >
-                {/* Time */}
-                <div style="width:88px; flex-shrink:0;">
+              const fillColor = pct > 80 ? '#FC6514' : pct > 50 ? '#FC8A3C' : '#22C55E'
+
+              return (
+                <button
+                  key={slot.id}
+                  type="button"
+                  disabled={!canSelect}
+                  x-on:click={canSelect ? `$store.wizard.selectSlot('${slot.id}', '${slot.startTime} – ${slot.endTime}')` : ''}
+                  style={`
+                    display:flex; flex-direction:column; align-items:flex-start; gap:6px;
+                    padding:10px 11px 9px;
+                    border-radius:10px;
+                    border:1.5px solid;
+                    cursor:${canSelect ? 'pointer' : 'default'};
+                    text-align:left;
+                    width:100%;
+                    transition:background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
+                    position:relative;
+                    overflow:hidden;
+                    ${isFull ? 'opacity:0.38; pointer-events:none;' : ''}
+                  `}
+                  x-bind:style={`$store.wizard.selectedSlotId === '${slot.id}'
+                    ? 'background:rgba(252,101,20,0.10); border-color:#FC6514; transform:scale(1.02);'
+                    : '${isFull ? 'border-color:rgba(168,162,158,0.20); background:transparent;' : 'border-color:rgba(240,197,137,0.30); background:rgba(255,255,255,0.03);'}'`}
+                  onmouseover={canSelect ? `if($store.wizard.selectedSlotId !== '${slot.id}'){this.style.background='rgba(252,101,20,0.05)'; this.style.borderColor='rgba(252,101,20,0.45)';}` : ''}
+                  onmouseout={canSelect ? `if($store.wizard.selectedSlotId !== '${slot.id}'){this.style.background='rgba(255,255,255,0.03)'; this.style.borderColor='rgba(240,197,137,0.30)';}` : ''}
+                >
+                  {/* Selected indicator dot (top-right) */}
+                  <div
+                    style="position:absolute; top:7px; right:7px; width:7px; height:7px; border-radius:9999px; transition:opacity 0.12s ease;"
+                    x-bind:style={`$store.wizard.selectedSlotId === '${slot.id}' ? 'background:#FC6514; opacity:1;' : 'background:transparent; opacity:0;'`}
+                  ></div>
+
+                  {/* Time */}
                   <span
-                    style="font-size:14px; font-weight:600; font-variant-numeric:tabular-nums; transition:color 0.12s ease;"
-                    x-bind:style={`$store.wizard.selectedSlotId === '${slot.id}' ? 'color:#FC6514;' : '${isFull ? 'color:#78716C;' : 'color:#F1F5F9;'}'`}
+                    style="font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1; transition:color 0.12s ease;"
+                    x-bind:style={`$store.wizard.selectedSlotId === '${slot.id}' ? 'color:#FC6514;' : '${isFull ? "color:#78716C;" : "color:#F1F5F9;"}'`}
                   >
                     {slot.startTime}
                   </span>
-                  <span style="font-size:12px; color:#A8A29E; margin-left:4px;">– {slot.endTime}</span>
-                </div>
+                  <span style="font-size:11px; color:#78716C; line-height:1;">
+                    – {slot.endTime}
+                  </span>
 
-                {/* Capacity bar */}
-                <div style="flex:1; min-width:0;">
-                  <div style="height:4px; background:rgba(168,162,158,0.15); border-radius:9999px; overflow:hidden;">
-                    <div style={`height:100%; border-radius:9999px; width:${pct}%; transition:width 0.3s ease; background:${pct > 80 ? '#FC6514' : pct > 50 ? '#FC8A3C' : '#FBD0A8'};`}></div>
+                  {/* Fill bar */}
+                  <div style="width:100%; height:3px; background:rgba(168,162,158,0.15); border-radius:9999px; overflow:hidden; margin-top:2px;">
+                    <div style={`height:100%; border-radius:9999px; width:${pct}%; background:${fillColor};`}></div>
                   </div>
-                </div>
 
-                {/* Status */}
-                <div style="width:72px; text-align:right; flex-shrink:0;">
-                  {isFull ? (
-                    <span style="font-size:11px; font-weight:500; color:#A8A29E;">Full</span>
-                  ) : (
-                    <span style="font-size:11px; font-weight:500; color:#78716C;">
-                      {remaining} left
-                    </span>
-                  )}
-                </div>
-
-                {/* Selected tick */}
-                <div
-                  style="width:18px; height:18px; border-radius:9999px; border:1.5px solid; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:background 0.12s ease, border-color 0.12s ease;"
-                  x-bind:style={`$store.wizard.selectedSlotId === '${slot.id}'
-                    ? 'background:#FC6514; border-color:#FC6514;'
-                    : 'background:transparent; border-color:rgba(168,162,158,0.35);'`}
-                >
-                  <span
-                    x-show={`$store.wizard.selectedSlotId === '${slot.id}'`}
-                    style="width:7px; height:7px; border-radius:9999px; background:white; display:block;"
-                  ></span>
-                </div>
-              </button>
-            )
-          })}
-        </div>
+                  {/* Availability */}
+                  <span style={`font-size:10px; font-weight:500; line-height:1; ${isFull ? 'color:#78716C;' : remaining <= 2 ? 'color:#FC6514;' : 'color:#78716C;'}`}>
+                    {isFull ? 'Full' : `${remaining} left`}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </>
       )}
 
       {/* Legend */}
-      <div style="display:flex; align-items:center; gap:16px; margin-top:12px; padding-top:12px; border-top:1px solid rgba(240,197,137,0.25);">
-        <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#A8A29E;">
-          <span style="display:inline-block; width:20px; height:3px; border-radius:9999px; background:#FBD0A8;"></span>
+      <div style="display:flex; align-items:center; gap:16px; margin-top:12px; padding-top:10px; border-top:1px solid rgba(240,197,137,0.20);">
+        <span style="display:flex; align-items:center; gap:5px; font-size:10.5px; color:#78716C;">
+          <span style="display:inline-block; width:14px; height:3px; border-radius:9999px; background:#22C55E;"></span>
           Open
         </span>
-        <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#A8A29E;">
-          <span style="display:inline-block; width:20px; height:3px; border-radius:9999px; background:#FC6514;"></span>
+        <span style="display:flex; align-items:center; gap:5px; font-size:10.5px; color:#78716C;">
+          <span style="display:inline-block; width:14px; height:3px; border-radius:9999px; background:#FC6514;"></span>
           Filling up
         </span>
-        <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#A8A29E;">
-          <span style="display:inline-block; width:20px; height:3px; border-radius:9999px; background:rgba(168,162,158,0.25);"></span>
+        <span style="display:flex; align-items:center; gap:5px; font-size:10.5px; color:#78716C;">
+          <span style="display:inline-block; width:14px; height:3px; border-radius:9999px; background:rgba(168,162,158,0.25);"></span>
           Full
         </span>
       </div>
