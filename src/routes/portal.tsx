@@ -60,34 +60,57 @@ portalRoutes.get('/', (c) => {
         </div>
 
         {/* ── Hero card ── */}
-        <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:520px; display:flex;">
-          {/* Dark left panel */}
-          <div class="hero-left-panel" style="position:relative; flex:0 0 55%; display:flex; align-items:flex-end; overflow:hidden;">
-            <div style="position:absolute; inset:0; background:linear-gradient(135deg,#0D1117 0%,#0F1923 45%,#101C26 100%);"></div>
-            <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.035) 1px,transparent 1px); background-size:52px 52px;"></div>
-            <div style="position:absolute; inset:0; background:radial-gradient(ellipse 120% 80% at 100% 50%,rgba(252,101,20,0.22) 0%,transparent 60%);"></div>
-            <div style="position:absolute; bottom:0; left:0; right:0; height:40%; background:linear-gradient(to top,rgba(10,8,6,0.6) 0%,transparent 100%);"></div>
-            <div style="position:relative; z-index:1; padding:0 48px 72px;" class="hero-content">
-              <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.30); margin-bottom:28px;">
+        <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:540px; display:flex;">
+
+          {/* ── Dark left panel ── */}
+          <div class="hero-left-panel" style="position:relative; flex:0 0 55%; display:flex; align-items:flex-start; overflow:hidden;">
+            {/* Backgrounds */}
+            <div style="position:absolute; inset:0; background:linear-gradient(145deg,#0A0E14 0%,#0F1923 50%,#111D28 100%);"></div>
+            <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.028) 1px,transparent 1px); background-size:52px 52px;"></div>
+            {/* Orange bloom from the right edge — bleeds into right panel */}
+            <div style="position:absolute; inset:0; background:radial-gradient(ellipse 130% 75% at 110% 55%,rgba(252,101,20,0.20) 0%,transparent 55%);"></div>
+            {/* Bottom dark fade */}
+            <div style="position:absolute; bottom:0; left:0; right:0; height:35%; background:linear-gradient(to top,rgba(6,4,2,0.55) 0%,transparent 100%);"></div>
+
+            {/* Content */}
+            <div style="position:relative; z-index:1; padding:52px 48px 52px;" class="hero-content">
+
+              {/* Live badge */}
+              <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.13); border:1px solid rgba(34,197,94,0.28); margin-bottom:36px;">
                 <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
-                <span style="font-size:11px; font-weight:600; color:#4ADE80; letter-spacing:0.01em;">Open today</span>
+                <span style="font-size:11px; font-weight:600; color:#4ADE80; letter-spacing:0.01em;">Open today · Sydney CFS</span>
               </div>
-              <h1 style="font-size:clamp(1.8rem,3.2vw,3rem); font-weight:800; color:#ffffff; letter-spacing:-0.04em; line-height:1.06; margin-bottom:20px;">
+
+              {/* Monospace eyebrow */}
+              <p style="font-family:ui-monospace,monospace; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.18); margin-bottom:14px;">── slot booking system</p>
+
+              {/* Headline stat block */}
+              <div style="margin-bottom:22px; padding-bottom:22px; border-bottom:1px solid rgba(255,255,255,0.07);">
+                <span style="display:block; font-size:clamp(3.2rem,5.8vw,5.8rem); font-weight:800; letter-spacing:-0.07em; line-height:0.82; color:#FC6514;">4 min</span>
+                <span style="display:block; font-size:clamp(0.78rem,1.15vw,0.96rem); font-weight:400; letter-spacing:0.02em; color:rgba(255,255,255,0.36); margin-top:10px; font-style:italic;">average gate time with Glido</span>
+              </div>
+
+              {/* Main headline — editorial mixed weight */}
+              <h1 style="font-size:clamp(1.45rem,2.5vw,2.3rem); font-weight:800; letter-spacing:-0.048em; line-height:0.97; color:#ffffff; margin-bottom:18px;">
                 <span style="display:block;">Book your CFS slot.</span>
-                <span style="display:block; color:#FC6514;">Skip the queue.</span>
+                <span style="display:block; color:#FC6514; margin-top:3px;">Skip the queue.</span>
               </h1>
-              <p style="font-size:14px; color:rgba(255,255,255,0.65); line-height:1.75; margin-bottom:36px; max-width:340px;">
-                Instant slot booking for drivers, forwarders and depot teams at Sydney CFS.
+
+              {/* Subtext */}
+              <p style="font-size:13px; color:rgba(255,255,255,0.42); line-height:1.80; margin-bottom:34px; max-width:300px;">
+                Instant booking for drivers, forwarders, and depot teams. Scan your QR at the kiosk — straight to the bay.
               </p>
+
+              {/* CTAs */}
               <div style="display:flex; gap:12px; flex-wrap:wrap;">
                 <a href="/book" class="btn-primary" style="padding:13px 28px; font-size:14px;">
                   <Icon name={ICONS.calendar} size={15} />
                   Book a Visit
                   <Icon name={ICONS.arrowRight} size={14} />
                 </a>
-                <a href="/bookings" style="display:inline-flex; align-items:center; gap:8px; padding:13px 24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.85); border:1.5px solid rgba(255,255,255,0.25); border-radius:9999px; text-decoration:none; transition:all 0.15s ease; backdrop-filter:blur(8px);"
-                  onmouseover="this.style.borderColor='rgba(255,255,255,0.55)'; this.style.color='#fff';"
-                  onmouseout="this.style.borderColor='rgba(255,255,255,0.25)'; this.style.color='rgba(255,255,255,0.85)';"
+                <a href="/bookings" style="display:inline-flex; align-items:center; gap:8px; padding:13px 24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.72); border:1.5px solid rgba(255,255,255,0.16); border-radius:9999px; text-decoration:none; transition:all 0.15s ease; backdrop-filter:blur(8px);"
+                  onmouseover="this.style.borderColor='rgba(255,255,255,0.42)'; this.style.color='#fff';"
+                  onmouseout="this.style.borderColor='rgba(255,255,255,0.16)'; this.style.color='rgba(255,255,255,0.72)';"
                 >
                   <Icon name={ICONS.search} size={15} />
                   Look Up Booking
@@ -96,44 +119,28 @@ portalRoutes.get('/', (c) => {
             </div>
           </div>
 
-          {/* Right panel — image when available, CSS scene fallback */}
-          <div class="hero-img-panel" style="flex:0 0 45%; position:relative; overflow:hidden; background:linear-gradient(160deg,#0F1923 0%,#1A2535 40%,#0D1117 100%);">
-            {/* CSS dock/warehouse scene fallback */}
-            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
-              {/* Ambient glow */}
-              <div style="position:absolute; top:30%; right:10%; width:200px; height:200px; background:radial-gradient(circle,rgba(252,101,20,0.18) 0%,transparent 70%); pointer-events:none;"></div>
-              <div style="position:absolute; bottom:20%; left:15%; width:160px; height:160px; background:radial-gradient(circle,rgba(34,197,94,0.10) 0%,transparent 70%); pointer-events:none;"></div>
-              {/* Central icon group */}
-              <div style="display:flex; flex-direction:column; align-items:center; gap:16px; z-index:1;">
-                {/* Warehouse icon */}
-                <div style="width:80px; height:80px; border-radius:20px; background:rgba(252,101,20,0.12); border:1.5px solid rgba(252,101,20,0.25); display:flex; align-items:center; justify-content:center;">
-                  <Icon name="solar:buildings-3-bold-duotone" size={44} style="color:#FC6514;" />
-                </div>
-                {/* Arrow down */}
-                <div style="display:flex; flex-direction:column; align-items:center; gap:3px; opacity:0.35;">
-                  <div style="width:1.5px; height:16px; background:#FC6514;"></div>
-                  <div style="width:7px; height:7px; border-right:1.5px solid #FC6514; border-bottom:1.5px solid #FC6514; transform:rotate(45deg); margin-top:-5px;"></div>
-                </div>
-                {/* Truck icon */}
-                <div style="width:80px; height:80px; border-radius:20px; background:rgba(240,197,137,0.08); border:1.5px solid rgba(240,197,137,0.20); display:flex; align-items:center; justify-content:center;">
-                  <Icon name="solar:delivery-bold-duotone" size={44} style="color:#F0C589;" />
-                </div>
-                {/* Stat badges */}
-                <div style="display:flex; gap:8px; margin-top:8px;">
-                  <div style="padding:6px 12px; border-radius:9999px; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.25); font-size:11px; font-weight:600; color:#4ADE80;">4 min avg gate</div>
-                  <div style="padding:6px 12px; border-radius:9999px; background:rgba(252,101,20,0.10); border:1px solid rgba(252,101,20,0.22); font-size:11px; font-weight:600; color:#FC6514;">No queue</div>
-                </div>
+          {/* ── Right panel — real photo ── */}
+          <div class="hero-img-panel" style="flex:0 0 45%; position:relative; overflow:hidden;">
+            {/* Photo */}
+            <div style="position:absolute; inset:0; background-image:url('https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/bf7f2d26-7889-4678-868d-8cde754846e9_3840w.jpg'); background-size:cover; background-position:center;"></div>
+            {/* Left edge — blend into dark panel */}
+            <div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(10,14,20,0.96) 0%, rgba(10,14,20,0.55) 22%, rgba(10,14,20,0.10) 50%, transparent 70%);"></div>
+            {/* Bottom vignette */}
+            <div style="position:absolute; bottom:0; left:0; right:0; height:50%; background:linear-gradient(to top, rgba(0,0,0,0.68) 0%, transparent 100%);"></div>
+            {/* Top-right soft darken */}
+            <div style="position:absolute; top:0; right:0; width:55%; height:45%; background:radial-gradient(ellipse at top right, rgba(0,0,0,0.28) 0%, transparent 75%);"></div>
+
+            {/* Floating stat pills — bottom right */}
+            <div style="position:absolute; bottom:28px; right:20px; display:flex; flex-direction:column; align-items:flex-end; gap:8px; z-index:1;">
+              <div style="display:inline-flex; align-items:center; gap:6px; padding:6px 13px; border-radius:9999px; background:rgba(0,0,0,0.50); border:1px solid rgba(255,255,255,0.13); backdrop-filter:blur(16px); font-size:11px; font-weight:600; color:rgba(255,255,255,0.88); white-space:nowrap; box-shadow:0 2px 10px rgba(0,0,0,0.35);">
+                <span style="width:5px; height:5px; border-radius:9999px; background:#22C55E; flex-shrink:0;"></span>
+                No counter queue
+              </div>
+              <div style="display:inline-flex; align-items:center; gap:6px; padding:6px 13px; border-radius:9999px; background:rgba(0,0,0,0.50); border:1px solid rgba(252,101,20,0.28); backdrop-filter:blur(16px); font-size:11px; font-weight:600; color:#FC8A3C; white-space:nowrap; box-shadow:0 2px 10px rgba(0,0,0,0.35);">
+                <Icon name={ICONS.qrCode} size={12} style="color:#FC8A3C;" />
+                QR scan check-in
               </div>
             </div>
-            {/* Image overlay (shown when hero-van.webp is placed) */}
-            <img
-              src="/public/hero-van.webp"
-              alt="Delivery van at CFS"
-              style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center bottom; opacity:0;"
-              onload="this.style.opacity='1'; this.style.transition='opacity 0.4s ease'; this.previousElementSibling && (this.previousElementSibling.style.opacity='0');"
-            />
-            {/* Edge blend into left dark panel */}
-            <div style="position:absolute; inset:0; background:linear-gradient(to right,rgba(13,17,23,0.7) 0%,transparent 30%);"></div>
           </div>
         </div>
 
