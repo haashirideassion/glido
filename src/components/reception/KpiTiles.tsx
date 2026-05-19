@@ -130,7 +130,7 @@ ${EC_THEME}
 `
 
   return (
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" data-stagger data-stagger-ms="70">
       {tiles.map((tile) => (
         <div
           key={tile.label}

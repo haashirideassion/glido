@@ -54,8 +54,23 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
         <script src="https://unpkg.com/alpinejs@3.14.3/dist/cdn.min.js" defer></script>
         <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
         <script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
-        {/* Anime.js for scroll and counter animations */}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+        {/* ── Instant preloader — runs before body renders ── */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function(){
+            var s=document.createElement('style');
+            s.textContent='#g-pl{position:fixed;inset:0;z-index:99999;background:#fff;display:flex;align-items:center;justify-content:center;pointer-events:none;will-change:transform}'
+              +'#g-pl-inner{display:flex;flex-direction:column;align-items:center;gap:22px}'
+              +'#g-pl-logo-slot{opacity:0;min-height:24px;transform:translateY(8px);transition:opacity 0.35s ease,transform 0.45s cubic-bezier(0.16,1,0.3,1)}'
+              +'#g-pl-bar{width:60px;height:2px;background:rgba(0,0,0,0.07);border-radius:999px;overflow:hidden}'
+              +'#g-pl-fill{height:100%;width:0%;background:#FC6514;border-radius:999px;transition:width .5s ease}';
+            document.head.appendChild(s);
+            var pl=document.createElement('div');pl.id='g-pl';
+            pl.innerHTML='<div id="g-pl-inner"><div id="g-pl-logo-slot"></div><div id="g-pl-bar"><div id="g-pl-fill"></div></div></div>';
+            document.documentElement.appendChild(pl);
+            var raf=requestAnimationFrame;raf(function(){raf(function(){var f=document.getElementById('g-pl-fill');if(f)f.style.width='55%';});});
+          })();
+        `}} />
       </head>
       <body style="background:#fff; color:#1C1917; overflow-x:hidden;">
 
@@ -177,192 +192,64 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
           </div>
         </footer>
 
-        {/* ── Logo intro — fires once per session ───────────────────────── */}
+        {/* ── Landing-specific animations (hero words, rotating text) ──── */}
         <script dangerouslySetInnerHTML={{ __html: `
-          (function() {
-            if (sessionStorage.getItem('g-intro')) return;
-            sessionStorage.setItem('g-intro', '1');
-            var anchorEl = document.querySelector('.glido-logo-anchor');
-            if (!anchorEl) return;
-            var srcSvg = anchorEl.querySelector('svg');
-            if (!srcSvg) return;
-
-            /* build overlay */
-            var ov = document.createElement('div');
-            ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#ffffff;display:flex;align-items:center;justify-content:center;pointer-events:none;';
-
-            /* clone logo at display size ~130w */
-            var clone = srcSvg.cloneNode(true);
-            clone.setAttribute('width', '130');
-            clone.setAttribute('height', '25');
-            clone.style.cssText = 'opacity:0;transform:scale(0.72) translateY(6px);transition:opacity 0.22s ease,transform 0.42s cubic-bezier(0.16,1,0.3,1);display:block;';
-            ov.appendChild(clone);
-            document.body.prepend(ov);
-
-            /* step 1: flash in */
-            requestAnimationFrame(function() { requestAnimationFrame(function() {
-              clone.style.opacity = '1';
-              clone.style.transform = 'scale(1.04) translateY(0)';
-              setTimeout(function() { clone.style.transform = 'scale(1) translateY(0)'; }, 260);
-            }); });
-
-            /* step 2: fly to header then dissolve */
-            setTimeout(function() {
-              var hRect = srcSvg.getBoundingClientRect();
-              var cRect = clone.getBoundingClientRect();
-              var dx = (hRect.left + hRect.width  / 2) - (cRect.left + cRect.width  / 2);
-              var dy = (hRect.top  + hRect.height / 2) - (cRect.top  + cRect.height / 2);
-              var sc = hRect.width / cRect.width;
-              clone.style.transition = 'transform 0.38s cubic-bezier(0.4,0,0.2,1),opacity 0.22s ease 0.14s';
-              clone.style.transform  = 'translate('+dx+'px,'+dy+'px) scale('+sc+')';
-              clone.style.opacity    = '0';
-              ov.style.transition    = 'opacity 0.25s ease 0.08s';
-              ov.style.opacity       = '0';
-              setTimeout(function() { if (ov.parentNode) ov.parentNode.removeChild(ov); }, 580);
-            }, 780);
-          })();
-        `}} />
-
-        {/* ── Animation engine ──────────────────────────────────────────── */}
-        <script dangerouslySetInnerHTML={{ __html: `
-          /* ── Intersection Observer — scroll reveal ── */
-          (function() {
-            var io = new IntersectionObserver(function(entries) {
-              entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                  var el = entry.target;
-                  var delay = parseInt(el.getAttribute('data-reveal-delay') || '0');
-                  setTimeout(function() {
-                    el.classList.add('revealed');
-                  }, delay);
-                  io.unobserve(el);
-                }
-              });
-            }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
-
-            document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale')
-              .forEach(function(el) { io.observe(el); });
-
-            // Fire immediately for elements already in view
-            setTimeout(function() {
-              document.querySelectorAll('.reveal:not(.revealed), .reveal-left:not(.revealed), .reveal-right:not(.revealed), .reveal-scale:not(.revealed)')
-                .forEach(function(el) {
-                  var rect = el.getBoundingClientRect();
-                  if (rect.top < window.innerHeight * 0.9) {
-                    var delay = parseInt(el.getAttribute('data-reveal-delay') || '0');
-                    setTimeout(function() { el.classList.add('revealed'); }, delay);
-                    io.unobserve(el);
-                  }
-                });
-            }, 100);
-          })();
-
-          /* ── Animated counter ── */
-          (function() {
-            var counters = document.querySelectorAll('[data-count]');
-            if (!counters.length) return;
-            var co = new IntersectionObserver(function(entries) {
-              entries.forEach(function(entry) {
-                if (!entry.isIntersecting) return;
-                var el = entry.target;
-                var target = parseFloat(el.getAttribute('data-count'));
-                var prefix = el.getAttribute('data-prefix') || '';
-                var suffix = el.getAttribute('data-suffix') || '';
-                var decimals = parseInt(el.getAttribute('data-decimals') || '0');
-                var duration = 1800;
-                var start = Date.now();
-                function tick() {
-                  var elapsed = Date.now() - start;
-                  var progress = Math.min(elapsed / duration, 1);
-                  var eased = 1 - Math.pow(1 - progress, 3);
-                  var val = target * eased;
-                  el.textContent = prefix + val.toFixed(decimals) + suffix;
-                  if (progress < 1) requestAnimationFrame(tick);
-                }
-                requestAnimationFrame(tick);
-                co.unobserve(el);
-              });
-            }, { threshold: 0.5 });
-            counters.forEach(function(el) { co.observe(el); });
-          })();
-
           /* ── Staggered word reveal in hero ── */
           (function() {
-            var hero = document.querySelector('.hero-words');
-            if (!hero) return;
-            var words = hero.querySelectorAll('.hero-word');
-            words.forEach(function(w, i) {
-              w.style.opacity = '0';
-              w.style.transform = 'translateY(20px)';
-              w.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-              w.style.transitionDelay = (i * 90 + 200) + 'ms';
-              setTimeout(function() {
-                w.style.opacity = '1';
-                w.style.transform = 'translateY(0)';
-              }, 50);
-            });
+            function initHeroWords() {
+              var hero = document.querySelector('.hero-words');
+              if (!hero) return;
+              var words = hero.querySelectorAll('.hero-word');
+              words.forEach(function(w, i) {
+                w.style.opacity = '0';
+                w.style.transform = 'translateY(22px)';
+                w.style.filter = 'blur(2px)';
+                w.style.transition = 'opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1), filter 0.5s ease';
+                w.style.transitionDelay = (i * 85 + 340) + 'ms';
+                setTimeout(function() {
+                  w.style.opacity = '1';
+                  w.style.transform = 'translateY(0)';
+                  w.style.filter = 'blur(0)';
+                }, 40);
+              });
+            }
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', initHeroWords);
+            } else {
+              initHeroWords();
+            }
           })();
 
           /* ── Rotating word cycle ── */
           (function() {
-            var el = document.getElementById('rotating-word');
-            if (!el) return;
-            var words = ['Collection', 'Delivery', 'Drop Off', 'Pick Up', 'Clearance'];
-            var i = 0;
-            function cycle() {
-              el.style.opacity = '0';
-              el.style.transform = 'translateY(-8px)';
-              setTimeout(function() {
-                i = (i + 1) % words.length;
-                el.textContent = words[i];
-                el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                el.style.opacity = '1';
-                el.style.transform = 'translateY(0)';
-              }, 300);
+            function initRotatingWord() {
+              var el = document.getElementById('rotating-word');
+              if (!el) return;
+              var words = ['Collection', 'Delivery', 'Drop Off', 'Pick Up', 'Clearance'];
+              var i = 0;
+              el.style.transition = 'opacity 0.35s ease, transform 0.35s cubic-bezier(0.16,1,0.3,1)';
+              function cycle() {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(-10px)';
+                setTimeout(function() {
+                  i = (i + 1) % words.length;
+                  el.textContent = words[i];
+                  el.style.opacity = '1';
+                  el.style.transform = 'translateY(0)';
+                }, 320);
+              }
+              setInterval(cycle, 2800);
             }
-            el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-            setInterval(cycle, 2600);
-          })();
-
-          /* ── Re-observe after each navigation (soft nav) ── */
-          document.addEventListener('htmx:afterSwap', function() {
-            document.querySelectorAll('.reveal:not(.revealed), .reveal-left:not(.revealed), .reveal-right:not(.revealed), .reveal-scale:not(.revealed)')
-              .forEach(function(el) { io && io.observe(el); });
-          });
-
-          /* ── 3D tilt cards ── */
-          (function() {
-            function initTilt(card) {
-              card.style.transition = 'transform 0.15s ease, box-shadow 0.15s ease';
-              card.addEventListener('mousemove', function(e) {
-                var r = card.getBoundingClientRect();
-                var x = (e.clientX - r.left) / r.width  - 0.5;
-                var y = (e.clientY - r.top)  / r.height - 0.5;
-                card.style.transform = 'perspective(700px) rotateY(' + (x * 10) + 'deg) rotateX(' + (-y * 10) + 'deg) translateZ(6px)';
-                card.style.boxShadow = '0 12px 40px rgba(0,0,0,0.20), ' + (-x*6) + 'px ' + (-y*6) + 'px 20px rgba(0,0,0,0.10)';
-              });
-              card.addEventListener('mouseleave', function() {
-                card.style.transform = '';
-                card.style.boxShadow = '';
-              });
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', initRotatingWord);
+            } else {
+              initRotatingWord();
             }
-            document.querySelectorAll('.tilt-card').forEach(initTilt);
-          })();
-
-          /* ── Subtle parallax on hero section ── */
-          (function() {
-            var hero = document.getElementById('hero-section');
-            if (!hero) return;
-            var img = hero.querySelector('img');
-            if (!img) return;
-            function onScroll() {
-              var scrollY = window.scrollY;
-              var offset = scrollY * 0.25;
-              img.style.transform = 'translateY(' + offset + 'px)';
-            }
-            window.addEventListener('scroll', onScroll, { passive: true });
           })();
         `}} />
+
+        {/* ── Global animation engine ───────────────────────────────────── */}
+        <script src="/public/transitions.js"></script>
 
         <style>{`
           @media (max-width: 768px) {

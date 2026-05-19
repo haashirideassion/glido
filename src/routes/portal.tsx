@@ -63,7 +63,8 @@ portalRoutes.get('/', (c) => {
           <img
             src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/cb754040-5ead-438c-afb6-2b74b4ef35db_3840w.jpg"
             alt="Container freight station"
-            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 40%;"
+            data-parallax data-parallax-speed="0.18"
+            style="position:absolute; inset:0; width:100%; height:110%; object-fit:cover; object-position:center 40%;"
           />
           <div style="position:absolute; inset:0; background:linear-gradient(108deg,rgba(10,8,6,0.90) 0%,rgba(10,8,6,0.76) 38%,rgba(10,8,6,0.30) 68%,transparent 100%);"></div>
           <div style="position:absolute; bottom:0; left:0; right:0; height:40%; background:linear-gradient(to top,rgba(10,8,6,0.55) 0%,transparent 100%);"></div>
@@ -256,10 +257,10 @@ portalRoutes.get('/', (c) => {
             </p>
           </div>
 
-          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;" class="persona-grid">
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;" class="persona-grid" data-stagger data-stagger-ms="90">
 
             {/* Freight Forwarders — dark navy */}
-            <div class="reveal tilt-card" style="background:#192640; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden;">
+            <div class="tilt-card" style="background:#192640; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden;">
               <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
                 <Icon name={ICONS.bookings} size={22} style="color:#fff;" />
               </div>
@@ -278,7 +279,7 @@ portalRoutes.get('/', (c) => {
             </div>
 
             {/* Truck Drivers — dark teal */}
-            <div class="reveal tilt-card" data-reveal-delay="80" style="background:#0d3835; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden;">
+            <div class="tilt-card" style="background:#0d3835; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden;">
               <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
                 <Icon name={ICONS.walkIn} size={22} style="color:#fff;" />
               </div>
@@ -297,7 +298,7 @@ portalRoutes.get('/', (c) => {
             </div>
 
             {/* Depot Managers — warm dark */}
-            <div class="reveal tilt-card" data-reveal-delay="160" style="background:#260c03; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden;">
+            <div class="tilt-card" style="background:#260c03; border-radius:22px; padding:34px 30px; position:relative; overflow:hidden;">
               <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.10); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
                 <Icon name={ICONS.home} size={22} style="color:#fff;" />
               </div>
@@ -359,12 +360,12 @@ portalRoutes.get('/', (c) => {
           </div>
 
           {/* 2+3 grid */}
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;" class="bento-row">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;" class="bento-row" data-stagger data-stagger-ms="80">
             {[
               {icon:ICONS.clock,  title:'10-min slot holds',  desc:'Your preferred time is reserved while you complete the booking — zero double-bookings.'},
               {icon:ICONS.qrCode, title:'QR check-in kiosk',  desc:'Scan at arrival. Skip the counter queue entirely. Works on any smartphone.'},
             ].map((feat,i)=>(
-              <div key={feat.title} class="reveal" data-reveal-delay={String(i*80)}
+              <div key={feat.title}
                 style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:16px; padding:30px; transition:border-color 0.15s ease,box-shadow 0.15s ease,transform 0.2s cubic-bezier(0.16,1,0.3,1);"
                 onmouseover="this.style.borderColor='rgba(252,101,20,0.25)';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.07)';this.style.transform='translateY(-2px)';"
                 onmouseout="this.style.borderColor='rgba(0,0,0,0.08)';this.style.boxShadow='none';this.style.transform='';">
@@ -376,13 +377,13 @@ portalRoutes.get('/', (c) => {
               </div>
             ))}
           </div>
-          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;" class="bento-row">
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;" class="bento-row" data-stagger data-stagger-ms="70">
             {[
               {icon:ICONS.warning, title:'CHEP pallet alerts',  desc:'Pallet exchange flagged before you leave for the depot.'},
               {icon:ICONS.users,   title:'Agent bookings',      desc:'Freight forwarders book for drivers — no extra account.'},
               {icon:ICONS.reports, title:'Live reception view',  desc:'Staff see bookings, walk-ins, and holds in one screen.'},
             ].map((feat,i)=>(
-              <div key={feat.title} class="reveal" data-reveal-delay={String(i*70)}
+              <div key={feat.title}
                 style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:16px; padding:28px; transition:border-color 0.15s ease,box-shadow 0.15s ease,transform 0.2s cubic-bezier(0.16,1,0.3,1);"
                 onmouseover="this.style.borderColor='rgba(252,101,20,0.25)';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.07)';this.style.transform='translateY(-2px)';"
                 onmouseout="this.style.borderColor='rgba(0,0,0,0.08)';this.style.boxShadow='none';this.style.transform='';">
