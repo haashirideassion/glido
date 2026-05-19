@@ -46,9 +46,8 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
             pointer-events: none;
             animation: warp-beam-fly linear infinite;
           }
-          @media (max-width: 700px) {
-            .hero-img-panel { display: none !important; }
-            .hero-left-panel { flex: 1 1 100% !important; }
+          @media (max-width: 640px) {
+            .hero-content { padding: 40px 28px 48px !important; }
           }
         `}</style>
 

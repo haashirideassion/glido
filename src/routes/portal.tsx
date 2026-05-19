@@ -39,107 +39,85 @@ portalRoutes.get('/', (c) => {
       {/* ══════════════════════════════════════════════════════════════════
           §1  HERO — contained card on warp background
       ══════════════════════════════════════════════════════════════════ */}
-      <section id="hero-section" style="padding:32px 24px 44px; background:#fff; position:relative; overflow:hidden;">
+      <section id="hero-section" style="padding:56px 40px 72px; background:#fff; position:relative; overflow:hidden;">
 
-        {/* ── Warp: first-person forward-looking perspective floor ── */}
+        {/* ── Warp beams ── */}
         <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
-          {/* Floor grid — steep rotateX creates a road/corridor vanishing-point effect */}
-          <div style="position:absolute; left:-70%; right:-70%; bottom:0; height:80%; transform:perspective(280px) rotateX(72deg); transform-origin:center bottom; background-image:linear-gradient(rgba(0,0,0,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.08) 1px,transparent 1px); background-size:80px 80px; mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%); -webkit-mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%);"></div>
-          {/* Animated light beams — mix-blend-mode:multiply makes them visible on white */}
+          <div style="position:absolute; left:-70%; right:-70%; bottom:0; height:80%; transform:perspective(280px) rotateX(72deg); transform-origin:center bottom; background-image:linear-gradient(rgba(0,0,0,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.07) 1px,transparent 1px); background-size:80px 80px; mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%); -webkit-mask-image:linear-gradient(to top,black 0%,black 20%,transparent 100%);"></div>
           {[
-            { l:'6%',  dur:'3.1s', del:'0.0s', c:'rgba(252,101,20,0.55)', h:'120px' },
-            { l:'18%', dur:'4.4s', del:'1.2s', c:'rgba(99,130,255,0.42)', h:'140px' },
-            { l:'31%', dur:'2.9s', del:'0.5s', c:'rgba(52,211,153,0.42)', h:'100px' },
-            { l:'47%', dur:'3.7s', del:'1.9s', c:'rgba(252,101,20,0.38)', h:'130px' },
-            { l:'62%', dur:'2.6s', del:'0.3s', c:'rgba(168,85,247,0.44)', h:'110px' },
-            { l:'76%', dur:'4.0s', del:'1.5s', c:'rgba(251,191,36,0.44)', h:'125px' },
-            { l:'90%', dur:'3.4s', del:'0.8s', c:'rgba(236,72,153,0.40)', h:'105px' },
+            { l:'6%',  dur:'3.1s', del:'0.0s', c:'rgba(252,101,20,0.50)', h:'120px' },
+            { l:'18%', dur:'4.4s', del:'1.2s', c:'rgba(99,130,255,0.38)', h:'140px' },
+            { l:'31%', dur:'2.9s', del:'0.5s', c:'rgba(52,211,153,0.38)', h:'100px' },
+            { l:'47%', dur:'3.7s', del:'1.9s', c:'rgba(252,101,20,0.34)', h:'130px' },
+            { l:'62%', dur:'2.6s', del:'0.3s', c:'rgba(168,85,247,0.40)', h:'110px' },
+            { l:'76%', dur:'4.0s', del:'1.5s', c:'rgba(251,191,36,0.40)', h:'125px' },
+            { l:'90%', dur:'3.4s', del:'0.8s', c:'rgba(236,72,153,0.36)', h:'105px' },
           ].map((b, i) => (
             <div key={i} class="warp-beam" style={`left:${b.l}; height:${b.h}; background:linear-gradient(to top,${b.c},transparent); animation-duration:${b.dur}; animation-delay:${b.del}; mix-blend-mode:multiply;`} />
           ))}
         </div>
 
-        {/* ── Hero card ── */}
-        <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:540px; display:flex;">
+        {/* ── Hero card — full-width, photo as card background ── */}
+        <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:520px; display:flex; align-items:center;">
 
-          {/* ── Dark left panel ── */}
-          <div class="hero-left-panel" style="position:relative; flex:0 0 55%; display:flex; align-items:flex-start; overflow:hidden;">
-            {/* Backgrounds */}
-            <div style="position:absolute; inset:0; background:linear-gradient(145deg,#0A0E14 0%,#0F1923 50%,#111D28 100%);"></div>
-            <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.028) 1px,transparent 1px); background-size:52px 52px;"></div>
-            {/* Orange bloom from the right edge — bleeds into right panel */}
-            <div style="position:absolute; inset:0; background:radial-gradient(ellipse 130% 75% at 110% 55%,rgba(252,101,20,0.20) 0%,transparent 55%);"></div>
-            {/* Bottom dark fade */}
-            <div style="position:absolute; bottom:0; left:0; right:0; height:35%; background:linear-gradient(to top,rgba(6,4,2,0.55) 0%,transparent 100%);"></div>
+          {/* Photo background — right 55% visible, left blacked out for text */}
+          <div style="position:absolute; inset:0; background-image:url('https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/bf7f2d26-7889-4678-868d-8cde754846e9_3840w.jpg'); background-size:cover; background-position:center right;"></div>
 
-            {/* Content */}
-            <div style="position:relative; z-index:1; padding:52px 48px 52px;" class="hero-content">
+          {/* Dark base — left to right: opaque → transparent */}
+          <div style="position:absolute; inset:0; background:linear-gradient(to right, #0A0E14 0%, #0A0E14 30%, rgba(10,14,20,0.92) 48%, rgba(10,14,20,0.55) 65%, rgba(10,14,20,0.20) 82%, rgba(10,14,20,0.08) 100%);"></div>
 
-              {/* Live badge */}
-              <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.13); border:1px solid rgba(34,197,94,0.28); margin-bottom:36px;">
-                <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
-                <span style="font-size:11px; font-weight:600; color:#4ADE80; letter-spacing:0.01em;">Open today · Sydney CFS</span>
-              </div>
+          {/* Grid texture over dark portion */}
+          <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px); background-size:52px 52px; mask-image:linear-gradient(to right,black 0%,black 35%,transparent 60%); -webkit-mask-image:linear-gradient(to right,black 0%,black 35%,transparent 60%);"></div>
 
-              {/* Monospace eyebrow */}
-              <p style="font-family:ui-monospace,monospace; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.18); margin-bottom:14px;">── slot booking system</p>
+          {/* Orange bloom behind text */}
+          <div style="position:absolute; top:0; left:0; width:55%; height:100%; background:radial-gradient(ellipse 80% 70% at 60% 55%,rgba(252,101,20,0.16) 0%,transparent 65%); pointer-events:none;"></div>
 
-              {/* Headline stat block */}
-              <div style="margin-bottom:22px; padding-bottom:22px; border-bottom:1px solid rgba(255,255,255,0.07);">
-                <span style="display:block; font-size:clamp(3.2rem,5.8vw,5.8rem); font-weight:800; letter-spacing:-0.07em; line-height:0.82; color:#FC6514;">4 min</span>
-                <span style="display:block; font-size:clamp(0.78rem,1.15vw,0.96rem); font-weight:400; letter-spacing:0.02em; color:rgba(255,255,255,0.36); margin-top:10px; font-style:italic;">average gate time with Glido</span>
-              </div>
+          {/* Bottom vignette */}
+          <div style="position:absolute; bottom:0; left:0; right:0; height:30%; background:linear-gradient(to top,rgba(6,4,2,0.50) 0%,transparent 100%);"></div>
 
-              {/* Main headline — editorial mixed weight */}
-              <h1 style="font-size:clamp(1.45rem,2.5vw,2.3rem); font-weight:800; letter-spacing:-0.048em; line-height:0.97; color:#ffffff; margin-bottom:18px;">
-                <span style="display:block;">Book your CFS slot.</span>
-                <span style="display:block; color:#FC6514; margin-top:3px;">Skip the queue.</span>
-              </h1>
+          {/* Content */}
+          <div style="position:relative; z-index:1; padding:60px 64px;" class="hero-content">
 
-              {/* Subtext */}
-              <p style="font-size:13px; color:rgba(255,255,255,0.42); line-height:1.80; margin-bottom:34px; max-width:300px;">
-                Instant booking for drivers, forwarders, and depot teams. Scan your QR at the kiosk — straight to the bay.
-              </p>
-
-              {/* CTAs */}
-              <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                <a href="/book" class="btn-primary" style="padding:13px 28px; font-size:14px;">
-                  <Icon name={ICONS.calendar} size={15} />
-                  Book a Visit
-                  <Icon name={ICONS.arrowRight} size={14} />
-                </a>
-                <a href="/bookings" style="display:inline-flex; align-items:center; gap:8px; padding:13px 24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.72); border:1.5px solid rgba(255,255,255,0.16); border-radius:9999px; text-decoration:none; transition:all 0.15s ease; backdrop-filter:blur(8px);"
-                  onmouseover="this.style.borderColor='rgba(255,255,255,0.42)'; this.style.color='#fff';"
-                  onmouseout="this.style.borderColor='rgba(255,255,255,0.16)'; this.style.color='rgba(255,255,255,0.72)';"
-                >
-                  <Icon name={ICONS.search} size={15} />
-                  Look Up Booking
-                </a>
-              </div>
+            {/* Live badge */}
+            <div style="display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:9999px; background:rgba(34,197,94,0.13); border:1px solid rgba(34,197,94,0.28); margin-bottom:36px;">
+              <span style="width:6px; height:6px; border-radius:9999px; background:#22C55E; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite;" />
+              <span style="font-size:11px; font-weight:600; color:#4ADE80; letter-spacing:0.01em;">Open today · Sydney CFS</span>
             </div>
-          </div>
 
-          {/* ── Right panel — real photo ── */}
-          <div class="hero-img-panel" style="flex:0 0 45%; position:relative; overflow:hidden;">
-            {/* Photo */}
-            <div style="position:absolute; inset:0; background-image:url('https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/bf7f2d26-7889-4678-868d-8cde754846e9_3840w.jpg'); background-size:cover; background-position:center;"></div>
-            {/* Left edge — blend into dark panel */}
-            <div style="position:absolute; inset:0; background:linear-gradient(to right, rgba(10,14,20,0.96) 0%, rgba(10,14,20,0.55) 22%, rgba(10,14,20,0.10) 50%, transparent 70%);"></div>
-            {/* Bottom vignette */}
-            <div style="position:absolute; bottom:0; left:0; right:0; height:50%; background:linear-gradient(to top, rgba(0,0,0,0.68) 0%, transparent 100%);"></div>
-            {/* Top-right soft darken */}
-            <div style="position:absolute; top:0; right:0; width:55%; height:45%; background:radial-gradient(ellipse at top right, rgba(0,0,0,0.28) 0%, transparent 75%);"></div>
+            {/* Monospace eyebrow */}
+            <p style="font-family:ui-monospace,monospace; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.18); margin-bottom:14px;">── slot booking system</p>
 
-            {/* Floating stat pills — bottom right */}
-            <div style="position:absolute; bottom:28px; right:20px; display:flex; flex-direction:column; align-items:flex-end; gap:8px; z-index:1;">
-              <div style="display:inline-flex; align-items:center; gap:6px; padding:6px 13px; border-radius:9999px; background:rgba(0,0,0,0.50); border:1px solid rgba(255,255,255,0.13); backdrop-filter:blur(16px); font-size:11px; font-weight:600; color:rgba(255,255,255,0.88); white-space:nowrap; box-shadow:0 2px 10px rgba(0,0,0,0.35);">
-                <span style="width:5px; height:5px; border-radius:9999px; background:#22C55E; flex-shrink:0;"></span>
-                No counter queue
-              </div>
-              <div style="display:inline-flex; align-items:center; gap:6px; padding:6px 13px; border-radius:9999px; background:rgba(0,0,0,0.50); border:1px solid rgba(252,101,20,0.28); backdrop-filter:blur(16px); font-size:11px; font-weight:600; color:#FC8A3C; white-space:nowrap; box-shadow:0 2px 10px rgba(0,0,0,0.35);">
-                <Icon name={ICONS.qrCode} size={12} style="color:#FC8A3C;" />
-                QR scan check-in
-              </div>
+            {/* Stat anchor */}
+            <div style="margin-bottom:22px; padding-bottom:22px; border-bottom:1px solid rgba(255,255,255,0.07);">
+              <span style="display:block; font-size:clamp(3.2rem,5.8vw,5.8rem); font-weight:800; letter-spacing:-0.07em; line-height:0.82; color:#FC6514;">4 min</span>
+              <span style="display:block; font-size:clamp(0.78rem,1.15vw,0.96rem); font-weight:400; letter-spacing:0.02em; color:rgba(255,255,255,0.36); margin-top:10px; font-style:italic;">average gate time with Glido</span>
+            </div>
+
+            {/* Main headline */}
+            <h1 style="font-size:clamp(1.45rem,2.5vw,2.3rem); font-weight:800; letter-spacing:-0.048em; line-height:0.97; color:#ffffff; margin-bottom:18px;">
+              <span style="display:block;">Book your CFS slot.</span>
+              <span style="display:block; color:#FC6514; margin-top:3px;">Skip the queue.</span>
+            </h1>
+
+            {/* Subtext */}
+            <p style="font-size:13px; color:rgba(255,255,255,0.42); line-height:1.80; margin-bottom:34px; max-width:300px;">
+              Instant booking for drivers, forwarders, and depot teams. Scan your QR at the kiosk — straight to the bay.
+            </p>
+
+            {/* CTAs */}
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+              <a href="/book" class="btn-primary" style="padding:13px 28px; font-size:14px;">
+                <Icon name={ICONS.calendar} size={15} />
+                Book a Visit
+                <Icon name={ICONS.arrowRight} size={14} />
+              </a>
+              <a href="/bookings" style="display:inline-flex; align-items:center; gap:8px; padding:13px 24px; font-size:14px; font-weight:600; color:rgba(255,255,255,0.72); border:1.5px solid rgba(255,255,255,0.16); border-radius:9999px; text-decoration:none; transition:all 0.15s ease; backdrop-filter:blur(8px);"
+                onmouseover="this.style.borderColor='rgba(255,255,255,0.42)'; this.style.color='#fff';"
+                onmouseout="this.style.borderColor='rgba(255,255,255,0.16)'; this.style.color='rgba(255,255,255,0.72)';"
+              >
+                <Icon name={ICONS.search} size={15} />
+                Look Up Booking
+              </a>
             </div>
           </div>
         </div>
@@ -442,35 +420,7 @@ portalRoutes.get('/', (c) => {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════════
-          §7  TESTIMONIAL
-      ══════════════════════════════════════════════════════════════════ */}
-      <section style="padding:96px 24px; background:#FFFFFF; border-top:1px solid rgba(0,0,0,0.06);">
-        <div class="max-w-3xl mx-auto">
-          <div class="reveal" style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:22px; padding:52px 48px; position:relative; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.04),0 8px 32px rgba(0,0,0,0.06);">
-            <div style="position:absolute; top:20px; left:32px; font-size:120px; font-weight:800; color:rgba(252,101,20,0.08); line-height:1; font-family:Georgia,serif; pointer-events:none; user-select:none;">"</div>
-            <blockquote style="position:relative; font-size:clamp(1rem,2vw,1.25rem); font-weight:400; color:#1C1917; letter-spacing:-0.02em; line-height:1.65; margin-bottom:28px; font-style:italic;">
-              We used to spend 40 minutes every morning on phone bookings and a whiteboard. Now drivers book online, ICS checks happen automatically, and our gate time is under 4 minutes.
-            </blockquote>
-            <div style="display:flex; align-items:center; gap:14px;">
-              <div style="width:42px; height:42px; border-radius:10px; background:#1C1917; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                <span style="font-size:14px; font-weight:700; color:rgba(255,255,255,0.85);">JR</span>
-              </div>
-              <div>
-                <p style="font-size:13px; font-weight:600; color:#1C1917;">James R.</p>
-                <p style="font-size:12px; color:#A8A29E;">Operations Manager · Sydney CFS</p>
-              </div>
-              <div style="margin-left:auto; display:flex; gap:2px;">
-                {[1,2,3,4,5].map(s=>(
-                  <svg key={s} width="13" height="13" viewBox="0 0 24 24" fill="#FC6514">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                  </svg>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* §7 TESTIMONIAL — hidden */}
 
       {/* ══════════════════════════════════════════════════════════════════
           §8  CTA — warm light, not dark
@@ -516,14 +466,13 @@ portalRoutes.get('/', (c) => {
       {/* Responsive styles */}
       <style>{`
         @media (max-width:960px){
-          .hero-grid,.preview-grid{grid-template-columns:1fr!important;}
+          .preview-grid{grid-template-columns:1fr!important;}
           .steps-grid-new{grid-template-columns:repeat(2,1fr)!important;}
           .bento-row,.persona-grid{grid-template-columns:1fr!important;}
           .bento-hero{grid-template-columns:1fr!important;}
         }
         @media (max-width:640px){
           .steps-grid-new{grid-template-columns:1fr!important;}
-          .hero-content{padding:0 24px 64px!important;}
         }
       `}</style>
 
