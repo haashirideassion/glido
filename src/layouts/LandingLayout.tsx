@@ -361,6 +361,107 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
         {/* ── Global animation engine ───────────────────────────────────── */}
         <script src="/public/transitions.js"></script>
 
+        {/* ── Hero: mouse-parallax 3D ───────────────────────────────────── */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            var heroSection = document.getElementById('hero-section');
+            var card        = document.getElementById('hero-card');
+            var bg          = document.getElementById('hero-bg');
+            var spec        = document.getElementById('hero-spec');
+            var content     = document.getElementById('hero-content-layer');
+            if (!heroSection || !card) return;
+
+            /* Target values (set by mousemove) */
+            var tCardRx = 0, tCardRy = 0;   /* card tilt °       */
+            var tBgX = 0,    tBgY = 0;       /* bg shift px       */
+            var tCtX = 0,    tCtY = 0;       /* content shift px  */
+            var tSpecX = 50, tSpecY = 50;    /* spec % position   */
+            var tScale = 1.0;
+
+            /* Current lerped values */
+            var cCardRx = 0, cCardRy = 0;
+            var cBgX = 0,    cBgY = 0;
+            var cCtX = 0,    cCtY = 0;
+            var cSpecX = 50, cSpecY = 50;
+            var cScale = 1.0;
+            var inside = false;
+
+            function lerp(a, b, t) { return a + (b - a) * t; }
+
+            var rafId = null;
+            function tick() {
+              var ease = inside ? 0.07 : 0.05;
+              cCardRx = lerp(cCardRx, tCardRx, ease);
+              cCardRy = lerp(cCardRy, tCardRy, ease);
+              cBgX    = lerp(cBgX,    tBgX,    ease);
+              cBgY    = lerp(cBgY,    tBgY,    ease);
+              cCtX    = lerp(cCtX,    tCtX,    ease);
+              cCtY    = lerp(cCtY,    tCtY,    ease);
+              cSpecX  = lerp(cSpecX,  tSpecX,  ease);
+              cSpecY  = lerp(cSpecY,  tSpecY,  ease);
+              cScale  = lerp(cScale,  tScale,  ease);
+
+              card.style.transform =
+                'perspective(900px) rotateX(' + cCardRx + 'deg) rotateY(' + cCardRy + 'deg) scale(' + cScale + ')';
+
+              bg.style.transform =
+                'translate(' + cBgX + 'px,' + cBgY + 'px)';
+
+              if (content) {
+                content.style.transform =
+                  'translate(' + cCtX + 'px,' + cCtY + 'px)';
+              }
+
+              if (spec) {
+                /* opacity ramps up as tilt increases */
+                var tiltMag = Math.sqrt(cCardRx * cCardRx + cCardRy * cCardRy);
+                var specOp  = Math.min(tiltMag / 4, 1) * 0.18;
+                spec.style.background =
+                  'radial-gradient(ellipse 70% 60% at ' + cSpecX + '% ' + cSpecY + '%,' +
+                  'rgba(255,255,255,' + specOp + ') 0%,' +
+                  'transparent 70%)';
+              }
+
+              rafId = requestAnimationFrame(tick);
+            }
+            rafId = requestAnimationFrame(tick);
+
+            heroSection.addEventListener('mousemove', function(e) {
+              inside = true;
+              var r  = heroSection.getBoundingClientRect();
+              var mx = (e.clientX - r.left) / r.width;   /* 0→1 */
+              var my = (e.clientY - r.top)  / r.height;
+
+              /* Card tilt: max ±5° X, ±8° Y */
+              tCardRx = (my - 0.5) * -10;
+              tCardRy = (mx - 0.5) *  16;
+
+              /* BG moves opposite direction (window parallax), max ±28px */
+              tBgX = (mx - 0.5) * -28;
+              tBgY = (my - 0.5) * -20;
+
+              /* Content floats with tilt, max ±10px */
+              tCtX = (mx - 0.5) * 10;
+              tCtY = (my - 0.5) *  7;
+
+              /* Specular: light source stays roughly top-left, shifts subtly */
+              tSpecX = 20 + mx * 30;
+              tSpecY = 10 + my * 25;
+
+              tScale = 1.012;
+            }, { passive: true });
+
+            heroSection.addEventListener('mouseleave', function() {
+              inside = false;
+              tCardRx = 0; tCardRy = 0;
+              tBgX = 0;    tBgY = 0;
+              tCtX = 0;    tCtY = 0;
+              tSpecX = 50; tSpecY = 50;
+              tScale = 1.0;
+            });
+          })();
+        `}} />
+
         {/* ── Nav: floating pill + 3D interactions ─────────────────────── */}
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {

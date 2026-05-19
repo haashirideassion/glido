@@ -58,16 +58,19 @@ portalRoutes.get('/', (c) => {
         </div>
 
         {/* ── Hero card ── */}
-        <div style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:520px; display:flex; align-items:center;">
+        <div id="hero-card" style="max-width:1200px; margin:0 auto; position:relative; z-index:1; border-radius:24px; overflow:hidden; min-height:520px; display:flex; align-items:center; will-change:transform; transform-origin:center center;">
 
-          {/* Full-bleed photo */}
-          <div style="position:absolute; inset:0; background-image:url('https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/bf7f2d26-7889-4678-868d-8cde754846e9_3840w.jpg'); background-size:cover; background-position:center;"></div>
+          {/* Full-bleed photo — scaled up so parallax shift never reveals edges */}
+          <div id="hero-bg" style="position:absolute; inset:-8%; background-image:url('https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/bf7f2d26-7889-4678-868d-8cde754846e9_3840w.jpg'); background-size:cover; background-position:center; will-change:transform;"></div>
 
           {/* Dark scrim — heavier on left for text, softens across the card */}
-          <div style="position:absolute; inset:0; background:linear-gradient(105deg, rgba(8,10,14,0.88) 0%, rgba(8,10,14,0.75) 45%, rgba(8,10,14,0.45) 70%, rgba(8,10,14,0.25) 100%);"></div>
+          <div style="position:absolute; inset:0; background:linear-gradient(105deg, rgba(8,10,14,0.88) 0%, rgba(8,10,14,0.75) 45%, rgba(8,10,14,0.45) 70%, rgba(8,10,14,0.25) 100%); z-index:1;"></div>
+
+          {/* Specular highlight — moves with light source as card tilts */}
+          <div id="hero-spec" style="position:absolute; inset:0; z-index:2; pointer-events:none; border-radius:24px; transition:background 0.1s ease;"></div>
 
           {/* Content */}
-          <div style="position:relative; z-index:1; padding:64px 72px; max-width:640px;" class="hero-content">
+          <div id="hero-content-layer" style="position:relative; z-index:3; padding:64px 72px; max-width:640px; will-change:transform;" class="hero-content">
 
             <h1 style="font-size:clamp(2rem,3.8vw,3.6rem); font-weight:800; letter-spacing:-0.05em; line-height:1.0; color:#ffffff; margin-bottom:14px;">
               Book your CFS slot.<br/>
