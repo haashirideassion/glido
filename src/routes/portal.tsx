@@ -96,18 +96,44 @@ portalRoutes.get('/', (c) => {
             </div>
           </div>
 
-          {/* Right image panel — swap src to /public/hero-van.webp once file is placed */}
-          <div class="hero-img-panel" style="flex:0 0 45%; position:relative; overflow:hidden; background:#F5EFE6;">
+          {/* Right panel — image when available, CSS scene fallback */}
+          <div class="hero-img-panel" style="flex:0 0 45%; position:relative; overflow:hidden; background:linear-gradient(160deg,#0F1923 0%,#1A2535 40%,#0D1117 100%);">
+            {/* CSS dock/warehouse scene fallback */}
+            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+              {/* Ambient glow */}
+              <div style="position:absolute; top:30%; right:10%; width:200px; height:200px; background:radial-gradient(circle,rgba(252,101,20,0.18) 0%,transparent 70%); pointer-events:none;"></div>
+              <div style="position:absolute; bottom:20%; left:15%; width:160px; height:160px; background:radial-gradient(circle,rgba(34,197,94,0.10) 0%,transparent 70%); pointer-events:none;"></div>
+              {/* Central icon group */}
+              <div style="display:flex; flex-direction:column; align-items:center; gap:16px; z-index:1;">
+                {/* Warehouse icon */}
+                <div style="width:80px; height:80px; border-radius:20px; background:rgba(252,101,20,0.12); border:1.5px solid rgba(252,101,20,0.25); display:flex; align-items:center; justify-content:center;">
+                  <Icon name="solar:buildings-3-bold-duotone" size={44} style="color:#FC6514;" />
+                </div>
+                {/* Arrow down */}
+                <div style="display:flex; flex-direction:column; align-items:center; gap:3px; opacity:0.35;">
+                  <div style="width:1.5px; height:16px; background:#FC6514;"></div>
+                  <div style="width:7px; height:7px; border-right:1.5px solid #FC6514; border-bottom:1.5px solid #FC6514; transform:rotate(45deg); margin-top:-5px;"></div>
+                </div>
+                {/* Truck icon */}
+                <div style="width:80px; height:80px; border-radius:20px; background:rgba(240,197,137,0.08); border:1.5px solid rgba(240,197,137,0.20); display:flex; align-items:center; justify-content:center;">
+                  <Icon name="solar:delivery-bold-duotone" size={44} style="color:#F0C589;" />
+                </div>
+                {/* Stat badges */}
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                  <div style="padding:6px 12px; border-radius:9999px; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.25); font-size:11px; font-weight:600; color:#4ADE80;">4 min avg gate</div>
+                  <div style="padding:6px 12px; border-radius:9999px; background:rgba(252,101,20,0.10); border:1px solid rgba(252,101,20,0.22); font-size:11px; font-weight:600; color:#FC6514;">No queue</div>
+                </div>
+              </div>
+            </div>
+            {/* Image overlay (shown when hero-van.webp is placed) */}
             <img
               src="/public/hero-van.webp"
               alt="Delivery van at CFS"
-              style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center bottom;"
-              onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(145deg,#F5EFE6 0%,#EDE3D5 100%)';"
+              style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center bottom; opacity:0;"
+              onload="this.style.opacity='1'; this.style.transition='opacity 0.4s ease'; this.previousElementSibling && (this.previousElementSibling.style.opacity='0');"
             />
-            {/* Gradient fade into the dark left panel */}
-            <div style="position:absolute; inset:0; background:linear-gradient(to right,rgba(13,17,23,0.55) 0%,transparent 35%);"></div>
-            {/* Bottom vignette */}
-            <div style="position:absolute; bottom:0; left:0; right:0; height:30%; background:linear-gradient(to top,rgba(13,17,23,0.35) 0%,transparent 100%);"></div>
+            {/* Edge blend into left dark panel */}
+            <div style="position:absolute; inset:0; background:linear-gradient(to right,rgba(13,17,23,0.7) 0%,transparent 30%);"></div>
           </div>
         </div>
 

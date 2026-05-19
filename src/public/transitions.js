@@ -236,55 +236,52 @@
 
   /* ══════════════════════════════════════════════════════════════════════════
      4. SCROLL REVEALS
+     Primary: scroll listener (fires every scroll tick — reliable on all browsers)
+     Backup:  IntersectionObserver with generous rootMargin
   ══════════════════════════════════════════════════════════════════════════ */
   var _io = null
+  var _revealSel = '.reveal:not(.revealed),.reveal-left:not(.revealed),.reveal-right:not(.revealed),.reveal-scale:not(.revealed)'
+
+  function _revealVisible () {
+    document.querySelectorAll(_revealSel).forEach(function (el) {
+      var r = el.getBoundingClientRect()
+      if (r.top < window.innerHeight * 1.08 && r.bottom > -50) {
+        var delay = _isFirstVisit ? parseInt(el.getAttribute('data-reveal-delay') || '0', 10) : 0
+        setTimeout(function () { el.classList.add('revealed') }, delay)
+      }
+    })
+  }
 
   function _setupReveals () {
-    var sel = '.reveal:not(.revealed),.reveal-left:not(.revealed),.reveal-right:not(.revealed),.reveal-scale:not(.revealed)'
-
     if (!window.IntersectionObserver) {
-      document.querySelectorAll(sel).forEach(function (el) { el.classList.add('revealed') })
+      document.querySelectorAll(_revealSel).forEach(function (el) { el.classList.add('revealed') })
       return
     }
 
+    /* Run immediately to catch elements already in viewport */
+    _revealVisible()
+
+    /* Scroll listener — most reliable reveal trigger */
+    window.addEventListener('scroll', _revealVisible, { passive: true })
+
+    /* IntersectionObserver as secondary trigger (good for below-fold on load) */
     _io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return
         var el    = entry.target
-        var delay = parseInt(el.getAttribute('data-reveal-delay') || '0', 10)
+        var delay = _isFirstVisit ? parseInt(el.getAttribute('data-reveal-delay') || '0', 10) : 0
         setTimeout(function () { el.classList.add('revealed') }, delay)
         _io.unobserve(el)
       })
-    }, { threshold: 0.05, rootMargin: '0px 0px 0px 0px' })
+    }, { threshold: 0.01, rootMargin: '0px 0px 120px 0px' })
 
-    function _observe () {
-      document.querySelectorAll(sel).forEach(function (el) {
-        var r = el.getBoundingClientRect()
-        /* Reveal immediately if already in (or near) the viewport */
-        if (r.top < window.innerHeight * 1.05) {
-          var delay = parseInt(el.getAttribute('data-reveal-delay') || '0', 10)
-          setTimeout(function () { el.classList.add('revealed') }, delay)
-        } else {
-          _io.observe(el)
-        }
-      })
-    }
+    document.querySelectorAll(_revealSel).forEach(function (el) { _io.observe(el) })
 
-    /* On subsequent visits, reveal all in-viewport elements immediately (no stagger delay) */
-    if (!_isFirstVisit) {
-      document.querySelectorAll(sel).forEach(function (el) {
-        var r = el.getBoundingClientRect()
-        if (r.top < window.innerHeight * 1.05) {
-          el.classList.add('revealed')
-        } else {
-          _io.observe(el)
-        }
-      })
-    } else {
-      _observe()
-    }
-    /* re-observe after HTMX partial swaps */
-    document.addEventListener('htmx:afterSwap', _observe)
+    /* Re-scan after HTMX partial swaps */
+    document.addEventListener('htmx:afterSwap', function () {
+      _revealVisible()
+      document.querySelectorAll(_revealSel).forEach(function (el) { _io.observe(el) })
+    })
   }
 
   /* ══════════════════════════════════════════════════════════════════════════
