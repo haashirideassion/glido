@@ -473,7 +473,7 @@ portalRoutes.get('/login', async (c) => {
         <div style="position:relative; z-index:1; width:100%; max-width:400px;">
 
           {/* Card */}
-          <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:24px; padding:44px 40px; box-shadow:0 2px 8px rgba(0,0,0,0.04), 0 16px 48px rgba(0,0,0,0.09);">
+          <div x-data="{ role: 'staff' }" style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.08); border-radius:24px; padding:44px 40px; box-shadow:0 2px 8px rgba(0,0,0,0.04), 0 16px 48px rgba(0,0,0,0.09);">
 
             {/* Logo / heading */}
             <div style="text-align:center; margin-bottom:36px;">
@@ -502,7 +502,7 @@ portalRoutes.get('/login', async (c) => {
             )}
 
             {/* Role selector */}
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:28px;" x-data="{ role: 'staff' }">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:28px;">
               <button type="button"
                 x-on:click="role = 'staff'"
                 style="padding:11px 8px; font-size:12.5px; font-weight:600; border-radius:10px; cursor:pointer; border:1.5px solid rgba(0,0,0,0.10); transition:all 0.15s ease; text-align:center;"
