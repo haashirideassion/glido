@@ -47,16 +47,17 @@
       var anchor = document.querySelector('.glido-logo-anchor')
 
       if (wrap && anchor) {
-        var aR = anchor.getBoundingClientRect()
+        /* target the SVG directly — the anchor div is 40×40 but the SVG is 57×11 */
+        var navSvg = anchor.querySelector('svg')
+        var aR = (navSvg || anchor).getBoundingClientRect()
         var wR = wrap.getBoundingClientRect()
-        /* scale so the preloader logo matches the navbar logo height */
+        /* scale so the preloader logo matches the sidebar SVG exactly */
         var s  = aR.height / wR.height
-        /* translate from left:50%;top:50% origin to the anchor's top-left */
+        /* translate so the preloader's top-left lands on the SVG's top-left */
         var tx = aR.left - window.innerWidth  / 2
         var ty = aR.top  - window.innerHeight / 2
 
         /* hide the real nav SVG — the flying logo will "land" into its spot */
-        var navSvg = anchor.querySelector('svg')
         if (navSvg) navSvg.style.opacity = '0'
 
         wrap.style.transformOrigin = '0 0'

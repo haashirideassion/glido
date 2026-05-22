@@ -58,7 +58,7 @@ export const Step5Documents = () => (
       {/* Fetched shipment data */}
       <div x-show="$store.wizard.shipmentFetched && $store.wizard.shipmentData" style="display:flex; flex-direction:column; gap:16px;">
         {/* ICS status badge */}
-        <div style="display:flex; align-items:center; gap:10px;">
+        <div style="display:flex; align-items:center; gap:10px; padding:60px 0; border-top:1px solid rgba(0,0,0,0.07); border-bottom:1px solid rgba(0,0,0,0.07);">
           <span style="font-size:13px; font-weight:600; color:#78716C;">ICS Status:</span>
           <span
             style="display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:3px 10px; border-radius:9999px; border:1px solid transparent;"

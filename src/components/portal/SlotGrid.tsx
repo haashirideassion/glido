@@ -28,13 +28,10 @@ export const SlotGrid = ({ slots, date }: Props) => {
           <style>{`
             .slot-grid-wrap {
               display: grid;
-              grid-template-columns: repeat(4, 1fr);
-              gap: 6px;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 12px;
             }
-            @media (max-width: 560px) {
-              .slot-grid-wrap { grid-template-columns: repeat(3, 1fr); }
-            }
-            @media (max-width: 380px) {
+            @media (max-width: 640px) {
               .slot-grid-wrap { grid-template-columns: repeat(2, 1fr); }
             }
           `}</style>

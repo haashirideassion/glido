@@ -92,6 +92,9 @@ export const ICONS = {
   email:          'solar:letter-bold-duotone',
   car:            'solar:car-bold-duotone',
 
+  // Auth
+  logout:         'solar:logout-2-bold-duotone',
+
   // Settings sections
   shield:         'solar:shield-keyhole-bold-duotone',
   palette:        'solar:pallete-2-bold-duotone',

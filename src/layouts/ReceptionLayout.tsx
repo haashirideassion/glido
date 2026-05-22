@@ -24,6 +24,7 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{title} — Glido Reception</title>
+        <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -277,6 +278,7 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <aside
           class="sidebar-col"
           id="sidebar-col"
+          style="border-right:1px solid rgba(0,0,0,0.07);"
         >
           {/* ── Logo mark ── */}
           <a
@@ -284,7 +286,7 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
             class="glido-logo-anchor"
             style="display:flex; align-items:center; justify-content:center; width:40px; height:40px; flex-shrink:0; text-decoration:none; margin-bottom:4px;"
           >
-            <GlidoLogo height={16} onDark={false} />
+            <GlidoLogo height={11} onDark={false} />
           </a>
 
           {/* ── Pill nav ── */}

@@ -84,14 +84,15 @@ export const Step4ShipmentDetails = () => (
     {/* ── Slot grid (2-column cards) ───────────────────────────────────────── */}
     <div
       x-show="$store.wizard.selectedDate !== null && !$store.wizard.slotsLoading && $store.wizard.slots.length > 0"
-      style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;"
+      class="slot-list-grid"
+      style="margin-bottom:20px;"
     >
       <template x-for="slot in $store.wizard.slots" x-key="slot.id">
         <button
           type="button"
           x-bind:disabled="slot.busyness === 'full' || slot.busyness === 'closed'"
           x-on:click="slot.busyness !== 'full' && slot.busyness !== 'closed' && $store.wizard.selectSlot(slot.id, slot.startTime + ' – ' + slot.endTime)"
-          style="position:relative; display:flex; flex-direction:column; justify-content:space-between; padding:16px 16px 14px; border-radius:14px; border:1.5px solid #e5e7eb; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; min-height:96px;"
+          style="width:100%; position:relative; display:flex; flex-direction:column; justify-content:space-between; padding:16px 16px 14px; border-radius:14px; border:1.5px solid #e5e7eb; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; min-height:96px;"
           x-bind:style="{ opacity: (slot.busyness === 'full' || slot.busyness === 'closed') ? '0.30' : '1', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer', background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.04)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#e5e7eb', boxShadow: $store.wizard.selectedSlotId === slot.id ? '0 0 0 3px rgba(252,101,20,0.10), 0 4px 14px rgba(252,101,20,0.14)' : '0 1px 3px rgba(0,0,0,0.04)' }"
           x-on:mouseover={`if(slot.busyness !== 'full' && $store.wizard.selectedSlotId !== slot.id){ $el.style.borderColor='#d1d5db'; $el.style.boxShadow='0 2px 8px rgba(0,0,0,0.07)'; }`}
           x-on:mouseout={`if($store.wizard.selectedSlotId !== slot.id){ $el.style.borderColor='#e5e7eb'; $el.style.boxShadow='0 1px 3px rgba(0,0,0,0.04)'; }`}

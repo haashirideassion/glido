@@ -6,6 +6,7 @@
  * This guarantees our 'alpine:init' listener is registered before Alpine
  * fires the event during its own deferred execution.
  */
+
 document.addEventListener('alpine:init', function () {
   window.Alpine.store('wizard', wizardStore())
   window.Alpine.store('kiosk', kioskStore())
@@ -77,6 +78,8 @@ function wizardStore() {
     eftConfirmed: false,
     termsAccepted: false,
     confirmationRef: null,
+    submitError: null,
+    isSubmitting: false,
     // Tenant EFT bank details (loaded from /api/tenants/config)
     eftBankName: 'Commonwealth Bank',
     eftBsb: '062-000',
@@ -249,50 +252,74 @@ function wizardStore() {
         })
     },
 
-    submitBooking() {
+    async submitBooking() {
+      // Guard: slot data must be present before submitting
+      if (!this.selectedDate || !this.selectedSlotLabel) {
+        this.submitError = 'Please select a time slot before confirming.'
+        return
+      }
+      this.submitError = null
+      this.isSubmitting = true
       clearInterval(this.holdTimerInterval)
       this.holdTimerInterval = null
-      var form = document.createElement('form')
-      form.method = 'POST'
-      form.action = '/bookings'
-      var fields = {
-        serviceType: this.serviceType,
-        loadType: this.loadType,
-        slotDate: this.selectedDate,
-        slotStartTime: this.selectedSlotLabel ? this.selectedSlotLabel.split(' – ')[0] : '',
-        slotEndTime: this.selectedSlotLabel ? this.selectedSlotLabel.split(' – ')[1] : '',
-        driverName: this.driverName,
-        driverPhone: this.driverPhone,
-        guestName: this.guestName,
-        guestPhone: this.guestPhone,
-        guestEmail: this.guestEmail,
-        houseBillNumber: this.houseBillNumber,
-        containerNumber: this.containerNumber,
-        weightKg: this.shipmentData ? (this.shipmentData.weightKg || '') : '',
-        volumeCbm: this.shipmentData ? (this.shipmentData.volumeCbm || '') : '',
-        packageCount: this.shipmentData ? (this.shipmentData.packageCount || '') : '',
-        palletCount: this.shipmentData ? (this.shipmentData.palletCount || '') : '',
-        palletType: this.shipmentData ? (this.shipmentData.palletType || '') : '',
-        storageStartDate: this.shipmentData ? (this.shipmentData.storageStartDate || '') : '',
-        storageDays: this.shipmentData ? (this.shipmentData.storageDays || '') : '',
-        storageCharge: this.shipmentData ? (this.shipmentData.storageCharge || '0') : '0',
-        shrinkWrapCharge: this.shipmentData ? (this.shipmentData.shrinkWrapCharge || '0') : '0',
-        slotFee: this.shipmentData ? (this.shipmentData.slotFee || '5') : '5',
-        subtotal: this.shipmentData ? (this.shipmentData.subtotal || '5') : '5',
-        gstAmount: this.shipmentData ? (this.shipmentData.gstAmount || '0.5') : '0.5',
-        totalAmount: this.shipmentData ? (this.shipmentData.totalAmount || '5.5') : '5.5',
-        paymentMethod: this.paymentMethod,
-        paymentStatus: this.paymentMethod === 'eft' ? 'pending_eft' : 'pending',
+
+      var sd    = this.shipmentData
+      var parts = this.selectedSlotLabel.split(' – ')
+      var body  = {
+        serviceType:      this.serviceType,
+        loadType:         this.loadType,
+        slotDate:         this.selectedDate,
+        slotStartTime:    parts[0] || '',
+        slotEndTime:      parts[1] || '',
+        driverName:       this.driverName  || 'Guest',
+        driverPhone:      this.driverPhone || null,
+        guestName:        this.guestName   || null,
+        guestPhone:       this.guestPhone  || null,
+        guestEmail:       this.guestEmail  || null,
+        houseBillNumber:  this.houseBillNumber  || null,
+        containerNumber:  this.containerNumber  || null,
+        weightKg:         sd ? (sd.weightKg          || null) : null,
+        volumeCbm:        sd ? (sd.volumeCbm         || null) : null,
+        packageCount:     sd ? (sd.packageCount      || null) : null,
+        palletCount:      sd ? (sd.palletCount       || null) : null,
+        palletType:       sd ? (sd.palletType        || null) : null,
+        storageStartDate: sd ? (sd.storageStartDate  || null) : null,
+        storageDays:      sd ? (sd.storageDays       || null) : null,
+        storageCharge:    sd ? (sd.storageCharge     || null) : null,
+        shrinkWrapCharge: sd ? (sd.shrinkWrapCharge  || null) : null,
+        slotFee:          sd ? (sd.slotFee           || null) : null,
+        subtotal:         sd ? (sd.subtotal          || null) : null,
+        gstAmount:        sd ? (sd.gstAmount         || null) : null,
+        totalAmount:      sd ? (sd.totalAmount       || null) : null,
+        paymentMethod:    this.paymentMethod || 'card',
+        paymentStatus:    this.paymentMethod === 'eft' ? 'pending_eft' : 'pending',
       }
-      for (var key in fields) {
-        var input = document.createElement('input')
-        input.type = 'hidden'
-        input.name = key
-        input.value = fields[key] !== null && fields[key] !== undefined ? String(fields[key]) : ''
-        form.appendChild(input)
+
+      try {
+        var res  = await fetch('/bookings', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(body),
+        })
+        var data = await res.json()
+        console.log('[submitBooking] status:', res.status, 'body:', data)
+
+        if (!res.ok || data.error) {
+          this.submitError = data.error || 'Booking failed. Please try again.'
+          return
+        }
+        if (!data.booking_reference) {
+          this.submitError = 'Booking failed — no reference returned. Please try again.'
+          return
+        }
+
+        window.location.href = '/booking-confirmed/' + data.booking_reference
+      } catch (err) {
+        console.error('[submitBooking] fetch threw:', err)
+        this.submitError = (err && err.message) ? err.message : 'Something went wrong. Please try again.'
+      } finally {
+        this.isSubmitting = false
       }
-      document.body.appendChild(form)
-      form.submit()
     },
 
     reset() {
@@ -327,6 +354,8 @@ function wizardStore() {
       this.eftConfirmed = false
       this.termsAccepted = false
       this.confirmationRef = null
+      this.submitError = null
+      this.isSubmitting = false
     },
   }
 }

@@ -605,27 +605,38 @@ portalRoutes.post('/login', async (c) => {
 
   if (!email || !password) return c.redirect('/login?error=missing')
 
+  let session: any, authUser: any
   try {
-    const { session, user } = await signInWithPassword(email, password)
-    if (!session || !user) return c.redirect('/login?error=invalid')
+    const result = await signInWithPassword(email, password)
+    session  = result.session
+    authUser = result.user
+  } catch (err) {
+    console.error('[login] signInWithPassword failed:', err)
+    return c.redirect('/login?error=invalid')
+  }
 
-    setSessionCookie(c, session.access_token)
+  if (!session || !authUser) return c.redirect('/login?error=invalid')
 
-    // Pull role from users table to route correctly
+  // Cookie is set before any DB lookup — auth is confirmed at this point
+  setSessionCookie(c, session.access_token)
+
+  // Role lookup is best-effort: failure must never block the redirect
+  let role = 'visitor_registered'
+  try {
     const { supabaseAdmin } = await import('../lib/supabase')
     const { data: userRow } = await supabaseAdmin
       .from('users')
       .select('role')
-      .eq('id', user.id)
+      .eq('id', authUser.id)
       .maybeSingle()
-    const role = userRow?.role ?? 'visitor_registered'
-
-    if (isReceptionRole(role)) return c.redirect('/reception')
-    if (next) return c.redirect(decodeURIComponent(next))
-    return c.redirect('/dashboard')
-  } catch {
-    return c.redirect('/login?error=invalid')
+    if (userRow?.role) role = userRow.role
+  } catch (err) {
+    console.warn('[login] users table lookup failed (non-fatal):', err)
   }
+
+  if (isReceptionRole(role)) return c.redirect('/reception')
+  if (next) return c.redirect(decodeURIComponent(next))
+  return c.redirect('/dashboard')
 })
 
 // ─── Sign-up GET ─────────────────────────────────────────────────────────────
@@ -835,7 +846,7 @@ portalRoutes.get('/dashboard', async (c) => {
   )
 
   return c.html(
-    <PublicLayout title="My Dashboard" plain>
+    <PublicLayout title="My Dashboard" plain user={user}>
       <VisitorDashboard user={user} upcoming={upcoming} past={past} />
     </PublicLayout>
   )
@@ -913,7 +924,7 @@ portalRoutes.get('/bookings', async (c) => {
   let heading = 'My Bookings'
 
   if (ref) {
-    const found = await findBooking(ref).catch(() => null)
+    const found = await getBookingByRef(ref).catch(() => null)
     bookings = found ? [found] : []
     heading  = `Results for "${ref}"`
   } else if (user) {
@@ -921,7 +932,7 @@ portalRoutes.get('/bookings', async (c) => {
   }
 
   return c.html(
-    <PublicLayout title="My Bookings">
+    <PublicLayout title="My Bookings" user={user}>
       <div style="padding:40px 24px 64px;">
         <div style="max-width:640px; margin:0 auto;">
 
@@ -1277,52 +1288,62 @@ portalRoutes.get('/api/slots', async (c) => {
 
 // ─── Create booking (POST from wizard) ───────────────────────────────────────
 portalRoutes.post('/bookings', async (c) => {
-  const body = await c.req.parseBody()
+  let body: any
+  try {
+    body = await c.req.json()
+  } catch (parseErr) {
+    console.error('[portal] POST /bookings — failed to parse JSON body:', parseErr)
+    return c.json({ error: 'Invalid request body — expected JSON.' }, 400)
+  }
+
+  console.log('[portal] POST /bookings — body keys:', Object.keys(body))
+  console.log('[portal] POST /bookings — slotDate:', body.slotDate, 'slotStartTime:', body.slotStartTime)
+
   // Attach user_id if visitor is logged in
   const sessionUser = await getSessionUser(c).catch(() => null)
 
   try {
     const booking = await createBooking({
-      serviceType:      (body.serviceType as any) || 'pickup',
-      loadType:         (body.loadType as any) || 'lcl',
-      slotDate:         body.slotDate as string,
-      slotStartTime:    body.slotStartTime as string,
-      slotEndTime:      body.slotEndTime as string,
-      driverName:       (body.driverName as string) || 'Guest',
-      driverPhone:      body.driverPhone as string | undefined,
-      guestName:        body.guestName as string | undefined,
-      guestPhone:       body.guestPhone as string | undefined,
-      houseBillNumber:  body.houseBillNumber as string | undefined,
-      containerNumber:  body.containerNumber as string | undefined,
-      weightKg:         body.weightKg ? Number(body.weightKg) : undefined,
-      volumeCbm:        body.volumeCbm ? Number(body.volumeCbm) : undefined,
-      packageCount:     body.packageCount ? Number(body.packageCount) : undefined,
-      palletCount:      body.palletCount ? Number(body.palletCount) : undefined,
-      palletType:       (body.palletType as any) || undefined,
-      storageStartDate: body.storageStartDate as string | undefined,
-      storageDays:      body.storageDays ? Number(body.storageDays) : undefined,
-      storageCharge:    body.storageCharge ? Number(body.storageCharge) : undefined,
-      shrinkWrapCharge: body.shrinkWrapCharge ? Number(body.shrinkWrapCharge) : undefined,
-      slotFee:          body.slotFee ? Number(body.slotFee) : undefined,
-      subtotal:         body.subtotal ? Number(body.subtotal) : undefined,
-      gstAmount:        body.gstAmount ? Number(body.gstAmount) : undefined,
-      totalAmount:      body.totalAmount ? Number(body.totalAmount) : undefined,
-      paymentMethod:    (body.paymentMethod as any) || 'card',
-      paymentStatus:    (body.paymentStatus as any) || 'pending',
+      serviceType:      body.serviceType || 'pickup',
+      loadType:         body.loadType    || 'lcl',
+      slotDate:         body.slotDate,
+      slotStartTime:    body.slotStartTime,
+      slotEndTime:      body.slotEndTime,
+      driverName:       body.driverName  || 'Guest',
+      driverPhone:      body.driverPhone  || undefined,
+      guestName:        body.guestName   || undefined,
+      guestPhone:       body.guestPhone  || undefined,
+      houseBillNumber:  body.houseBillNumber  || undefined,
+      containerNumber:  body.containerNumber  || undefined,
+      weightKg:         body.weightKg    != null ? Number(body.weightKg)    : undefined,
+      volumeCbm:        body.volumeCbm   != null ? Number(body.volumeCbm)   : undefined,
+      packageCount:     body.packageCount != null ? Number(body.packageCount) : undefined,
+      palletCount:      body.palletCount  != null ? Number(body.palletCount)  : undefined,
+      palletType:       body.palletType  || undefined,
+      storageStartDate: body.storageStartDate || undefined,
+      storageDays:      body.storageDays  != null ? Number(body.storageDays)  : undefined,
+      storageCharge:    body.storageCharge    != null ? Number(body.storageCharge)    : undefined,
+      shrinkWrapCharge: body.shrinkWrapCharge != null ? Number(body.shrinkWrapCharge) : undefined,
+      slotFee:          body.slotFee      != null ? Number(body.slotFee)      : undefined,
+      subtotal:         body.subtotal     != null ? Number(body.subtotal)     : undefined,
+      gstAmount:        body.gstAmount    != null ? Number(body.gstAmount)    : undefined,
+      totalAmount:      body.totalAmount  != null ? Number(body.totalAmount)  : undefined,
+      paymentMethod:    body.paymentMethod || 'card',
+      paymentStatus:    body.paymentStatus || 'pending',
       tenantId:         DEFAULT_TENANT_ID,
       userId:           sessionUser?.id ?? undefined,
     })
     // ── Fire transactional emails (non-blocking) ──────────────────────────────
-    const emailAddress = (body.guestEmail as string | undefined) || (body.driverEmail as string | undefined)
+    const emailAddress = body.guestEmail || body.driverEmail || undefined
     const tenant = await getTenant(DEFAULT_TENANT_ID).catch(() => null)
     const qrDataUrl = await generateQRDataURL(booking.referenceNumber, 160).catch(() => '')
 
     if (emailAddress) {
       // 1. Booking confirmation
       sendBookingConfirmation({
-        to:           emailAddress,
+        to:            emailAddress,
         booking,
-        tenantName:   tenant?.name ?? 'Glido CFS',
+        tenantName:    tenant?.name    ?? 'Glido CFS',
         tenantAddress: tenant?.address ?? undefined,
         qrDataUrl,
       }).catch(err => console.error('[email] confirmation failed:', err))
@@ -1332,10 +1353,10 @@ portalRoutes.post('/bookings', async (c) => {
         sendEftReminder({
           to:            emailAddress,
           booking,
-          bankName:      tenant.eft_bank_name   ?? '',
-          bsb:           tenant.eft_bsb          ?? '',
-          accountNumber: tenant.eft_account_number ?? '',
-          accountName:   tenant.eft_account_name  ?? '',
+          bankName:      tenant.eft_bank_name      ?? '',
+          bsb:           tenant.eft_bsb             ?? '',
+          accountNumber: tenant.eft_account_number  ?? '',
+          accountName:   tenant.eft_account_name    ?? '',
         }).catch(err => console.error('[email] EFT reminder failed:', err))
       }
     }
@@ -1349,16 +1370,14 @@ portalRoutes.post('/bookings', async (c) => {
       }).catch(err => console.error('[email] ICS alert failed:', err))
     }
 
-    return c.redirect(`/booking-confirmed/${booking.referenceNumber}`)
-  } catch (err) {
-    console.error('[portal] createBooking error:', err)
-    return c.html(
-      <PublicLayout title="Booking Error">
-        <div class="max-w-xl mx-auto px-4 py-16 text-center">
-          <p class="text-xs font-medium mb-4" style="color:#DC2626;">Something went wrong creating your booking.</p>
-          <a href="/book" class="text-xs underline" style="color:#FC6514;">Try again</a>
-        </div>
-      </PublicLayout>
+    console.log('[portal] POST /bookings — success, ref:', booking.referenceNumber)
+    return c.json({ booking_reference: booking.referenceNumber })
+  } catch (err: any) {
+    console.error('[portal] createBooking error:', err?.message ?? err)
+    console.error('[portal] createBooking error details:', JSON.stringify(err, null, 2))
+    return c.json(
+      { error: err?.message ?? 'Something went wrong creating your booking.' },
+      500,
     )
   }
 })
@@ -1366,7 +1385,7 @@ portalRoutes.post('/bookings', async (c) => {
 // ─── Booking confirmed page (with QR) ────────────────────────────────────────
 portalRoutes.get('/booking-confirmed/:ref', async (c) => {
   const ref     = c.req.param('ref').toUpperCase()
-  const booking = await findBooking(ref).catch(() => null)
+  const booking = await getBookingByRef(ref).catch(() => null)
   if (!booking) return c.redirect('/bookings')
 
   const qrDataUrl = await generateQRDataURL(ref, 220).catch(() => '')

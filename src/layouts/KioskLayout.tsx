@@ -11,6 +11,7 @@ export const KioskLayout: FC<Props> = ({ children }) => {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <title>Sydney CFS — Kiosk</title>
+        <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts.css" />
         <link rel="stylesheet" href="/public/styles.css" />
         <link rel="stylesheet" href="/public/kiosk.css" />

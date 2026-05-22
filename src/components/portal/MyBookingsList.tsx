@@ -27,7 +27,7 @@ export const MyBookingsList = ({ bookings, query }: Props) => {
         <p style="font-size:15px; font-weight:600; color:#F1F5F9; margin-bottom:6px; letter-spacing:-0.01em;">
           {query ? `No results for "${query}"` : 'No bookings yet'}
         </p>
-        <p style="font-size:13px; color:#78716C; margin-bottom:24px;">
+        <p style="font-size:13px; color:#F1F5F9; margin-bottom:24px;">
           {query ? 'Check the reference number and try again.' : 'Your booking history will appear here.'}
         </p>
         <a

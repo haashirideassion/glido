@@ -50,14 +50,20 @@ export async function getSessionUser(c: Context): Promise<{
 
   try {
     const { data, error } = await supabaseAdmin.auth.getUser(token)
-    if (error || !data.user) return null
+    if (error) {
+      console.warn('[getSessionUser] auth.getUser error:', error.message)
+      return null
+    }
+    if (!data.user) return null
 
-    // Pull role from our users table
-    const { data: userRow } = await supabaseAdmin
+    // Pull role from our users table — failure is non-fatal, default role is used
+    const { data: userRow, error: rowErr } = await supabaseAdmin
       .from('users')
       .select('role, first_name')
       .eq('id', data.user.id)
       .maybeSingle()
+
+    if (rowErr) console.warn('[getSessionUser] users table error:', rowErr.message)
 
     return {
       id:        data.user.id,
@@ -65,7 +71,8 @@ export async function getSessionUser(c: Context): Promise<{
       role:      userRow?.role ?? 'visitor_registered',
       firstName: userRow?.first_name ?? null,
     }
-  } catch {
+  } catch (err: any) {
+    console.error('[getSessionUser] unexpected error:', err?.message ?? err)
     return null
   }
 }

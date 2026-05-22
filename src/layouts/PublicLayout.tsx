@@ -5,16 +5,18 @@ import { GlidoLogo } from '../lib/GlidoLogo'
 interface Props {
   title?: string
   plain?: boolean   /* skip white card — renders children directly on page bg */
+  user?: { firstName: string | null; email: string } | null
   children: any
 }
 
-export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, children }) => {
+export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, user, children }) => {
   return (
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{title} — Glido CFS</title>
+        <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
 
         {/* Inter font */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -122,13 +124,28 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, childr
               ))}
             </nav>
 
-            <a href="/login" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; font-size:12px; font-weight:600; color:#1C1917; background:#F5F4F3; border:1px solid rgba(0,0,0,0.10); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
-              onmouseover="this.style.background='#EBEBEA'; this.style.borderColor='rgba(0,0,0,0.18)';"
-              onmouseout="this.style.background='#F5F4F3'; this.style.borderColor='rgba(0,0,0,0.10)';"
-            >
-              <Icon name={ICONS.users} size={13} style="opacity:0.6;" />
-              Login
-            </a>
+            {user ? (
+              <div style="display:inline-flex; align-items:center; gap:8px;">
+                <span style="font-size:12px; font-weight:500; color:#78716C;">
+                  {user.firstName ?? user.email}
+                </span>
+                <a href="/logout" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; font-size:12px; font-weight:600; color:#1C1917; background:#F5F4F3; border:1px solid rgba(0,0,0,0.10); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
+                  onmouseover="this.style.background='#EBEBEA'; this.style.borderColor='rgba(0,0,0,0.18)';"
+                  onmouseout="this.style.background='#F5F4F3'; this.style.borderColor='rgba(0,0,0,0.10)';"
+                >
+                  <Icon name={ICONS.logout} size={13} style="opacity:0.6;" />
+                  Log out
+                </a>
+              </div>
+            ) : (
+              <a href="/login" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; font-size:12px; font-weight:600; color:#1C1917; background:#F5F4F3; border:1px solid rgba(0,0,0,0.10); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
+                onmouseover="this.style.background='#EBEBEA'; this.style.borderColor='rgba(0,0,0,0.18)';"
+                onmouseout="this.style.background='#F5F4F3'; this.style.borderColor='rgba(0,0,0,0.10)';"
+              >
+                <Icon name={ICONS.users} size={13} style="opacity:0.6;" />
+                Login
+              </a>
+            )}
           </div>
         </header>
 

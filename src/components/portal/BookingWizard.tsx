@@ -33,6 +33,16 @@ export const BookingWizard = () => (
         to   { opacity:1; transform:translateX(0);     }
       }
 
+      /* ── Slot grid ── */
+      .slot-list-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px 12px;
+      }
+      @media (max-width:640px) {
+        .slot-list-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+
       /* ── Mobile layout ── */
       @media (max-width:600px) {
         .wiz-progress  { padding:14px 20px 12px !important; }

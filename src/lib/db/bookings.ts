@@ -285,6 +285,9 @@ export async function createBooking(input: CreateBookingInput): Promise<Booking>
     })
     .select()
     .single()
-  if (error) throw error
+  if (error) {
+    console.error('[createBooking] Supabase insert error:', error.message, error.details, error.hint)
+    throw error
+  }
   return rowToBooking(data)
 }

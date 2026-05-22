@@ -195,17 +195,34 @@ export const Step7Confirmation = () => (
       </label>
     </div>
 
+    {/* Submit error */}
+    <div
+      x-show="$store.wizard.submitError"
+      x-cloak
+      style="display:flex; align-items:center; gap:10px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.22); border-radius:10px; padding:12px 16px; margin-bottom:16px; font-size:13px; color:#DC2626; font-weight:500;"
+    >
+      <span x-text="$store.wizard.submitError"></span>
+    </div>
+
     {/* Submit button */}
     <button
       type="button"
       x-on:click="$store.wizard.submitBooking()"
-      {...{"x-bind:disabled": `!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)`}}
+      {...{"x-bind:disabled": `$store.wizard.isSubmitting || !$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)`}}
       class="btn-primary"
       style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; font-weight:600; padding:14px 24px; border:none; cursor:pointer;"
-      {...{"x-bind:style": "{ opacity: (!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? '0.30' : '1', cursor: (!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? 'not-allowed' : 'pointer', pointerEvents: (!$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? 'none' : 'auto' }"}}
+      {...{"x-bind:style": "{ opacity: ($store.wizard.isSubmitting || !$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? '0.50' : '1', cursor: ($store.wizard.isSubmitting || !$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? 'not-allowed' : 'pointer', pointerEvents: ($store.wizard.isSubmitting || !$store.wizard.termsAccepted || !$store.wizard.paymentMethod || ($store.wizard.paymentMethod === 'eft' && !$store.wizard.eftConfirmed)) ? 'none' : 'auto' }"}}
     >
-      <Icon name={ICONS.check} size={18} />
-      <span x-text="$store.wizard.paymentMethod === 'eft' ? 'Confirm Booking' : ('Confirm & Pay $' + $store.wizard.totalWithGst + ' AUD')">Confirm Booking</span>
+      <span x-show="$store.wizard.isSubmitting" x-cloak>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="animation:spin 0.7s linear infinite;">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="28" stroke-dashoffset="10" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span x-show="!$store.wizard.isSubmitting">
+        <Icon name={ICONS.check} size={18} />
+      </span>
+      <span x-text="$store.wizard.isSubmitting ? 'Submitting…' : ($store.wizard.paymentMethod === 'eft' ? 'Confirm Booking' : ('Confirm & Pay $' + $store.wizard.totalWithGst + ' AUD'))">Confirm Booking</span>
     </button>
+    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
   </div>
 )
