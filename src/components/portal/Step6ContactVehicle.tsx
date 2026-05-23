@@ -26,15 +26,14 @@ export const Step6ContactVehicle = () => (
           <span style="color:#1C1917;">Delivery Order</span>
           <span style="font-size:11px; color:#EF4444; font-weight:600;">Required</span>
         </li>
-        <li
-          x-show="$store.wizard.serviceType === 'dropoff'"
-          style="display:flex; align-items:center; gap:10px; font-size:13px;"
-        >
-          <span style="width:20px; height:20px; border-radius:9999px; background:rgba(0,0,0,0.05); color:#A8A29E; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-            <Icon name={ICONS.check} size={12} />
-          </span>
-          <span style="color:#1C1917;">Packing List</span>
-          <span style="font-size:11px; color:#EF4444; font-weight:600;">Required for drop-offs</span>
+        <li x-show="$store.wizard.serviceType === 'dropoff'" x-cloak style="list-style:none; padding:0; margin:0;">
+          <div style="display:flex; align-items:center; gap:10px; font-size:13px;">
+            <span style="width:20px; height:20px; border-radius:9999px; background:rgba(0,0,0,0.05); color:#A8A29E; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <Icon name={ICONS.check} size={12} />
+            </span>
+            <span style="color:#1C1917;">Packing List</span>
+            <span style="font-size:11px; color:#EF4444; font-weight:600;">Required for drop-offs</span>
+          </div>
         </li>
         <li style="display:flex; align-items:center; gap:10px; font-size:13px; color:#78716C;">
           <span style="width:20px; height:20px; border-radius:9999px; background:rgba(0,0,0,0.03); color:rgba(0,0,0,0.20); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
@@ -98,21 +97,20 @@ export const Step6ContactVehicle = () => (
     </div>
 
     {/* Pick-up note */}
-    <div
-      x-show="$store.wizard.serviceType === 'pickup'"
-      style="margin-top:16px; background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.20); border-radius:8px; padding:12px 16px; font-size:12px; color:#FBBF24; display:flex; align-items:flex-start; gap:10px; line-height:1.6;"
-    >
-      <Icon name={ICONS.info} size={14} style="color:#FBBF24; flex-shrink:0; margin-top:1px;" />
-      <span>For pick-ups, a Delivery Order is required. You cannot proceed to payment without uploading one.</span>
+    {/* Pick-up note */}
+    <div x-show="$store.wizard.serviceType === 'pickup'" x-cloak style="margin-top:16px;">
+      <div style="background:rgba(252,101,20,0.08); border:1px solid rgba(252,101,20,0.28); border-radius:8px; padding:12px 16px; font-size:12px; color:#9A3412; display:flex; align-items:flex-start; gap:10px; line-height:1.6;">
+        <Icon name={ICONS.info} size={14} style="color:#EA580C; flex-shrink:0; margin-top:1px;" />
+        <span>For pick-ups, a Delivery Order is required. You cannot proceed to payment without uploading one.</span>
+      </div>
     </div>
 
     {/* Drop-off note */}
-    <div
-      x-show="$store.wizard.serviceType === 'dropoff'"
-      style="margin-top:16px; background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:12px 16px; font-size:12px; color:#78716C; display:flex; align-items:flex-start; gap:10px; line-height:1.6;"
-    >
-      <Icon name={ICONS.info} size={14} style="color:#78716C; flex-shrink:0; margin-top:1px;" />
-      <span>For drop-offs, a Delivery Order may not be required if your consignment has not been issued one yet. Upload what you have.</span>
+    <div x-show="$store.wizard.serviceType === 'dropoff'" x-cloak style="margin-top:16px;">
+      <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:12px 16px; font-size:12px; color:#78716C; display:flex; align-items:flex-start; gap:10px; line-height:1.6;">
+        <Icon name={ICONS.info} size={14} style="color:#78716C; flex-shrink:0; margin-top:1px;" />
+        <span>For drop-offs, a Delivery Order may not be required if your consignment has not been issued one yet. Upload what you have.</span>
+      </div>
     </div>
   </div>
 )

@@ -1,189 +1,210 @@
 import { Icon, ICONS } from '../../lib/Icon'
 
-function workingDays(n: number): { iso: string; isToday: boolean; day: string; num: string }[] {
-  const days: { iso: string; isToday: boolean; day: string; num: string }[] = []
+function calendarDays(n: number): { iso: string; isToday: boolean; dayFull: string; num: string }[] {
+  const days: { iso: string; isToday: boolean; dayFull: string; num: string }[] = []
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   let d = new Date(today)
+  const FULL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
   while (days.length < n) {
-    const dow = d.getDay()
-    if (dow !== 0 && dow !== 6) {
-      const iso     = d.toISOString().split('T')[0]
-      const isToday = days.length === 0
-      const day     = ['SUN','MON','TUE','WED','THU','FRI','SAT'][dow]
-      const num     = String(d.getDate())
-      days.push({ iso, isToday, day, num })
-    }
+    days.push({
+      iso:     d.toISOString().split('T')[0],
+      isToday: days.length === 0,
+      dayFull: FULL[d.getDay()],
+      num:     String(d.getDate()),
+    })
     d = new Date(d.getTime() + 86400000)
   }
   return days
 }
 
-const DATES = workingDays(8)
+const DATES = calendarDays(7)
+
 
 export const Step4ShipmentDetails = () => (
   <div x-show="$store.wizard.currentStep === 4" x-cloak>
 
     {/* ── Step heading ── */}
-    <div style="margin-bottom:24px;">
-      <h2 style="font-size:22px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">Choose a slot</h2>
-      <p style="font-size:14px; color:#78716C; line-height:1.5;">Select your arrival window. Slots are held for 10 minutes while you complete the booking.</p>
+    <div style="margin-bottom:28px;">
+      <h2 style="font-size:24px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:8px;">Pick Date & Time</h2>
+      <p style="font-size:14px; color:#78716C; line-height:1.5;">Select a date and time slot and please ensure your vehicle arrives within the chosen window to avoid delays.</p>
     </div>
 
-    {/* Date strip */}
-    <div style="background:#fff; border:1.5px solid #e5e7eb; border-radius:16px; padding:14px; margin-bottom:20px; overflow-x:auto; scrollbar-width:none; display:flex; gap:7px;">
+    {/* ── Date strip ── */}
+    <div style="display:flex; gap:10px; margin-bottom:32px;">
       {DATES.map((d) => (
         <button
           key={d.iso}
           type="button"
           x-on:click={`$store.wizard.selectDate('${d.iso}')`}
-          style="flex-shrink:0; width:62px; padding:13px 0 11px; border-radius:12px; border:1.5px solid transparent; cursor:pointer; text-align:center; transition:all 0.18s ease; position:relative;"
-          x-bind:style={`{ background: $store.wizard.selectedDate === '${d.iso}' ? '#FC6514' : 'rgba(0,0,0,0.028)', borderColor: $store.wizard.selectedDate === '${d.iso}' ? '#FC6514' : 'rgba(0,0,0,0.07)', boxShadow: $store.wizard.selectedDate === '${d.iso}' ? '0 6px 16px rgba(252,101,20,0.32)' : 'none' }`}
+          style="flex:1; padding:16px 8px 14px; border-radius:12px; border:1.5px solid #e5e7eb; background:#fff; cursor:pointer; text-align:center; transition:all 0.18s ease;"
+          x-bind:style={`{
+            background:   $store.wizard.selectedDate === '${d.iso}' ? 'rgba(252,101,20,0.06)' : '#fff',
+            borderColor:  $store.wizard.selectedDate === '${d.iso}' ? '#FC6514' : '#e5e7eb',
+            boxShadow:    $store.wizard.selectedDate === '${d.iso}' ? '0 0 0 1px #FC6514, 0 4px 14px rgba(252,101,20,0.18)' : 'none'
+          }`}
         >
-          {/* Day abbreviation */}
           <p
-            style="font-size:9px; font-weight:700; letter-spacing:0.09em; margin-bottom:6px; transition:color 0.18s ease;"
-            x-bind:style={`{ color: $store.wizard.selectedDate === '${d.iso}' ? 'rgba(255,255,255,0.72)' : '#A8A29E' }`}
-          >{d.day}</p>
-
-          {/* Date number */}
+            style="font-size:12px; font-weight:500; margin-bottom:8px; transition:all 0.18s ease; color:#9CA3AF;"
+            x-bind:style={`{ color: $store.wizard.selectedDate === '${d.iso}' ? '#FC6514' : '#9CA3AF', fontWeight: $store.wizard.selectedDate === '${d.iso}' ? '700' : '500' }`}
+          >{d.dayFull}</p>
           <p
-            style="font-size:21px; font-weight:800; line-height:1; letter-spacing:-0.03em; transition:color 0.18s ease;"
-            x-bind:style={`{ color: $store.wizard.selectedDate === '${d.iso}' ? 'white' : '#1C1917' }`}
+            class="slot-num"
+            style="font-size:26px; font-weight:800; letter-spacing:-0.03em; line-height:1; color:#1C1917;"
           >{d.num}</p>
-
-          {/* Today dot */}
           {d.isToday && (
-            <div
-              style="width:4px; height:4px; border-radius:9999px; margin:6px auto 0; transition:background 0.18s ease;"
-              x-bind:style={`{ background: $store.wizard.selectedDate === '${d.iso}' ? 'rgba(255,255,255,0.60)' : '#FC6514' }`}
-            />
+            <div style="width:5px; height:5px; border-radius:9999px; margin:6px auto 0; background:#FC6514;" />
           )}
-          {!d.isToday && <div style="height:10px;" />}
+          {!d.isToday && <div style="height:11px;" />}
         </button>
       ))}
     </div>
 
-    {/* ── No date selected ────────────────────────────────────────────────── */}
+    {/* ── No date selected ── */}
     <div
       x-show="$store.wizard.selectedDate === null"
-      style="text-align:center; padding:40px 0; color:#78716C;"
+      style="text-align:center; padding:48px 0; color:#9CA3AF;"
     >
-      <Icon name={ICONS.calendar} size={28} style="margin:0 auto 8px; opacity:0.4;" />
-      <p style="font-size:13px;">Pick a date above to see available slots</p>
+      <Icon name={ICONS.calendar} size={32} style="margin:0 auto 10px; opacity:0.35;" />
+      <p style="font-size:14px;">Pick a date above to see available slots</p>
     </div>
 
-    {/* ── Loading ─────────────────────────────────────────────────────────── */}
+    {/* ── Loading ── */}
     <div
       x-show="$store.wizard.selectedDate !== null && $store.wizard.slotsLoading"
-      style="text-align:center; padding:40px 0; color:#78716C; font-size:13px;"
+      style="text-align:center; padding:48px 0; color:#9CA3AF; font-size:14px;"
     >
       Loading slots…
     </div>
 
-    {/* ── Slot grid (2-column cards) ───────────────────────────────────────── */}
-    <div
-      x-show="$store.wizard.selectedDate !== null && !$store.wizard.slotsLoading && $store.wizard.slots.length > 0"
-      class="slot-list-grid"
-      style="margin-bottom:20px;"
-    >
-      <template x-for="slot in $store.wizard.slots" x-key="slot.id">
-        <button
-          type="button"
-          x-bind:disabled="slot.busyness === 'full' || slot.busyness === 'closed'"
-          x-on:click="slot.busyness !== 'full' && slot.busyness !== 'closed' && $store.wizard.selectSlot(slot.id, slot.startTime + ' – ' + slot.endTime)"
-          style="width:100%; position:relative; display:flex; flex-direction:column; justify-content:space-between; padding:16px 16px 14px; border-radius:14px; border:1.5px solid #e5e7eb; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; min-height:96px;"
-          x-bind:style="{ opacity: (slot.busyness === 'full' || slot.busyness === 'closed') ? '0.30' : '1', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer', background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.04)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#e5e7eb', boxShadow: $store.wizard.selectedSlotId === slot.id ? '0 0 0 3px rgba(252,101,20,0.10), 0 4px 14px rgba(252,101,20,0.14)' : '0 1px 3px rgba(0,0,0,0.04)' }"
-          x-on:mouseover={`if(slot.busyness !== 'full' && $store.wizard.selectedSlotId !== slot.id){ $el.style.borderColor='#d1d5db'; $el.style.boxShadow='0 2px 8px rgba(0,0,0,0.07)'; }`}
-          x-on:mouseout={`if($store.wizard.selectedSlotId !== slot.id){ $el.style.borderColor='#e5e7eb'; $el.style.boxShadow='0 1px 3px rgba(0,0,0,0.04)'; }`}
-        >
-          {/* Radio indicator — top right */}
-          <div
-            style="position:absolute; top:14px; right:14px; width:18px; height:18px; border-radius:9999px; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease; border:1.5px solid rgba(0,0,0,0.14); background:rgba(0,0,0,0.04);"
-            x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : 'rgba(0,0,0,0.04)', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : 'rgba(0,0,0,0.14)' }"
-          >
-            <span
-              x-show="$store.wizard.selectedSlotId === slot.id"
-              style="width:6px; height:6px; border-radius:9999px; background:white; display:block;"
-            ></span>
-          </div>
-
-          {/* Time display */}
-          <div style="padding-right:28px;">
-            <p
-              style="font-size:22px; font-weight:800; letter-spacing:-0.04em; line-height:1; margin-bottom:3px; font-variant-numeric:tabular-nums; transition:color 0.15s ease;"
-              x-bind:style="{ color: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#1C1917' }"
-              x-text="slot.startTime"
-            ></p>
-            <p
-              style="font-size:11px; font-weight:500; color:#A8A29E;"
-              x-text="'until ' + slot.endTime"
-            ></p>
-          </div>
-
-          {/* Capacity bar + spots left */}
-          <div style="margin-top:14px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;">
-              <span
-                style="font-size:10px; font-weight:600; color:#78716C;"
-                x-text="slot.busyness === 'full' ? 'Full' : (slot.capacity - slot.confirmed) + ' spots left'"
-              ></span>
-            </div>
-            <div style="height:3px; background:rgba(0,0,0,0.06); border-radius:9999px; overflow:hidden;">
-              <div
-                style="height:100%; border-radius:9999px; transition:width 0.3s ease;"
-                x-bind:style="{ width: Math.round((slot.confirmed / Math.max(slot.capacity,1)) * 100) + '%', background: Math.max(0, Math.round((slot.confirmed / Math.max(slot.capacity,1)) * 100) - 80) !== 0 ? '#FC6514' : (Math.max(0, Math.round((slot.confirmed / Math.max(slot.capacity,1)) * 100) - 50) !== 0 ? '#FDBA74' : 'rgba(0,0,0,0.20)') }"
-              ></div>
-            </div>
-          </div>
-        </button>
-      </template>
-    </div>
-
-    {/* No slots for date */}
+    {/* ── No slots ── */}
     <div
       x-show="$store.wizard.selectedDate !== null && !$store.wizard.slotsLoading && $store.wizard.slots.length === 0"
-      style="text-align:center; padding:32px 0; color:#78716C; font-size:13px;"
+      style="text-align:center; padding:48px 0; color:#9CA3AF; font-size:14px;"
     >
       No slots available for this date.
     </div>
 
-    {/* ── Selected slot bar ────────────────────────────────────────────────── */}
-    <div
-      x-show="$store.wizard.selectedSlotId !== null"
-      style="display:flex; align-items:center; justify-content:space-between; border-radius:12px; padding:14px 18px; background:linear-gradient(135deg,rgba(252,101,20,0.10) 0%,rgba(252,101,20,0.05) 100%); border:1.5px solid rgba(252,101,20,0.30); box-shadow:0 2px 12px rgba(252,101,20,0.10);"
-    >
-      <div style="display:flex; align-items:center; gap:10px;">
-        <span style="width:8px; height:8px; border-radius:9999px; background:#FC6514; flex-shrink:0; animation:pulse-orange 2s ease-in-out infinite;"></span>
-        <span style="font-size:13px; font-weight:600; color:#1C1917;" x-text="$store.wizard.selectedSlotLabel"></span>
-        <span style="font-size:11px; color:#78716C; font-weight:500; background:rgba(0,0,0,0.05); border-radius:4px; padding:2px 6px;">selected</span>
+    {/* ── Morning Slots (before 12:00) ── */}
+    <div x-show="$store.wizard.selectedDate !== null && !$store.wizard.slotsLoading && $store.wizard.slots.some(s => parseInt(s.startTime) < 12)">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+        <Icon name={ICONS.bell} size={18} style="color:#FC6514; flex-shrink:0;" />
+        <h3 style="font-size:16px; font-weight:600; color:#1C1917;">Morning Slots</h3>
       </div>
-      <span style="font-size:11px; color:#FC6514; font-weight:600; opacity:0.75;">10-min hold on Next →</span>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px;">
+        <template x-for="slot in $store.wizard.slots.filter(s => parseInt(s.startTime) < 12)" x-key="slot.id">
+          <button
+            type="button"
+            x-bind:disabled="slot.busyness === 'full' || slot.busyness === 'closed'"
+            x-on:click="slot.busyness !== 'full' && slot.busyness !== 'closed' && $store.wizard.selectSlot(slot.id, slot.startTime + ' – ' + slot.endTime)"
+            style="width:100%; position:relative; display:flex; flex-direction:column; padding:16px; border-radius:12px; border:1.5px solid #e5e7eb; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; box-sizing:border-box;"
+            x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.05)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#e5e7eb', boxShadow: $store.wizard.selectedSlotId === slot.id ? '0 0 0 1px #FC6514, 0 4px 14px rgba(252,101,20,0.18)' : 'none', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer' }"
+          >
+            {/* Radio */}
+            <div
+              style="position:absolute; top:14px; right:14px; width:20px; height:20px; border-radius:9999px; border:1.5px solid #d1d5db; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;"
+              x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : 'transparent', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#d1d5db' }"
+            >
+              <span x-show="$store.wizard.selectedSlotId === slot.id" style="width:7px; height:7px; border-radius:9999px; background:white; display:block;" />
+            </div>
+            {/* Time */}
+            <p
+              class="slot-num"
+              style="font-size:20px; font-weight:700; letter-spacing:-0.02em; line-height:1; margin-bottom:4px; padding-right:28px; transition:color 0.15s ease;"
+              x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : ($store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#1C1917') }"
+              x-text="slot.startTime"
+            />
+            <p class="slot-num" style="font-size:12px; color:#9CA3AF; margin-bottom:12px;" x-text="'until ' + slot.endTime" />
+            {/* Spots */}
+            <p
+              style="font-size:13px; font-weight:500; margin-top:auto;"
+              x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : ((slot.capacity - slot.confirmed) === 0 ? '#EF4444' : ((slot.capacity - slot.confirmed) <= 5 ? '#F97316' : '#16A34A')) }"
+              x-text="slot.busyness === 'full' ? 'All Spots Booked' : (slot.capacity - slot.confirmed) + ' Spots available'"
+            />
+          </button>
+        </template>
+      </div>
     </div>
 
-    {/* Prompt */}
-    <div
-      x-show="$store.wizard.selectedSlotId === null && $store.wizard.slots.length > 0"
-      style="text-align:center; padding:12px 0; font-size:12px; color:#A8A29E;"
-    >
-      Select a time slot above
+    {/* ── Afternoon Slots (12:00–16:59) ── */}
+    <div x-show="$store.wizard.selectedDate !== null && !$store.wizard.slotsLoading && $store.wizard.slots.some(s => parseInt(s.startTime) >= 12 && parseInt(s.startTime) < 17)">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+        <Icon name={ICONS.clock} size={18} style="color:#FC6514; flex-shrink:0;" />
+        <h3 style="font-size:16px; font-weight:600; color:#1C1917;">Afternoon Slots</h3>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px;">
+        <template x-for="slot in $store.wizard.slots.filter(s => parseInt(s.startTime) >= 12 && parseInt(s.startTime) < 17)" x-key="slot.id">
+          <button
+            type="button"
+            x-bind:disabled="slot.busyness === 'full' || slot.busyness === 'closed'"
+            x-on:click="slot.busyness !== 'full' && slot.busyness !== 'closed' && $store.wizard.selectSlot(slot.id, slot.startTime + ' – ' + slot.endTime)"
+            style="width:100%; position:relative; display:flex; flex-direction:column; padding:16px; border-radius:12px; border:1.5px solid #e5e7eb; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; box-sizing:border-box;"
+            x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.05)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#e5e7eb', boxShadow: $store.wizard.selectedSlotId === slot.id ? '0 0 0 1px #FC6514, 0 4px 14px rgba(252,101,20,0.18)' : 'none', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer' }"
+          >
+            {/* Radio */}
+            <div
+              style="position:absolute; top:14px; right:14px; width:20px; height:20px; border-radius:9999px; border:1.5px solid #d1d5db; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;"
+              x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : 'transparent', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#d1d5db' }"
+            >
+              <span x-show="$store.wizard.selectedSlotId === slot.id" style="width:7px; height:7px; border-radius:9999px; background:white; display:block;" />
+            </div>
+            {/* Time */}
+            <p
+              class="slot-num"
+              style="font-size:20px; font-weight:700; letter-spacing:-0.02em; line-height:1; margin-bottom:4px; padding-right:28px; transition:color 0.15s ease;"
+              x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : ($store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#1C1917') }"
+              x-text="slot.startTime"
+            />
+            <p class="slot-num" style="font-size:12px; color:#9CA3AF; margin-bottom:12px;" x-text="'until ' + slot.endTime" />
+            {/* Spots */}
+            <p
+              style="font-size:13px; font-weight:500; margin-top:auto;"
+              x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : ((slot.capacity - slot.confirmed) === 0 ? '#EF4444' : ((slot.capacity - slot.confirmed) <= 5 ? '#F97316' : '#16A34A')) }"
+              x-text="slot.busyness === 'full' ? 'All Spots Booked' : (slot.capacity - slot.confirmed) + ' Spots available'"
+            />
+          </button>
+        </template>
+      </div>
     </div>
 
-    {/* Legend */}
-    <div style="display:flex; align-items:center; gap:16px; margin-top:14px; padding-top:14px; border-top:1px solid rgba(0,0,0,0.07);">
-      <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#78716C;">
-        <span style="display:inline-block; width:20px; height:3px; border-radius:9999px; background:rgba(0,0,0,0.20);"></span>
-        Available
-      </span>
-      <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#78716C;">
-        <span style="display:inline-block; width:20px; height:3px; border-radius:9999px; background:#FDBA74;"></span>
-        Filling up
-      </span>
-      <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:#78716C;">
-        <span style="display:inline-block; width:20px; height:3px; border-radius:9999px; background:#FC6514;"></span>
-        Nearly full
-      </span>
+    {/* ── Evening Slots (17:00+) ── */}
+    <div x-show="$store.wizard.selectedDate !== null && !$store.wizard.slotsLoading && $store.wizard.slots.some(s => parseInt(s.startTime) >= 17)">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+        <Icon name={ICONS.star} size={18} style="color:#FC6514; flex-shrink:0;" />
+        <h3 style="font-size:16px; font-weight:600; color:#1C1917;">Evening Slots</h3>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px;">
+        <template x-for="slot in $store.wizard.slots.filter(s => parseInt(s.startTime) >= 17)" x-key="slot.id">
+          <button
+            type="button"
+            x-bind:disabled="slot.busyness === 'full' || slot.busyness === 'closed'"
+            x-on:click="slot.busyness !== 'full' && slot.busyness !== 'closed' && $store.wizard.selectSlot(slot.id, slot.startTime + ' – ' + slot.endTime)"
+            style="width:100%; position:relative; display:flex; flex-direction:column; padding:16px; border-radius:12px; border:1.5px solid #e5e7eb; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; box-sizing:border-box;"
+            x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.05)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#e5e7eb', boxShadow: $store.wizard.selectedSlotId === slot.id ? '0 0 0 1px #FC6514, 0 4px 14px rgba(252,101,20,0.18)' : 'none', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer' }"
+          >
+            <div
+              style="position:absolute; top:14px; right:14px; width:20px; height:20px; border-radius:9999px; border:1.5px solid #d1d5db; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;"
+              x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : 'transparent', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#d1d5db' }"
+            >
+              <span x-show="$store.wizard.selectedSlotId === slot.id" style="width:7px; height:7px; border-radius:9999px; background:white; display:block;" />
+            </div>
+            <p
+              class="slot-num"
+              style="font-size:20px; font-weight:700; letter-spacing:-0.02em; line-height:1; margin-bottom:4px; padding-right:28px; transition:color 0.15s ease;"
+              x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : ($store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#1C1917') }"
+              x-text="slot.startTime"
+            />
+            <p class="slot-num" style="font-size:12px; color:#9CA3AF; margin-bottom:12px;" x-text="'until ' + slot.endTime" />
+            <p
+              style="font-size:13px; font-weight:500; margin-top:auto;"
+              x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : ((slot.capacity - slot.confirmed) === 0 ? '#EF4444' : ((slot.capacity - slot.confirmed) <= 5 ? '#F97316' : '#16A34A')) }"
+              x-text="slot.busyness === 'full' ? 'All Spots Booked' : (slot.capacity - slot.confirmed) + ' Spots available'"
+            />
+          </button>
+        </template>
+      </div>
     </div>
+
 
   </div>
 )

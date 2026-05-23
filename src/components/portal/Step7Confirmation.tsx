@@ -14,17 +14,18 @@ export const Step7Confirmation = () => (
     </div>
 
     {/* Hold timer banner */}
-    <div
-      x-show="$store.wizard.holdActive"
-      style="margin-bottom:20px; display:flex; align-items:center; gap:12px; border-radius:10px; padding:12px 16px; font-size:13px; font-weight:500;"
-      {...{"x-bind:style": "{ background: $store.wizard.holdExpiring ? 'rgba(239,68,68,0.10)' : 'rgba(251,191,36,0.08)', border: $store.wizard.holdExpiring ? '1px solid rgba(239,68,68,0.25)' : '1px solid rgba(251,191,36,0.20)', color: $store.wizard.holdExpiring ? '#EF4444' : '#FBBF24' }"}}
-    >
-      <Icon name={ICONS.clock} size={16} style="flex-shrink:0;" />
-      <span>
-        Your slot is held for{' '}
-        <span style="font-weight:700; font-family:ui-monospace,monospace;" x-text="`${$store.wizard.holdMinutes}:${$store.wizard.holdSeconds}`"></span>.
-        <span x-text="$store.wizard.paymentMethod === 'eft' ? 'Confirm your booking to secure it.' : 'Complete payment to secure it.'">Confirm your booking to secure it.</span>
-      </span>
+    <div x-show="$store.wizard.holdActive" x-cloak style="margin-bottom:20px;">
+      <div
+        style="display:flex; align-items:center; gap:12px; border-radius:10px; padding:12px 16px; font-size:13px; font-weight:500;"
+        {...{"x-bind:style": "{ background: $store.wizard.holdExpiring ? 'rgba(239,68,68,0.10)' : 'rgba(252,101,20,0.08)', border: $store.wizard.holdExpiring ? '1px solid rgba(239,68,68,0.25)' : '1px solid rgba(252,101,20,0.28)', color: $store.wizard.holdExpiring ? '#EF4444' : '#9A3412' }"}}
+      >
+        <Icon name={ICONS.clock} size={16} style="flex-shrink:0;" x-bind:style="{ color: $store.wizard.holdExpiring ? '#EF4444' : '#EA580C' }" />
+        <span>
+          Your slot is held for{' '}
+          <span style="font-weight:700; font-family:ui-monospace,monospace;" x-text="`${$store.wizard.holdMinutes}:${$store.wizard.holdSeconds}`"></span>.{' '}
+          <span x-text="$store.wizard.paymentMethod === 'eft' ? 'Confirm your booking to secure it.' : 'Complete payment to secure it.'">Confirm your booking to secure it.</span>
+        </span>
+      </div>
     </div>
 
     {/* Booking summary */}
@@ -47,13 +48,17 @@ export const Step7Confirmation = () => (
           <span style="color:#78716C;">Slot</span>
           <span style="font-weight:600; color:#1C1917;" x-text="$store.wizard.selectedSlotLabel || '—'"></span>
         </div>
-        <div style="display:flex; justify-content:space-between;" x-show="$store.wizard.houseBillNumber">
-          <span style="color:#78716C;">HBL</span>
-          <span style="font-family:ui-monospace,monospace; font-size:12px; font-weight:700; color:#78716C;" x-text="$store.wizard.houseBillNumber"></span>
+        <div x-show="$store.wizard.houseBillNumber">
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#78716C;">HBL</span>
+            <span style="font-family:ui-monospace,monospace; font-size:12px; font-weight:700; color:#78716C;" x-text="$store.wizard.houseBillNumber"></span>
+          </div>
         </div>
-        <div style="display:flex; justify-content:space-between;" x-show="$store.wizard.containerNumber">
-          <span style="color:#78716C;">Container</span>
-          <span style="font-family:ui-monospace,monospace; font-size:12px; font-weight:700; color:#78716C;" x-text="$store.wizard.containerNumber"></span>
+        <div x-show="$store.wizard.containerNumber">
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#78716C;">Container</span>
+            <span style="font-family:ui-monospace,monospace; font-size:12px; font-weight:700; color:#78716C;" x-text="$store.wizard.containerNumber"></span>
+          </div>
         </div>
         <div style="display:flex; justify-content:space-between;">
           <span style="color:#78716C;">Driver</span>
@@ -63,13 +68,15 @@ export const Step7Confirmation = () => (
     </div>
 
     {/* ICS status */}
-    <div x-show="$store.wizard.shipmentData" style="margin-bottom:20px; display:flex; align-items:center; gap:8px; font-size:13px;">
-      <span style="color:#78716C; font-weight:500;">ICS Status:</span>
-      <span
-        style="display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:3px 10px; border-radius:9999px; border:1px solid transparent;"
-        {...{"x-bind:style": "{ background: $store.wizard.shipmentData?.icsStatus === 'cleared' ? 'rgba(34,197,94,0.12)' : $store.wizard.shipmentData?.icsStatus === 'held' ? 'rgba(239,68,68,0.12)' : $store.wizard.shipmentData?.icsStatus === 'examination' ? 'rgba(251,191,36,0.10)' : 'rgba(0,0,0,0.04)', color: $store.wizard.shipmentData?.icsStatus === 'cleared' ? '#22C55E' : $store.wizard.shipmentData?.icsStatus === 'held' ? '#EF4444' : $store.wizard.shipmentData?.icsStatus === 'examination' ? '#FBBF24' : '#78716C', borderColor: $store.wizard.shipmentData?.icsStatus === 'cleared' ? 'rgba(34,197,94,0.22)' : $store.wizard.shipmentData?.icsStatus === 'held' ? 'rgba(239,68,68,0.22)' : $store.wizard.shipmentData?.icsStatus === 'examination' ? 'rgba(251,191,36,0.22)' : 'rgba(0,0,0,0.10)' }"}}
-        x-text="{'cleared':'Cleared','held':'Held','examination':'On Hold','pending':'Pending'}[$store.wizard.shipmentData?.icsStatus] || 'Unknown'"
-      ></span>
+    <div x-show="$store.wizard.shipmentData" x-cloak style="margin-bottom:20px;">
+      <div style="display:flex; align-items:center; gap:12px; font-size:13px;">
+        <span style="color:#78716C; font-weight:500;">ICS Status:</span>
+        <span
+          style="display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:3px 10px; border-radius:9999px; border:1px solid transparent;"
+          {...{"x-bind:style": "{ background: $store.wizard.shipmentData?.icsStatus === 'cleared' ? 'rgba(34,197,94,0.12)' : $store.wizard.shipmentData?.icsStatus === 'held' ? 'rgba(239,68,68,0.12)' : $store.wizard.shipmentData?.icsStatus === 'examination' ? 'rgba(251,191,36,0.10)' : 'rgba(0,0,0,0.04)', color: $store.wizard.shipmentData?.icsStatus === 'cleared' ? '#22C55E' : $store.wizard.shipmentData?.icsStatus === 'held' ? '#EF4444' : $store.wizard.shipmentData?.icsStatus === 'examination' ? '#FBBF24' : '#78716C', borderColor: $store.wizard.shipmentData?.icsStatus === 'cleared' ? 'rgba(34,197,94,0.22)' : $store.wizard.shipmentData?.icsStatus === 'held' ? 'rgba(239,68,68,0.22)' : $store.wizard.shipmentData?.icsStatus === 'examination' ? 'rgba(251,191,36,0.22)' : 'rgba(0,0,0,0.10)' }"}}
+          x-text="{'cleared':'Cleared','held':'Held','examination':'On Hold','pending':'Pending'}[$store.wizard.shipmentData?.icsStatus] || 'Unknown'"
+        ></span>
+      </div>
     </div>
 
     {/* CHEP notice */}

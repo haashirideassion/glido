@@ -149,6 +149,13 @@ function wizardStore() {
       if (this.currentStep === 4 && this.selectedSlotId) {
         this.startHoldTimer()
       }
+      // Reset shipment lookup state when entering step 5 so cards
+      // never appear before the user clicks Look Up
+      if (this.currentStep === 4) {
+        this.shipmentFetched = false
+        this.shipmentData = null
+        this.shipmentFetching = false
+      }
       this.stepDirection = 1
       this.currentStep++
     },
@@ -156,6 +163,19 @@ function wizardStore() {
     prevStep() {
       if (this.currentStep <= 1) return
       this.stepDirection = -1
+      // Reset shipment lookup state when going back to step 5 from step 6
+      if (this.currentStep === 6) {
+        this.shipmentFetched = false
+        this.shipmentData = null
+        this.shipmentFetching = false
+      }
+      // Reset shipment lookup state when leaving step 5 backwards (step 5 → 4)
+      // so that re-entering step 5 always starts clean
+      if (this.currentStep === 5) {
+        this.shipmentFetched = false
+        this.shipmentData = null
+        this.shipmentFetching = false
+      }
       this.currentStep--
     },
 

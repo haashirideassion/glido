@@ -18,10 +18,12 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, user, 
         <title>{title} — Glido CFS</title>
         <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
 
-        {/* Inter font */}
+        {/* Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
         <link rel="stylesheet" href="/public/styles.css" />
         <style>{`
@@ -94,10 +96,10 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, user, 
           })();
         `}} />
       </head>
-      <body class="min-h-screen font-sans antialiased" style="background:#fff; color:#1C1917;">
+      <body class="min-h-screen font-sans antialiased" style="background:#f6f7f9; color:#1C1917;">
 
         {/* ── Header ────────────────────────────────────────────────────── */}
-        <header class="sticky top-0 z-40" style="background:rgba(255,255,255,0.92); backdrop-filter:blur(16px) saturate(180%); -webkit-backdrop-filter:blur(16px) saturate(180%); border-bottom:1px solid rgba(0,0,0,0.07);">
+        <header class="sticky top-0 z-40" style="background:rgba(246,247,249,0.97); backdrop-filter:blur(16px) saturate(180%); -webkit-backdrop-filter:blur(16px) saturate(180%); border-bottom:1px solid rgba(0,0,0,0.07);">
           <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
 
             {/* Logo */}
@@ -154,7 +156,7 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, user, 
           ? <main style="min-height:calc(100vh - 56px - 64px);">{children}</main>
           : (
             <main style="padding:12px; min-height:calc(100vh - 56px - 64px); box-sizing:border-box;">
-              <div style="background:#FFFFFF; border-radius:20px; min-height:calc(100vh - 56px - 64px - 24px); box-shadow:0 1px 4px rgba(0,0,0,0.04), 0 6px 28px rgba(0,0,0,0.07); overflow:hidden;">
+              <div style="background:#FFFFFF; border-radius:20px; min-height:calc(100vh - 56px - 64px - 24px); box-shadow:0 1px 4px rgba(0,0,0,0.04), 0 6px 28px rgba(0,0,0,0.07);">
                 {children}
               </div>
             </main>
@@ -162,7 +164,7 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, user, 
         }
 
         {/* ── Footer ────────────────────────────────────────────────────── */}
-        <footer style="border-top:1px solid rgba(0,0,0,0.07); padding:24px; margin-top:0; background:#fff;">
+        <footer style="border-top:1px solid rgba(0,0,0,0.07); padding:24px; margin-top:0; background:#f6f7f9;">
           <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3" style="font-size:12px; color:#A8A29E;">
             <span>© 2026 Glido CFS · Sydney Container Freight Station</span>
             <div style="display:flex; gap:20px;">

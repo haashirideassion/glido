@@ -932,7 +932,7 @@ portalRoutes.get('/bookings', async (c) => {
   }
 
   return c.html(
-    <PublicLayout title="My Bookings" user={user}>
+    <PublicLayout title="My Bookings" plain user={user}>
       <div style="padding:40px 24px 64px;">
         <div style="max-width:640px; margin:0 auto;">
 
@@ -1393,9 +1393,9 @@ portalRoutes.get('/booking-confirmed/:ref', async (c) => {
   const tenant    = await getTenant(DEFAULT_TENANT_ID).catch(() => null)
 
   return c.html(
-    <PublicLayout title="Booking Confirmed">
+    <PublicLayout title="Booking Confirmed" plain>
       <div style="min-height:calc(100vh - 56px); background:#F3F2F0; padding:40px 24px 64px;">
-      <div class="max-w-2xl mx-auto">
+      <div style="max-width:1000px; margin:0 auto;">
 
         {/* Success banner */}
         <div
@@ -1420,7 +1420,7 @@ portalRoutes.get('/booking-confirmed/:ref', async (c) => {
         <div class="grid sm:grid-cols-2 gap-6">
           {/* QR Code */}
           <div
-            style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; border-radius:16px; background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.08);"
+            style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px;"
           >
             <img src={qrDataUrl} alt={`QR code for ${ref}`} width={220} height={220} style="border-radius:8px;" />
             <p style="font-size:12px; font-weight:500; color:#64748B; margin-top:14px;">Scan at the kiosk to check in</p>

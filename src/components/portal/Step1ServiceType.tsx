@@ -3,12 +3,12 @@ export const Step1ServiceType = () => (
 
     {/* Step heading */}
     <div style="margin-bottom:28px;">
-      <h2 style="font-size:22px; font-weight:700; color:#111827; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">Get started</h2>
+      <h2 class="wiz-step1-heading" style="font-size:22px; font-weight:700; color:#111827; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px;">Get started</h2>
       <p style="font-size:14px; color:#6b7280; line-height:1.5;">Tell us who's visiting and how many slots you need today.</p>
     </div>
 
     {/* Slot counter */}
-    <div style="border:1.5px solid #e5e7eb; border-radius:14px; padding:20px 24px; margin-bottom:28px; background:#fff;">
+    <div class="wiz-slot-card" style="border:1.5px solid #e5e7eb; border-radius:14px; padding:20px 24px; margin-bottom:28px; background:#fff;">
       <label style="font-size:12px; font-weight:600; color:#374151; margin-bottom:14px; display:block; letter-spacing:-0.01em;">Number of slots</label>
       <div style="display:flex; align-items:center; gap:0; margin-bottom:16px;">
         {/* Minus */}
@@ -23,6 +23,7 @@ export const Step1ServiceType = () => (
         <div style="min-width:80px; text-align:center; padding:0 8px;">
           <span
             id="slot-count-display"
+            class="slot-num"
             style="font-size:36px; font-weight:800; color:#111827; font-variant-numeric:tabular-nums; letter-spacing:-0.04em; line-height:1; display:block;"
             x-text="$store.wizard.slotCount"
           >1</span>
@@ -44,14 +45,14 @@ export const Step1ServiceType = () => (
           <button
             key={n}
             type="button"
-            class="wizard-chip"
+            class="wizard-chip slot-num"
             x-on:click={`$store.wizard.slotCount = ${n}`}
             x-bind:class={`$store.wizard.slotCount === ${n} ? 'active' : ''`}
           >
             {n}
           </button>
         ))}
-        <span style="font-size:11px; color:#9ca3af; margin-left:4px;">max 10</span>
+        <span class="slot-num" style="font-size:11px; color:#9ca3af; margin-left:4px;">max 10</span>
       </div>
     </div>
 
@@ -98,13 +99,6 @@ export const Step1ServiceType = () => (
       </div>
     </div>
 
-    {/* Multi-slot note */}
-    <div
-      x-show="$store.wizard.slotCount > 1"
-      style="margin-top:24px; padding:12px 16px; font-size:13px; line-height:1.6; background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:10px;"
-    >
-      <span style="font-weight:700;" x-text="$store.wizard.slotCount"></span> slots — you'll enter shipment details for each one separately.
-    </div>
 
   </div>
 )
