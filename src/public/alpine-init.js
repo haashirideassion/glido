@@ -86,6 +86,119 @@ function wizardStore() {
     eftAccountNumber: '12345678',
     eftAccountName: 'Sydney CFS Pty Ltd',
 
+    /* ── Session persistence ──────────────────────────────────────── */
+
+    init() {
+      this._load()
+      var self = this
+      // Auto-save to sessionStorage on every reactive change
+      window.Alpine.effect(function () { self._save() })
+    },
+
+    _save() {
+      try {
+        var holdExpires = (this.holdTimerInterval !== null && this.holdSecondsRemaining > 0)
+          ? Date.now() + (this.holdSecondsRemaining * 1000)
+          : null
+        sessionStorage.setItem('glido-wizard', JSON.stringify({
+          v:                  1,
+          currentStep:        this.currentStep,
+          slotCount:          this.slotCount,
+          guestName:          this.guestName,
+          guestPhone:         this.guestPhone,
+          guestEmail:         this.guestEmail,
+          serviceType:        this.serviceType,
+          loadType:           this.loadType,
+          selectedDate:       this.selectedDate,
+          selectedSlotId:     this.selectedSlotId,
+          selectedSlotLabel:  this.selectedSlotLabel,
+          houseBillNumber:    this.houseBillNumber,
+          containerNumber:    this.containerNumber,
+          shipmentData:       this.shipmentData,
+          shipmentFetched:    this.shipmentFetched,
+          cargoDescription:   this.cargoDescription,
+          estimatedWeightKg:  this.estimatedWeightKg,
+          estimatedVolumeCbm: this.estimatedVolumeCbm,
+          destinationPort:    this.destinationPort,
+          driverName:         this.driverName,
+          driverPhone:        this.driverPhone,
+          paymentMethod:      this.paymentMethod,
+          holdExpires:        holdExpires,
+        }))
+      } catch (e) { /* ignore quota errors */ }
+    },
+
+    _load() {
+      try {
+        var raw = sessionStorage.getItem('glido-wizard')
+        if (!raw) return
+        var s = JSON.parse(raw)
+        if (!s || s.v !== 1) return
+
+        this.currentStep        = s.currentStep        || 1
+        this.slotCount          = s.slotCount          || 1
+        this.guestName          = s.guestName          || ''
+        this.guestPhone         = s.guestPhone         || ''
+        this.guestEmail         = s.guestEmail         || ''
+        this.serviceType        = s.serviceType        || null
+        this.loadType           = s.loadType           || null
+        this.selectedDate       = s.selectedDate       || null
+        this.selectedSlotId     = s.selectedSlotId     || null
+        this.selectedSlotLabel  = s.selectedSlotLabel  || null
+        this.houseBillNumber    = s.houseBillNumber    || ''
+        this.containerNumber    = s.containerNumber    || ''
+        this.shipmentData       = s.shipmentData       || null
+        this.shipmentFetched    = s.shipmentFetched    || false
+        this.cargoDescription   = s.cargoDescription   || ''
+        this.estimatedWeightKg  = s.estimatedWeightKg  || ''
+        this.estimatedVolumeCbm = s.estimatedVolumeCbm || ''
+        this.destinationPort    = s.destinationPort    || ''
+        this.driverName         = s.driverName         || ''
+        this.driverPhone        = s.driverPhone        || ''
+        this.paymentMethod      = s.paymentMethod      || 'card'
+
+        // Restore hold timer if it was running and hasn't expired
+        if (s.holdExpires && this.currentStep > 4) {
+          var remaining = Math.floor((s.holdExpires - Date.now()) / 1000)
+          if (remaining > 0) {
+            this.holdSecondsRemaining = remaining
+            this._resumeHoldTimer()
+          } else {
+            // Hold expired while away — send back to slot selection
+            this.currentStep = 4
+            this.selectedSlotId = null
+            this.selectedSlotLabel = null
+            this.holdSecondsRemaining = 600
+          }
+        }
+
+        // Re-fetch slot list if restored to step 4 with a date
+        if (this.currentStep === 4 && this.selectedDate) {
+          this.fetchSlots(this.selectedDate)
+        }
+      } catch (e) { /* ignore parse errors */ }
+    },
+
+    _clear() {
+      sessionStorage.removeItem('glido-wizard')
+    },
+
+    _resumeHoldTimer() {
+      clearInterval(this.holdTimerInterval)
+      var self = this
+      this.holdTimerInterval = setInterval(function () {
+        self.holdSecondsRemaining--
+        if (self.holdSecondsRemaining <= 0) {
+          clearInterval(self.holdTimerInterval)
+          self.holdTimerInterval = null
+          self.selectedSlotId = null
+          self.selectedSlotLabel = null
+          self.currentStep = 4
+          alert('Your slot hold has expired. Please select a new time slot.')
+        }
+      }, 1000)
+    },
+
     get holdMinutes() {
       return String(Math.floor(this.holdSecondsRemaining / 60)).padStart(2, '0')
     },
@@ -333,6 +446,7 @@ function wizardStore() {
           return
         }
 
+        this._clear()
         window.location.href = '/booking-confirmed/' + data.booking_reference
       } catch (err) {
         console.error('[submitBooking] fetch threw:', err)
@@ -344,6 +458,7 @@ function wizardStore() {
 
     reset() {
       clearInterval(this.holdTimerInterval)
+      this._clear()
       this.currentStep = 1
       this.slotCount = 1
       this.guestName = ''
