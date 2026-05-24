@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from './db/types'
 
-const url        = process.env.SUPABASE_URL              ?? 'http://localhost:54321'
+const url        = process.env.SUPABASE_URL              ?? 'https://lnknynjqxyfvtjpnaljc.supabase.co'
 const key        = process.env.SUPABASE_ANON_KEY         ?? 'anon-placeholder'
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? key
 
