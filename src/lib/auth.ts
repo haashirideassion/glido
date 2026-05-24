@@ -38,6 +38,14 @@ export async function signUpVisitor(opts: {
   return data
 }
 
+// ── Resolve a promise with a fallback value if it takes longer than `ms` ─────
+function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms)),
+  ])
+}
+
 // ── Read session from cookie, return verified user or null ───────────────────
 export async function getSessionUser(c: Context): Promise<{
   id: string
@@ -49,21 +57,28 @@ export async function getSessionUser(c: Context): Promise<{
   if (!token) return null
 
   try {
-    const { data, error } = await supabaseAdmin.auth.getUser(token)
+    // Hard 10 s cap — if Supabase auth is unreachable, fail fast instead of
+    // waiting for the Vercel 300 s function timeout.
+    const authResult = await withTimeout(
+      supabaseAdmin.auth.getUser(token),
+      10_000,
+      { data: { user: null }, error: new Error('auth.getUser timeout') } as any,
+    )
+    const { data, error } = authResult
     if (error) {
-      console.warn('[getSessionUser] auth.getUser error:', error.message)
+      console.warn('[getSessionUser] auth.getUser error:', (error as any).message)
       return null
     }
     if (!data.user) return null
 
-    // Pull role from our users table — failure is non-fatal, default role is used
-    const { data: userRow, error: rowErr } = await supabaseAdmin
-      .from('users')
-      .select('role, first_name')
-      .eq('id', data.user.id)
-      .maybeSingle()
-
-    if (rowErr) console.warn('[getSessionUser] users table error:', rowErr.message)
+    // Pull role from our users table (10 s cap, failure is non-fatal)
+    const rowResult = await withTimeout(
+      supabaseAdmin.from('users').select('role, first_name').eq('id', data.user.id).maybeSingle(),
+      10_000,
+      { data: null, error: new Error('users table timeout') } as any,
+    )
+    const { data: userRow, error: rowErr } = rowResult
+    if (rowErr) console.warn('[getSessionUser] users table error:', (rowErr as any).message)
 
     return {
       id:        data.user.id,

@@ -2,6 +2,8 @@ import { supabaseAdmin as supabase } from '../supabase'
 import type { TimeSlot, SlotBusyness } from '../../data/types'
 import type { Database } from './types'
 
+const sig = () => AbortSignal.timeout(15_000)
+
 type SlotRow = Database['public']['Tables']['time_slots']['Row']
 
 function trimTime(t: string): string {
@@ -31,6 +33,7 @@ export async function getSlotsByDate(date: string): Promise<TimeSlot[]> {
     .select('*')
     .eq('date', date)
     .order('start_time', { ascending: true })
+    .abortSignal(sig())
   if (error) throw error
   return data.map(rowToSlot)
 }

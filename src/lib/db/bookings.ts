@@ -1,4 +1,8 @@
 import { supabaseAdmin as supabase, DEFAULT_TENANT_ID } from '../supabase'
+
+// 15 s abort signal — prevents any single DB call from blocking indefinitely.
+// AbortSignal.timeout() is natively available in Node.js 20+.
+const sig = () => AbortSignal.timeout(15_000)
 import type {
   Booking, BookingStatus, ServiceType, LoadType,
   PalletType, IcsStatus, DashboardStats,
@@ -91,6 +95,7 @@ export async function getBookingByRef(ref: string): Promise<Booking | undefined>
     .from('bookings')
     .select('*')
     .eq('reference_number', ref)
+    .abortSignal(sig())
     .maybeSingle()
   if (error) throw error
   return data ? rowToBooking(data) : undefined
@@ -169,6 +174,7 @@ export async function getBookingsByUserId(userId: string): Promise<Booking[]> {
     .eq('user_id', userId)
     .order('slot_date', { ascending: false })
     .order('slot_start_time', { ascending: false })
+    .abortSignal(sig())
   if (error) throw error
   return data.map(rowToBooking)
 }
@@ -284,6 +290,7 @@ export async function createBooking(input: CreateBookingInput): Promise<Booking>
       user_id:            input.userId ?? null,
     })
     .select()
+    .abortSignal(sig())
     .single()
   if (error) {
     console.error('[createBooking] Supabase insert error:', error.message, error.details, error.hint)
