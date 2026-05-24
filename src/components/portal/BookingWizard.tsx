@@ -21,6 +21,14 @@ const STEP_CTX = [
 export const BookingWizard = () => (
   <div x-data="{}" id="wizard-root" style="background:#fff; min-height:calc(100vh - 56px - 74px);">
 
+    {/* Inject Supabase public credentials so the browser can write directly */}
+    <script dangerouslySetInnerHTML={{ __html: `
+      window.__sb = {
+        url: '${process.env.SUPABASE_URL ?? 'https://lnknynjqxyfvtjpnaljc.supabase.co'}',
+        key: '${process.env.SUPABASE_ANON_KEY ?? ''}'
+      };
+    ` }} />
+
     {/* ── Mobile & responsive overrides ────────────────────────────────── */}
     <style dangerouslySetInnerHTML={{ __html: `
       /* ── Red Hat Display for the entire /book page ── */

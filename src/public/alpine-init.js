@@ -398,56 +398,72 @@ function wizardStore() {
 
       var sd    = this.shipmentData
       var parts = this.selectedSlotLabel.split(' – ')
-      var body  = {
-        serviceType:      this.serviceType,
-        loadType:         this.loadType,
-        slotDate:         this.selectedDate,
-        slotStartTime:    parts[0] || '',
-        slotEndTime:      parts[1] || '',
-        driverName:       this.driverName  || 'Guest',
-        driverPhone:      this.driverPhone || null,
-        guestName:        this.guestName   || null,
-        guestPhone:       this.guestPhone  || null,
-        guestEmail:       this.guestEmail  || null,
-        houseBillNumber:  this.houseBillNumber  || null,
-        containerNumber:  this.containerNumber  || null,
-        weightKg:         sd ? (sd.weightKg          || null) : null,
-        volumeCbm:        sd ? (sd.volumeCbm         || null) : null,
-        packageCount:     sd ? (sd.packageCount      || null) : null,
-        palletCount:      sd ? (sd.palletCount       || null) : null,
-        palletType:       sd ? (sd.palletType        || null) : null,
-        storageStartDate: sd ? (sd.storageStartDate  || null) : null,
-        storageDays:      sd ? (sd.storageDays       || null) : null,
-        storageCharge:    sd ? (sd.storageCharge     || null) : null,
-        shrinkWrapCharge: sd ? (sd.shrinkWrapCharge  || null) : null,
-        slotFee:          sd ? (sd.slotFee           || null) : null,
-        subtotal:         sd ? (sd.subtotal          || null) : null,
-        gstAmount:        sd ? (sd.gstAmount         || null) : null,
-        totalAmount:      sd ? (sd.totalAmount       || null) : null,
-        paymentMethod:    this.paymentMethod || 'card',
-        paymentStatus:    this.paymentMethod === 'eft' ? 'pending_eft' : 'pending',
+
+      // Generate reference number client-side (same format as server)
+      var ref = 'GLD-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 90000) + 10000)
+
+      // Map to Supabase column names (snake_case)
+      var row = {
+        reference_number:   ref,
+        status:             'scheduled',
+        service_type:       this.serviceType,
+        load_type:          this.loadType,
+        slot_date:          this.selectedDate,
+        slot_start_time:    parts[0] || '',
+        slot_end_time:      parts[1] || '',
+        driver_name:        this.driverName  || 'Guest',
+        driver_phone:       this.driverPhone || null,
+        guest_name:         this.guestName   || null,
+        guest_phone:        this.guestPhone  || null,
+        house_bill_number:  this.houseBillNumber  || null,
+        container_number:   this.containerNumber  || null,
+        weight_kg:          sd ? (sd.weightKg          || null) : null,
+        volume_cbm:         sd ? (sd.volumeCbm         || null) : null,
+        package_count:      sd ? (sd.packageCount      || null) : null,
+        pallet_count:       sd ? (sd.palletCount       || null) : null,
+        pallet_type:        sd ? (sd.palletType        || null) : null,
+        storage_start_date: sd ? (sd.storageStartDate  || null) : null,
+        storage_days:       sd ? (sd.storageDays       || null) : null,
+        storage_charge:     sd ? (sd.storageCharge     || null) : null,
+        shrink_wrap_charge: sd ? (sd.shrinkWrapCharge  || null) : null,
+        slot_fee:           sd ? (sd.slotFee           || null) : null,
+        subtotal:           sd ? (sd.subtotal          || null) : null,
+        gst_amount:         sd ? (sd.gstAmount         || null) : null,
+        total_amount:       sd ? (sd.totalAmount       || null) : null,
+        payment_method:     this.paymentMethod || 'card',
+        payment_status:     this.paymentMethod === 'eft' ? 'pending_eft' : 'pending',
+        tenant_id:          'a0000000-0000-0000-0000-000000000001',
+        user_id:            null,
       }
 
       try {
-        var res  = await fetch('/bookings', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify(body),
-        })
-        var data = await res.json()
-        console.log('[submitBooking] status:', res.status, 'body:', data)
+        // POST directly to Supabase REST — bypasses the Vercel serverless function entirely
+        var sb  = window.__sb || {}
+        var url = (sb.url || 'https://lnknynjqxyfvtjpnaljc.supabase.co') + '/rest/v1/bookings'
+        var key = sb.key || ''
 
-        if (!res.ok || data.error) {
-          this.submitError = data.error || 'Booking failed. Please try again.'
-          return
-        }
-        if (!data.booking_reference) {
-          this.submitError = 'Booking failed — no reference returned. Please try again.'
+        var res = await fetch(url, {
+          method:  'POST',
+          headers: {
+            'Content-Type':  'application/json',
+            'apikey':        key,
+            'Authorization': 'Bearer ' + key,
+            'Prefer':        'return=minimal',
+          },
+          body: JSON.stringify(row),
+        })
+
+        console.log('[submitBooking] Supabase status:', res.status)
+
+        if (!res.ok) {
+          var errText = await res.text().catch(function() { return '' })
+          console.error('[submitBooking] Supabase error:', res.status, errText)
+          this.submitError = 'Booking failed (' + res.status + '). Please try again.'
           return
         }
 
         this._clear()
-        window.location.href = '/booking-confirmed/' + data.booking_reference
+        window.location.href = '/booking-confirmed/' + ref
       } catch (err) {
         console.error('[submitBooking] fetch threw:', err)
         this.submitError = (err && err.message) ? err.message : 'Something went wrong. Please try again.'
