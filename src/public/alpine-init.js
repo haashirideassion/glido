@@ -341,48 +341,129 @@ function wizardStore() {
       }, 1000)
     },
 
+    // ── Supabase helpers ─────────────────────────────────────────────────────
+
+    _cachedTenant: null,
+
+    async _sbGet(table, qs) {
+      var sb  = window.__sb || {}
+      var url = (sb.url || 'https://lnknynjqxyfvtjpnaljc.supabase.co') + '/rest/v1/' + table + '?' + qs
+      var res = await fetch(url, {
+        headers: {
+          'apikey':        sb.key || '',
+          'Authorization': 'Bearer ' + (sb.key || ''),
+        },
+      })
+      if (!res.ok) throw new Error('sb ' + res.status)
+      return res.json()
+    },
+
+    async _getTenant() {
+      if (this._cachedTenant) return this._cachedTenant
+      var rows = await this._sbGet('tenants', 'id=eq.a0000000-0000-0000-0000-000000000001&select=*')
+      this._cachedTenant = rows && rows[0] ? rows[0] : null
+      return this._cachedTenant
+    },
+
+    _calcCharges(row, serviceType, loadType, slotDate, tenant) {
+      var t           = tenant || {}
+      var gstRate     = t.gst_enabled ? (parseFloat(t.gst_rate) || 0) / 100 : 0
+      var storageDays = 0
+      var storageCharge = 0
+      function r2(n) { return Math.round(n * 100) / 100 }
+
+      if (row && row.storage_start_date && loadType === 'lcl') {
+        var diffMs  = new Date(slotDate) - new Date(row.storage_start_date)
+        var rawDays = Math.max(0, Math.floor(diffMs / 86400000))
+        storageDays = Math.max(0, rawDays - (t.storage_free_days || 0))
+        if (storageDays > 0) {
+          var billableCbm = Math.max((row.weight_kg || 0) / 1000, row.volume_cbm || 0)
+          storageCharge   = r2(billableCbm * (parseFloat(t.storage_rate_per_cbm) || 0) * storageDays)
+        }
+      }
+      var shrinkWrapCharge = 0
+      if (loadType === 'lcl' && row && (row.pallet_count || 0) > 0) {
+        shrinkWrapCharge = r2((row.pallet_count || 0) * (parseFloat(t.shrink_wrap_rate_per_pallet) || 0))
+      }
+      var slotFee     = r2(parseFloat(serviceType === 'pickup' ? t.slot_fee_pickup : t.slot_fee_dropoff) || 5)
+      var subtotal    = r2(storageCharge + shrinkWrapCharge + slotFee)
+      var gstAmount   = r2(subtotal * gstRate)
+      var totalAmount = r2(subtotal + gstAmount)
+      return { storageCharge: storageCharge, storageDays: storageDays, shrinkWrapCharge: shrinkWrapCharge, slotFee: slotFee, subtotal: subtotal, gstAmount: gstAmount, totalAmount: totalAmount }
+    },
+
+    async _doShipmentLookup(hbl, container, serviceType, loadType, slotDate) {
+      var row = null
+      try {
+        var tenant = await this._getTenant()
+        var tid    = 'a0000000-0000-0000-0000-000000000001'
+
+        // Try HBL first, fall back to container
+        if (hbl) {
+          var rows = await this._sbGet('cfs_shipments',
+            'tenant_id=eq.' + tid + '&house_bill_number=ilike.' + encodeURIComponent(hbl) + '&select=*')
+          row = rows && rows[0] ? rows[0] : null
+        }
+        if (!row && container) {
+          var rows2 = await this._sbGet('cfs_shipments',
+            'tenant_id=eq.' + tid + '&container_number=ilike.' + encodeURIComponent(container) + '&select=*')
+          row = rows2 && rows2[0] ? rows2[0] : null
+        }
+
+        var charges = this._calcCharges(row, serviceType, loadType, slotDate, tenant)
+
+        if (!row) {
+          return Object.assign({ found: false, icsStatus: 'unavailable' }, charges)
+        }
+        return Object.assign({
+          found:              true,
+          hbl:                row.house_bill_number,
+          containerNumber:    row.container_number || null,
+          weightKg:           row.weight_kg        || null,
+          volumeCbm:          row.volume_cbm       || null,
+          packageCount:       row.package_count    || null,
+          palletCount:        row.pallet_count     || null,
+          palletType:         row.pallet_type      || null,
+          storageStartDate:   row.storage_start_date || null,
+          readyForCollection: row.ready_for_collection || false,
+          icsStatus:          row.ics_status       || 'unavailable',
+        }, charges)
+      } catch (err) {
+        console.error('[shipment lookup] direct Supabase error:', err)
+        return { found: false, storageCharge: 0, shrinkWrapCharge: 0, slotFee: 5, subtotal: 5, gstAmount: 0.5, totalAmount: 5.5, icsStatus: 'unavailable' }
+      }
+    },
+
+    // ── Public lookup methods ─────────────────────────────────────────────────
+
     fetchShipmentDetails() {
       if (!this.houseBillNumber.trim() && !this.containerNumber.trim()) return
       this.shipmentFetching = true
-      this.shipmentFetched = false
+      this.shipmentFetched  = false
       var self = this
-      var body = JSON.stringify({ hbl: self.houseBillNumber.trim(), container: self.containerNumber.trim(), serviceType: self.serviceType, loadType: self.loadType, slotDate: self.selectedDate })
-      fetch('/api/shipments/lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body })
-        .then(function (r) { return r.json() })
-        .then(function (data) {
-          self.shipmentFetching = false
-          self.shipmentFetched = true
-          if (data.found) {
-            self.shipmentData = data
-          } else {
-            self.shipmentData = { found: false, storageCharge: 0, shrinkWrapCharge: 0, slotFee: data.slotFee || 5, subtotal: data.slotFee || 5, gstAmount: (data.slotFee || 5) * 0.1, totalAmount: (data.slotFee || 5) * 1.1, icsStatus: 'unavailable' }
-          }
-        })
-        .catch(function () {
-          self.shipmentFetching = false
-          self.shipmentFetched = true
-          self.shipmentData = { found: false, storageCharge: 0, shrinkWrapCharge: 0, slotFee: 5, subtotal: 5, gstAmount: 0.5, totalAmount: 5.5, icsStatus: 'unavailable' }
-        })
+      this._doShipmentLookup(
+        self.houseBillNumber.trim(), self.containerNumber.trim(),
+        self.serviceType, self.loadType, self.selectedDate
+      ).then(function (data) {
+        self.shipmentFetching = false
+        self.shipmentFetched  = true
+        self.shipmentData     = data
+      })
     },
 
     fetchFclDetails() {
       if (!this.containerNumber.trim()) return
       this.shipmentFetching = true
-      this.shipmentFetched = false
+      this.shipmentFetched  = false
       var self = this
-      var body = JSON.stringify({ hbl: '', container: self.containerNumber.trim(), serviceType: self.serviceType, loadType: 'fcl', slotDate: self.selectedDate })
-      fetch('/api/shipments/lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body })
-        .then(function (r) { return r.json() })
-        .then(function (data) {
-          self.shipmentFetching = false
-          self.shipmentFetched = true
-          self.shipmentData = data.found ? data : { found: false, storageCharge: 0, shrinkWrapCharge: 0, slotFee: data.slotFee || 5, subtotal: data.slotFee || 5, gstAmount: (data.slotFee || 5) * 0.1, totalAmount: (data.slotFee || 5) * 1.1, icsStatus: 'unavailable' }
-        })
-        .catch(function () {
-          self.shipmentFetching = false
-          self.shipmentFetched = true
-          self.shipmentData = { found: false, storageCharge: 0, shrinkWrapCharge: 0, slotFee: 5, subtotal: 5, gstAmount: 0.5, totalAmount: 5.5, icsStatus: 'unavailable' }
-        })
+      this._doShipmentLookup(
+        '', self.containerNumber.trim(),
+        self.serviceType, 'fcl', self.selectedDate
+      ).then(function (data) {
+        self.shipmentFetching = false
+        self.shipmentFetched  = true
+        self.shipmentData     = data
+      })
     },
 
     async submitBooking() {
