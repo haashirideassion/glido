@@ -73,7 +73,7 @@ export async function getSessionUser(c: Context): Promise<{
 
     // Pull role from our users table (10 s cap, failure is non-fatal)
     const rowResult = await withTimeout(
-      supabaseAdmin.from('users').select('role, first_name').eq('id', data.user.id).maybeSingle(),
+      Promise.resolve(supabaseAdmin.from('users').select('role, first_name').eq('id', data.user.id).maybeSingle()),
       10_000,
       { data: null, error: new Error('users table timeout') } as any,
     )

@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import * as ws from 'ws'
 import type { Database } from './db/types'
 
 const url        = process.env.SUPABASE_URL              ?? 'https://lnknynjqxyfvtjpnaljc.supabase.co'
@@ -14,15 +15,21 @@ const fetchWithTimeout = (input: RequestInfo | URL, init: RequestInit = {}): Pro
     .finally(() => clearTimeout(timer))
 }
 
+// Node.js 20 has no native WebSocket — pass ws explicitly.
+// Node.js 22+ has it natively; passing ws here is harmless.
+const wsImpl = ws as unknown as typeof WebSocket
+
 // Standard client (anon key) — for client-facing queries
 export const supabase = createClient<Database>(url, key, {
-  global: { fetch: fetchWithTimeout },
+  global:   { fetch: fetchWithTimeout },
+  realtime: { transport: wsImpl },
 })
 
 // Admin client (service role) — for server-side operations, bypasses RLS
 export const supabaseAdmin = createClient<Database>(url, serviceKey, {
-  auth:   { autoRefreshToken: false, persistSession: false },
-  global: { fetch: fetchWithTimeout },
+  auth:     { autoRefreshToken: false, persistSession: false },
+  global:   { fetch: fetchWithTimeout },
+  realtime: { transport: wsImpl },
 })
 
 export const DEFAULT_TENANT_ID = 'a0000000-0000-0000-0000-000000000001'

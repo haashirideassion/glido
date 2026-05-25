@@ -29,6 +29,7 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="/public/styles.css" />
+        <script dangerouslySetInnerHTML={{ __html: `window.__sb={url:'${process.env.SUPABASE_URL ?? 'https://lnknynjqxyfvtjpnaljc.supabase.co'}',key:'${process.env.SUPABASE_ANON_KEY ?? ''}'};` }} />
         <style>{`
           * { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
 

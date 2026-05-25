@@ -23,6 +23,7 @@ export const KpiTiles = ({ stats }: Props) => {
   const tiles = [
     {
       id:      'kpi-scheduled',
+      statId:  'stat-scheduled',
       label:   'Total Scheduled',
       value:   stats.totalScheduled,
       sub:     'booked for today',
@@ -37,6 +38,7 @@ export const KpiTiles = ({ stats }: Props) => {
     },
     {
       id:      'kpi-checkedin',
+      statId:  'stat-checkedin',
       label:   'Checked In',
       value:   stats.checkedIn,
       sub:     'currently on site',
@@ -51,6 +53,7 @@ export const KpiTiles = ({ stats }: Props) => {
     },
     {
       id:      'kpi-completed',
+      statId:  'stat-completed',
       label:   'Completed',
       value:   stats.completed,
       sub:     'finished today',
@@ -65,6 +68,7 @@ export const KpiTiles = ({ stats }: Props) => {
     },
     {
       id:      'kpi-held',
+      statId:  'stat-held',
       label:   'ICS Held',
       value:   stats.held,
       sub:     'customs holds today',
@@ -149,6 +153,7 @@ ${EC_THEME}
 
           {/* Value + labels */}
           <p
+            id={tile.statId}
             style={`font-size:36px; font-weight:800; letter-spacing:-0.04em; line-height:1; color:${tile.valueFg}; margin-bottom:5px; font-variant-numeric:tabular-nums;`}
           >
             {tile.value}

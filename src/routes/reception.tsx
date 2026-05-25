@@ -31,6 +31,97 @@ import type { BookingStatus, ServiceType, WalkInPurpose } from '../data/types'
 
 export const receptionRoutes = new Hono()
 
+// ─── Client-side dashboard refresh script ────────────────────────────────────
+// Fetches today's bookings directly from Supabase REST (browser → Supabase),
+// avoiding Vercel serverless entirely. Requires window.__sb injected by ReceptionLayout.
+const RECEPTION_DASH_SCRIPT = `(function(){
+  var TENANT='a0000000-0000-0000-0000-000000000001';
+  var SL={scheduled:'Scheduled',checked_in:'Checked In',completed:'Completed',cancelled:'Cancelled'};
+  var SVC={pickup:'Pick Up',dropoff:'Drop Off'};
+  var LT={fcl:'FCL',lcl:'LCL'};
+  var IL={cleared:'Clear',held:'Held',examination:'On Hold',pending:'Pending',unavailable:'N/A'};
+  var IC={
+    cleared:'bg-green-100 text-green-800 border-green-200',
+    held:'bg-red-100 text-red-800 border-red-200',
+    examination:'bg-amber-100 text-amber-800 border-amber-200',
+    pending:'bg-slate-100 text-slate-500 border-slate-200',
+    unavailable:'bg-slate-100 text-slate-400 border-slate-200'
+  };
+  var BS={
+    default:'background:#F5F5F4;color:#57534E;border:1px solid rgba(0,0,0,0.1);border-radius:9999px;padding:2px 8px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;',
+    success:'background:rgba(34,197,94,0.12);color:#16A34A;border:1px solid rgba(34,197,94,0.25);border-radius:9999px;padding:2px 8px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;',
+    secondary:'background:#F5F5F4;color:#78716C;border:1px solid rgba(0,0,0,0.08);border-radius:9999px;padding:2px 8px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;',
+    outline:'background:transparent;color:#A8A29E;border:1px solid rgba(0,0,0,0.15);border-radius:9999px;padding:2px 8px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;'
+  };
+  function today(){return new Date().toISOString().split('T')[0];}
+  function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function tt(s){return s?String(s).slice(0,5):'';}
+  async function fetchBs(){
+    var u=window.__sb.url+'/rest/v1/bookings?select=*&tenant_id=eq.'+TENANT+'&slot_date=eq.'+today()+'&status=neq.cancelled&order=slot_start_time.asc';
+    try{
+      var r=await fetch(u,{headers:{'apikey':window.__sb.key,'Authorization':'Bearer '+window.__sb.key}});
+      return r.ok?await r.json():[];
+    }catch(e){console.error('[dash] fetch',e);return [];}
+  }
+  function setEl(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
+  function updateStats(bs){
+    setEl('stat-scheduled',bs.length);
+    setEl('stat-checkedin',bs.filter(function(b){return b.status==='checked_in';}).length);
+    setEl('stat-completed',bs.filter(function(b){return b.status==='completed';}).length);
+    setEl('stat-held',bs.filter(function(b){return b.ics_status==='held';}).length);
+    setEl('booking-count',bs.length+' records');
+  }
+  function buildRow(b){
+    var ics=b.ics_status||'';
+    var bg=ics==='held'?'rgba(239,68,68,0.05)':b.status==='checked_in'?'rgba(34,197,94,0.04)':b.status==='completed'?'rgba(0,0,0,0.01)':'';
+    var icsHtml=ics
+      ?'<span class="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded-full border '+(IC[ics]||'')+'">'+(IL[ics]||ics)+'</span>'
+      :'<span style="font-size:12px;color:#A8A29E;">&#8212;</span>';
+    var bv=b.status==='checked_in'?'success':b.status==='completed'?'secondary':b.status==='cancelled'?'outline':'default';
+    var badge='<span style="'+(BS[bv]||BS.default)+'">'+(SL[b.status]||b.status)+'</span>';
+    var hbl=esc(b.house_bill_number||b.container_number||'—');
+    var svc=(SVC[b.service_type]||b.service_type)+' · '+(LT[b.load_type]||b.load_type);
+    var showOver="document.getElementById('slide-over-backdrop').classList.remove('hidden');document.getElementById('slide-over').classList.remove('translate-x-full')";
+    return '<tr style="border-bottom:1px solid rgba(0,0,0,0.06);cursor:pointer;transition:background 0.12s ease;'+(bg?'background:'+bg+';':'')+'"'
+      +' onmouseover="this.style.background=\'rgba(252,101,20,0.03)\'"'
+      +' onmouseout="this.style.background=\''+bg+'\'"'
+      +' hx-get="/reception/bookings/'+esc(b.id)+'"'
+      +' hx-target="#slide-over-content"'
+      +' hx-swap="innerHTML"'
+      +' hx-on:htmx:after-request="'+esc(showOver)+'">'
+      +'<td class="px-5 py-3.5" style="font-family:ui-monospace,monospace;font-size:12px;font-weight:700;color:#FC6514;white-space:nowrap;">'+esc(b.reference_number||'—')+'</td>'
+      +'<td class="px-4 py-3.5"><p style="font-size:13px;font-weight:600;color:#1C1917;">'+esc(b.driver_name||'—')+'</p><p style="font-size:11px;color:#A8A29E;">'+esc(b.driver_phone||'—')+'</p></td>'
+      +'<td class="px-4 py-3.5"><p style="font-size:13px;font-weight:600;color:#1C1917;white-space:nowrap;">'+tt(b.slot_start_time)+(b.slot_end_time?' – '+tt(b.slot_end_time):'')+' </p><p style="font-size:11px;color:#A8A29E;">'+esc(b.slot_date||'')+'</p></td>'
+      +'<td class="px-4 py-3.5" style="font-size:12px;font-weight:500;color:#78716C;white-space:nowrap;">'+svc+'</td>'
+      +'<td class="px-4 py-3.5" style="font-family:ui-monospace,monospace;font-size:12px;color:#78716C;">'+hbl+'</td>'
+      +'<td class="px-4 py-3.5">'+icsHtml+'</td>'
+      +'<td class="px-4 py-3.5">'+badge+'</td>'
+      +'<td class="px-4 py-3.5" style="color:rgba(0,0,0,0.30);">&#8594;</td>'
+      +'</tr>';
+  }
+  function updateTable(bs){
+    var el=document.getElementById('bookings-table');
+    if(!el)return;
+    if(!bs||!bs.length){
+      el.innerHTML='<div style="text-align:center;padding:48px 0;color:#A8A29E;"><p style="font-size:13px;">No bookings for today.</p></div>';
+      return;
+    }
+    var ths=['Reference','Driver','Slot','Service','HBL','ICS','Status','']
+      .map(function(h){return '<th class="text-left px-5 py-3" style="font-size:10px;font-weight:700;color:#78716C;text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;">'+h+'</th>';}).join('');
+    el.innerHTML='<table style="width:100%;border-collapse:collapse;">'
+      +'<thead><tr style="background:#F7F6F5;border-bottom:1px solid rgba(0,0,0,0.07);">'+ths+'</tr></thead>'
+      +'<tbody style="border-top:none;">'+bs.map(buildRow).join('')+'</tbody>'
+      +'</table>';
+    if(window.htmx)htmx.process(el);
+  }
+  async function refresh(){
+    try{var bs=await fetchBs();updateStats(bs);updateTable(bs);}
+    catch(e){console.error('[dash] refresh',e);}
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',refresh);}else{refresh();}
+  setInterval(refresh,30000);
+})();`
+
 const WALK_IN_PURPOSE_LABEL: Record<WalkInPurpose, string> = {
   walk_in_pickup:  'Walk-in Pick Up',
   walk_in_dropoff: 'Walk-in Drop Off',
@@ -38,22 +129,20 @@ const WALK_IN_PURPOSE_LABEL: Record<WalkInPurpose, string> = {
 }
 
 // ─── Dashboard ──────────────────────────────────────────────────────────────
-receptionRoutes.get('/', async (c) => {
-  const [todayBookings, stats, walkIns] = await Promise.all([
-    getTodayBookings().catch(() => []),
-    getDashboardStats().catch(() => ({ totalScheduled: 0, checkedIn: 0, completed: 0, held: 0 })),
-    getActiveWalkIns(DEFAULT_TENANT_ID).catch(() => []),
-  ])
+// Data is fetched client-side via RECEPTION_DASH_SCRIPT (browser → Supabase REST)
+// so the server-side DB calls are intentionally skipped here.
+receptionRoutes.get('/', (c) => {
+  const emptyStats = { totalScheduled: 0, checkedIn: 0, completed: 0, held: 0 }
   return c.html(
-    <ReceptionLayout title="Dashboard" activeNav="/reception" walkInCount={walkIns.length}>
-      {/* KPI + chart with auto-refresh every 30s */}
-      <div id="dashboard-stats" hx-get="/reception/api/stats" hx-trigger="every 30s" hx-swap="innerHTML">
-        <KpiTiles stats={stats} />
-        <DayChart bookings={todayBookings} />
+    <ReceptionLayout title="Dashboard" activeNav="/reception" walkInCount={0}>
+      <div id="dashboard-stats">
+        <KpiTiles stats={emptyStats} />
+        <DayChart bookings={[]} />
       </div>
-      <div id="dashboard-table" hx-get="/reception/api/today-bookings" hx-trigger="every 30s" hx-swap="outerHTML">
-        <BookingTable bookings={todayBookings} />
+      <div id="dashboard-table">
+        <BookingTable bookings={[]} />
       </div>
+      <script dangerouslySetInnerHTML={{ __html: RECEPTION_DASH_SCRIPT }} />
     </ReceptionLayout>
   )
 })

@@ -21,7 +21,7 @@ export const BookingTable = ({ bookings, title = "Today's Bookings", showFilters
   >
     <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(0,0,0,0.07);">
       <h2 style="font-size:14px; font-weight:600; color:#1C1917;">{title}</h2>
-      <span style="font-size:11px; font-weight:500; color:#78716C; background:rgba(0,0,0,0.02); border:1px solid rgba(0,0,0,0.07); border-radius:9999px; padding:3px 10px;">
+      <span id="booking-count" style="font-size:11px; font-weight:500; color:#78716C; background:rgba(0,0,0,0.02); border:1px solid rgba(0,0,0,0.07); border-radius:9999px; padding:3px 10px;">
         {bookings.length} records
       </span>
     </div>
