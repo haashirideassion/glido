@@ -226,9 +226,16 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
         <script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
 
-        {/* ── Instant preloader ── */}
+        {/* ── Instant preloader — first session visit only ── */}
         <script dangerouslySetInnerHTML={{ __html: `
           (function(){
+            // Skip overlay on every navigation after the first page in this session.
+            // transitions.js sets 'g-anim-visited' in sessionStorage on first load;
+            // we read it here (head script runs before transitions.js).
+            if (sessionStorage.getItem('g-anim-visited')) {
+              window.__gPlSafetyTimer = null;
+              return;
+            }
             var D='#1C232C',O='#FF6610',O2='#FC6514';
             var s=document.createElement('style');
             s.textContent='#g-pl-overlay{position:fixed;inset:0;z-index:99998;background:#f9f9f9;pointer-events:none}'

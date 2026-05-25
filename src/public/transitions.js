@@ -118,17 +118,19 @@
       }
     }
 
-    /* ── Reception sidebar slides in from left ── */
-    var sidebar = document.querySelector('.sidebar-col')
-    if (sidebar) {
-      sidebar.style.opacity    = '0'
-      sidebar.style.transform  = 'translateX(-20px)'
-      sidebar.style.transition = 'none'
-      setTimeout(function () {
-        sidebar.style.transition = 'opacity 0.5s ' + SP + ', transform 0.55s ' + SP
-        sidebar.style.opacity    = '1'
-        sidebar.style.transform  = 'translateX(0)'
-      }, 30)
+    /* ── Reception sidebar slides in from left (first visit only) ── */
+    if (_isFirstVisit) {
+      var sidebar = document.querySelector('.sidebar-col')
+      if (sidebar) {
+        sidebar.style.opacity    = '0'
+        sidebar.style.transform  = 'translateX(-20px)'
+        sidebar.style.transition = 'none'
+        setTimeout(function () {
+          sidebar.style.transition = 'opacity 0.5s ' + SP + ', transform 0.55s ' + SP
+          sidebar.style.opacity    = '1'
+          sidebar.style.transform  = 'translateX(0)'
+        }, 30)
+      }
     }
 
     /* ── Main area ── */
