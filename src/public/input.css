@@ -523,6 +523,168 @@
     transition-duration: 60ms;
   }
 
+  /* ── Button — Success (green pill, mirrors btn-primary) ─────────────── */
+  .btn-success {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    background: linear-gradient(180deg, #4ADE80 0%, #16A34A 100%);
+    color: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.18);
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      inset 0 -1px 0 rgba(0,0,0,0.22),
+      0 3px 10px rgba(34,197,94,0.35),
+      0 1px 2px rgba(0,0,0,0.25);
+    transition: all 120ms cubic-bezier(0.16,1,0.3,1);
+  }
+  .btn-success:hover {
+    background: linear-gradient(180deg, #6EE7A0 0%, #22C55E 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.25),
+      inset 0 -1px 0 rgba(0,0,0,0.22),
+      0 5px 16px rgba(34,197,94,0.45),
+      0 2px 4px rgba(0,0,0,0.20);
+    transform: translateY(-1px);
+  }
+  .btn-success:active {
+    background: linear-gradient(180deg, #16A34A 0%, #15803D 100%);
+    box-shadow:
+      inset 0 2px 4px rgba(0,0,0,0.28),
+      0 1px 2px rgba(0,0,0,0.20);
+    transform: translateY(0) scale(0.985);
+    transition-duration: 60ms;
+  }
+
+  /* ── Button — Primary White (inverted pill, mirrors btn-primary) ─────── */
+  .btn-primary-white {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    background: #FFFFFF;
+    color: #E85A0A;
+    border: 1px solid rgba(252,101,20,0.28);
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.90),
+      inset 0 -1px 0 rgba(252,101,20,0.10),
+      0 3px 10px rgba(252,101,20,0.15),
+      0 1px 2px rgba(0,0,0,0.08);
+    transition: all 120ms cubic-bezier(0.16,1,0.3,1);
+  }
+  .btn-primary-white:hover {
+    background: rgba(252,101,20,0.05);
+    border-color: rgba(252,101,20,0.45);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.90),
+      inset 0 -1px 0 rgba(252,101,20,0.12),
+      0 5px 16px rgba(252,101,20,0.22),
+      0 2px 4px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+  }
+  .btn-primary-white:active {
+    background: rgba(252,101,20,0.09);
+    box-shadow:
+      inset 0 2px 4px rgba(252,101,20,0.12),
+      0 1px 2px rgba(0,0,0,0.08);
+    transform: translateY(0) scale(0.985);
+    transition-duration: 60ms;
+  }
+
+  /* ── Button — Danger (red pill, mirrors btn-primary) ────────────────── */
+  .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    background: linear-gradient(180deg, #F87171 0%, #DC2626 100%);
+    color: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.18);
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      inset 0 -1px 0 rgba(0,0,0,0.22),
+      0 3px 10px rgba(220,38,38,0.35),
+      0 1px 2px rgba(0,0,0,0.25);
+    transition: all 120ms cubic-bezier(0.16,1,0.3,1);
+  }
+  .btn-danger:hover {
+    background: linear-gradient(180deg, #FC8080 0%, #EF4444 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.25),
+      inset 0 -1px 0 rgba(0,0,0,0.22),
+      0 5px 16px rgba(220,38,38,0.45),
+      0 2px 4px rgba(0,0,0,0.20);
+    transform: translateY(-1px);
+  }
+  .btn-danger:active {
+    background: linear-gradient(180deg, #E53535 0%, #B91C1C 100%);
+    box-shadow:
+      inset 0 2px 4px rgba(0,0,0,0.28),
+      0 1px 2px rgba(0,0,0,0.20);
+    transform: translateY(0) scale(0.985);
+    transition-duration: 60ms;
+  }
+
+  /* ── Button — Danger Outline (ghost red pill, mirrors btn-primary-white) */
+  .btn-danger-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    background: #FFFFFF;
+    color: #DC2626;
+    border: 1px solid rgba(239,68,68,0.30);
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.90),
+      inset 0 -1px 0 rgba(239,68,68,0.10),
+      0 3px 10px rgba(239,68,68,0.12),
+      0 1px 2px rgba(0,0,0,0.06);
+    transition: all 120ms cubic-bezier(0.16,1,0.3,1);
+  }
+  .btn-danger-outline:hover {
+    background: rgba(239,68,68,0.04);
+    border-color: rgba(239,68,68,0.50);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.90),
+      inset 0 -1px 0 rgba(239,68,68,0.12),
+      0 5px 16px rgba(239,68,68,0.18),
+      0 2px 4px rgba(0,0,0,0.06);
+    transform: translateY(-1px);
+  }
+  .btn-danger-outline:active {
+    background: rgba(239,68,68,0.08);
+    box-shadow:
+      inset 0 2px 4px rgba(239,68,68,0.12),
+      0 1px 2px rgba(0,0,0,0.06);
+    transform: translateY(0) scale(0.985);
+    transition-duration: 60ms;
+  }
+
   /* ── Button — Ghost (outline pill) ───────────────────────────────────── */
   .btn-ghost {
     display: inline-flex;

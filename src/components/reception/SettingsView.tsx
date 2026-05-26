@@ -1,5 +1,13 @@
 const TABS = ['General', 'Working Hours', 'Slot Configuration', 'Pricing & Charges', 'Payment', 'Integrations', 'Users', 'Staff Permissions']
 
+// 30-min increments 05:00 → 23:00
+const TIME_OPTIONS: string[] = Array.from({ length: 37 }, (_, i) => {
+  const total = 5 * 60 + i * 30
+  const h = String(Math.floor(total / 60)).padStart(2, '0')
+  const m = String(total % 60).padStart(2, '0')
+  return `${h}:${m}`
+})
+
 const labelStyle = 'display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:8px;'
 const inputStyle = 'width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#EBEBEA; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; transition:border-color 0.15s ease, box-shadow 0.15s ease; box-sizing:border-box;'
 const inputFocus = `onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';" onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"`
@@ -8,17 +16,52 @@ const saveBtn = 'display:inline-flex; align-items:center; gap:8px; padding:11px 
 
 export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeTab?: string; tenant?: any; users?: any[] }) => (
   <div x-data={`{ tab: '${activeTab}' }`}>
-    {/* Tab nav */}
-    <div style="display:flex; gap:2px; background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.07); border-radius:12px; padding:4px; margin-bottom:28px; overflow-x:auto;">
+
+    {/* ── Tab switcher ── CSS classes toggled by x-bind:class, no x-bind:style conflicts ── */}
+    <style>{`
+      .stab-track {
+        display: flex;
+        gap: 2px;
+        background: #EBEBEA;
+        border-radius: 12px;
+        padding: 4px;
+        margin-bottom: 28px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .stab-track::-webkit-scrollbar { display: none; }
+      .stab-btn {
+        flex: 1;
+        padding: 9px 8px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #78716C;
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        white-space: nowrap;
+        cursor: pointer;
+        text-align: center;
+        transition: color 0.15s ease;
+      }
+      .stab-btn:hover { color: #1C1917; }
+      .stab-btn.is-active {
+        background: #FFFFFF;
+        color: #1C1917;
+        font-weight: 600;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+      }
+
+    `}</style>
+
+    <div class="stab-track">
       {TABS.map((t) => (
         <button
           key={t}
           type="button"
+          class="stab-btn"
+          x-bind:class={`tab === '${t}' ? 'is-active' : ''`}
           x-on:click={`tab = '${t}'`}
-          style="padding:8px 16px; font-size:13px; font-weight:500; border:none; border-radius:9px; white-space:nowrap; cursor:pointer; transition:all 0.15s ease;"
-          x-bind:style={`tab === '${t}'
-            ? 'background:#FFFFFF; color:#1C1917; box-shadow:0 1px 3px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.09);'
-            : 'background:transparent; color:#78716C; border:1px solid transparent;'`}
         >
           {t}
         </button>
@@ -26,7 +69,7 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
     </div>
 
     {/* ── General ── */}
-    <div x-show={`tab === 'General'`} style="max-width:640px;">
+    <div x-show={`tab === 'General'`} style="max-width:884px; margin:0 auto;">
       <form method="post" action="/reception/settings">
         <input type="hidden" name="tab" value="General" />
         <div style={cardStyle}>
@@ -71,7 +114,7 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
     </div>
 
     {/* ── Slot Configuration ── */}
-    <div x-show={`tab === 'Slot Configuration'`} style="max-width:640px;">
+    <div x-show={`tab === 'Slot Configuration'`} style="max-width:884px; margin:0 auto;">
       <form method="post" action="/reception/settings">
         <input type="hidden" name="tab" value="Slot Configuration" />
         <div style={cardStyle}>
@@ -96,7 +139,7 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
     </div>
 
     {/* ── Pricing & Charges ── */}
-    <div x-show={`tab === 'Pricing & Charges'`} style="max-width:640px;" x-data="{ gstEnabled: false }">
+    <div x-show={`tab === 'Pricing & Charges'`} style="max-width:884px; margin:0 auto;" x-data="{ gstEnabled: false }">
       <form method="post" action="/reception/settings">
         <input type="hidden" name="tab" value="Pricing & Charges" />
         <div style={cardStyle}>
@@ -129,7 +172,7 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
     </div>
 
     {/* ── Payment ── */}
-    <div x-show={`tab === 'Payment'`} style="max-width:640px;">
+    <div x-show={`tab === 'Payment'`} style="max-width:884px; margin:0 auto;">
       <form method="post" action="/reception/settings">
         <input type="hidden" name="tab" value="Payment" />
         <div style={cardStyle}>
@@ -158,7 +201,7 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
     </div>
 
     {/* ── Working Hours ── */}
-    <div x-show={`tab === 'Working Hours'`} style="max-width:640px;">
+    <div x-show={`tab === 'Working Hours'`} style="max-width:884px; margin:0 auto;">
       <form method="post" action="/reception/settings">
         <input type="hidden" name="tab" value="Working Hours" />
         <div style={cardStyle}>
@@ -206,21 +249,27 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
                 </div>
                 <div x-show={`enabled_${day.name}`}>
                   <label style={labelStyle}>Open</label>
-                  <input type="time" name={`${day.name}_open`}
-                    value={savedOpen}
-                    style={`${inputStyle} padding:8px 12px;`}
+                  <select name={`${day.name}_open`}
+                    style={`${inputStyle} padding:8px 12px; cursor:pointer;`}
                     onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
                     onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
-                  />
+                  >
+                    {TIME_OPTIONS.map(t => (
+                      <option key={t} value={t} selected={t === savedOpen}>{t}</option>
+                    ))}
+                  </select>
                 </div>
                 <div x-show={`enabled_${day.name}`}>
                   <label style={labelStyle}>Close</label>
-                  <input type="time" name={`${day.name}_close`}
-                    value={savedClose}
-                    style={`${inputStyle} padding:8px 12px;`}
+                  <select name={`${day.name}_close`}
+                    style={`${inputStyle} padding:8px 12px; cursor:pointer;`}
                     onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
                     onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';"
-                  />
+                  >
+                    {TIME_OPTIONS.map(t => (
+                      <option key={t} value={t} selected={t === savedClose}>{t}</option>
+                    ))}
+                  </select>
                 </div>
                 <div x-show={`!enabled_${day.name}`} style="grid-column:span 2; padding-top:18px;">
                   <span style="font-size:12px; color:#A8A29E; font-style:italic;">Closed</span>
@@ -235,7 +284,7 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
     </div>
 
     {/* ── Users ── */}
-    <div x-show={`tab === 'Users'`} style="max-width:640px;">
+    <div x-show={`tab === 'Users'`} style="max-width:884px; margin:0 auto;">
       <div style={cardStyle}>
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;">
           <p style="font-size:15px; font-weight:600; color:#1C1917; letter-spacing:-0.01em;">Team Members</p>
@@ -282,7 +331,7 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
     </div>
 
     {/* ── Staff Permissions ── */}
-    <div x-show={`tab === 'Staff Permissions'`} style="max-width:640px;"
+    <div x-show={`tab === 'Staff Permissions'`} style="max-width:884px; margin:0 auto;"
       x-data="{ editing: false, dirty: false }">
       <div style={cardStyle}>
         <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:6px; flex-wrap:wrap; gap:8px;">
@@ -390,7 +439,7 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
     </div>
 
     {/* ── Integrations tab ── */}
-    <div x-show={`tab === 'Integrations'`} style="max-width:640px;">
+    <div x-show={`tab === 'Integrations'`} style="max-width:884px; margin:0 auto;">
       <form method="post" action="/reception/settings">
         <input type="hidden" name="tab" value="Integrations" />
 

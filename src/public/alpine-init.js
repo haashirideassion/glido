@@ -347,7 +347,7 @@ function wizardStore() {
 
     async _sbGet(table, qs) {
       var sb  = window.__sb || {}
-      var url = (sb.url || 'https://lnknynjqxyfvtjpnaljc.supabase.co') + '/rest/v1/' + table + '?' + qs
+      var url = 'https://lnknynjqxyfvtjpnaljc.supabase.co/rest/v1/' + table + '?' + qs
       var res = await fetch(url, {
         headers: {
           'apikey':        sb.key || '',
@@ -520,7 +520,7 @@ function wizardStore() {
       try {
         // POST directly to Supabase REST — bypasses the Vercel serverless function entirely
         var sb  = window.__sb || {}
-        var url = (sb.url || 'https://lnknynjqxyfvtjpnaljc.supabase.co') + '/rest/v1/bookings'
+        var url = 'https://lnknynjqxyfvtjpnaljc.supabase.co/rest/v1/bookings'
         var key = sb.key || ''
 
         var res = await fetch(url, {

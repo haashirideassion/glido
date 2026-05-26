@@ -106,7 +106,6 @@ export const ReportsView = ({ bookings, page = 1, from, to }: Props) => {
       {/* ── Page header ────────────────────────────────────────────────────── */}
       <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:12px;">
         <div>
-          <h2 style="font-size:17px; font-weight:600; color:#1C1917; letter-spacing:-0.015em; margin-bottom:2px;">Reports</h2>
           <p style="font-size:12.5px; color:#78716C;">
             {from && to
               ? `${bookings.length} bookings from ${from} to ${to}`
@@ -175,7 +174,7 @@ export const ReportsView = ({ bookings, page = 1, from, to }: Props) => {
       {/* ── Row 1: Weekly bar + status donut ────────────────────────────────── */}
       <div style="display:grid; grid-template-columns:1.6fr 1fr; gap:12px;">
         <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:16px; padding:24px; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07);">
-          <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:4px;">Bookings — last 7 days</p>
+          <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:4px;">Bookings last 7 days</p>
           <p style="font-size:11.5px; color:#78716C; margin-bottom:16px;">Daily booking volume</p>
           <div id="chart-weekly" style="width:100%; height:220px;"></div>
         </div>

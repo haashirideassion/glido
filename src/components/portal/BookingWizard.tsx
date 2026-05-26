@@ -94,13 +94,13 @@ export const BookingWizard = () => (
         width:56px; height:56px; border-radius:9999px;
         display:flex; align-items:center; justify-content:center;
         transition:all 0.25s ease;
-        border:2.5px solid #E5E7EB; background:white; color:#D1D5DB;
+        border:2.5px solid #C2C2C2; background:white; color:#C2C2C2;
         flex-shrink:0;
       }
       .wiz-step-label {
         font-size:13px; font-weight:400; letter-spacing:0;
         white-space:nowrap;
-        transition:color 0.25s ease; color:#A8A29E;
+        transition:color 0.25s ease, font-weight 0.15s ease; color:#605F5F;
       }
 
       /* ── Mobile layout ── */
@@ -147,7 +147,7 @@ export const BookingWizard = () => (
         .wiz-step-circle   { width:34px !important; height:34px !important; }
         .wiz-step-circle svg { width:14px !important; height:14px !important; }
         .wiz-step-label    { display:none !important; }
-        .wiz-conn          { margin-top:17px !important; min-width:4px !important; border-top-width:2px !important; }
+        .wiz-conn          { margin-top:17px !important; min-width:4px !important; height:2px !important; }
       }
     `}} />
 
@@ -215,14 +215,20 @@ export const BookingWizard = () => (
           const n = i + 1
           const els: any[] = []
 
-          /* ── dotted connector before every step except the first ── */
+          /* ── connector before every step except the first ── */
           if (i > 0) {
             els.push(
               <div
                 key={`conn-${n}`}
                 class="wiz-conn"
-                style={`flex:1; height:0; border-top:3px solid #E5E7EB; margin-top:27px; min-width:8px; transition:border-top-color 0.3s ease;`}
-                x-bind:style={`{ borderTopColor: $store.wizard.currentStep > ${n - 1} ? '#FC6514' : '#E5E7EB' }`}
+                style="flex:1; height:3px; margin-top:27px; min-width:8px; border-radius:2px; transition:background 0.3s ease; background:#C2C2C2;"
+                x-bind:style={`{
+                  background: $store.wizard.currentStep >= ${n}
+                    ? '#FC6514'
+                    : ($store.wizard.currentStep === ${n - 1}
+                      ? 'linear-gradient(to right, #FC6514, #C2C2C2)'
+                      : '#C2C2C2')
+                }`}
               />
             )
           }
@@ -233,17 +239,19 @@ export const BookingWizard = () => (
               <div
                 class="wiz-step-circle"
                 x-bind:style={`{
-                  background:  $store.wizard.currentStep === ${n} ? 'rgba(252,101,20,0.5)' : 'white',
-                  borderColor: $store.wizard.currentStep >= ${n} ? '#FC6514' : '#E5E7EB',
-                  color:       $store.wizard.currentStep > ${n} ? '#FC6514' : ($store.wizard.currentStep === ${n} ? 'white' : '#D1D5DB'),
-                  boxShadow:   $store.wizard.currentStep === ${n} ? '0 4px 16px rgba(252,101,20,0.35)' : 'none'
+                  borderColor: $store.wizard.currentStep >= ${n} ? '#FC6514' : '#C2C2C2',
+                  color:       $store.wizard.currentStep >= ${n} ? '#FC6514' : '#C2C2C2'
                 }`}
               >
                 <Icon name={ctx.icon} size={24} />
               </div>
               <span
                 class="wiz-step-label"
-                x-bind:style={`{ color: $store.wizard.currentStep >= ${n} ? '#FC6514' : '#A8A29E', fontWeight: $store.wizard.currentStep === ${n} ? '700' : '400' }`}
+                style="color:#605F5F;"
+                x-bind:style={`{
+                  color:      $store.wizard.currentStep > ${n} ? '#101010' : ($store.wizard.currentStep === ${n} ? '#101010' : '#605F5F'),
+                  fontWeight: $store.wizard.currentStep === ${n} ? '700' : '400'
+                }`}
               >{ctx.shortLabel}</span>
             </div>
           )
@@ -334,11 +342,11 @@ export const BookingWizard = () => (
           x-cloak
           style="position:absolute; bottom:100%; left:50%; transform:translateX(-50%); padding-bottom:10px; pointer-events:none;"
         >
-          <div style="display:inline-flex; align-items:center; gap:10px; padding:7px 20px; border-radius:9999px; background:#fff; border:1.5px solid rgba(252,101,20,0.28); box-shadow:0 4px 18px rgba(0,0,0,0.09), 0 2px 8px rgba(252,101,20,0.12); white-space:nowrap;">
-            <span style="width:7px; height:7px; border-radius:9999px; background:#FC6514; flex-shrink:0;" />
+          <div style="display:inline-flex; align-items:center; gap:10px; padding:7px 20px; border-radius:9999px; background:#fff; border:1.5px solid rgba(239,68,68,0.30); box-shadow:0 4px 18px rgba(0,0,0,0.09), 0 2px 8px rgba(239,68,68,0.12); white-space:nowrap;">
+            <span style="width:7px; height:7px; border-radius:9999px; background:#EF4444; flex-shrink:0;" />
             <span style="font-size:13px; font-weight:700; color:#1C1917;" x-text="$store.wizard.selectedSlotLabel" />
             <span style="font-size:11px; color:#9CA3AF; background:rgba(0,0,0,0.05); border-radius:5px; padding:2px 7px; font-weight:500;">selected</span>
-            <span style="font-size:11px; color:#FC6514; font-weight:600;">· 10-min hold on Next →</span>
+            <span style="font-size:11px; color:#EF4444; font-weight:600;">· 10-min hold on Next →</span>
           </div>
         </div>
 

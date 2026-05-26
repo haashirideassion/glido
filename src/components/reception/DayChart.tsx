@@ -8,9 +8,9 @@ interface Props {
 const HOURS = ['07','08','09','10','11','12','13','14','15','16','17']
 
 export const DayChart = ({ bookings }: Props) => {
-  // Count bookings per hour
+  // Count bookings per hour — mutually exclusive so bars don't double-stack
   const scheduled: number[] = HOURS.map(h =>
-    bookings.filter(b => b.slotStartTime.startsWith(h)).length
+    bookings.filter(b => b.slotStartTime.startsWith(h) && b.status === 'scheduled').length
   )
   const checkedIn: number[] = HOURS.map(h =>
     bookings.filter(b => b.slotStartTime.startsWith(h) && (b.status === 'checked_in' || b.status === 'completed')).length
@@ -29,7 +29,7 @@ export const DayChart = ({ bookings }: Props) => {
     var ch=echarts.init(el,null,{renderer:'svg'});
     ch.setOption({
       animation:false,
-      grid:{top:12,right:12,bottom:28,left:32,containLabel:false},
+      grid:{top:12,right:12,bottom:52,left:32,containLabel:false},
       tooltip:{
         trigger:'axis',
         backgroundColor:'rgba(28,25,23,0.88)',

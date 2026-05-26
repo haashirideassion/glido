@@ -2,8 +2,9 @@ import { Hono } from 'hono'
 import { ReceptionLayout } from '../layouts/ReceptionLayout'
 import { KpiTiles } from '../components/reception/KpiTiles'
 import { DayChart } from '../components/reception/DayChart'
-import { BookingTable } from '../components/reception/BookingTable'
+import { BookingTable, BookingTableBody, PAGE_SIZE } from '../components/reception/BookingTable'
 import { BookingSlideOver } from '../components/reception/BookingSlideOver'
+import { BookingDetailPage } from '../components/reception/BookingDetailPage'
 import { WalkInForm } from '../components/reception/WalkInForm'
 import { ReportsView } from '../components/reception/ReportsView'
 import { SettingsView } from '../components/reception/SettingsView'
@@ -27,14 +28,48 @@ import { getActiveWalkIns, createWalkIn, dismissWalkIn } from '../lib/db/walk-in
 import { getTenant, updateTenant } from '../lib/db/tenants'
 import { DEFAULT_TENANT_ID } from '../lib/supabase'
 import { sendBookingCompleted } from '../lib/email'
-import type { BookingStatus, ServiceType, WalkInPurpose } from '../data/types'
+import type { Booking, BookingStatus, ServiceType, WalkInPurpose } from '../data/types'
+
+// ─── Dummy data — shown on the dashboard when Supabase has no bookings today ──
+const _D = new Date().toISOString().split('T')[0]
+const DUMMY_BOOKINGS: Booking[] = [
+  // ── 07:00 slot ──────────────────────────────────────────────────────────────
+  { id:'d-001', referenceNumber:'GLD-2026-10041', status:'completed',  serviceType:'pickup',  loadType:'fcl', slotDate:_D, slotStartTime:'07:00', slotEndTime:'08:00', driverName:'Tom Nguyen',        driverPhone:'0467 234 567', containerNumber:'MSCU1234567',  icsStatus:'cleared',     tenantId:'demo', createdAt: new Date().toISOString() },
+  { id:'d-002', referenceNumber:'GLD-2026-10042', status:'completed',  serviceType:'pickup',  loadType:'lcl', slotDate:_D, slotStartTime:'07:00', slotEndTime:'08:00', driverName:'Marcus Webb',       driverPhone:'0412 345 678', houseBillNumber:'HLCUSY2120045', icsStatus:'cleared',    tenantId:'demo', createdAt: new Date().toISOString() },
+  { id:'d-003', referenceNumber:'GLD-2026-10043', status:'completed',  serviceType:'dropoff', loadType:'lcl', slotDate:_D, slotStartTime:'07:00', slotEndTime:'08:00', driverName:'Ben Yamamoto',      driverPhone:'0455 789 012', houseBillNumber:'WHLC4521098',                          tenantId:'demo', createdAt: new Date().toISOString() },
+  // ── 08:00 slot — 2 on-site + 1 still scheduled (mixed bar) ─────────────────
+  { id:'d-004', referenceNumber:'GLD-2026-10044', status:'checked_in', serviceType:'pickup',  loadType:'fcl', slotDate:_D, slotStartTime:'08:00', slotEndTime:'09:00', driverName:'Priya Sharma',      driverPhone:'0421 987 654', containerNumber:'TCKU3456789',  icsStatus:'cleared',     tenantId:'demo', createdAt: new Date().toISOString() },
+  { id:'d-005', referenceNumber:'GLD-2026-10045', status:'checked_in', serviceType:'dropoff', loadType:'lcl', slotDate:_D, slotStartTime:'08:00', slotEndTime:'09:00', driverName:'James Kowalski',    driverPhone:'0498 112 233', houseBillNumber:'MAEU8934521', icsStatus:'examination', tenantId:'demo', createdAt: new Date().toISOString() },
+  { id:'d-006', referenceNumber:'GLD-2026-10046', status:'scheduled',  serviceType:'pickup',  loadType:'lcl', slotDate:_D, slotStartTime:'08:00', slotEndTime:'09:00', driverName:'David Park',        driverPhone:'0488 321 654', houseBillNumber:'YMLU5674321', icsStatus:'pending',     tenantId:'demo', createdAt: new Date().toISOString() },
+  // ── 09:00 slot — 2 scheduled + 1 on-site (mixed bar) ────────────────────────
+  { id:'d-007', referenceNumber:'GLD-2026-10047', status:'scheduled',  serviceType:'pickup',  loadType:'lcl', slotDate:_D, slotStartTime:'09:00', slotEndTime:'10:00', driverName:'Sarah Chen',        driverPhone:'0435 678 901', houseBillNumber:'OOLU7821034', icsStatus:'held',        tenantId:'demo', createdAt: new Date().toISOString() },
+  { id:'d-008', referenceNumber:'GLD-2026-10048', status:'scheduled',  serviceType:'pickup',  loadType:'fcl', slotDate:_D, slotStartTime:'09:00', slotEndTime:'10:00', driverName:'Rachel Torres',     driverPhone:'0422 543 210', containerNumber:'APLU9087654',  icsStatus:'cleared',     tenantId:'demo', createdAt: new Date().toISOString() },
+  { id:'d-009', referenceNumber:'GLD-2026-10049', status:'checked_in', serviceType:'dropoff', loadType:'lcl', slotDate:_D, slotStartTime:'09:00', slotEndTime:'10:00', driverName:'Amara Okafor',     driverPhone:'0411 876 543', houseBillNumber:'CSCL3089214',                          tenantId:'demo', createdAt: new Date().toISOString() },
+  // ── 10:00 slot — 1 scheduled + 2 on-site (mixed bar) ────────────────────────
+  { id:'d-010', referenceNumber:'GLD-2026-10050', status:'checked_in', serviceType:'pickup',  loadType:'lcl', slotDate:_D, slotStartTime:'10:00', slotEndTime:'11:00', driverName:'Fatima Al-Hassan', driverPhone:'0401 654 321', houseBillNumber:'COSU1876543', icsStatus:'held',        tenantId:'demo', createdAt: new Date().toISOString() },
+  { id:'d-011', referenceNumber:'GLD-2026-10051', status:'scheduled',  serviceType:'pickup',  loadType:'fcl', slotDate:_D, slotStartTime:'10:00', slotEndTime:'11:00', driverName:'Liam O\'Brien',    driverPhone:'0477 234 890', containerNumber:'GESU8812340',  icsStatus:'cleared',     tenantId:'demo', createdAt: new Date().toISOString() },
+  { id:'d-012', referenceNumber:'GLD-2026-10052', status:'checked_in', serviceType:'dropoff', loadType:'lcl', slotDate:_D, slotStartTime:'10:00', slotEndTime:'11:00', driverName:'Mei-Ling Zhao',    driverPhone:'0499 567 123', houseBillNumber:'EVERSU321098', icsStatus:'cleared',    tenantId:'demo', createdAt: new Date().toISOString() },
+  // ── 11:00 slot ──────────────────────────────────────────────────────────────
+  { id:'d-013', referenceNumber:'GLD-2026-10053', status:'scheduled',  serviceType:'pickup',  loadType:'lcl', slotDate:_D, slotStartTime:'11:00', slotEndTime:'12:00', driverName:'Carlos Mendez',    driverPhone:'0433 901 234', houseBillNumber:'SITCSY445521', icsStatus:'cleared',    tenantId:'demo', createdAt: new Date().toISOString() },
+  { id:'d-014', referenceNumber:'GLD-2026-10054', status:'scheduled',  serviceType:'pickup',  loadType:'fcl', slotDate:_D, slotStartTime:'11:00', slotEndTime:'12:00', driverName:'Aisha Patel',      driverPhone:'0444 678 345', containerNumber:'CMAU6543210',  icsStatus:'examination', tenantId:'demo', createdAt: new Date().toISOString() },
+  // ── 12:00 slot ──────────────────────────────────────────────────────────────
+  { id:'d-015', referenceNumber:'GLD-2026-10055', status:'scheduled',  serviceType:'dropoff', loadType:'lcl', slotDate:_D, slotStartTime:'12:00', slotEndTime:'13:00', driverName:'Jake Thornton',    driverPhone:'0466 112 789', houseBillNumber:'ONEY1290834',                          tenantId:'demo', createdAt: new Date().toISOString() },
+  { id:'d-016', referenceNumber:'GLD-2026-10056', status:'scheduled',  serviceType:'pickup',  loadType:'lcl', slotDate:_D, slotStartTime:'12:00', slotEndTime:'13:00', driverName:'Nadia Volkov',     driverPhone:'0455 340 678', houseBillNumber:'SMLMSY772310', icsStatus:'cleared',    tenantId:'demo', createdAt: new Date().toISOString() },
+  // ── 13:00 slot ──────────────────────────────────────────────────────────────
+  { id:'d-017', referenceNumber:'GLD-2026-10057', status:'scheduled',  serviceType:'pickup',  loadType:'fcl', slotDate:_D, slotStartTime:'13:00', slotEndTime:'14:00', driverName:'Omar Farouk',      driverPhone:'0422 890 123', containerNumber:'TGHU5021987',  icsStatus:'cleared',     tenantId:'demo', createdAt: new Date().toISOString() },
+  { id:'d-018', referenceNumber:'GLD-2026-10058', status:'scheduled',  serviceType:'dropoff', loadType:'lcl', slotDate:_D, slotStartTime:'13:00', slotEndTime:'14:00', driverName:'Sophie Leclair',   driverPhone:'0488 456 901', houseBillNumber:'WANHY8831204', icsStatus:'held',       tenantId:'demo', createdAt: new Date().toISOString() },
+  // ── 14:00 slot ──────────────────────────────────────────────────────────────
+  { id:'d-019', referenceNumber:'GLD-2026-10059', status:'scheduled',  serviceType:'pickup',  loadType:'lcl', slotDate:_D, slotStartTime:'14:00', slotEndTime:'15:00', driverName:'Diego Ramirez',    driverPhone:'0411 234 567', houseBillNumber:'FMSASY119032', icsStatus:'cleared',    tenantId:'demo', createdAt: new Date().toISOString() },
+  { id:'d-020', referenceNumber:'GLD-2026-10060', status:'scheduled',  serviceType:'pickup',  loadType:'fcl', slotDate:_D, slotStartTime:'14:00', slotEndTime:'15:00', driverName:'Elena Petrov',     driverPhone:'0433 567 890', containerNumber:'HLXU4398210',  icsStatus:'pending',     tenantId:'demo', createdAt: new Date().toISOString() },
+]
 
 export const receptionRoutes = new Hono()
 
 // ─── Client-side dashboard refresh script ────────────────────────────────────
 // Fetches today's bookings directly from Supabase REST (browser → Supabase),
-// avoiding Vercel serverless entirely. Requires window.__sb injected by ReceptionLayout.
+// avoiding Vercel serverless entirely. Anon key comes from window.__sb.key.
 const RECEPTION_DASH_SCRIPT = `(function(){
+  var SB_URL='https://lnknynjqxyfvtjpnaljc.supabase.co';
   var TENANT='a0000000-0000-0000-0000-000000000001';
   var SL={scheduled:'Scheduled',checked_in:'Checked In',completed:'Completed',cancelled:'Cancelled'};
   var SVC={pickup:'Pick Up',dropoff:'Drop Off'};
@@ -57,7 +92,7 @@ const RECEPTION_DASH_SCRIPT = `(function(){
   function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   function tt(s){return s?String(s).slice(0,5):'';}
   async function fetchBs(){
-    var u=window.__sb.url+'/rest/v1/bookings?select=*&tenant_id=eq.'+TENANT+'&slot_date=eq.'+today()+'&status=neq.cancelled&order=slot_start_time.asc';
+    var u=SB_URL+'/rest/v1/bookings?select=*&tenant_id=eq.'+TENANT+'&slot_date=eq.'+today()+'&status=neq.cancelled&order=slot_start_time.asc';
     try{
       var r=await fetch(u,{headers:{'apikey':window.__sb.key,'Authorization':'Bearer '+window.__sb.key}});
       return r.ok?await r.json():[];
@@ -100,7 +135,7 @@ const RECEPTION_DASH_SCRIPT = `(function(){
       +'</tr>';
   }
   function updateTable(bs){
-    var el=document.getElementById('bookings-table');
+    var el=document.getElementById('bookings-results');
     if(!el)return;
     if(!bs||!bs.length){
       el.innerHTML='<div style="text-align:center;padding:48px 0;color:#A8A29E;"><p style="font-size:13px;">No bookings for today.</p></div>';
@@ -115,7 +150,11 @@ const RECEPTION_DASH_SCRIPT = `(function(){
     if(window.htmx)htmx.process(el);
   }
   async function refresh(){
-    try{var bs=await fetchBs();updateStats(bs);updateTable(bs);}
+    try{
+      var bs=await fetchBs();
+      // Only override server-rendered content when real data is available
+      if(bs&&bs.length>0){updateStats(bs);updateTable(bs);}
+    }
     catch(e){console.error('[dash] refresh',e);}
   }
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',refresh);}else{refresh();}
@@ -128,56 +167,116 @@ const WALK_IN_PURPOSE_LABEL: Record<WalkInPurpose, string> = {
   visit_person:    'Visiting Person',
 }
 
-// ─── Dashboard ──────────────────────────────────────────────────────────────
-// Data is fetched client-side via RECEPTION_DASH_SCRIPT (browser → Supabase REST)
-// so the server-side DB calls are intentionally skipped here.
+// ─── Dashboard ───────────────────────────────────────────────────────────────
 receptionRoutes.get('/', (c) => {
-  const emptyStats = { totalScheduled: 0, checkedIn: 0, completed: 0, held: 0 }
+  const today       = new Date().toISOString().split('T')[0]
+  const currentDate = c.req.query('date') || today
+
+  // Filter dummy bookings by selected date (dummies all live on _D = today)
+  const bookings = DUMMY_BOOKINGS.filter(b => b.slotDate === currentDate)
+
+  const stats = {
+    totalScheduled: bookings.filter(b => b.status === 'scheduled' || b.status === 'checked_in').length,
+    checkedIn:      bookings.filter(b => b.status === 'checked_in').length,
+    completed:      bookings.filter(b => b.status === 'completed').length,
+    held:           bookings.filter(b => b.icsStatus === 'held').length,
+  }
   return c.html(
-    <ReceptionLayout title="Dashboard" activeNav="/reception" walkInCount={0}>
+    <ReceptionLayout title="Dashboard" activeNav="/reception" walkInCount={3}>
       <div id="dashboard-stats">
-        <KpiTiles stats={emptyStats} />
-        <DayChart bookings={[]} />
+        <KpiTiles stats={stats} />
+        <DayChart bookings={bookings} />
       </div>
       <div id="dashboard-table">
-        <BookingTable bookings={[]} />
+        <BookingTable bookings={bookings} currentDate={currentDate} />
       </div>
-      <script dangerouslySetInnerHTML={{ __html: RECEPTION_DASH_SCRIPT }} />
     </ReceptionLayout>
   )
 })
 
-// ─── All Bookings (filterable) ───────────────────────────────────────────────
-receptionRoutes.get('/bookings', async (c) => {
-  const status  = c.req.query('status') as BookingStatus | undefined
-  const service = c.req.query('service') as ServiceType | undefined
-  const date    = c.req.query('date')
-  const search  = c.req.query('search')?.toLowerCase().trim()
-  const isHtmx  = c.req.header('HX-Request') === 'true'
-
+// ─── Shared filter helper (bookings list + CSV export) ───────────────────────
+async function applyBookingFilters(params: {
+  status?: string; service?: string; loadType?: string; date?: string; search?: string
+}) {
+  const { status, service, loadType, date, search } = params
   let bookings = date
     ? await getBookingsByDate(date).catch(() => [])
     : await getBookings().catch(() => [])
 
-  if (status)  bookings = bookings.filter(b => b.status === status)
-  if (service) bookings = bookings.filter(b => b.serviceType === service)
-  if (search)  bookings = bookings.filter(b =>
-    b.referenceNumber.toLowerCase().includes(search) ||
-    b.driverName.toLowerCase().includes(search) ||
-    (b.houseBillNumber  ?? '').toLowerCase().includes(search) ||
-    (b.containerNumber  ?? '').toLowerCase().includes(search) ||
-    (b.driverPhone      ?? '').toLowerCase().includes(search) ||
-    (b.guestName        ?? '').toLowerCase().includes(search)
-  )
+  if (status)   bookings = bookings.filter(b => b.status === status)
+  if (service)  bookings = bookings.filter(b => b.serviceType === service)
+  if (loadType) bookings = bookings.filter(b => b.loadType === loadType)
+  if (search) {
+    const q = search.toLowerCase()
+    bookings = bookings.filter(b =>
+      b.referenceNumber.toLowerCase().includes(q) ||
+      b.driverName.toLowerCase().includes(q) ||
+      (b.houseBillNumber  ?? '').toLowerCase().includes(q) ||
+      (b.containerNumber  ?? '').toLowerCase().includes(q) ||
+      (b.driverPhone      ?? '').toLowerCase().includes(q) ||
+      (b.guestName        ?? '').toLowerCase().includes(q)
+    )
+  }
+  return bookings
+}
+
+// ─── All Bookings (filterable + paginated) ───────────────────────────────────
+receptionRoutes.get('/bookings', async (c) => {
+  const status   = c.req.query('status')
+  const service  = c.req.query('service')
+  const loadType = c.req.query('loadType')
+  const date     = c.req.query('date')
+  const search   = c.req.query('search')?.toLowerCase().trim()
+  const page     = Math.max(1, parseInt(c.req.query('page') || '1', 10))
+  const isHtmx   = c.req.header('HX-Request') === 'true'
+
+  const bookings   = await applyBookingFilters({ status, service, loadType, date, search })
+  const totalCount = bookings.length
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE))
+  const safePage   = Math.min(page, totalPages)
+  const paged      = bookings.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
   if (isHtmx) {
-    return c.html(<BookingTable bookings={bookings} title="All Bookings" showFilters />)
+    return c.html(
+      <BookingTableBody bookings={paged} page={safePage} totalPages={totalPages} totalCount={totalCount} />
+    )
   }
   return c.html(
     <ReceptionLayout title="All Bookings" activeNav="/reception/bookings">
-      <BookingTable bookings={bookings} title="All Bookings" showFilters />
+      <BookingTable bookings={paged} showFilters page={safePage} totalPages={totalPages} totalCount={totalCount} />
     </ReceptionLayout>
   )
+})
+
+// ─── CSV export — must be registered before /bookings/:id ────────────────────
+receptionRoutes.get('/bookings/export', async (c) => {
+  const bookings = await applyBookingFilters({
+    status:   c.req.query('status'),
+    service:  c.req.query('service'),
+    loadType: c.req.query('loadType'),
+    date:     c.req.query('date'),
+    search:   c.req.query('search')?.toLowerCase().trim(),
+  })
+
+  const esc = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`
+
+  const rows = [
+    ['Reference','Driver','Phone','Date','Start','End','Service','Load','HBL','Container','ICS Status','Status','Checked In'],
+    ...bookings.map(b => [
+      b.referenceNumber, b.driverName, b.driverPhone || '',
+      b.slotDate, b.slotStartTime, b.slotEndTime,
+      b.serviceType, b.loadType,
+      b.houseBillNumber || '', b.containerNumber || '',
+      b.icsStatus || '', b.status,
+      b.checkedInAt ? new Date(b.checkedInAt).toLocaleString('en-AU') : '',
+    ]),
+  ].map(row => row.map(esc).join(',')).join('\r\n')
+
+  const filename = `bookings-${new Date().toISOString().split('T')[0]}.csv`
+  return c.body('﻿' + rows, 200, {   // BOM for Excel UTF-8 compat
+    'Content-Type': 'text/csv; charset=utf-8',
+    'Content-Disposition': `attachment; filename="${filename}"`,
+  })
 })
 
 // ─── Booking detail (slide-over fragment) ───────────────────────────────────
@@ -192,9 +291,7 @@ receptionRoutes.get('/bookings/:id', async (c) => {
   if (isHtmx) return c.html(<BookingSlideOver booking={booking} />)
   return c.html(
     <ReceptionLayout title={booking.referenceNumber} activeNav="/reception/bookings">
-      <div style="max-width:672px; margin:0 auto; background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border-radius:12px; border:1px solid rgba(255,255,255,0.07);">
-        <BookingSlideOver booking={booking} />
-      </div>
+      <BookingDetailPage booking={booking} />
     </ReceptionLayout>
   )
 })
@@ -203,9 +300,10 @@ receptionRoutes.get('/bookings/:id', async (c) => {
 receptionRoutes.post('/bookings/:id/check-in', async (c) => {
   const booking = await checkInBooking(c.req.param('id'))
   if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
+  const isPage = c.req.header('HX-Target') === 'booking-detail-page'
   return c.html(
     <div data-toast={`✓ ${booking.driverName} checked in`} data-toast-type="success">
-      <BookingSlideOver booking={booking} />
+      {isPage ? <BookingDetailPage booking={booking} /> : <BookingSlideOver booking={booking} />}
     </div>
   )
 })
@@ -217,7 +315,6 @@ receptionRoutes.post('/bookings/:id/complete', async (c) => {
   const booking = await completeBooking(c.req.param('id'), notes)
   if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
 
-  // Non-blocking completion email to guest if email on record
   const guestEmail = typeof body.guestEmail === 'string' ? body.guestEmail.trim() : undefined
   if (guestEmail) {
     getTenant(DEFAULT_TENANT_ID)
@@ -225,9 +322,10 @@ receptionRoutes.post('/bookings/:id/complete', async (c) => {
       .catch(err => console.error('[email] completion failed:', err))
   }
 
+  const isPage = c.req.header('HX-Target') === 'booking-detail-page'
   return c.html(
     <div data-toast={`✓ ${booking.driverName}'s visit completed`} data-toast-type="success">
-      <BookingSlideOver booking={booking} />
+      {isPage ? <BookingDetailPage booking={booking} /> : <BookingSlideOver booking={booking} />}
     </div>
   )
 })
@@ -236,9 +334,10 @@ receptionRoutes.post('/bookings/:id/complete', async (c) => {
 receptionRoutes.post('/bookings/:id/cancel', async (c) => {
   const booking = await cancelBooking(c.req.param('id'))
   if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
+  const isPage = c.req.header('HX-Target') === 'booking-detail-page'
   return c.html(
     <div data-toast={`Booking ${booking.referenceNumber} cancelled`} data-toast-type="info">
-      <BookingSlideOver booking={booking} />
+      {isPage ? <BookingDetailPage booking={booking} /> : <BookingSlideOver booking={booking} />}
     </div>
   )
 })
@@ -251,7 +350,6 @@ receptionRoutes.post('/bookings/:id/reschedule', async (c) => {
   if (!newDate || !newStart) {
     return c.html(<div style="padding:16px; color:#EF4444;">Date and time are required</div>)
   }
-  // Compute end time from slot duration (default 60 min)
   const tenant = await getTenant(DEFAULT_TENANT_ID).catch(() => null)
   const dur = tenant?.slot_duration_min ?? 60
   const [h, m] = newStart.split(':').map(Number)
@@ -259,9 +357,10 @@ receptionRoutes.post('/bookings/:id/reschedule', async (c) => {
   const newEnd = `${String(Math.floor(endMin / 60)).padStart(2, '0')}:${String(endMin % 60).padStart(2, '0')}`
   const booking = await rescheduleBooking(c.req.param('id'), newDate, newStart, newEnd)
   if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
+  const isPage = c.req.header('HX-Target') === 'booking-detail-page'
   return c.html(
     <div data-toast={`Rescheduled to ${newDate} at ${newStart}`} data-toast-type="success">
-      <BookingSlideOver booking={booking} />
+      {isPage ? <BookingDetailPage booking={booking} /> : <BookingSlideOver booking={booking} />}
     </div>
   )
 })
@@ -270,9 +369,10 @@ receptionRoutes.post('/bookings/:id/reschedule', async (c) => {
 receptionRoutes.post('/bookings/:id/refresh-ics', async (c) => {
   const booking = await refreshIcsStatus(c.req.param('id'))
   if (!booking) return c.html(<div style="padding:16px; color:#EF4444;">Not found</div>)
+  const isPage = c.req.header('HX-Target') === 'booking-detail-page'
   return c.html(
     <div data-toast="ICS status refreshed" data-toast-type="info">
-      <BookingSlideOver booking={booking} />
+      {isPage ? <BookingDetailPage booking={booking} /> : <BookingSlideOver booking={booking} />}
     </div>
   )
 })
@@ -295,60 +395,59 @@ receptionRoutes.get('/walk-ins', async (c) => {
   const walkIns = await getActiveWalkIns(DEFAULT_TENANT_ID).catch(() => [])
   return c.html(
     <ReceptionLayout title="Walk-Ins" activeNav="/reception/walk-ins">
-      <div style="background:linear-gradient(180deg,#1F2831 0%,#1A2028 100%); border-radius:12px; border:1px solid rgba(255,255,255,0.07); overflow:hidden; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 16px rgba(0,0,0,0.40);">
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.07);">
-          <h2 style="font-weight:600; color:#F1F5F9; font-size:14px;">Walk-In Visitors</h2>
-          <span style="font-size:11px; color:#64748B; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); padding:2px 10px; border-radius:9999px; font-weight:500;">
+      <div style="background:#FFFFFF; border-radius:12px; border:1px solid rgba(0,0,0,0.07); overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07);">
+        <div style="display:flex; align-items:center; justify-content:flex-end; padding:10px 16px; border-bottom:1px solid rgba(0,0,0,0.07); background:rgba(0,0,0,0.01);">
+          <span style="font-size:11px; color:#78716C; background:#EBEBEA; border:1px solid rgba(0,0,0,0.09); padding:2px 10px; border-radius:9999px; font-weight:600;">
             {walkIns.length} active
           </span>
         </div>
         <div style="overflow-x:auto;">
           <table style="width:100%; font-size:12px; border-collapse:collapse;">
             <thead>
-              <tr style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.07);">
-                <th style="text-align:left; padding:10px 20px; color:#64748B; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Name</th>
-                <th style="text-align:left; padding:10px 16px; color:#64748B; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Phone</th>
-                <th style="text-align:left; padding:10px 16px; color:#64748B; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Purpose</th>
-                <th style="text-align:left; padding:10px 16px; color:#64748B; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Arrived</th>
-                <th style="text-align:left; padding:10px 16px; color:#64748B; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;">Licence</th>
+              <tr style="background:#F7F6F5; border-bottom:1px solid rgba(0,0,0,0.07);">
+                <th style="text-align:left; padding:10px 20px; color:#78716C; font-weight:700; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">Name</th>
+                <th style="text-align:left; padding:10px 16px; color:#78716C; font-weight:700; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">Phone</th>
+                <th style="text-align:left; padding:10px 16px; color:#78716C; font-weight:700; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">Purpose</th>
+                <th style="text-align:left; padding:10px 16px; color:#78716C; font-weight:700; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">Arrived</th>
+                <th style="text-align:left; padding:10px 16px; color:#78716C; font-weight:700; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">Licence</th>
                 <th style="padding:10px 16px;"></th>
               </tr>
             </thead>
             <tbody>
               {walkIns.map((w) => (
-                <tr key={w.id} style="border-bottom:1px solid rgba(255,255,255,0.05);" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
-                  <td style="padding:12px 20px;">
-                    <p style="font-weight:600; color:#F1F5F9;">{w.visitorName}</p>
+                <tr key={w.id} style="border-bottom:1px solid rgba(0,0,0,0.06); transition:background 0.12s ease;" onmouseover="this.style.background='rgba(252,101,20,0.03)'" onmouseout="this.style.background='transparent'">
+                  <td style="padding:13px 20px;">
+                    <p style="font-size:13px; font-weight:600; color:#1C1917;">{w.visitorName}</p>
                     {w.personBeingVisited && (
-                      <p style="font-size:11px; color:#64748B; margin-top:2px;">→ {w.personBeingVisited}</p>
+                      <p style="font-size:11px; color:#A8A29E; margin-top:2px;">→ {w.personBeingVisited}</p>
                     )}
                   </td>
-                  <td style="padding:12px 16px; color:#94A3B8; font-size:11px;">{w.contactNumber || '—'}</td>
-                  <td style="padding:12px 16px;">
-                    <span style="display:inline-flex; align-items:center; font-size:11px; font-weight:500; padding:2px 8px; border-radius:9999px; background:rgba(252,101,20,0.10); color:rgba(252,101,20,0.85); border:1px solid rgba(252,101,20,0.22);">
+                  <td style="padding:13px 16px; color:#78716C; font-size:12px;">{w.contactNumber || '—'}</td>
+                  <td style="padding:13px 16px;">
+                    <span style="display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:3px 9px; border-radius:9999px; background:rgba(252,101,20,0.08); color:#FC6514; border:1px solid rgba(252,101,20,0.22);">
                       {WALK_IN_PURPOSE_LABEL[w.purpose]}
                     </span>
                   </td>
-                  <td style="padding:12px 16px; font-size:11px; color:#94A3B8;">
+                  <td style="padding:13px 16px; font-size:12px; color:#78716C;">
                     {new Date(w.arrivedAt).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })}
                   </td>
-                  <td style="padding:12px 16px;">
+                  <td style="padding:13px 16px;">
                     {w.licenceCaptured ? (
-                      <span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:500; color:#22C55E;">
-                        <Icon name={ICONS.check} size={12} style="color:#22C55E;" />
+                      <span style="display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600; color:#22C55E;">
+                        <Icon name={ICONS.check} size={12} />
                         Captured
                       </span>
                     ) : (
-                      <span style="font-size:11px; color:#64748B;">Not captured</span>
+                      <span style="font-size:12px; color:#A8A29E;">Not captured</span>
                     )}
                   </td>
-                  <td style="padding:12px 16px;">
+                  <td style="padding:13px 16px;">
                     <form method="post" action={`/reception/walk-ins/${w.id}/dismiss`} style="display:inline;">
                       <button
                         type="submit"
-                        style="font-size:11px; color:#64748B; background:none; border:none; cursor:pointer; transition:color 0.15s ease;"
-                        onmouseover="this.style.color='#94A3B8'"
-                        onmouseout="this.style.color='#64748B'"
+                        style="font-size:12px; font-weight:500; color:#A8A29E; background:none; border:none; cursor:pointer; transition:color 0.15s ease; padding:0;"
+                        onmouseover="this.style.color='#EF4444'"
+                        onmouseout="this.style.color='#A8A29E'"
                       >
                         Dismiss
                       </button>
@@ -358,7 +457,7 @@ receptionRoutes.get('/walk-ins', async (c) => {
               ))}
               {walkIns.length === 0 && (
                 <tr>
-                  <td colspan={6} style="padding:32px 20px; text-align:center; font-size:12px; color:#64748B;">
+                  <td colspan={6} style="padding:40px 20px; text-align:center; font-size:13px; color:#A8A29E;">
                     No active walk-ins
                   </td>
                 </tr>

@@ -40,7 +40,7 @@ export const Step6ContactVehicle = () => (
             <Icon name={ICONS.check} size={12} />
           </span>
           <span>Import Permit</span>
-          <span style="font-size:11px; color:#78716C; font-weight:600;">If applicable</span>
+          <span style="font-size:11px; color:#2563EB; font-weight:600;">If applicable</span>
         </li>
       </ul>
     </div>
@@ -73,7 +73,7 @@ export const Step6ContactVehicle = () => (
 
     {/* File list */}
     <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px;" x-show="documents.length > 0">
-      <p style="font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase;">Uploaded files</p>
+      <p style="font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:4px;">Uploaded files</p>
       <template x-for="(doc, i) in documents" {...{"x-key": "i"}}>
         <div style="display:flex; align-items:center; justify-content:space-between; background:#f9fafb; border:1px solid #e5e7eb; border-radius:10px; padding:10px 14px;">
           <div style="display:flex; align-items:center; gap:10px; min-width:0;">
@@ -86,9 +86,9 @@ export const Step6ContactVehicle = () => (
           <button
             type="button"
             x-on:click="removeFile(i)"
-            style="margin-left:12px; flex-shrink:0; color:#78716C; background:transparent; border:none; cursor:pointer; padding:4px; border-radius:4px; transition:color 0.12s ease;"
-            onmouseover="this.style.color='#EF4444';"
-            onmouseout="this.style.color='#78716C';"
+            style="margin-left:12px; flex-shrink:0; color:#EF4444; background:transparent; border:none; cursor:pointer; padding:4px; border-radius:4px; transition:color 0.12s ease;"
+            onmouseover="this.style.color='#DC2626';"
+            onmouseout="this.style.color='#EF4444';"
           >
             <Icon name={ICONS.trash} size={16} />
           </button>
@@ -99,16 +99,16 @@ export const Step6ContactVehicle = () => (
     {/* Pick-up note */}
     {/* Pick-up note */}
     <div x-show="$store.wizard.serviceType === 'pickup'" x-cloak style="margin-top:16px;">
-      <div style="background:rgba(252,101,20,0.08); border:1px solid rgba(252,101,20,0.28); border-radius:8px; padding:12px 16px; font-size:12px; color:#9A3412; display:flex; align-items:flex-start; gap:10px; line-height:1.6;">
-        <Icon name={ICONS.info} size={14} style="color:#EA580C; flex-shrink:0; margin-top:1px;" />
+      <div style="background:rgba(252,101,20,0.08); border:1px solid rgba(252,101,20,0.28); border-radius:8px; padding:12px 16px; font-size:12px; color:#9A3412; display:flex; align-items:center; gap:10px; line-height:1.5;">
+        <Icon name={ICONS.info} size={14} style="color:#EA580C; flex-shrink:0;" />
         <span>For pick-ups, a Delivery Order is required. You cannot proceed to payment without uploading one.</span>
       </div>
     </div>
 
     {/* Drop-off note */}
     <div x-show="$store.wizard.serviceType === 'dropoff'" x-cloak style="margin-top:16px;">
-      <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:12px 16px; font-size:12px; color:#78716C; display:flex; align-items:flex-start; gap:10px; line-height:1.6;">
-        <Icon name={ICONS.info} size={14} style="color:#78716C; flex-shrink:0; margin-top:1px;" />
+      <div style="background:rgba(0,0,0,0.025); border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:12px 16px; font-size:12px; color:#78716C; display:flex; align-items:center; gap:10px; line-height:1.5;">
+        <Icon name={ICONS.info} size={14} style="color:#78716C; flex-shrink:0;" />
         <span>For drop-offs, a Delivery Order may not be required if your consignment has not been issued one yet. Upload what you have.</span>
       </div>
     </div>

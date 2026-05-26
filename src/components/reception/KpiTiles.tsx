@@ -138,7 +138,7 @@ ${EC_THEME}
       {tiles.map((tile) => (
         <div
           key={tile.label}
-          style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:18px; padding:20px 20px 0; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07); transition:transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s ease;"
+          style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:18px; padding:20px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07); transition:transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s ease;"
           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 28px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06)';"
           onmouseout="this.style.transform=''; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07)';"
         >
@@ -164,7 +164,7 @@ ${EC_THEME}
           {/* Sparkline */}
           <div
             id={tile.id}
-            style="width:100%; height:44px; margin:0 -18px; width:calc(100% + 36px);"
+            style="height:44px; margin:0 -20px; width:calc(100% + 40px);"
           ></div>
         </div>
       ))}

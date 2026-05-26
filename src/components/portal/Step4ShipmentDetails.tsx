@@ -27,7 +27,7 @@ export const Step4ShipmentDetails = () => (
     {/* ── Step heading ── */}
     <div style="margin-bottom:28px;">
       <h2 style="font-size:24px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; line-height:1.2; margin-bottom:8px;">Pick Date & Time</h2>
-      <p style="font-size:14px; color:#78716C; line-height:1.5;">Select a date and time slot and please ensure your vehicle arrives within the chosen window to avoid delays.</p>
+      <p style="font-size:14px; color:#4F4F4F; line-height:1.5;">Select a date and time slot and please ensure your vehicle arrives within the chosen window to avoid delays.</p>
     </div>
 
     {/* ── Date strip ── */}
@@ -37,20 +37,21 @@ export const Step4ShipmentDetails = () => (
           key={d.iso}
           type="button"
           x-on:click={`$store.wizard.selectDate('${d.iso}')`}
-          style="flex:1; padding:16px 8px 14px; border-radius:12px; border:1.5px solid #e5e7eb; background:#fff; cursor:pointer; text-align:center; transition:all 0.18s ease;"
+          style="flex:1; padding:16px 8px 14px; border-radius:12px; border:1.5px solid #8B8B8B; background:#fff; cursor:pointer; text-align:center; transition:all 0.18s ease;"
           x-bind:style={`{
             background:   $store.wizard.selectedDate === '${d.iso}' ? 'rgba(252,101,20,0.06)' : '#fff',
-            borderColor:  $store.wizard.selectedDate === '${d.iso}' ? '#FC6514' : '#e5e7eb',
+            borderColor:  $store.wizard.selectedDate === '${d.iso}' ? '#FC6514' : '#8B8B8B',
             boxShadow:    $store.wizard.selectedDate === '${d.iso}' ? '0 0 0 1px #FC6514, 0 4px 14px rgba(252,101,20,0.18)' : 'none'
           }`}
         >
           <p
-            style="font-size:12px; font-weight:500; margin-bottom:8px; transition:all 0.18s ease; color:#9CA3AF;"
-            x-bind:style={`{ color: $store.wizard.selectedDate === '${d.iso}' ? '#FC6514' : '#9CA3AF', fontWeight: $store.wizard.selectedDate === '${d.iso}' ? '700' : '500' }`}
+            style="font-size:12px; font-weight:500; margin-bottom:8px; transition:all 0.18s ease; color:#101010;"
+            x-bind:style={`{ color: $store.wizard.selectedDate === '${d.iso}' ? '#FC6514' : '#101010', fontWeight: $store.wizard.selectedDate === '${d.iso}' ? '700' : '500' }`}
           >{d.dayFull}</p>
           <p
             class="slot-num"
-            style="font-size:26px; font-weight:800; letter-spacing:-0.03em; line-height:1; color:#1C1917;"
+            x-bind:style={`{ color: $store.wizard.selectedDate === '${d.iso}' ? '#101010' : '#101010', fontWeight: $store.wizard.selectedDate === '${d.iso}' ? '800' : '800' }`}
+            style="font-size:26px; font-weight:800; letter-spacing:-0.03em; line-height:1; color:#101010;"
           >{d.num}</p>
           {d.isToday && (
             <div style="width:5px; height:5px; border-radius:9999px; margin:6px auto 0; background:#FC6514;" />
@@ -97,26 +98,30 @@ export const Step4ShipmentDetails = () => (
             type="button"
             x-bind:disabled="slot.busyness === 'full' || slot.busyness === 'closed'"
             x-on:click="slot.busyness !== 'full' && slot.busyness !== 'closed' && $store.wizard.selectSlot(slot.id, slot.startTime + ' – ' + slot.endTime)"
-            style="width:100%; position:relative; display:flex; flex-direction:column; padding:16px; border-radius:12px; border:1.5px solid #e5e7eb; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; box-sizing:border-box;"
-            x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.05)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#e5e7eb', boxShadow: $store.wizard.selectedSlotId === slot.id ? '0 0 0 1px #FC6514, 0 4px 14px rgba(252,101,20,0.18)' : 'none', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer' }"
+            style="width:100%; position:relative; display:flex; flex-direction:column; padding:16px; border-radius:16px; border:1.5px solid #C8C8C8; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; box-sizing:border-box;"
+            x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.05)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#C8C8C8', boxShadow: $store.wizard.selectedSlotId === slot.id ? '0 0 0 1px #FC6514, 0 4px 14px rgba(252,101,20,0.12)' : 'none', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer' }"
           >
-            {/* Radio */}
-            <div
-              style="position:absolute; top:14px; right:14px; width:20px; height:20px; border-radius:9999px; border:1.5px solid #d1d5db; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;"
-              x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : 'transparent', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#d1d5db' }"
-            >
-              <span x-show="$store.wizard.selectedSlotId === slot.id" style="width:7px; height:7px; border-radius:9999px; background:white; display:block;" />
-            </div>
             {/* Time */}
             <p
               class="slot-num"
-              style="font-size:20px; font-weight:700; letter-spacing:-0.02em; line-height:1; margin-bottom:4px; padding-right:28px; transition:color 0.15s ease;"
-              x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : ($store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#1C1917') }"
+              style="font-size:20px; font-weight:700; letter-spacing:-0.02em; line-height:1; margin-bottom:10px; transition:color 0.15s ease;"
+              x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : '#1C1917' }"
               x-text="slot.startTime"
             />
-            <p class="slot-num" style="font-size:12px; color:#9CA3AF; margin-bottom:12px;" x-text="'until ' + slot.endTime" />
-            {/* Spots */}
+            {/* Selected indicator — replaces spots count when active */}
+            <div x-show="$store.wizard.selectedSlotId === slot.id" style="margin-top:auto;">
+              <div style="display:flex; flex-direction:row; align-items:center; gap:6px;">
+                <div style="width:18px; height:18px; border-radius:9999px; background:#FC6514; display:flex; align-items:center; justify-content:center; line-height:0; flex-shrink:0;">
+                  <svg width="9" height="9" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 6L5 9L10 3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <span style="font-size:13px; font-weight:600; color:#FC6514;">Selected</span>
+              </div>
+            </div>
+            {/* Spots — hidden when selected */}
             <p
+              x-show="$store.wizard.selectedSlotId !== slot.id"
               style="font-size:13px; font-weight:500; margin-top:auto;"
               x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : ((slot.capacity - slot.confirmed) === 0 ? '#EF4444' : ((slot.capacity - slot.confirmed) <= 5 ? '#F97316' : '#16A34A')) }"
               x-text="slot.busyness === 'full' ? 'All Spots Booked' : (slot.capacity - slot.confirmed) + ' Spots available'"
@@ -138,26 +143,30 @@ export const Step4ShipmentDetails = () => (
             type="button"
             x-bind:disabled="slot.busyness === 'full' || slot.busyness === 'closed'"
             x-on:click="slot.busyness !== 'full' && slot.busyness !== 'closed' && $store.wizard.selectSlot(slot.id, slot.startTime + ' – ' + slot.endTime)"
-            style="width:100%; position:relative; display:flex; flex-direction:column; padding:16px; border-radius:12px; border:1.5px solid #e5e7eb; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; box-sizing:border-box;"
-            x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.05)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#e5e7eb', boxShadow: $store.wizard.selectedSlotId === slot.id ? '0 0 0 1px #FC6514, 0 4px 14px rgba(252,101,20,0.18)' : 'none', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer' }"
+            style="width:100%; position:relative; display:flex; flex-direction:column; padding:16px; border-radius:16px; border:1.5px solid #C8C8C8; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; box-sizing:border-box;"
+            x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.05)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#C8C8C8', boxShadow: $store.wizard.selectedSlotId === slot.id ? '0 0 0 1px #FC6514, 0 4px 14px rgba(252,101,20,0.12)' : 'none', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer' }"
           >
-            {/* Radio */}
-            <div
-              style="position:absolute; top:14px; right:14px; width:20px; height:20px; border-radius:9999px; border:1.5px solid #d1d5db; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;"
-              x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : 'transparent', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#d1d5db' }"
-            >
-              <span x-show="$store.wizard.selectedSlotId === slot.id" style="width:7px; height:7px; border-radius:9999px; background:white; display:block;" />
-            </div>
             {/* Time */}
             <p
               class="slot-num"
-              style="font-size:20px; font-weight:700; letter-spacing:-0.02em; line-height:1; margin-bottom:4px; padding-right:28px; transition:color 0.15s ease;"
-              x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : ($store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#1C1917') }"
+              style="font-size:20px; font-weight:700; letter-spacing:-0.02em; line-height:1; margin-bottom:10px; transition:color 0.15s ease;"
+              x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : '#1C1917' }"
               x-text="slot.startTime"
             />
-            <p class="slot-num" style="font-size:12px; color:#9CA3AF; margin-bottom:12px;" x-text="'until ' + slot.endTime" />
-            {/* Spots */}
+            {/* Selected indicator — replaces spots count when active */}
+            <div x-show="$store.wizard.selectedSlotId === slot.id" style="margin-top:auto;">
+              <div style="display:flex; flex-direction:row; align-items:center; gap:6px;">
+                <div style="width:18px; height:18px; border-radius:9999px; background:#FC6514; display:flex; align-items:center; justify-content:center; line-height:0; flex-shrink:0;">
+                  <svg width="9" height="9" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 6L5 9L10 3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <span style="font-size:13px; font-weight:600; color:#FC6514;">Selected</span>
+              </div>
+            </div>
+            {/* Spots — hidden when selected */}
             <p
+              x-show="$store.wizard.selectedSlotId !== slot.id"
               style="font-size:13px; font-weight:500; margin-top:auto;"
               x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : ((slot.capacity - slot.confirmed) === 0 ? '#EF4444' : ((slot.capacity - slot.confirmed) <= 5 ? '#F97316' : '#16A34A')) }"
               x-text="slot.busyness === 'full' ? 'All Spots Booked' : (slot.capacity - slot.confirmed) + ' Spots available'"
@@ -179,8 +188,8 @@ export const Step4ShipmentDetails = () => (
             type="button"
             x-bind:disabled="slot.busyness === 'full' || slot.busyness === 'closed'"
             x-on:click="slot.busyness !== 'full' && slot.busyness !== 'closed' && $store.wizard.selectSlot(slot.id, slot.startTime + ' – ' + slot.endTime)"
-            style="width:100%; position:relative; display:flex; flex-direction:column; padding:16px; border-radius:12px; border:1.5px solid #e5e7eb; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; box-sizing:border-box;"
-            x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.05)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#e5e7eb', boxShadow: $store.wizard.selectedSlotId === slot.id ? '0 0 0 1px #FC6514, 0 4px 14px rgba(252,101,20,0.18)' : 'none', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer' }"
+            style="width:100%; position:relative; display:flex; flex-direction:column; padding:16px; border-radius:16px; border:1.5px solid #C8C8C8; text-align:left; transition:all 0.18s ease; background:#fff; cursor:pointer; box-sizing:border-box;"
+            x-bind:style="{ background: $store.wizard.selectedSlotId === slot.id ? 'rgba(252,101,20,0.05)' : '#fff', borderColor: $store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#C8C8C8', boxShadow: $store.wizard.selectedSlotId === slot.id ? '0 0 0 1px #FC6514, 0 4px 14px rgba(252,101,20,0.12)' : 'none', cursor: (slot.busyness === 'full' || slot.busyness === 'closed') ? 'not-allowed' : 'pointer' }"
           >
             <div
               style="position:absolute; top:14px; right:14px; width:20px; height:20px; border-radius:9999px; border:1.5px solid #d1d5db; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease;"
@@ -190,11 +199,10 @@ export const Step4ShipmentDetails = () => (
             </div>
             <p
               class="slot-num"
-              style="font-size:20px; font-weight:700; letter-spacing:-0.02em; line-height:1; margin-bottom:4px; padding-right:28px; transition:color 0.15s ease;"
+              style="font-size:20px; font-weight:700; letter-spacing:-0.02em; line-height:1; margin-bottom:10px; padding-right:28px; transition:color 0.15s ease;"
               x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : ($store.wizard.selectedSlotId === slot.id ? '#FC6514' : '#1C1917') }"
               x-text="slot.startTime"
             />
-            <p class="slot-num" style="font-size:12px; color:#9CA3AF; margin-bottom:12px;" x-text="'until ' + slot.endTime" />
             <p
               style="font-size:13px; font-weight:500; margin-top:auto;"
               x-bind:style="{ color: slot.busyness === 'full' ? '#EF4444' : ((slot.capacity - slot.confirmed) === 0 ? '#EF4444' : ((slot.capacity - slot.confirmed) <= 5 ? '#F97316' : '#16A34A')) }"

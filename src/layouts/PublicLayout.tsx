@@ -6,10 +6,11 @@ interface Props {
   title?: string
   plain?: boolean   /* skip white card — renders children directly on page bg */
   user?: { firstName: string | null; email: string } | null
+  path?: string     /* current pathname for active nav highlight */
   children: any
 }
 
-export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, user, children }) => {
+export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, user, path, children }) => {
   return (
     <html lang="en">
       <head>
@@ -99,23 +100,20 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, user, 
       <body class="min-h-screen font-sans antialiased" style="background:#f6f7f9; color:#1C1917;">
 
         {/* ── Header ────────────────────────────────────────────────────── */}
+        {/*
+        ── OLD HEADER (commented out — revert if needed) ──────────────────────
         <header class="sticky top-0 z-40" style="background:rgba(246,247,249,0.97); backdrop-filter:blur(16px) saturate(180%); -webkit-backdrop-filter:blur(16px) saturate(180%); border-bottom:1px solid rgba(0,0,0,0.07);">
           <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-
-            {/* Logo */}
             <a href="/" class="flex items-center glido-logo-anchor" style="text-decoration:none;">
               <GlidoLogo height={20} onDark={false} />
             </a>
-
             <nav class="hidden sm:flex items-center gap-1">
               {[
                 { href: '/',         label: 'Home',        icon: ICONS.home      },
                 { href: '/book',     label: 'Book a Slot', icon: ICONS.calendar  },
                 { href: '/bookings', label: 'My Bookings', icon: ICONS.bookings  },
               ].map(l => (
-                <a
-                  key={l.href}
-                  href={l.href}
+                <a key={l.href} href={l.href}
                   style="display:inline-flex; align-items:center; gap:5px; padding:7px 12px; border-radius:8px; font-size:13px; font-weight:500; color:#78716C; text-decoration:none; transition:all 0.15s ease;"
                   onmouseover="this.style.color='#1C1917'; this.style.background='rgba(0,0,0,0.05)';"
                   onmouseout="this.style.color='#78716C'; this.style.background='transparent';"
@@ -125,29 +123,83 @@ export const PublicLayout: FC<Props> = ({ title = 'Glido', plain = false, user, 
                 </a>
               ))}
             </nav>
-
             {user ? (
               <div style="display:inline-flex; align-items:center; gap:8px;">
-                <span style="font-size:12px; font-weight:500; color:#78716C;">
-                  {user.firstName ?? user.email}
-                </span>
+                <span style="font-size:12px; font-weight:500; color:#78716C;">{user.firstName ?? user.email}</span>
                 <a href="/logout" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; font-size:12px; font-weight:600; color:#1C1917; background:#F5F4F3; border:1px solid rgba(0,0,0,0.10); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
                   onmouseover="this.style.background='#EBEBEA'; this.style.borderColor='rgba(0,0,0,0.18)';"
-                  onmouseout="this.style.background='#F5F4F3'; this.style.borderColor='rgba(0,0,0,0.10)';"
-                >
-                  <Icon name={ICONS.logout} size={13} style="opacity:0.6;" />
-                  Log out
+                  onmouseout="this.style.background='#F5F4F3'; this.style.borderColor='rgba(0,0,0,0.10)';">
+                  <Icon name={ICONS.logout} size={13} style="opacity:0.6;" /> Log out
                 </a>
               </div>
             ) : (
               <a href="/login" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; font-size:12px; font-weight:600; color:#1C1917; background:#F5F4F3; border:1px solid rgba(0,0,0,0.10); border-radius:9999px; text-decoration:none; transition:all 0.15s ease;"
                 onmouseover="this.style.background='#EBEBEA'; this.style.borderColor='rgba(0,0,0,0.18)';"
-                onmouseout="this.style.background='#F5F4F3'; this.style.borderColor='rgba(0,0,0,0.10)';"
-              >
-                <Icon name={ICONS.users} size={13} style="opacity:0.6;" />
-                Login
+                onmouseout="this.style.background='#F5F4F3'; this.style.borderColor='rgba(0,0,0,0.10)';">
+                <Icon name={ICONS.users} size={13} style="opacity:0.6;" /> Login
               </a>
             )}
+          </div>
+        </header>
+        ── END OLD HEADER ──────────────────────────────────────────────────── */}
+
+        {/* ── NEW HEADER ─────────────────────────────────────────────────── */}
+        <header style="position:sticky; top:0; z-index:40; background:#FFFFFF; border-bottom:1px solid rgba(0,0,0,0.07);">
+          <div style="max-width:1280px; margin:0 auto; padding:0 40px; height:72px; display:flex; align-items:center; justify-content:space-between;">
+
+            {/* Logo */}
+            <a href="/" style="text-decoration:none; display:inline-flex; align-items:center; flex-shrink:0;">
+              <GlidoLogo height={24} onDark={false} />
+            </a>
+
+            {/* Nav — no icons, generous gap */}
+            <nav style="display:flex; align-items:center; gap:48px;">
+              {([
+                { href: '/',         label: 'Home'        },
+                { href: '/book',     label: 'Book a Slot' },
+                { href: '/bookings', label: 'My Bookings' },
+              ] as { href: string; label: string }[]).map(l => {
+                const active = path === l.href
+                return (
+                  <a
+                    key={l.href}
+                    href={l.href}
+                    style={`font-size:15px; font-weight:${active ? '600' : '400'}; color:${active ? '#FC6514' : '#1C1917'}; text-decoration:none; transition:color 0.15s ease;`}
+                    onmouseover={!active ? "this.style.color='#FC6514';" : undefined}
+                    onmouseout={!active  ? "this.style.color='#1C1917';" : undefined}
+                  >
+                    {l.label}
+                  </a>
+                )
+              })}
+            </nav>
+
+            {/* Right CTA */}
+            {user ? (
+              <div style="display:inline-flex; align-items:center; gap:12px; flex-shrink:0;">
+                <span style="font-size:13px; font-weight:500; color:#78716C;">
+                  {user.firstName ?? user.email}
+                </span>
+                <a
+                  href="/logout"
+                  style="display:inline-flex; align-items:center; gap:6px; padding:10px 22px; font-size:14px; font-weight:600; color:#FFFFFF; background:#FC6514; border-radius:9999px; text-decoration:none; transition:background 0.15s ease;"
+                  onmouseover="this.style.background='#e55a10';"
+                  onmouseout="this.style.background='#FC6514';"
+                >
+                  Log out
+                </a>
+              </div>
+            ) : (
+              <a
+                href="/contact"
+                style="display:inline-flex; align-items:center; padding:10px 28px; font-size:14px; font-weight:600; color:#FFFFFF; background:#FC6514; border-radius:9999px; text-decoration:none; flex-shrink:0; transition:background 0.15s ease; box-shadow:0 2px 8px rgba(252,101,20,0.28);"
+                onmouseover="this.style.background='#e55a10';"
+                onmouseout="this.style.background='#FC6514';"
+              >
+                Contact Us
+              </a>
+            )}
+
           </div>
         </header>
 

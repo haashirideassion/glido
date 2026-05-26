@@ -27,11 +27,11 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
         <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="/public/styles.css" />
         <script dangerouslySetInnerHTML={{ __html: `window.__sb={url:'${process.env.SUPABASE_URL ?? 'https://lnknynjqxyfvtjpnaljc.supabase.co'}',key:'${process.env.SUPABASE_ANON_KEY ?? ''}'};` }} />
         <style>{`
-          * { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+          * { font-family: 'Red Hat Display', ui-sans-serif, system-ui, sans-serif; }
 
           /* ── Sidebar pill ──────────────────────────────────────────── */
           .sidebar-col {
@@ -47,7 +47,6 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
             width: 72px;
             transition: width 0.28s cubic-bezier(0.16,1,0.3,1);
             background: #f9f9f9;
-            overflow: hidden;
           }
           .sidebar-col.is-open {
             width: 200px;
@@ -81,9 +80,12 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
             padding: 0;
             border-radius: 22px;
             text-decoration: none;
-            transition: background 0.15s ease, border-radius 0.28s ease;
+            transition: background 0.15s ease, border-radius 0.28s ease, gap 0.28s cubic-bezier(0.16,1,0.3,1);
             overflow: hidden;
             flex-shrink: 0;
+          }
+          .sidebar-col.is-open .nav-item {
+            gap: 6px;
           }
           .nav-item-icon {
             width: 40px;
@@ -102,11 +104,17 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
             color: rgba(255,255,255,0.55);
             padding-right: 10px;
             flex: 1;
-            display: none;
-            transition: color 0.15s ease;
+            opacity: 0;
+            max-width: 0;
+            overflow: hidden;
+            pointer-events: none;
+            transition: color 0.15s ease, opacity 0.14s ease, max-width 0.28s cubic-bezier(0.16,1,0.3,1);
           }
           .sidebar-col.is-open .nav-item-label {
-            display: block;
+            opacity: 1;
+            max-width: 160px;
+            pointer-events: auto;
+            transition: color 0.15s ease, opacity 0.2s ease 0.14s, max-width 0.28s cubic-bezier(0.16,1,0.3,1);
           }
           .sidebar-col.is-open .nav-item {
             border-radius: 14px;
@@ -167,38 +175,80 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
             box-shadow: 0 6px 24px rgba(252,101,20,0.48), 0 2px 8px rgba(252,101,20,0.24);
           }
           .action-btn-label {
-            display: none;
+            opacity: 0;
+            max-width: 0;
+            overflow: hidden;
+            pointer-events: none;
+            transition: opacity 0.14s ease, max-width 0.28s cubic-bezier(0.16,1,0.3,1);
           }
           .sidebar-col.is-open .action-btn-label {
-            display: block;
+            opacity: 1;
+            max-width: 140px;
+            pointer-events: auto;
+            transition: opacity 0.2s ease 0.14s, max-width 0.28s cubic-bezier(0.16,1,0.3,1);
           }
 
           /* Toggle button — sits inside the pill at the bottom */
-          .nav-toggle {
-            width: 40px;
-            height: 34px;
+          .sidebar-toggle-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            border: 1px solid rgba(0,0,0,0.09);
+            background: #FFFFFF;
+            color: #78716C;
             cursor: pointer;
-            border: none;
-            background: transparent;
-            color: rgba(255,255,255,0.30);
-            transition: background 0.15s ease, color 0.15s ease;
-            margin-top: 2px;
+            flex-shrink: 0;
+            transition: background 0.13s ease, border-color 0.13s ease, color 0.13s ease;
           }
-          .nav-toggle:hover {
-            background: rgba(255,255,255,0.07);
-            color: rgba(255,255,255,0.65);
+          .sidebar-toggle-btn:hover {
+            background: #F3F2F1;
+            border-color: rgba(0,0,0,0.14);
+            color: #1C1917;
           }
-          .sidebar-col.is-open .nav-toggle {
+
+          /* Walk-in badge — animates with sidebar but never stretches */
+          .sidebar-badge {
+            flex-shrink: 0;
+            opacity: 0;
+            max-width: 0;
+            overflow: hidden;
+            pointer-events: none;
+            transition: opacity 0.14s ease, max-width 0.28s cubic-bezier(0.16,1,0.3,1);
+          }
+          .sidebar-col.is-open .sidebar-badge {
+            opacity: 1;
+            max-width: 28px;
+            pointer-events: auto;
+            transition: opacity 0.2s ease 0.14s, max-width 0.28s cubic-bezier(0.16,1,0.3,1);
+          }
+
+          /* Logo anchor — left-align when expanded */
+          .glido-logo-anchor {
+            width: 40px;
+            justify-content: center;
+            transition: width 0.28s cubic-bezier(0.16,1,0.3,1);
+          }
+          .sidebar-col.is-open .glido-logo-anchor {
             width: 100%;
+            justify-content: center;
+          }
+
+          /* Logo SVG — smaller when collapsed, full-size when expanded */
+          .glido-logo-wrap svg {
+            height: 11px !important;
+            width: 57px !important;
+            transition: height 0.28s cubic-bezier(0.16,1,0.3,1), width 0.28s cubic-bezier(0.16,1,0.3,1);
+          }
+          .sidebar-col.is-open .glido-logo-wrap svg {
+            height: 17px !important;
+            width: 88px !important;
           }
 
           /* User footer */
           .sidebar-user {
-            margin-top: auto;
             display: flex;
             align-items: center;
             gap: 0;
@@ -206,19 +256,76 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
             justify-content: center;
             overflow: hidden;
             transition: gap 0.28s ease;
+            border-radius: 12px;
+            padding: 4px;
           }
           .sidebar-col.is-open .sidebar-user {
             gap: 10px;
             justify-content: flex-start;
             padding-left: 4px;
           }
+          .sidebar-user:hover {
+            background: rgba(0,0,0,0.04);
+          }
           .sidebar-user-info {
-            display: none;
             min-width: 0;
+            opacity: 0;
+            max-width: 0;
+            overflow: hidden;
+            pointer-events: none;
+            transition: opacity 0.14s ease, max-width 0.28s cubic-bezier(0.16,1,0.3,1);
           }
           .sidebar-col.is-open .sidebar-user-info {
-            display: block;
+            opacity: 1;
+            max-width: 140px;
+            pointer-events: auto;
+            transition: opacity 0.2s ease 0.14s, max-width 0.28s cubic-bezier(0.16,1,0.3,1);
           }
+
+          /* User menu popover */
+          @keyframes user-menu-in {
+            from { opacity: 0; transform: scale(0.96) translateY(6px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+          }
+          .user-menu-popover {
+            transform-origin: bottom left;
+            animation: user-menu-in 0.16s cubic-bezier(0.16,1,0.3,1) both;
+          }
+          .user-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1C1917;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            transition: background 0.1s ease;
+          }
+          .user-menu-item:hover { background: rgba(0,0,0,0.05); }
+          .user-menu-item.danger { color: #EF4444; }
+          .user-menu-item.danger:hover { background: rgba(239,68,68,0.06); }
+
+          /* ── Custom filter-select dropdown rows ──────────────────────────── */
+          .fsel-opt {
+            display: flex; align-items: center; gap: 9px;
+            width: 100%; padding: 8px 10px;
+            font-size: 13px; font-weight: 400; color: #1C1917;
+            border: none; cursor: pointer; border-radius: 8px;
+            text-align: left; background: transparent;
+            transition: background 0.1s ease;
+            white-space: nowrap;
+            font-family: 'Red Hat Display', ui-sans-serif, sans-serif;
+          }
+          .fsel-opt:hover { background: rgba(0,0,0,0.05); }
+          .fsel-opt.fsel-active { background: rgba(252,101,20,0.07); color: #FC6514; font-weight: 600; }
+          .fsel-opt.fsel-active:hover { background: rgba(252,101,20,0.12); }
         `}</style>
         <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
         <script src="/public/alpine-init.js"></script>
@@ -280,21 +387,23 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
           })();
         `}} />
       </head>
-      <body style="min-height:100vh; background:#f9f9f9; color:#1C1917; font-family:'Inter',ui-sans-serif,system-ui,sans-serif; display:flex; -webkit-font-smoothing:antialiased;">
+      <body style="min-height:100vh; background:#f9f9f9; color:#1C1917; font-family:'Red Hat Display',ui-sans-serif,system-ui,sans-serif; display:flex; -webkit-font-smoothing:antialiased;">
 
         {/* ── Sidebar ──────────────────────────────────────────────────── */}
         <aside
           class="sidebar-col"
           id="sidebar-col"
-          style="border-right:1px solid rgba(0,0,0,0.07);"
+          style="/* border-right:1px solid rgba(0,0,0,0.07); */"
         >
           {/* ── Logo mark ── */}
           <a
             href="/"
             class="glido-logo-anchor"
-            style="display:flex; align-items:center; justify-content:center; width:40px; height:40px; flex-shrink:0; text-decoration:none; margin-bottom:4px;"
+            style="display:flex; align-items:center; height:40px; flex-shrink:0; text-decoration:none; margin-bottom:4px;"
           >
-            <GlidoLogo height={11} onDark={false} />
+            <span class="glido-logo-wrap" style="display:inline-flex; align-items:center;">
+              <GlidoLogo height={17} onDark={false} />
+            </span>
           </a>
 
           {/* ── Pill nav ── */}
@@ -325,8 +434,8 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
                   {item.badge && (
                     <span
                       id="walk-in-badge"
-                      style={`flex-shrink:0; margin-right:8px; min-width:18px; height:18px; border-radius:999px; background:#EF4444; color:#fff; font-size:10px; font-weight:700; display:${walkInCount && walkInCount > 0 ? 'flex' : 'none'}; align-items:center; justify-content:center; padding:0 4px;`}
-                      class="nav-item-label"
+                      style={`margin-right:8px; width:20px; height:20px; border-radius:50%; background:#EF4444; color:#fff; font-size:10px; font-weight:700; display:${walkInCount && walkInCount > 0 ? 'flex' : 'none'}; align-items:center; justify-content:center;`}
+                      class="sidebar-badge"
                     >
                       {walkInCount ?? 0}
                     </span>
@@ -335,19 +444,6 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
               )
             })}
 
-            {/* ── Toggle collapse ── */}
-            <button
-              class="nav-toggle"
-              type="button"
-              onclick="document.getElementById('sidebar-col').classList.toggle('is-open'); this.querySelector('span').style.transform = document.getElementById('sidebar-col').classList.contains('is-open') ? 'rotate(180deg)' : 'rotate(0deg)';"
-              title="Toggle sidebar"
-            >
-              <span style="display:inline-flex; transition:transform 0.28s ease;">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-            </button>
           </nav>
 
           {/* ── Action button ── */}
@@ -360,29 +456,133 @@ export const ReceptionLayout: FC<Props> = ({ title = 'Reception', activeNav = '/
           </a>
 
           {/* ── User ── */}
-          <div class="sidebar-user">
+          <div x-data="{ userMenu: false }" style="margin-top:auto; width:100%;">
+
+            {/* Teleport to <body> so the menu escapes the aside's stacking context */}
+            <template x-teleport="body">
+              {/* Backdrop */}
+              <div
+                x-show="userMenu"
+                x-cloak
+                style="position:fixed; inset:0; z-index:9100;"
+                x-on:click="userMenu = false"
+              ></div>
+            </template>
+
+            <template x-teleport="body">
+              {/* Popover */}
+              <div
+                x-show="userMenu"
+                x-cloak
+                class="user-menu-popover"
+                style="position:fixed; bottom:76px; left:12px; z-index:9101; width:232px; background:#FFFFFF; border:1px solid rgba(0,0,0,0.09); border-radius:16px; box-shadow:0 12px 40px rgba(0,0,0,0.15), 0 3px 10px rgba(0,0,0,0.07); overflow:hidden;"
+              >
+                {/* Header */}
+                <div style="display:flex; align-items:center; gap:10px; padding:14px 16px; background:rgba(252,101,20,0.025); border-bottom:1px solid rgba(0,0,0,0.06);">
+                  <div style="width:38px; height:38px; border-radius:9999px; background:rgba(252,101,20,0.12); border:1.5px solid rgba(252,101,20,0.22); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#FC6514; flex-shrink:0;">RA</div>
+                  <div style="min-width:0;">
+                    <p style="font-size:13px; font-weight:600; color:#1C1917; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Reception Agent</p>
+                    <p style="font-size:11px; color:#A8A29E; white-space:nowrap;">Sydney CFS · T1</p>
+                  </div>
+                </div>
+
+                {/* Menu items */}
+                <div style="padding:6px;">
+                  <div class="user-menu-item" style="opacity:0.4; cursor:default; pointer-events:none;">
+                    <Icon name={ICONS.settings} size={15} style="color:#78716C; flex-shrink:0;" />
+                    Settings
+                  </div>
+                  <div class="user-menu-item" style="opacity:0.4; cursor:default; pointer-events:none;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#78716C; flex-shrink:0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    Visitor Portal
+                    <span style="font-size:10px; color:#C7C3BF; margin-left:auto;">↗</span>
+                  </div>
+
+                  <div style="border-top:1px solid rgba(0,0,0,0.06); margin:4px 0;"></div>
+
+                  <a href="/" class="user-menu-item danger">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Sign Out
+                  </a>
+                </div>
+              </div>
+            </template>
+
+            {/* Avatar trigger */}
             <div
-              style="width:32px; height:32px; border-radius:999px; background:rgba(252,101,20,0.12); border:1px solid rgba(252,101,20,0.22); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#FC6514; flex-shrink:0; cursor:pointer;"
-              title="Reception Agent"
+              class="sidebar-user"
+              x-on:click="userMenu = !userMenu"
+              style="cursor:pointer;"
+              title="Account menu"
             >
-              RA
-            </div>
-            <div class="sidebar-user-info">
-              <p style="font-size:12px; font-weight:600; color:#1C1917; white-space:nowrap;">Reception Agent</p>
-              <p style="font-size:11px; color:#A8A29E; white-space:nowrap;">Sydney CFS · T1</p>
+              <div style="width:32px; height:32px; border-radius:999px; background:rgba(252,101,20,0.12); border:1px solid rgba(252,101,20,0.22); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#FC6514; flex-shrink:0;">
+                RA
+              </div>
+              <div class="sidebar-user-info">
+                <p style="font-size:12px; font-weight:600; color:#1C1917; white-space:nowrap;">Reception Agent</p>
+                <p style="font-size:11px; color:#A8A29E; white-space:nowrap;">Sydney CFS · T1</p>
+              </div>
             </div>
           </div>
         </aside>
+        {/* Restore sidebar open/close state across navigations */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function(){
+            if(localStorage.getItem('glido-sidebar')==='1'){
+              var sb=document.getElementById('sidebar-col');
+              if(sb) sb.classList.add('is-open');
+              var h=document.getElementById('sidebar-icon-hamburger');
+              var c=document.getElementById('sidebar-icon-chevron');
+              if(h) h.style.display='none';
+              if(c) c.style.display='inline-flex';
+            }
+          })();
+        `}} />
 
         {/* ── Main area ─────────────────────────────────────────────────── */}
         <div class="flex-1 flex flex-col min-w-0" style="background:#f9f9f9;">
           {/* Top header */}
           <header
-            class="h-14 flex items-center justify-between px-5 shrink-0"
-            style="background:#f9f9f9; border-bottom:1px solid rgba(0,0,0,0.07);"
+            class="flex items-center justify-between px-5 shrink-0"
+            style="height:73px; background:#f9f9f9; /* border-bottom:1px solid rgba(0,0,0,0.07); */"
           >
-            <h1 class="text-sm font-semibold" style="color:#1C1917; letter-spacing:-0.01em;">{title}</h1>
-            <a href="/" class="transition-colors text-xs font-medium" style="color:#FC6514; text-decoration:none;">Visitor Portal ↗</a>
+            <div style="display:flex; align-items:center; gap:14px;">
+              <button
+                id="sidebar-toggle-btn"
+                type="button"
+                class="sidebar-toggle-btn"
+                onclick="var sb=document.getElementById('sidebar-col');sb.classList.toggle('is-open');var open=sb.classList.contains('is-open');document.getElementById('sidebar-icon-hamburger').style.display=open?'none':'inline-flex';document.getElementById('sidebar-icon-chevron').style.display=open?'inline-flex':'none';localStorage.setItem('glido-sidebar',open?'1':'0');"
+                title="Toggle sidebar"
+              >
+                {/* Hamburger — shown when collapsed */}
+                <span id="sidebar-icon-hamburger" style="display:inline-flex;">
+                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                    <path d="M2 4h11M2 7.5h11M2 11h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </span>
+                {/* Chevron-left — shown when expanded */}
+                <span id="sidebar-icon-chevron" style="display:none;">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </button>
+              <h1 class="text-2xl font-semibold" style="color:#1C1917; letter-spacing:-0.02em;">{title}</h1>
+            </div>
+            <a
+              href="/book"
+              target="_blank"
+              style="display:inline-flex; align-items:center; gap:6px; padding:7px 14px 7px 12px; font-size:12px; font-weight:600; color:#FC6514; background:rgba(252,101,20,0.07); border:1px solid rgba(252,101,20,0.22); border-radius:9999px; text-decoration:none; letter-spacing:-0.01em; transition:background 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease; box-shadow:0 1px 3px rgba(252,101,20,0.08);"
+              onmouseover="this.style.background='rgba(252,101,20,0.13)'; this.style.borderColor='rgba(252,101,20,0.38)'; this.style.boxShadow='0 2px 8px rgba(252,101,20,0.18)';"
+              onmouseout="this.style.background='rgba(252,101,20,0.07)'; this.style.borderColor='rgba(252,101,20,0.22)'; this.style.boxShadow='0 1px 3px rgba(252,101,20,0.08)';"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/>
+                <line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+              Visitor Portal
+            </a>
           </header>
 
           {/* White content card */}

@@ -11,17 +11,18 @@ interface Props {
 type StatusVariant = 'warning' | 'default' | 'success' | 'secondary' | 'outline' | 'destructive'
 
 const SECTION_LABEL = "font-size:10px; font-weight:700; color:#A8A29E; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px;"
-const PANEL_STYLE  = "background:rgba(0,0,0,0.02); border:1px solid rgba(0,0,0,0.07); border-radius:10px; padding:14px 16px;"
+const PANEL_STYLE  = "background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:10px; padding:14px 16px; box-shadow:0 1px 3px rgba(0,0,0,0.04);"
 const ROW_LABEL    = "display:flex; align-items:center; gap:6px; font-size:12px; color:#78716C;"
 const ROW_VALUE    = "font-size:12px; font-weight:600; color:#1C1917;"
 
 export const BookingSlideOver = ({ booking: b }: Props) => (
   <div style="display:flex; flex-direction:column; height:100%;" x-data="{ confirmModal: false, cancelModal: false, rescheduleModal: false, completionNotes: '', guestEmail: '', newDate: '', newStart: '' }">
-    {/* Header */}
-    <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(0,0,0,0.07); background:#FFFFFF; flex-shrink:0;">
-      <div>
+    {/* Header — sticky so it stays visible while the panel body scrolls */}
+    <div style="position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:10px 14px 10px 20px; border-bottom:1px solid rgba(0,0,0,0.07); background:#FFFFFF; flex-shrink:0; gap:12px;">
+      {/* Reference + badge inline */}
+      <div style="display:flex; align-items:center; gap:10px; min-width:0;">
         <p
-          style="font-family:ui-monospace,monospace; font-size:13px; font-weight:700; color:#FC6514; margin-bottom:4px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;"
+          style="font-family:ui-monospace,monospace; font-size:13px; font-weight:700; color:#FC6514; cursor:pointer; display:flex; align-items:center; gap:5px; white-space:nowrap; flex-shrink:0;"
           title="Click to copy reference"
           onclick={`navigator.clipboard.writeText('${b.referenceNumber}').then(function(){window.gToast&&window.gToast('Reference copied','info');});`}
         >{b.referenceNumber} <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.45;"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></p>
@@ -35,12 +36,12 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
         size="icon"
         onclick="document.getElementById('slide-over-backdrop').classList.add('hidden'); document.getElementById('slide-over').classList.add('translate-x-full')"
       >
-        <Icon name={ICONS.close} size={22} />
+        <Icon name={ICONS.close} size={20} />
       </Button>
     </div>
 
     {/* Body */}
-    <div style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:20px; background:#EBEBEA;">
+    <div style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:20px; background:#F5F4F3;">
 
       {/* Driver / Visitor */}
       <section>
@@ -94,7 +95,7 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
       {/* Shipment */}
       <section>
         <p style={SECTION_LABEL}>Shipment</p>
-        <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style={PANEL_STYLE + " display:flex; flex-direction:column; gap:8px;"}>
           {b.houseBillNumber && (
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <span style={ROW_LABEL}><Icon name={ICONS.document} size={13} style="color:#78716C;" />HBL</span>
@@ -241,7 +242,7 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
       {/* Identity check */}
       <section>
         <p style={SECTION_LABEL}>Identity Check</p>
-        <div style="display:flex; align-items:center; gap:10px;">
+        <div style={PANEL_STYLE + " display:flex; align-items:center; gap:10px;"}>
           <span style="display:inline-flex; align-items:center; gap:5px; border:1px solid rgba(34,197,94,0.22); font-size:11px; font-weight:600; padding:4px 10px; border-radius:9999px; background:rgba(34,197,94,0.10); color:#22C55E;">
             <Icon name={ICONS.check} size={11} />
             Name Matched
@@ -253,7 +254,7 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
       {/* Timeline */}
       <section>
         <p style={SECTION_LABEL}>Timeline</p>
-        <div style="display:flex; flex-direction:column; gap:8px; font-size:12px;">
+        <div style={PANEL_STYLE + " display:flex; flex-direction:column; gap:8px; font-size:12px;"}>
           <div style="display:flex; justify-content:space-between;">
             <span style={ROW_LABEL}><Icon name={ICONS.document} size={13} style="color:#78716C;" />Booking Created</span>
             <span style="font-size:11px; font-weight:500; color:#78716C;">{new Date(b.createdAt).toLocaleString('en-AU')}</span>
@@ -285,12 +286,13 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
       {b.status === 'scheduled' && (
         <button
           type="button"
-          style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; font-weight:600; padding:12px 20px; border-radius:10px; border:none; cursor:pointer; background:linear-gradient(180deg,#4ADE80 0%,#16A34A 100%); color:white; box-shadow:0 4px 14px rgba(34,197,94,0.30), inset 0 1px 0 rgba(255,255,255,0.22);"
+          class="btn-success"
+          style="width:100%; justify-content:center;"
           hx-post={`/reception/bookings/${b.id}/check-in`}
           hx-target="#slide-over-content"
           hx-swap="innerHTML"
         >
-          <Icon name={ICONS.userCheck} size={18} />
+          <Icon name={ICONS.userCheck} size={16} />
           Check In Visitor
         </button>
       )}
@@ -310,201 +312,135 @@ export const BookingSlideOver = ({ booking: b }: Props) => (
       {b.status === 'scheduled' && (
         <button
           type="button"
-          style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; font-weight:500; padding:10px 20px; border-radius:10px; border:1px solid rgba(252,101,20,0.25); cursor:pointer; background:rgba(252,101,20,0.06); color:#EA580C;"
+          class="btn-primary-white"
+          style="width:100%; justify-content:center;"
           x-on:click="rescheduleModal = true"
-          onmouseover="this.style.background='rgba(252,101,20,0.12)'"
-          onmouseout="this.style.background='rgba(252,101,20,0.06)'"
         >
-          <Icon name={ICONS.calendar} size={15} style="color:#EA580C;" />
+          <Icon name={ICONS.calendar} size={15} />
           Reschedule
         </button>
       )}
       {(b.status === 'scheduled' || b.status === 'checked_in') && (
         <button
           type="button"
-          style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; font-weight:500; padding:10px 20px; border-radius:10px; border:1px solid rgba(239,68,68,0.25); cursor:pointer; background:rgba(239,68,68,0.06); color:#DC2626;"
+          class="btn-primary-white"
+          style="width:100%; justify-content:center;"
           x-on:click="cancelModal = true"
-          onmouseover="this.style.background='rgba(239,68,68,0.10)'"
-          onmouseout="this.style.background='rgba(239,68,68,0.06)'"
         >
-          <Icon name={ICONS.close} size={15} style="color:#DC2626;" />
+          <Icon name={ICONS.close} size={15} />
           Cancel Booking
         </button>
       )}
     </div>
 
     {/* Reschedule modal */}
-    <div
-      style="position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px);"
-      x-show="rescheduleModal"
-      x-cloak
-    >
-      <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.09); border-radius:16px; box-shadow:0 24px 64px rgba(0,0,0,0.20); max-width:400px; width:100%; padding:24px;">
-        <h3 style="font-size:17px; font-weight:700; color:#1C1917; margin-bottom:6px;">Reschedule Booking</h3>
-        <p style="font-size:13px; color:#78716C; margin-bottom:20px; line-height:1.5;">
-          Change the slot for <strong style="color:#1C1917;">{b.referenceNumber}</strong>. The visitor will need to be notified separately.
-        </p>
-        <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:20px;">
-          <div>
-            <label style="display:block; font-size:11px; font-weight:700; color:#78716C; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">New Date</label>
-            <input
-              type="date"
-              id={`reschedule-date-${b.id}`}
-              name="newDate"
-              x-model="newDate"
-              style="width:100%; padding:10px 14px; font-size:14px; color:#1C1917; background:#EBEBEA; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box;"
-              onfocus="this.style.borderColor='rgba(252,101,20,0.50)'"
-              onblur="this.style.borderColor='rgba(0,0,0,0.10)'"
-            />
+    <template x-teleport="body">
+      <div x-show="rescheduleModal" x-cloak style="position:fixed; inset:0; z-index:9999;">
+        <div style="position:absolute; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(6px);"></div>
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:16px;">
+          <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 24px 64px rgba(0,0,0,0.28); max-width:400px; width:100%; padding:24px; position:relative;">
+            <h3 style="font-size:17px; font-weight:700; color:#1C1917; margin-bottom:6px;">Reschedule Booking</h3>
+            <p style="font-size:13px; color:#78716C; margin-bottom:20px; line-height:1.5;">
+              Change the slot for <strong style="color:#1C1917; font-family:ui-monospace,monospace;">{b.referenceNumber}</strong>. The visitor will need to be notified separately.
+            </p>
+            <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:20px;">
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#78716C; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">New Date</label>
+                <input type="date" id={`reschedule-date-${b.id}`} name="newDate" x-model="newDate" style="width:100%; padding:10px 14px; font-size:14px; color:#1C1917; background:#EBEBEA; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box;" onfocus="this.style.borderColor='rgba(252,101,20,0.50)'" onblur="this.style.borderColor='rgba(0,0,0,0.10)'" />
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#78716C; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">New Start Time</label>
+                <input type="time" id={`reschedule-time-${b.id}`} name="newStart" x-model="newStart" style="width:100%; padding:10px 14px; font-size:14px; color:#1C1917; background:#EBEBEA; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box;" onfocus="this.style.borderColor='rgba(252,101,20,0.50)'" onblur="this.style.borderColor='rgba(0,0,0,0.10)'" />
+              </div>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button type="button" class="btn-ghost" style="flex:1; justify-content:center;" x-on:click="rescheduleModal = false">Cancel</button>
+              <button type="button" class="btn-primary" style="flex:1; justify-content:center; white-space:nowrap;"
+                hx-post={`/reception/bookings/${b.id}/reschedule`}
+                hx-target="#slide-over-content"
+                hx-swap="innerHTML"
+                hx-include={`#reschedule-date-${b.id},#reschedule-time-${b.id}`}
+                x-on:click="rescheduleModal = false"
+              >
+                <Icon name={ICONS.calendar} size={14} />Confirm Reschedule
+              </button>
+            </div>
           </div>
-          <div>
-            <label style="display:block; font-size:11px; font-weight:700; color:#78716C; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">New Start Time</label>
-            <input
-              type="time"
-              id={`reschedule-time-${b.id}`}
-              name="newStart"
-              x-model="newStart"
-              style="width:100%; padding:10px 14px; font-size:14px; color:#1C1917; background:#EBEBEA; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box;"
-              onfocus="this.style.borderColor='rgba(252,101,20,0.50)'"
-              onblur="this.style.borderColor='rgba(0,0,0,0.10)'"
-            />
-          </div>
-        </div>
-        <div style="display:flex; gap:10px;">
-          <button
-            type="button"
-            class="btn-ghost"
-            style="flex:1; padding:10px 16px; font-size:13px; cursor:pointer;"
-            x-on:click="rescheduleModal = false"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            id={`reschedule-btn-${b.id}`}
-            style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 16px; font-size:13px; font-weight:600; border:none; cursor:pointer; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); color:#fff; border-radius:10px; box-shadow:0 4px 14px rgba(252,101,20,0.35);"
-            hx-post={`/reception/bookings/${b.id}/reschedule`}
-            hx-target="#slide-over-content"
-            hx-swap="innerHTML"
-            hx-include={`#reschedule-date-${b.id},#reschedule-time-${b.id}`}
-            x-on:click="rescheduleModal = false"
-          >
-            <Icon name={ICONS.calendar} size={14} />
-            Confirm Reschedule
-          </button>
         </div>
       </div>
-    </div>
+    </template>
 
     {/* Cancel confirmation modal */}
-    <div
-      style="position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px);"
-      x-show="cancelModal"
-      x-cloak
-    >
-      <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.09); border-radius:16px; box-shadow:0 24px 64px rgba(0,0,0,0.20); max-width:380px; width:100%; padding:24px;">
-        <h3 style="font-size:17px; font-weight:700; color:#1C1917; margin-bottom:6px;">Cancel this booking?</h3>
-        <p style="font-size:13px; color:#78716C; margin-bottom:20px; line-height:1.5;">
-          You are cancelling <strong style="color:#1C1917; font-family:ui-monospace,monospace;">{b.referenceNumber}</strong> for <strong style="color:#1C1917;">{b.driverName}</strong>. This cannot be undone.
-        </p>
-        <div style="display:flex; gap:10px;">
-          <button
-            type="button"
-            class="btn-ghost"
-            style="flex:1; padding:10px 16px; font-size:13px; cursor:pointer;"
-            x-on:click="cancelModal = false"
-          >
-            Keep Booking
-          </button>
-          <button
-            type="button"
-            style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 16px; font-size:13px; font-weight:600; border:none; cursor:pointer; background:rgba(239,68,68,0.10); border:1px solid rgba(239,68,68,0.28); border-radius:10px; color:#DC2626;"
-            hx-post={`/reception/bookings/${b.id}/cancel`}
-            hx-target="#slide-over-content"
-            hx-swap="innerHTML"
-            x-on:click="cancelModal = false"
-          >
-            <Icon name={ICONS.close} size={14} style="color:#DC2626;" />
-            Confirm Cancel
-          </button>
+    <template x-teleport="body">
+      <div x-show="cancelModal" x-cloak style="position:fixed; inset:0; z-index:9999;">
+        <div style="position:absolute; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(6px);"></div>
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:16px;">
+          <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 24px 64px rgba(0,0,0,0.28); max-width:380px; width:100%; padding:24px; position:relative;">
+            <h3 style="font-size:17px; font-weight:700; color:#1C1917; margin-bottom:6px;">Cancel this booking?</h3>
+            <p style="font-size:13px; color:#78716C; margin-bottom:20px; line-height:1.5;">
+              You are cancelling <strong style="color:#1C1917; font-family:ui-monospace,monospace;">{b.referenceNumber}</strong> for <strong style="color:#1C1917;">{b.driverName}</strong>. This cannot be undone.
+            </p>
+            <div style="display:flex; gap:10px;">
+              <button type="button" class="btn-primary-white" style="flex:1; justify-content:center;" x-on:click="cancelModal = false">Keep Booking</button>
+              <button type="button" class="btn-danger" style="flex:1; justify-content:center;"
+                hx-post={`/reception/bookings/${b.id}/cancel`}
+                hx-target="#slide-over-content"
+                hx-swap="innerHTML"
+                x-on:click="cancelModal = false"
+              >
+                <Icon name={ICONS.close} size={14} />Confirm Cancel
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </template>
 
     {/* Mark Complete confirmation modal */}
-    <div
-      style="position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px);"
-      x-show="confirmModal"
-      x-cloak
-    >
-      <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.09); border-radius:16px; box-shadow:0 24px 64px rgba(0,0,0,0.20); max-width:420px; width:100%; padding:24px;">
-        <h3 style="font-size:17px; font-weight:700; color:#1C1917; margin-bottom:6px;">Complete this job?</h3>
-        <p style="font-size:13px; color:#78716C; margin-bottom:20px; line-height:1.5;">
-          You are marking <strong style="color:#1C1917;">{b.driverName}</strong>'s visit as complete. This action is final.
-        </p>
-
-        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
-          {['Driver identity verified','Documents checked','Cargo released'].map((item) => (
-            <div key={item} style="display:flex; align-items:center; gap:10px; font-size:13px; color:#1C1917;">
-              <span style="width:20px; height:20px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.22);">
-                <Icon name={ICONS.check} size={11} style="color:#22C55E;" />
-              </span>
-              {item}
+    <template x-teleport="body">
+      <div x-show="confirmModal" x-cloak style="position:fixed; inset:0; z-index:9999;">
+        <div style="position:absolute; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(6px);"></div>
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:16px;">
+          <div style="background:#FFFFFF; border-radius:16px; box-shadow:0 24px 64px rgba(0,0,0,0.28); max-width:420px; width:100%; padding:24px; position:relative;">
+            <h3 style="font-size:17px; font-weight:700; color:#1C1917; margin-bottom:6px;">Complete this job?</h3>
+            <p style="font-size:13px; color:#78716C; margin-bottom:20px; line-height:1.5;">
+              Marking <strong style="color:#1C1917;">{b.driverName}</strong>'s visit as complete. This action is final.
+            </p>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+              {['Driver identity verified','Documents checked','Cargo released'].map((item) => (
+                <div key={item} style="display:flex; align-items:center; gap:10px; font-size:13px; color:#1C1917;">
+                  <span style="width:20px; height:20px; border-radius:9999px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.22);">
+                    <Icon name={ICONS.check} size={11} style="color:#22C55E;" />
+                  </span>
+                  {item}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-
-        <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
-          <div>
-            <label style="display:block; font-size:11px; font-weight:600; color:rgba(0,0,0,0.40); letter-spacing:0.07em; text-transform:uppercase; margin-bottom:6px;">Completion Notes (optional)</label>
-            <textarea
-              id={`complete-notes-${b.id}`}
-              name="completionNotes"
-              rows={2}
-              x-model="completionNotes"
-              placeholder="Any notes for records..."
-              class="wizard-field"
-              style="width:100%; padding:10px 14px; font-size:13px; resize:none; box-sizing:border-box;"
-            ></textarea>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
+              <div>
+                <label style="display:block; font-size:11px; font-weight:600; color:rgba(0,0,0,0.40); letter-spacing:0.07em; text-transform:uppercase; margin-bottom:6px;">Completion Notes (optional)</label>
+                <textarea id={`complete-notes-${b.id}`} name="completionNotes" rows={2} x-model="completionNotes" placeholder="Any notes for records..." class="wizard-field" style="width:100%; padding:10px 14px; font-size:13px; resize:none; box-sizing:border-box;"></textarea>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:600; color:rgba(0,0,0,0.40); letter-spacing:0.07em; text-transform:uppercase; margin-bottom:6px;">Notify Guest by Email (optional)</label>
+                <input id={`complete-email-${b.id}`} name="guestEmail" type="email" x-model="guestEmail" placeholder="guest@example.com" class="wizard-field" style="width:100%; box-sizing:border-box;" />
+              </div>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button type="button" class="btn-danger-outline" style="flex:1; justify-content:center;" x-on:click="confirmModal = false">Cancel</button>
+              <button type="button" class="btn-primary" style="flex:1; justify-content:center;"
+                hx-post={`/reception/bookings/${b.id}/complete`}
+                hx-target="#slide-over-content"
+                hx-swap="innerHTML"
+                hx-include={`#complete-notes-${b.id},#complete-email-${b.id}`}
+                x-on:click="confirmModal = false"
+              >
+                <Icon name={ICONS.check} size={16} />Confirm Complete
+              </button>
+            </div>
           </div>
-          <div>
-            <label style="display:block; font-size:11px; font-weight:600; color:rgba(0,0,0,0.40); letter-spacing:0.07em; text-transform:uppercase; margin-bottom:6px;">Notify Guest by Email (optional)</label>
-            <input
-              id={`complete-email-${b.id}`}
-              name="guestEmail"
-              type="email"
-              x-model="guestEmail"
-              placeholder="guest@example.com"
-              class="wizard-field"
-              style="width:100%; box-sizing:border-box;"
-            />
-          </div>
-        </div>
-
-        <div style="display:flex; gap:10px;">
-          <button
-            type="button"
-            class="btn-ghost"
-            style="flex:1; padding:10px 16px; font-size:13px; cursor:pointer;"
-            x-on:click="confirmModal = false"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn-primary"
-            style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 16px; font-size:13px; font-weight:600; border:none; cursor:pointer;"
-            hx-post={`/reception/bookings/${b.id}/complete`}
-            hx-target="#slide-over-content"
-            hx-swap="innerHTML"
-            hx-include={`#complete-notes-${b.id},#complete-email-${b.id}`}
-            x-on:click="confirmModal = false"
-          >
-            <Icon name={ICONS.check} size={16} />
-            Confirm Complete
-          </button>
         </div>
       </div>
-    </div>
+    </template>
   </div>
 )

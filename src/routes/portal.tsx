@@ -861,7 +861,7 @@ portalRoutes.get('/logout', (c) => {
 // ─── Booking wizard ─────────────────────────────────────────────────────────
 portalRoutes.get('/book', (c) => {
   return c.html(
-    <PublicLayout title="Book a Visit" plain>
+    <PublicLayout title="Book a Visit" plain path="/book">
       <BookingWizard />
     </PublicLayout>
   )
@@ -1028,20 +1028,20 @@ portalRoutes.get('/bookings/:ref', async (c) => {
           </a>
 
           {/* Header card */}
-          <div style="background:#1C1917; border-radius:20px; padding:28px; margin-bottom:16px; position:relative; overflow:hidden;">
-            <div style="position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:9999px; background:rgba(252,101,20,0.10); pointer-events:none;"></div>
-            <div style="position:absolute; bottom:-60px; right:20px; width:120px; height:120px; border-radius:9999px; background:rgba(252,101,20,0.06); pointer-events:none;"></div>
+          <div style="background:#FFFFFF; border:1px solid rgba(0,0,0,0.07); border-radius:20px; padding:28px; margin-bottom:16px; position:relative; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.07);">
+            <div style="position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:9999px; background:rgba(252,101,20,0.06); pointer-events:none;"></div>
+            <div style="position:absolute; bottom:-60px; right:20px; width:120px; height:120px; border-radius:9999px; background:rgba(252,101,20,0.04); pointer-events:none;"></div>
 
             <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;">
               <div>
-                <p style="font-size:11px; font-weight:600; color:rgba(255,255,255,0.40); letter-spacing:0.10em; text-transform:uppercase; margin-bottom:8px;">Booking Reference</p>
+                <p style="font-size:10px; font-weight:700; color:#A8A29E; letter-spacing:0.10em; text-transform:uppercase; margin-bottom:8px;">Booking Reference</p>
                 <p style="font-family:ui-monospace,monospace; font-size:22px; font-weight:800; color:#FC6514; letter-spacing:-0.01em; margin-bottom:12px;">{booking.referenceNumber}</p>
-                <span style={`display:inline-flex; align-items:center; padding:4px 12px; border-radius:9999px; font-size:12px; font-weight:600; background:${statusColor}22; color:${statusColor}; border:1px solid ${statusColor}44;`}>
+                <span style={`display:inline-flex; align-items:center; padding:4px 12px; border-radius:9999px; font-size:12px; font-weight:600; background:${statusColor}18; color:${statusColor}; border:1px solid ${statusColor}38;`}>
                   {booking.status.charAt(0).toUpperCase() + booking.status.slice(1).replace('_', ' ')}
                 </span>
               </div>
               {qrDataUrl && (
-                <div style="background:#fff; border-radius:12px; padding:10px; flex-shrink:0;">
+                <div style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:10px; flex-shrink:0;">
                   <img src={qrDataUrl} alt="QR Code" width="96" height="96" style="display:block;" />
                   <p style="font-size:9px; color:#78716C; text-align:center; margin-top:4px; font-weight:500;">Show at kiosk</p>
                 </div>
