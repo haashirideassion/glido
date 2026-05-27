@@ -116,3 +116,26 @@ export function isReceptionRole(role: string) {
 export function isVisitorRole(role: string) {
   return role === 'visitor_registered' || role === 'visitor'
 }
+
+// ── Send a magic sign-in link (OTP email) — visitor only ─────────────────────
+export async function sendMagicLink(email: string) {
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: { shouldCreateUser: false },
+  })
+  if (error) throw error
+}
+
+// ── Invite a new reception user by email (admin only) ────────────────────────
+export async function inviteReceptionUser(
+  email: string,
+  role: 'reception_staff' | 'reception_admin',
+  appUrl: string,
+) {
+  const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
+    data:       { role },
+    redirectTo: `${appUrl}/reception`,
+  })
+  if (error) throw error
+  return data
+}

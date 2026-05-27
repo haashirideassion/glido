@@ -5,9 +5,12 @@ import { GlidoLogo } from '../lib/GlidoLogo'
 interface Props {
   title?: string
   children: any
+  user?: { firstName: string | null; email: string } | null
+  openSignIn?: boolean
+  signInNext?: string
 }
 
-export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
+export const LandingLayout: FC<Props> = ({ title = 'Home', children, user = null, openSignIn = false, signInNext = '' }) => {
   return (
     <html lang="en">
       <head>
@@ -220,15 +223,36 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
                 ))}
               </nav>
 
-              {/* Login CTA */}
-              <a
-                id="nav-login"
-                href="/login"
-                style="display:inline-flex; align-items:center; gap:6px; padding:9px 20px; font-size:13px; font-weight:600; color:#1C1917; background:linear-gradient(160deg,#F9F8F7 0%,#EEEDEC 100%); border:1px solid rgba(0,0,0,0.10); border-radius:9999px; text-decoration:none; box-shadow:0 1px 3px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.85); flex-shrink:0;"
-              >
-                <Icon name={ICONS.users} size={13} style="opacity:0.55;" />
-                Login
-              </a>
+              {/* Auth CTA — sign in button or user avatar */}
+              {user ? (
+                <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+                  <a href="/my-bookings" style="display:inline-flex; align-items:center; gap:7px; padding:7px 14px; font-size:13px; font-weight:500; color:#78716C; text-decoration:none; border-radius:9999px; transition:color 0.15s ease; border:1px solid rgba(0,0,0,0.09); background:#fff;"
+                    onmouseover="this.style.color='#1C1917'" onmouseout="this.style.color='#78716C'"
+                  >
+                    <Icon name={ICONS.bookings} size={13} style="opacity:0.6;" />
+                    My Bookings
+                  </a>
+                  <div style="display:flex; align-items:center; gap:8px; padding:5px 12px 5px 6px; background:linear-gradient(160deg,#F9F8F7 0%,#EEEDEC 100%); border:1px solid rgba(0,0,0,0.10); border-radius:9999px; box-shadow:0 1px 3px rgba(0,0,0,0.06); cursor:default;">
+                    <div style="width:28px; height:28px; border-radius:9999px; background:linear-gradient(135deg,#FF7A2A,#E85A0A); display:flex; align-items:center; justify-content:center;">
+                      <span style="font-size:11px; font-weight:700; color:#fff;">{(user.firstName ?? user.email)[0].toUpperCase()}</span>
+                    </div>
+                    <span style="font-size:13px; font-weight:600; color:#1C1917; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{user.firstName ?? user.email.split('@')[0]}</span>
+                    <a href="/logout" style="font-size:11px; color:#A8A29E; text-decoration:none; transition:color 0.15s ease; padding-left:4px; border-left:1px solid rgba(0,0,0,0.10);"
+                      onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='#A8A29E'"
+                    >Out</a>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  id="nav-login"
+                  type="button"
+                  x-on:click="$dispatch('open-auth-modal')"
+                  style="display:inline-flex; align-items:center; gap:6px; padding:9px 20px; font-size:13px; font-weight:600; color:#1C1917; background:linear-gradient(160deg,#F9F8F7 0%,#EEEDEC 100%); border:1px solid rgba(0,0,0,0.10); border-radius:9999px; box-shadow:0 1px 3px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.85); flex-shrink:0; cursor:pointer;"
+                >
+                  <Icon name={ICONS.users} size={13} style="opacity:0.55;" />
+                  Sign In
+                </button>
+              )}
 
             </div>
           </div>
@@ -358,6 +382,295 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children }) => {
             }
           })();
         `}} />
+
+        {/* ── Auth modal script ─────────────────────────────────────────── */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          function authModal(openNow, nextUrl) {
+            return {
+              open: openNow,
+              tab: 'signin',
+              mode: 'password',
+              loading: false,
+              error: '',
+              success: '',
+              next: nextUrl,
+              email: '', password: '',
+              magicEmail: '',
+              firstName: '', lastName: '', signupEmail: '', phone: '', company: '',
+              signupPassword: '', confirmPassword: '',
+              init() {
+                this.$watch('open', function(val) {
+                  document.body.style.overflow = val ? 'hidden' : '';
+                });
+                window.addEventListener('open-auth-modal', function() {
+                  Alpine.store && true; // ensure Alpine is ready
+                }.bind(this));
+              },
+              switchTab(t) { this.tab = t; this.error = ''; this.success = ''; this.mode = 'password'; },
+              async doSignIn() {
+                if (!this.email || !this.password) { this.error = 'Please enter your email and password.'; return; }
+                this.loading = true; this.error = '';
+                try {
+                  var r = await fetch('/auth/signin', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:this.email,password:this.password}) });
+                  var d = await r.json();
+                  if (d.ok) { window.location.href = this.next || d.redirect || '/my-bookings'; return; }
+                  this.error = d.error || 'Sign-in failed. Please try again.';
+                } catch(e) { this.error = 'Connection error. Please try again.'; }
+                this.loading = false;
+              },
+              async doMagicLink() {
+                if (!this.magicEmail) { this.error = 'Please enter your email address.'; return; }
+                this.loading = true; this.error = '';
+                try {
+                  var r = await fetch('/auth/magic-link', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:this.magicEmail}) });
+                  var d = await r.json();
+                  if (d.ok) { this.mode = 'magic-sent'; this.loading = false; return; }
+                  this.error = d.error || 'Failed to send link.';
+                } catch(e) { this.error = 'Connection error. Please try again.'; }
+                this.loading = false;
+              },
+              async doSignUp() {
+                if (!this.firstName || !this.lastName || !this.signupEmail || !this.signupPassword) { this.error = 'Please fill in all required fields.'; return; }
+                if (this.signupPassword !== this.confirmPassword) { this.error = 'Passwords do not match.'; return; }
+                if (this.signupPassword.length < 8) { this.error = 'Password must be at least 8 characters.'; return; }
+                this.loading = true; this.error = '';
+                try {
+                  var r = await fetch('/auth/signup', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:this.signupEmail,password:this.signupPassword,firstName:this.firstName,lastName:this.lastName,phone:this.phone,company:this.company}) });
+                  var d = await r.json();
+                  if (d.ok) { this.success = d.message || 'Account created! Check your email to verify.'; this.loading = false; return; }
+                  this.error = d.error || 'Registration failed. Please try again.';
+                } catch(e) { this.error = 'Connection error. Please try again.'; }
+                this.loading = false;
+              }
+            };
+          }
+        `}} />
+
+        {/* ── Auth modal markup ─────────────────────────────────────────── */}
+        <div
+          x-data={`authModal(${openSignIn ? 'true' : 'false'}, '${signInNext}')`}
+          {...{"x-on:open-auth-modal.window": "open = true"}}
+          style="position:fixed; inset:0; z-index:9900; pointer-events:none;"
+        >
+          {/* Backdrop */}
+          <div
+            x-show="open"
+            x-cloak
+            x-on:click="open=false"
+            style="position:absolute; inset:0; background:rgba(0,0,0,0.48); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); pointer-events:all;"
+            x-transition
+          />
+
+          {/* Panel */}
+          <div
+            x-show="open"
+            x-cloak
+            {...{"x-on:keydown.escape.window": "open=false"}}
+            style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:calc(100% - 32px); max-width:440px; max-height:90vh; overflow-y:auto; background:#FFFFFF; border-radius:24px; padding:40px 36px 32px; box-shadow:0 2px 8px rgba(0,0,0,0.05), 0 24px 72px rgba(0,0,0,0.20); pointer-events:all; box-sizing:border-box; -webkit-overflow-scrolling:touch;"
+            x-transition
+          >
+            {/* Close button */}
+            <button
+              type="button"
+              x-on:click="open=false"
+              style="position:absolute; top:16px; right:16px; width:32px; height:32px; border-radius:9999px; background:rgba(0,0,0,0.06); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#78716C; transition:background 0.15s ease;"
+              onmouseover="this.style.background='rgba(0,0,0,0.12)'" onmouseout="this.style.background='rgba(0,0,0,0.06)'"
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+            </button>
+
+            {/* Logo + heading */}
+            <div style="text-align:center; margin-bottom:28px;">
+              <div style="width:48px; height:48px; border-radius:13px; background:linear-gradient(135deg,#FF7A2A 0%,#E85A0A 100%); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; box-shadow:0 4px 14px rgba(252,101,20,0.38);">
+                <Icon name={ICONS.users} size={22} style="color:#fff;" />
+              </div>
+              <h2 style="font-size:19px; font-weight:700; color:#1C1917; letter-spacing:-0.03em; margin-bottom:5px;">Welcome to Glido</h2>
+              <p style="font-size:13px; color:#78716C; line-height:1.5;">Sign in or create an account to manage your bookings.</p>
+            </div>
+
+            {/* Tab switcher */}
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; background:#F7F6F5; border-radius:12px; padding:4px; margin-bottom:24px;">
+              <button type="button"
+                x-on:click="switchTab('signin')"
+                style="padding:10px 8px; font-size:13px; font-weight:600; border-radius:9px; border:none; cursor:pointer; transition:all 0.15s ease;"
+                x-bind:style="tab==='signin' ? 'background:#fff; color:#1C1917; box-shadow:0 1px 4px rgba(0,0,0,0.10);' : 'background:transparent; color:#78716C;'"
+              >Sign In</button>
+              <button type="button"
+                x-on:click="switchTab('signup')"
+                style="padding:10px 8px; font-size:13px; font-weight:600; border-radius:9px; border:none; cursor:pointer; transition:all 0.15s ease;"
+                x-bind:style="tab==='signup' ? 'background:#fff; color:#1C1917; box-shadow:0 1px 4px rgba(0,0,0,0.10);' : 'background:transparent; color:#78716C;'"
+              >Sign Up</button>
+            </div>
+
+            {/* Error banner */}
+            <div x-show="error" style="margin-bottom:16px;">
+              <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.22); border-radius:10px; padding:10px 14px; font-size:12.5px; color:#DC2626; line-height:1.5;" x-text="error" />
+            </div>
+
+            {/* Success banner */}
+            <div x-show="success" style="margin-bottom:16px;">
+              <div style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.22); border-radius:10px; padding:10px 14px; font-size:12.5px; color:#16A34A; line-height:1.5;" x-text="success" />
+            </div>
+
+            {/* ── Sign In panel ── */}
+            <div x-show="tab==='signin'">
+
+              {/* Password mode */}
+              <div x-show="mode==='password'">
+                <div style="display:flex; flex-direction:column; gap:14px;">
+                  <div>
+                    <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;">Email</label>
+                    <input type="email" x-model="email" placeholder="you@example.com" autocomplete="email"
+                      style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                      onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                      onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                  </div>
+                  <div>
+                    <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;">Password</label>
+                    <input type="password" x-model="password" placeholder="••••••••" autocomplete="current-password"
+                      {...{"x-on:keydown.enter": "doSignIn()"}}
+                      style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                      onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                      onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px; margin-bottom:20px;">
+                  <a href="/forgot-password" style="font-size:12px; color:#A8A29E; text-decoration:none; transition:color 0.15s ease;"
+                    onmouseover="this.style.color='#78716C'" onmouseout="this.style.color='#A8A29E'"
+                  >Forgot password?</a>
+                  <button type="button" x-on:click="mode='magic'; magicEmail=email; error=''"
+                    style="font-size:12px; color:#FC6514; background:none; border:none; cursor:pointer; transition:opacity 0.15s ease;"
+                    onmouseover="this.style.opacity='0.75'" onmouseout="this.style.opacity='1'"
+                  >Send me a sign-in link</button>
+                </div>
+                <button type="button" x-on:click="doSignIn()"
+                  x-bind:disabled="loading"
+                  style="width:100%; padding:13px 20px; font-size:14px; font-weight:600; color:#fff; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border:none; border-radius:12px; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 14px rgba(252,101,20,0.40); transition:opacity 0.15s ease;"
+                  x-bind:style="loading ? 'opacity:0.6;cursor:not-allowed;' : ''"
+                >
+                  <span x-show="!loading">Sign In</span>
+                  <span x-show="loading">Signing in…</span>
+                </button>
+              </div>
+
+              {/* Magic link mode */}
+              <div x-show="mode==='magic'">
+                <p style="font-size:13px; color:#78716C; line-height:1.6; margin-bottom:16px;">
+                  We'll email you a one-click sign-in link — no password needed.
+                </p>
+                <div style="margin-bottom:16px;">
+                  <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;">Email</label>
+                  <input type="email" x-model="magicEmail" placeholder="you@example.com" autocomplete="email"
+                    {...{"x-on:keydown.enter": "doMagicLink()"}}
+                    style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                    onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                    onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                </div>
+                <button type="button" x-on:click="doMagicLink()"
+                  x-bind:disabled="loading"
+                  style="width:100%; padding:13px 20px; font-size:14px; font-weight:600; color:#fff; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border:none; border-radius:12px; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 14px rgba(252,101,20,0.40); transition:opacity 0.15s ease;"
+                  x-bind:style="loading ? 'opacity:0.6;cursor:not-allowed;' : ''"
+                >
+                  <span x-show="!loading">Send Sign-In Link</span>
+                  <span x-show="loading">Sending…</span>
+                </button>
+                <button type="button" x-on:click="mode='password'; error=''"
+                  style="width:100%; margin-top:12px; padding:11px; font-size:13px; color:#78716C; background:none; border:none; cursor:pointer; transition:color 0.15s ease;"
+                  onmouseover="this.style.color='#1C1917'" onmouseout="this.style.color='#78716C'"
+                >← Back to password sign in</button>
+              </div>
+
+              {/* Magic link sent */}
+              <div x-show="mode==='magic-sent'" style="text-align:center; padding:12px 0;">
+                <div style="width:52px; height:52px; border-radius:9999px; background:rgba(34,197,94,0.10); border:1px solid rgba(34,197,94,0.22); display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+                  <Icon name={ICONS.check} size={22} style="color:#22C55E;" />
+                </div>
+                <p style="font-size:14px; font-weight:600; color:#1C1917; margin-bottom:6px;">Check your inbox</p>
+                <p style="font-size:13px; color:#78716C; line-height:1.6;">We sent a sign-in link to <strong x-text="magicEmail" />. Click the link to sign in instantly.</p>
+              </div>
+
+            </div>
+
+            {/* ── Sign Up panel ── */}
+            <div x-show="tab==='signup'">
+              <div x-show="!success">
+                <div style="display:flex; flex-direction:column; gap:13px;">
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div>
+                      <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;">First Name *</label>
+                      <input type="text" x-model="firstName" placeholder="Raj" autocomplete="given-name"
+                        style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                        onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                        onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                    </div>
+                    <div>
+                      <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;">Last Name *</label>
+                      <input type="text" x-model="lastName" placeholder="Sharma" autocomplete="family-name"
+                        style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                        onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                        onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                    </div>
+                  </div>
+                  <div>
+                    <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;">Email *</label>
+                    <input type="email" x-model="signupEmail" placeholder="you@example.com" autocomplete="email"
+                      style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                      onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                      onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                  </div>
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div>
+                      <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;">Phone</label>
+                      <input type="tel" x-model="phone" placeholder="+61 4XX XXX XXX" autocomplete="tel"
+                        style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                        onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                        onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                    </div>
+                    <div>
+                      <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;">Company</label>
+                      <input type="text" x-model="company" placeholder="Optional" autocomplete="organization"
+                        style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                        onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                        onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                    </div>
+                  </div>
+                  <div>
+                    <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;">Password *</label>
+                    <input type="password" x-model="signupPassword" placeholder="Min 8 characters" autocomplete="new-password"
+                      style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                      onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                      onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                  </div>
+                  <div>
+                    <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;">Confirm Password *</label>
+                    <input type="password" x-model="confirmPassword" placeholder="••••••••" autocomplete="new-password"
+                      {...{"x-on:keydown.enter": "doSignUp()"}}
+                      style="width:100%; padding:11px 14px; font-size:14px; color:#1C1917; background:#F7F6F5; border:1px solid rgba(0,0,0,0.10); border-radius:10px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                      onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                      onblur="this.style.borderColor='rgba(0,0,0,0.10)'; this.style.boxShadow='none';" />
+                  </div>
+                </div>
+                <button type="button" x-on:click="doSignUp()"
+                  x-bind:disabled="loading"
+                  style="width:100%; margin-top:18px; padding:13px 20px; font-size:14px; font-weight:600; color:#fff; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border:none; border-radius:12px; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 14px rgba(252,101,20,0.40); transition:opacity 0.15s ease;"
+                  x-bind:style="loading ? 'opacity:0.6;cursor:not-allowed;' : ''"
+                >
+                  <span x-show="!loading">Create Account</span>
+                  <span x-show="loading">Creating account…</span>
+                </button>
+              </div>
+            </div>
+
+            {/* ── Continue as Guest ── */}
+            <div style="margin-top:20px; padding-top:16px; border-top:1px solid rgba(0,0,0,0.07); text-align:center;">
+              <a href="/book"
+                style="font-size:13px; color:#A8A29E; text-decoration:none; transition:color 0.15s ease;"
+                onmouseover="this.style.color='#78716C'" onmouseout="this.style.color='#A8A29E'"
+              >Continue as Guest →</a>
+            </div>
+
+          </div>
+        </div>
 
         {/* ── Global animation engine ───────────────────────────────────── */}
         <script src="/public/transitions.js"></script>

@@ -284,17 +284,86 @@ export const SettingsView = ({ activeTab = 'General', tenant, users }: { activeT
     </div>
 
     {/* ── Users ── */}
-    <div x-show={`tab === 'Users'`} style="max-width:884px; margin:0 auto;">
+    <div x-show={`tab === 'Users'`} x-data="invitePanel()" style="max-width:884px; margin:0 auto;">
+      <script dangerouslySetInnerHTML={{ __html: `
+        function invitePanel() {
+          return {
+            showForm: false,
+            inviteEmail: '',
+            inviteRole: 'reception_staff',
+            loading: false,
+            error: '',
+            success: '',
+            async sendInvite() {
+              if (!this.inviteEmail) { this.error = 'Please enter an email address.'; return; }
+              this.loading = true; this.error = ''; this.success = '';
+              try {
+                var r = await fetch('/reception/settings/invite', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email: this.inviteEmail, role: this.inviteRole })
+                });
+                var d = await r.json();
+                if (d.ok) {
+                  this.success = d.message || 'Invite sent!';
+                  this.inviteEmail = '';
+                  this.showForm = false;
+                } else {
+                  this.error = d.error || 'Failed to send invite.';
+                }
+              } catch(e) { this.error = 'Connection error. Please try again.'; }
+              this.loading = false;
+            }
+          };
+        }
+      `}} />
       <div style={cardStyle}>
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:10px;">
           <p style="font-size:15px; font-weight:600; color:#1C1917; letter-spacing:-0.01em;">Team Members</p>
-          <button
-            type="button"
-            class="btn-ghost"
-            style="font-size:12px; padding:7px 14px; cursor:pointer;"
-          >
-            + Invite
-          </button>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div x-show="success" style="font-size:12px; color:#16A34A; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.22); border-radius:8px; padding:5px 10px;" x-text="success" />
+            <button
+              type="button"
+              x-on:click="showForm = !showForm; error = ''"
+              class="btn-ghost"
+              style="font-size:12px; padding:7px 14px; cursor:pointer;"
+            >
+              + Invite
+            </button>
+          </div>
+        </div>
+
+        {/* Invite form */}
+        <div x-show="showForm" style="background:#F7F6F5; border:1px solid rgba(0,0,0,0.08); border-radius:12px; padding:18px 20px; margin-bottom:20px;">
+          <p style="font-size:13px; font-weight:600; color:#1C1917; margin-bottom:14px;">Invite a new team member</p>
+          <div x-show="error" style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.22); border-radius:8px; padding:8px 12px; margin-bottom:12px; font-size:12.5px; color:#DC2626;" x-text="error" />
+          <div style="display:grid; grid-template-columns:1fr 200px auto; gap:10px; align-items:flex-end;">
+            <div>
+              <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;">Email</label>
+              <input type="email" x-model="inviteEmail" placeholder="colleague@cfs.com.au"
+                {...{"x-on:keydown.enter": "sendInvite()"}}
+                style="width:100%; padding:10px 13px; font-size:13px; color:#1C1917; background:#fff; border:1px solid rgba(0,0,0,0.12); border-radius:9px; outline:none; box-sizing:border-box; transition:border-color 0.15s ease, box-shadow 0.15s ease;"
+                onfocus="this.style.borderColor='rgba(252,101,20,0.50)'; this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                onblur="this.style.borderColor='rgba(0,0,0,0.12)'; this.style.boxShadow='none';" />
+            </div>
+            <div>
+              <label style="display:block; font-size:10px; font-weight:700; color:#78716C; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:7px;">Role</label>
+              <select x-model="inviteRole"
+                style="width:100%; padding:10px 13px; font-size:13px; color:#1C1917; background:#fff; border:1px solid rgba(0,0,0,0.12); border-radius:9px; outline:none; cursor:pointer;">
+                <option value="reception_staff">Reception Staff</option>
+                <option value="reception_admin">Reception Admin</option>
+              </select>
+            </div>
+            <button type="button" x-on:click="sendInvite()"
+              x-bind:disabled="loading"
+              style="padding:10px 18px; font-size:13px; font-weight:600; color:#fff; background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%); border:none; border-radius:9px; cursor:pointer; white-space:nowrap; box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 3px 10px rgba(252,101,20,0.35); transition:opacity 0.15s ease;"
+              x-bind:style="loading ? 'opacity:0.6;cursor:not-allowed;' : ''"
+            >
+              <span x-show="!loading">Send Invite</span>
+              <span x-show="loading">Sending…</span>
+            </button>
+          </div>
+          <p style="font-size:11px; color:#A8A29E; margin-top:10px;">The invitee will receive an email with a one-click sign-in link to set up their account.</p>
         </div>
         <table style="width:100%; font-size:13px; border-collapse:collapse;">
           <thead>

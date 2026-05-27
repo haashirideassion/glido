@@ -10,6 +10,15 @@ import { ReportsView } from '../components/reception/ReportsView'
 import { SettingsView } from '../components/reception/SettingsView'
 import { ManualBookingForm } from '../components/reception/ManualBookingForm'
 import { Icon, ICONS } from '../lib/Icon'
+import { GlidoLogo } from '../lib/GlidoLogo'
+import {
+  signInWithPassword,
+  getSessionUser,
+  setSessionCookie,
+  clearSessionCookie,
+  isReceptionRole,
+  inviteReceptionUser,
+} from '../lib/auth'
 import {
   findBooking,
   getTodayBookings,
@@ -64,6 +73,157 @@ const DUMMY_BOOKINGS: Booking[] = [
 ]
 
 export const receptionRoutes = new Hono()
+
+// ─── Reception Login GET ───────────────────────────────────────────────────────
+receptionRoutes.get('/login', async (c) => {
+  // Already logged-in reception users go straight to dashboard
+  const existingUser = await getSessionUser(c)
+  if (existingUser && isReceptionRole(existingUser.role)) return c.redirect('/reception')
+
+  const error = c.req.query('error') ?? ''
+  const errorMsg =
+    error === 'invalid'        ? 'Incorrect email or password. Please try again.' :
+    error === 'missing'        ? 'Please enter your email and password.'          :
+    error === 'unauthorized'   ? 'Your account does not have reception access.'   : ''
+
+  return c.html(
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sign In — Reception · Glido</title>
+        <link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
+        <link rel="stylesheet" href="/public/styles.css" />
+        <style>{`
+          [x-cloak]{display:none!important}
+          *{font-family:'Inter',ui-sans-serif,system-ui,sans-serif;box-sizing:border-box;}
+          body{margin:0;background:#F7F6F5;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+        `}</style>
+      </head>
+      <body>
+        <div style="position:fixed;inset:0;background-image:radial-gradient(rgba(0,0,0,0.05) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;z-index:0;" />
+
+        <div style="position:relative;z-index:1;width:100%;max-width:400px;padding:24px;">
+          {/* Logo */}
+          <div style="text-align:center;margin-bottom:32px;">
+            <a href="/" style="display:inline-block;text-decoration:none;">
+              <GlidoLogo height={22} onDark={false} />
+            </a>
+          </div>
+
+          <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:24px;padding:44px 40px;box-shadow:0 2px 8px rgba(0,0,0,0.04),0 16px 48px rgba(0,0,0,0.09);">
+            {/* Heading */}
+            <div style="text-align:center;margin-bottom:32px;">
+              <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#1C232C 0%,#374151 100%);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 14px rgba(0,0,0,0.22);">
+                <Icon name="solar:buildings-bold-duotone" size={24} style="color:#fff;" />
+              </div>
+              <h1 style="font-size:20px;font-weight:700;color:#1C1917;letter-spacing:-0.03em;margin-bottom:6px;">Reception Sign In</h1>
+              <p style="font-size:13px;color:#78716C;line-height:1.6;">Staff access only. Invite-only accounts.</p>
+            </div>
+
+            {/* Error banner */}
+            {errorMsg && (
+              <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);border-radius:10px;padding:10px 14px;margin-bottom:20px;font-size:12.5px;color:#DC2626;text-align:center;">
+                {errorMsg}
+              </div>
+            )}
+
+            {/* Form */}
+            <form method="post" action="/reception/login" style="display:flex;flex-direction:column;gap:16px;">
+              <div>
+                <label style="display:block;font-size:10px;font-weight:700;color:#78716C;letter-spacing:0.09em;text-transform:uppercase;margin-bottom:8px;">Email</label>
+                <input type="email" name="email" placeholder="you@cfs.com.au" required autocomplete="email"
+                  style="width:100%;padding:11px 14px;font-size:14px;color:#1C1917;background:#F7F6F5;border:1px solid rgba(0,0,0,0.10);border-radius:10px;outline:none;transition:border-color 0.15s ease,box-shadow 0.15s ease;"
+                  onfocus="this.style.borderColor='rgba(252,101,20,0.50)';this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                  onblur="this.style.borderColor='rgba(0,0,0,0.10)';this.style.boxShadow='none';" />
+              </div>
+              <div>
+                <label style="display:block;font-size:10px;font-weight:700;color:#78716C;letter-spacing:0.09em;text-transform:uppercase;margin-bottom:8px;">Password</label>
+                <input type="password" name="password" placeholder="••••••••" required autocomplete="current-password"
+                  style="width:100%;padding:11px 14px;font-size:14px;color:#1C1917;background:#F7F6F5;border:1px solid rgba(0,0,0,0.10);border-radius:10px;outline:none;transition:border-color 0.15s ease,box-shadow 0.15s ease;"
+                  onfocus="this.style.borderColor='rgba(252,101,20,0.50)';this.style.boxShadow='0 0 0 3px rgba(252,101,20,0.12)';"
+                  onblur="this.style.borderColor='rgba(0,0,0,0.10)';this.style.boxShadow='none';" />
+              </div>
+              <button type="submit"
+                style="width:100%;padding:13px 20px;font-size:14px;font-weight:600;color:#fff;background:linear-gradient(180deg,#FF7A2A 0%,#E85A0A 100%);border:none;border-radius:12px;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,0.22),0 4px 14px rgba(252,101,20,0.40);transition:opacity 0.15s ease;"
+                onmouseover="this.style.opacity='0.92'" onmouseout="this.style.opacity='1'"
+              >
+                Sign in to Reception
+              </button>
+            </form>
+
+            {/* Forgot password */}
+            <p style="text-align:center;font-size:12px;color:#A8A29E;margin-top:18px;">
+              <a href="/forgot-password" style="color:#FC6514;text-decoration:none;font-weight:500;transition:opacity 0.15s ease;"
+                onmouseover="this.style.opacity='0.75'" onmouseout="this.style.opacity='1'"
+              >Forgot your password?</a>
+            </p>
+          </div>
+
+          {/* Back link */}
+          <p style="text-align:center;margin-top:20px;font-size:12px;color:#A8A29E;">
+            <a href="/" style="color:#78716C;text-decoration:none;font-weight:500;transition:color 0.15s ease;"
+              onmouseover="this.style.color='#1C1917'" onmouseout="this.style.color='#78716C'"
+            >← Back to home</a>
+          </p>
+        </div>
+      </body>
+    </html>
+  )
+})
+
+// ─── Reception Login POST ──────────────────────────────────────────────────────
+receptionRoutes.post('/login', async (c) => {
+  const body     = await c.req.parseBody()
+  const email    = String(body.email    ?? '').trim().toLowerCase()
+  const password = String(body.password ?? '')
+
+  if (!email || !password) return c.redirect('/reception/login?error=missing')
+
+  let session: any, authUser: any
+  try {
+    const result = await signInWithPassword(email, password)
+    session  = result.session
+    authUser = result.user
+  } catch (err: any) {
+    console.error('[reception/login]', err?.message)
+    return c.redirect('/reception/login?error=invalid')
+  }
+
+  if (!session || !authUser) return c.redirect('/reception/login?error=invalid')
+
+  setSessionCookie(c, session.access_token)
+
+  // Verify the user is actually a reception role
+  let role = ''
+  try {
+    const { supabaseAdmin } = await import('../lib/supabase')
+    const { data: userRow } = await supabaseAdmin
+      .from('users').select('role').eq('id', authUser.id).maybeSingle()
+    if (userRow?.role) role = userRow.role
+  } catch { /* non-fatal */ }
+
+  if (!isReceptionRole(role)) {
+    // Valid Supabase user but wrong role — clear cookie and reject
+    clearSessionCookie(c)
+    return c.redirect('/reception/login?error=unauthorized')
+  }
+
+  return c.redirect('/reception')
+})
+
+// ─── Auth middleware — protects all routes except /login ──────────────────────
+receptionRoutes.use('/*', async (c, next) => {
+  const url = new URL(c.req.url)
+  // /reception/login is public
+  if (url.pathname === '/reception/login') return next()
+
+  const user = await getSessionUser(c)
+  if (!user) return c.redirect('/reception/login')
+  if (!isReceptionRole(user.role)) return c.redirect('/reception/login?error=unauthorized')
+
+  return next()
+})
 
 // ─── Client-side dashboard refresh script ────────────────────────────────────
 // Fetches today's bookings directly from Supabase REST (browser → Supabase),
@@ -749,4 +909,31 @@ receptionRoutes.post('/settings', async (c) => {
   })
 
   return c.redirect(`/reception/settings?tab=${encodeURIComponent(tab)}&saved=1`)
+})
+
+// ─── Invite reception user (Users tab in Settings) ────────────────────────────
+receptionRoutes.post('/settings/invite', async (c) => {
+  let body: any
+  try { body = await c.req.json() } catch { return c.json({ ok: false, error: 'Invalid request.' }, 400) }
+
+  const email = String(body.email ?? '').trim().toLowerCase()
+  const role  = String(body.role  ?? 'reception_staff')
+
+  if (!email) return c.json({ ok: false, error: 'Email is required.' })
+  if (role !== 'reception_staff' && role !== 'reception_admin') {
+    return c.json({ ok: false, error: 'Invalid role.' })
+  }
+
+  try {
+    const appUrl = process.env.APP_URL ?? `https://${c.req.header('host') ?? 'localhost:3000'}`
+    await inviteReceptionUser(email, role as any, appUrl)
+    return c.json({ ok: true, message: `Invite sent to ${email}.` })
+  } catch (err: any) {
+    console.error('[settings/invite]', err?.message)
+    const msg = err?.message ?? ''
+    if (msg.includes('already been invited') || msg.includes('already registered')) {
+      return c.json({ ok: false, error: 'That email has already been invited.' })
+    }
+    return c.json({ ok: false, error: 'Failed to send invite. Please try again.' })
+  }
 })
