@@ -246,7 +246,7 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children, user = null
                 <button
                   id="nav-login"
                   type="button"
-                  x-on:click="$dispatch('open-auth-modal')"
+                  onclick="window.dispatchEvent(new CustomEvent('open-auth-modal'))"
                   style="display:inline-flex; align-items:center; gap:6px; padding:9px 20px; font-size:13px; font-weight:600; color:#1C1917; background:linear-gradient(160deg,#F9F8F7 0%,#EEEDEC 100%); border:1px solid rgba(0,0,0,0.10); border-radius:9999px; box-shadow:0 1px 3px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.85); flex-shrink:0; cursor:pointer;"
                 >
                   <Icon name={ICONS.users} size={13} style="opacity:0.55;" />
@@ -399,12 +399,14 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children, user = null
               firstName: '', lastName: '', signupEmail: '', phone: '', company: '',
               signupPassword: '', confirmPassword: '',
               init() {
+                var self = this;
                 this.$watch('open', function(val) {
                   document.body.style.overflow = val ? 'hidden' : '';
                 });
+                // Listen for the global event dispatched by the Sign In button
                 window.addEventListener('open-auth-modal', function() {
-                  Alpine.store && true; // ensure Alpine is ready
-                }.bind(this));
+                  self.open = true;
+                });
               },
               switchTab(t) { this.tab = t; this.error = ''; this.success = ''; this.mode = 'password'; },
               async doSignIn() {
@@ -449,7 +451,6 @@ export const LandingLayout: FC<Props> = ({ title = 'Home', children, user = null
         {/* ── Auth modal markup ─────────────────────────────────────────── */}
         <div
           x-data={`authModal(${openSignIn ? 'true' : 'false'}, '${signInNext}')`}
-          {...{"x-on:open-auth-modal.window": "open = true"}}
           style="position:fixed; inset:0; z-index:9900; pointer-events:none;"
         >
           {/* Backdrop */}
